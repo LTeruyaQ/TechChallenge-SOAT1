@@ -2,20 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs
-/MecanicaOS/API/obj/Debug/net9.0/API.AssemblyInfoInputs.cache
-/MecanicaOS/API/obj/Debug/net9.0/API.assets.cache
-/MecanicaOS/API/obj/Debug/net9.0/API.csproj.AssemblyReference.cache
-/MecanicaOS/API/obj/Debug/net9.0/API.GeneratedMSBuildEditorConfig.editorconfig
-/MecanicaOS/API/obj/API.csproj.nuget.dgspec.json
-/MecanicaOS/API/obj/API.csproj.nuget.g.props
-/MecanicaOS/API/obj/API.csproj.nuget.g.targets
-/MecanicaOS/API/obj/Debug/net9.0/rpswa.dswa.cache.json
-/MecanicaOS/API/obj/Debug/net9.0/staticwebassets.removed.txt
-/MecanicaOS/API/obj/project.assets.json
-/MecanicaOS/API/obj/project.nuget.cache
-/MecanicaOS/Aplicacao/obj
-/MecanicaOS/Dominio/obj/Debug/net9.0
-/MecanicaOS/Dominio/obj
-/MecanicaOS/Infraestrutura/obj
-/MecanicaOS/Testes/obj
+.vs/
+
+MecanicaOS/**/bin/
+MecanicaOS/**/obj/
