@@ -1,5 +1,8 @@
-﻿namespace Infraestrutura.Dados;
+﻿using Microsoft.EntityFrameworkCore;
 
-public class MecanicaContexto
+namespace Infraestrutura.Dados;
+
+public class MecanicaContexto : DbContext
 {
+    public MecanicaContexto(DbContextOptions<MecanicaContexto> options) : base(options) { }
 }
