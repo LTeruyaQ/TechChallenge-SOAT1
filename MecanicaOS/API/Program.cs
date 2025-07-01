@@ -1,4 +1,9 @@
+using Aplicacao.Servicos;
+using Dominio.Entidades;
+using Dominio.Interfaces.Repositorios;
+using Dominio.Interfaces.Services;
 using Infraestrutura.Dados;
+using Infraestrutura.Repositorios;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +14,10 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<MecanicaContexto>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<ICrudRepositorio<Servico>, ServicoRepositorio>();
+
+builder.Services.AddScoped<IServicoServico, ServicoServico>();
 
 var app = builder.Build();
 
