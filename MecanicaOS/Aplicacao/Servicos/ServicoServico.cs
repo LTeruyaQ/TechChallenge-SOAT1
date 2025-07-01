@@ -18,13 +18,13 @@ namespace Aplicacao.Servicos
 
         public async Task CadastrarServico(Servico servico)
         {
-            await _repositorio.Cadastrar(servico);
+            await _repositorio.CadastrarAsync(servico);
         }
 
         public async Task DeletarServico(Guid id)
         {
             var servico = await ObterServicoPorId(id);
-            await _repositorio.Deletar(servico);
+            await _repositorio.DeletarAsync(servico);
         }
 
         public async Task EditarServico(Guid id, Servico novoServico)
@@ -50,7 +50,7 @@ namespace Aplicacao.Servicos
 
         public async Task<Servico> ObterServicoPorId(Guid id)
         {
-            var servico = await _repositorio.ObterPorId(id);
+            var servico = await _repositorio.ObterPorIdAsync(id);
             
             if (servico is null) throw new Exception($"Não foi encontrado o serviço de id: {id}");
 
