@@ -1,4 +1,4 @@
-﻿namespace Aplicacao.Interfaces;
+﻿namespace Dominio.Interfaces.Servicos;
 
 public interface IOrdemServicoServico
 {

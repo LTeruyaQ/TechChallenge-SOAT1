@@ -8,7 +8,7 @@ namespace Dominio.Interfaces.Repositorios
         Task<IEnumerable<T>> ObterTodos();
         Task<IEnumerable<T>> ObterPorFiltro(IEspecificacao<T> filtro);
         Task Cadastrar(T entidade);
-        Task Editar(Guid id, T novaEntidade);
-        Task Delete(Guid id);
+        Task Editar(T novaEntidade);
+        Task Deletar(T entidade);
     }
 }

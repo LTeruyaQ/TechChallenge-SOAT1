@@ -1,5 +1,7 @@
-﻿namespace Aplicacao.Servicos;
+﻿using Dominio.Interfaces.Servicos;
 
-public class OrdemServicoServico
+namespace Aplicacao.Servicos;
+
+public class OrdemServicoServico : IOrdemServicoServico
 {
 }
