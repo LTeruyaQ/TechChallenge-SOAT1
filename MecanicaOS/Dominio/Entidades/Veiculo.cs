@@ -1,5 +1,7 @@
-﻿namespace Dominio.Entidades;
+﻿using Dominio.Entidades.Abstratos;
 
-public class Veiculo
+namespace Dominio.Entidades;
+
+public class Veiculo : Entidade
 {
 }

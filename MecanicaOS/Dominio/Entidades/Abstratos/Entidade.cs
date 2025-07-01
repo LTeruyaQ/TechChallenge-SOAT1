@@ -1,4 +1,5 @@
-﻿namespace Dominio.Entidades.Abstratos
+
+namespace Dominio.Entidades.Abstratos
 {
     public abstract class Entidade
     {
@@ -11,7 +12,7 @@
             Id = Guid.NewGuid();
             DataCadastro = DateTime.Now;
         }
-
+        
         public static bool operator ==(Entidade e1, Entidade e2){
             return e1.Id.Equals(e2.Id);
         }
