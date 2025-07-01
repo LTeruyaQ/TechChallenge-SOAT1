@@ -1,4 +1,7 @@
-﻿using Dominio.Entidades;
+﻿using Dominio.DTOs;
+using Dominio.Entidades;
+using Dominio.Especificacoes;
+using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Services;
 
@@ -54,9 +57,16 @@ namespace Aplicacao.Servicos
             return servico;
         }
 
-        public async Task<IEnumerable<Servico>> ObterServicosPorFiltro(Servico filtro)
+        public async Task<IEnumerable<Servico>> ObterServicosPorFiltro(FiltrarServicoDto filtroDto)
         {
-            throw new NotImplementedException();
+            IEspecificacao<Servico> filtro = new ServicoDisponivelEspecificacao();
+            
+            return await _repositorio.ObterPorFiltro(filtro);
+        }
+
+        public async Task<IEnumerable<Servico>> ObterTodos()
+        {
+            return await _repositorio.ObterTodos();
         }
     }
 }
