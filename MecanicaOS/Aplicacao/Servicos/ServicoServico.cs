@@ -40,6 +40,8 @@ namespace Aplicacao.Servicos
             if (servico.Disponivel != novoServico.Disponivel)
                 servico.Disponivel = novoServico.Disponivel;
 
+            novoServico.DataAtualizacao = DateTime.Now;
+
             await _repositorio.Editar(servico);
         }
 
