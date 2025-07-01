@@ -1,5 +1,7 @@
-﻿namespace Dominio.Entidades;
+﻿using Dominio.Entidades.Abstratos;
 
-public class OrdemServico
+namespace Dominio.Entidades;
+
+public class OrdemServico : Entidade
 {
 }
