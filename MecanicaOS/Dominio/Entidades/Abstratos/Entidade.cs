@@ -1,8 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dominio.Entidades.Abstratos
 {
@@ -16,6 +11,14 @@ namespace Dominio.Entidades.Abstratos
         {
             Id = Guid.NewGuid();
             DataCadastro = DateTime.Now;
+        }
+        
+        public static bool operator ==(Entidade e1, Entidade e2){
+            return e1.Id.Equals(e2.Id);
+        }
+
+        public static bool operator !=(Entidade e1, Entidade e2){
+            return !(e1 == e2);
         }
     }
 }
