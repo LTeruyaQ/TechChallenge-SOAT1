@@ -1,4 +1,6 @@
 using Aplicacao.Logs.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aplicacao.Logs.Middlewares
 {

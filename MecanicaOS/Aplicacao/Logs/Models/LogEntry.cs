@@ -1,4 +1,6 @@
-﻿namespace Aplicacao.Logs.Models
+﻿using Microsoft.Extensions.Logging;
+
+namespace Aplicacao.Logs.Models
 {
     public sealed class LogEntry
     {
@@ -10,5 +12,4 @@
         public DateTime Timestamp { get; init; } = DateTime.UtcNow;
         public string Etapa { get; set; }
     }
-
 }

@@ -6,12 +6,12 @@ using System.Text.Json.Serialization;
 
 namespace Aplicacao.Servicos.Abstrato
 {
-    public abstract class AbstractLogService<T> where T : class
+    public abstract class ServicoAbstratoLog<T> where T : class
     {
         private readonly ICorrelationIdService _correlationIdService;
         private readonly ILogger<T> _logger;
         private readonly JsonSerializerOptions _jsonOptions;
-        protected AbstractLogService(ICorrelationIdService correlationIdLog, ILogger<T> logger)
+        protected ServicoAbstratoLog(ICorrelationIdService correlationIdLog, ILogger<T> logger)
         {
             _correlationIdService = correlationIdLog;
             _jsonOptions = new JsonSerializerOptions
