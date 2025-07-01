@@ -3,8 +3,9 @@ namespace Dominio.Entidades.Abstratos
 {
     public abstract class Entidade
     {
-        public Guid Id { get; }
-        public DateTime DataCadastro { get; }
+
+        public Guid Id { get; set; }
+        public DateTime DataCadastro { get; set; }
         public DateTime DataAtualizacao { get; set; }
 
         protected Entidade()
