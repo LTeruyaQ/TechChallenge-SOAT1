@@ -1,4 +1,4 @@
-﻿using Aplicacao.Logs.Models;
+using Aplicacao.Logs.Models;
 using Aplicacao.Logs.Services;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -20,7 +20,10 @@ namespace Aplicacao.Servicos.Abstrato
                 {
                     new JsonStringEnumConverter()
                 },
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = false
             };
             _logger = logger;
         }
