@@ -18,10 +18,11 @@ builder.Services.AddDbContext<MecanicaContexto>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ICrudRepositorio<Servico>, ServicoRepositorio>();
+builder.Services.AddScoped<ICrudRepositorio<Estoque>, EstoqueRepositorio>();
 
 builder.Services.AddScoped<IServicoServico, ServicoServico>();
+builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
 builder.Services.AddScoped<ICorrelationIdService, CorrelationIdService>();
-
 builder.Services.AddScoped<CorrelationIdDemoAPILogMiddleware>();
 
 var app = builder.Build();

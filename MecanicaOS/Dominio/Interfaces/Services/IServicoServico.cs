@@ -8,7 +8,7 @@ namespace Dominio.Interfaces.Services
         Task<Servico> ObterServicoPorId(Guid id);
         Task<IEnumerable<Servico>> ObterTodos();
         Task<IEnumerable<Servico>> ObterServicosPorFiltro(FiltrarServicoDto filtro);
-        Task CadastrarServico(Servico servico);
+        Task<Servico> CadastrarServico(Servico servico);
         Task EditarServico(Guid id, Servico servico);
         Task DeletarServico(Guid id);
     }

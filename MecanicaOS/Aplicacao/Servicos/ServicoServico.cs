@@ -20,16 +20,18 @@ namespace Aplicacao.Servicos
             _repositorio = repositorio;
         }
 
-        public async Task CadastrarServico(Servico servico)
+        public async Task<Servico> CadastrarServico(Servico servico)
         {
             var metodo = nameof(CadastrarServico);
             try
             {
                 LogInicio(metodo, servico);
 
-                await _repositorio.Cadastrar(servico);
+                var entidade = await _repositorio.CadastrarAsync(servico);
 
                 LogFim(metodo);
+
+                return entidade;
             }
             catch (Exception e)
             {
@@ -46,7 +48,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, id);
 
                 var servico = await ObterServicoPorId(id);
-                await _repositorio.Deletar(servico);
+                await _repositorio.DeletarAsync(servico);
 
                 LogFim(metodo);
             }
@@ -97,7 +99,7 @@ namespace Aplicacao.Servicos
             try
             {
                 LogInicio(metodo);
-                var servico = await _repositorio.ObterPorId(id);
+                var servico = await _repositorio.ObterPorIdAsync(id);
 
                 if (servico is null) throw new Exception($"Não foi encontrado o serviço de id: {id}");
 

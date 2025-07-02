@@ -15,13 +15,14 @@ namespace Infraestrutura.Repositorios
             _dbContext = dbContext;
         }
 
-        public async Task Cadastrar(Servico entidade)
+        public async Task<Servico> CadastrarAsync(Servico servico)
         {
-            _dbContext.Servicos.Add(entidade);
+            var entidade =_dbContext.Servicos.Add(servico);
             await _dbContext.SaveChangesAsync();
+            return entidade.Entity;
         }
 
-        public async Task Deletar(Servico servico)
+        public async Task DeletarAsync(Servico servico)
         {
             _dbContext.Servicos.Remove(servico);
             await _dbContext.SaveChangesAsync();
@@ -38,7 +39,7 @@ namespace Infraestrutura.Repositorios
             return await _dbContext.Servicos.AsNoTracking().Where(x => filtro.EhSatisfeitoPor(x)).ToListAsync();
         }
 
-        public async Task<Servico> ObterPorId(Guid id)
+        public async Task<Servico> ObterPorIdAsync(Guid id)
         {
             return await _dbContext.Servicos.FirstOrDefaultAsync(s => s.Id == id);
         }
