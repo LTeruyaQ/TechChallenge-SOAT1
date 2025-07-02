@@ -1,4 +1,5 @@
-﻿using Dominio.DTOs;
+﻿using Aplicacao.DTOs.Servico;
+using Dominio.DTOs;
 using Dominio.Entidades;
 
 namespace Dominio.Interfaces.Services
@@ -8,8 +9,8 @@ namespace Dominio.Interfaces.Services
         Task<Servico> ObterServicoPorId(Guid id);
         Task<IEnumerable<Servico>> ObterTodos();
         Task<IEnumerable<Servico>> ObterServicosPorFiltro(FiltrarServicoDto filtro);
-        Task<Servico> CadastrarServico(Servico servico);
-        Task EditarServico(Guid id, Servico servico);
+        Task<Servico> CadastrarServico(CadastrarServicoDto servico);
+        Task EditarServico(Guid id, EditarServicoDto servico);
         Task DeletarServico(Guid id);
     }
 }
