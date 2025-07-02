@@ -34,9 +34,9 @@ public class EstoqueRepositorio : ICrudRepositorio<Estoque>
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Estoque>> ObterPorFiltro(IEspecificacao<Estoque> filtro)
+    public async Task<IEnumerable<Estoque>> ObterPorFiltro(IEspecificacao<Estoque> especificacao)
     {
-        return await _dbContext.Estoques.AsNoTracking().Where(x => filtro.EhSatisfeitoPor(x)).ToListAsync();
+        return await _dbContext.Estoques.AsNoTracking().Where(especificacao.Expressao).ToListAsync();
     }
 
     public async Task<Estoque?> ObterPorIdAsync(Guid id)

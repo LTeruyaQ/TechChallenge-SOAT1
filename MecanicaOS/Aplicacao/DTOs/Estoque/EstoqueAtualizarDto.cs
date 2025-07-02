@@ -4,9 +4,6 @@ namespace Aplicacao.DTOs.Estoque;
 
 public class EstoqueAtualizarDto
 {
-    [Required]
-    public Guid Id { get; set; }
-
     [MaxLength(100, ErrorMessage = "O nome deve ter no máximo 100 caracteres.")]
     public string? Insumo { get; set; }
 
@@ -18,4 +15,7 @@ public class EstoqueAtualizarDto
 
     [Range(1, int.MaxValue, ErrorMessage = "A quantidade mínima deve ser maior que zero.")]
     public int? QuantidadeMinima { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "A quantidade mínima deve ser maior que zero.")]
+    public double? Preco { get; set; }
 }

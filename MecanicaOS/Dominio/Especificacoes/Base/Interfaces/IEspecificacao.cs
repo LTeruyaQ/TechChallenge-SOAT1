@@ -1,7 +1,9 @@
-﻿namespace Dominio.Especificacoes.Base.Interfaces
+﻿using System.Linq.Expressions;
+
+namespace Dominio.Especificacoes.Base.Interfaces
 {
     public interface IEspecificacao<T>
     {
-        bool EhSatisfeitoPor(T item);
+        Expression<Func<T, bool>> Expressao { get; }
     }
 }

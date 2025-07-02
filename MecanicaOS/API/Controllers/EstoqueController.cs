@@ -62,7 +62,7 @@ public class EstoqueController : ControllerBase
             if (id == Guid.Empty)
                 return BadRequest("ID inválido.");
 
-            await _estoqueService.AtualizarAsync(dto);
+            await _estoqueService.AtualizarAsync(id, dto);
 
             return NoContent();
         }

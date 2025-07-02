@@ -8,12 +8,8 @@ public class EstoqueMapeamento : IEntityTypeConfiguration<Estoque>
 {
     public void Configure(EntityTypeBuilder<Estoque> builder)
     {
-        builder.Property(e => e.Insumo)
-               .IsRequired()
-               .HasMaxLength(100);
+        builder.Property(e => e.Insumo).HasMaxLength(100);
         
-        builder.Property(e => e.Descricao)
-               .IsRequired()
-               .HasMaxLength(500);
+        builder.Property(e => e.Descricao).HasMaxLength(500);
     }
 }

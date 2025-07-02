@@ -21,7 +21,7 @@ public class EstoqueServico : ServicoAbstratoLog<EstoqueServico>, IEstoqueServic
         _repositorio = repositorio;
     }
 
-    public async Task AtualizarAsync(EstoqueAtualizarDto estoqueDto)
+    public async Task AtualizarAsync(Guid id, EstoqueAtualizarDto estoqueDto)
     {
         string metodo = nameof(AtualizarAsync);
 
@@ -29,13 +29,14 @@ public class EstoqueServico : ServicoAbstratoLog<EstoqueServico>, IEstoqueServic
         {
             LogInicio(metodo, estoqueDto);
 
-            Estoque estoque = await ObterPorIdAsync(estoqueDto.Id);
+            Estoque estoque = await ObterPorIdAsync(id);
 
             estoque.Insumo = estoqueDto.Insumo ?? estoque.Insumo;
             estoque.Descricao = estoqueDto.Descricao ?? estoque.Descricao;
+            estoque.Preco = estoqueDto.Preco ?? estoque.Preco;
             estoque.QuantidadeDisponivel = estoqueDto.QuantidadeDisponivel ?? estoque.QuantidadeDisponivel;
             estoque.QuantidadeMinima = estoqueDto.QuantidadeMinima ?? estoque.QuantidadeMinima;
-            estoque.DataAtualizacao = DateTime.Now;
+            estoque.DataAtualizacao = DateTime.UtcNow;
 
             await _repositorio.Editar(estoque);
 
@@ -61,10 +62,9 @@ public class EstoqueServico : ServicoAbstratoLog<EstoqueServico>, IEstoqueServic
             {
                 Insumo = estoqueDto.Insumo,
                 Descricao = estoqueDto.Descricao,
+                Preco = estoqueDto.Preco,
                 QuantidadeDisponivel = estoqueDto.QuantidadeDisponivel,
                 QuantidadeMinima = estoqueDto.QuantidadeMinima,
-                DataCadastro = DateTime.Now,
-                DataAtualizacao = DateTime.Now
             };
 
             LogFim(metodo);
