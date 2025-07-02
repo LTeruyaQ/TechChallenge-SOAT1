@@ -7,6 +7,6 @@ public interface IEstoqueServico
 {
     Task<Estoque> CadastrarAsync(EstoqueRegistrarDto estoque);
     Task<Estoque> ObterPorIdAsync(Guid id);
-    Task AtualizarAsync(EstoqueAtualizarDto estoqueDto);
+    Task AtualizarAsync(Guid id, EstoqueAtualizarDto estoqueDto);
     Task RemoverAsync(Guid id);
 }

@@ -1,13 +1,11 @@
 ﻿using Dominio.Entidades;
 using Dominio.Especificacoes.Base.Interfaces;
+using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes
 {
     public class ServicoDisponivelEspecificacao : IEspecificacao<Servico>
     {
-        public bool EhSatisfeitoPor(Servico servico)
-        {
-            return servico.Disponivel;
-        }
+        public Expression<Func<Servico, bool>> Expressao => s => s.Disponivel;
     }
 }

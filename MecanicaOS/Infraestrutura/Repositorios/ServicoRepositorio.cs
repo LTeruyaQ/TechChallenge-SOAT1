@@ -34,9 +34,9 @@ namespace Infraestrutura.Repositorios
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Servico>> ObterPorFiltro(IEspecificacao<Servico> filtro)
+        public async Task<IEnumerable<Servico>> ObterPorFiltro(IEspecificacao<Servico> especificacao)
         {
-            return await _dbContext.Servicos.AsNoTracking().Where(x => filtro.EhSatisfeitoPor(x)).ToListAsync();
+            return await _dbContext.Servicos.AsNoTracking().Where(especificacao.Expressao).ToListAsync();
         }
 
         public async Task<Servico> ObterPorIdAsync(Guid id)

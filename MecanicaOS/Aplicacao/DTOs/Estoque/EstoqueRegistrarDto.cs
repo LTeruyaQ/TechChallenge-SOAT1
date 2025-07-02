@@ -18,4 +18,8 @@ public class EstoqueRegistrarDto
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "A quantidade mínima deve ser maior que zero.")]
     public int QuantidadeMinima { get; set; }
+   
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "A quantidade mínima deve ser maior que zero.")]
+    public double Preco { get; set; }
 }
