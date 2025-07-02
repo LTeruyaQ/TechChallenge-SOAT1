@@ -7,13 +7,16 @@ using Dominio.Interfaces.Services;
 using Infraestrutura.Dados;
 using Infraestrutura.Repositorios;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<MecanicaContexto>(options =>
@@ -29,35 +32,19 @@ builder.Services.AddScoped<CorrelationIdDemoAPILogMiddleware>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.UseMiddleware<CorrelationIdDemoAPILogMiddleware>();
-app.UseHttpsRedirection();
+app.UseReDoc(c =>
+{
+    c.DocumentTitle = "MecanicaOS API Documentation";
+    c.SpecUrl = "/swagger/v1/swagger.json";
+    c.RoutePrefix = "docs";
+});
 
 app.MapControllers();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+app.UseMiddleware<CorrelationIdDemoAPILogMiddleware>();
 
 app.Run();
 
