@@ -1,9 +1,11 @@
-﻿using Aplicacao.Logs.Services;
+﻿using Aplicacao.DTOs.Servico;
+using Aplicacao.Logs.Services;
 using Aplicacao.Servicos.Abstrato;
 using Dominio.DTOs;
 using Dominio.Entidades;
 using Dominio.Especificacoes;
 using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Services;
 using Microsoft.Extensions.Logging;
@@ -20,12 +22,20 @@ namespace Aplicacao.Servicos
             _repositorio = repositorio;
         }
 
-        public async Task<Servico> CadastrarServico(Servico servico)
+        public async Task<Servico> CadastrarServico(CadastrarServicoDto cadastrarServico)
         {
             var metodo = nameof(CadastrarServico);
             try
             {
-                LogInicio(metodo, servico);
+                LogInicio(metodo, cadastrarServico);
+
+                Servico servico = new Servico()
+                {
+                    Descricao = cadastrarServico.Descricao,
+                    Nome = cadastrarServico.Nome,
+                    Disponivel = cadastrarServico.Disponivel,
+                    DataCadastro = DateTime.Now
+                };
 
                 var entidade = await _repositorio.CadastrarAsync(servico);
 
@@ -59,7 +69,7 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task EditarServico(Guid id, Servico novoServico)
+        public async Task EditarServico(Guid id, EditarServicoDto novoServico)
         {
             var metodo = nameof(EditarServico);
 
@@ -80,7 +90,7 @@ namespace Aplicacao.Servicos
                 if (servico.Disponivel != novoServico.Disponivel)
                     servico.Disponivel = novoServico.Disponivel;
 
-                novoServico.DataAtualizacao = DateTime.Now;
+                servico.DataAtualizacao = DateTime.Now;
 
                 await _repositorio.Editar(servico);
 
@@ -101,7 +111,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo);
                 var servico = await _repositorio.ObterPorIdAsync(id);
 
-                if (servico is null) throw new Exception($"Não foi encontrado o serviço de id: {id}");
+                if (servico is null) throw new EntidadeNaoEncontradaException($"Não foi encontrado o serviço de id: {id}");
 
                 LogFim(metodo, servico);
 
