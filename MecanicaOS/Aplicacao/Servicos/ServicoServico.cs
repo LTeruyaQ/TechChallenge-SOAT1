@@ -90,7 +90,7 @@ namespace Aplicacao.Servicos
                 if (servico.Disponivel != novoServico.Disponivel)
                     servico.Disponivel = novoServico.Disponivel;
 
-                servico.DataAtualizacao = DateTime.Now;
+                servico.DataAtualizacao = DateTime.UtcNow;
 
                 await _repositorio.Editar(servico);
 
