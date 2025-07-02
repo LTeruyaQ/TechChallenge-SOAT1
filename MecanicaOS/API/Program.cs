@@ -1,3 +1,5 @@
+using Aplicacao.Logs.Middlewares;
+using Aplicacao.Logs.Services;
 using Aplicacao.Servicos;
 using Dominio.Entidades;
 using Dominio.Interfaces.Repositorios;
@@ -20,6 +22,8 @@ builder.Services.AddScoped<ICrudRepositorio<Estoque>, EstoqueRepositorio>();
 
 builder.Services.AddScoped<IServicoServico, ServicoServico>();
 builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
+builder.Services.AddScoped<ICorrelationIdService, CorrelationIdService>();
+builder.Services.AddScoped<CorrelationIdDemoAPILogMiddleware>();
 
 var app = builder.Build();
 
@@ -29,6 +33,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseMiddleware<CorrelationIdDemoAPILogMiddleware>();
 app.UseHttpsRedirection();
 
 var summaries = new[]
