@@ -6,12 +6,12 @@ namespace Dominio.Entidades.Abstratos
 
         public Guid Id { get; set; }
         public DateTime DataCadastro { get; set; }
-        public DateTime DataAtualizacao { get; set; }
+        public DateTime? DataAtualizacao { get; set; }
 
         protected Entidade()
         {
             Id = Guid.NewGuid();
-            DataCadastro = DateTime.Now;
+            DataCadastro = DateTime.UtcNow;
         }
         
         public static bool operator ==(Entidade e1, Entidade e2){
