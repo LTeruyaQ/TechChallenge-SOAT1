@@ -34,7 +34,7 @@ namespace Aplicacao.Servicos
                     Descricao = cadastrarServico.Descricao,
                     Nome = cadastrarServico.Nome,
                     Disponivel = cadastrarServico.Disponivel,
-                    DataCadastro = DateTime.Now
+                    Valor = cadastrarServico.Valor
                 };
 
                 var entidade = await _repositorio.CadastrarAsync(servico);
