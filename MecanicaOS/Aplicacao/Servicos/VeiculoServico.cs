@@ -10,7 +10,7 @@ using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Aplicacao.Servicos
+namespace Aplicacao.Veiculos
 {
     public class VeiculoVeiculo : VeiculoAbstratoLog<VeiculoVeiculo>, IVeiculoVeiculo
     {
