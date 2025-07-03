@@ -9,6 +9,7 @@ public class Endereco : Entidade
     public string? Cidade { get; set; }
     public string? Numero { get; set; }
     public string? CEP { get; set; }
-    public string? Complemento { get; set; }    
+    public string? Complemento { get; set; }
+    public Cliente Cliente { get; set; }
 
 }
