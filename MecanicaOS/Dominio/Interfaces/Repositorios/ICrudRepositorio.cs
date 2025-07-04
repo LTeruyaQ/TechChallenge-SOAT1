@@ -5,9 +5,9 @@ namespace Dominio.Interfaces.Repositorios;
 public interface ICrudRepositorio<T>
 {
     Task<T?> ObterPorIdAsync(Guid id);
-    Task<IEnumerable<T>> ObterTodos();
-    Task<IEnumerable<T>> ObterPorFiltro(IEspecificacao<T> filtro);
+    Task<IEnumerable<T>> ObterTodosAsync();
+    Task<IEnumerable<T>> ObterPorFiltroAsync(IEspecificacao<T> filtro);
     Task<T> CadastrarAsync(T entidade);
-    Task Editar(T novaEntidade);
+    Task EditarAsync(T novaEntidade);
     Task DeletarAsync(T entidade);
 }

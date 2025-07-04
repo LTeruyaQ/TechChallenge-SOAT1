@@ -20,14 +20,14 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> ObterTodos()
         {
-            var servicos = await _servico.ObterTodos();
+            var servicos = await _servico.ObterTodosAsync();
             return Ok(servicos);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> ObterPorId(Guid id)
         {
-            var servico = await _servico.ObterServicoPorId(id);
+            var servico = await _servico.ObterServicoPorIdAsync(id);
             
             return Ok(servico);
         }
@@ -36,7 +36,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Criar([FromBody] CadastrarServicoDto novoServico)
         {
-            var servico = await _servico.CadastrarServico(novoServico);
+            var servico = await _servico.CadastrarServicoAsync(novoServico);
             return Ok(servico);
         }
 
@@ -45,7 +45,7 @@ namespace API.Controllers
         {
             try
             {
-                await _servico.EditarServico(id, servicoAtualizado);
+                await _servico.EditarServicoAsync(id, servicoAtualizado);
                 return CreatedAtAction(nameof(ObterPorId), new { id }, servicoAtualizado);
             }
             catch (EntidadeNaoEncontradaException ex)
@@ -63,7 +63,7 @@ namespace API.Controllers
         {
             try
             {
-                await _servico.DeletarServico(id);
+                await _servico.DeletarServicoAsync(id);
                 return NoContent();
             }
             catch (EntidadeNaoEncontradaException ex)

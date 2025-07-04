@@ -1,5 +1,4 @@
 ﻿using Aplicacao.DTOs.Veiculo;
-using Dominio.Entidades;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +24,7 @@ namespace API.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var veiculo = await _veiculoService.Cadastrar(dto);
+                var veiculo = await _veiculoService.CadastrarAsync(dto);
 
                 return CreatedAtAction(nameof(ObterPorId), new { id = veiculo.Id }, veiculo);
             }
@@ -51,7 +50,7 @@ namespace API.Controllers
                 if (id == Guid.Empty)
                     return BadRequest("ID inválido.");
 
-                await _veiculoService.Deletar(id);
+                await _veiculoService.RemoverAsync(id);
 
                 return NoContent();
             }
@@ -76,7 +75,7 @@ namespace API.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                await _veiculoService.Editar(id, dto);
+                await _veiculoService.AtualizarAsync(id, dto);
 
                 return NoContent();
             }
@@ -102,7 +101,7 @@ namespace API.Controllers
                 if (clienteId == Guid.Empty)
                     return BadRequest("ID do cliente inválido.");
 
-                var veiculos = await _veiculoService.ObterPorCliente(clienteId);
+                var veiculos = await _veiculoService.ObterPorClienteAsync(clienteId);
                 return Ok(veiculos);
             }
             catch (EntidadeNaoEncontradaException ex)
@@ -123,7 +122,7 @@ namespace API.Controllers
                 if (id == Guid.Empty)
                     return BadRequest("ID inválido.");
 
-                var veiculo = await _veiculoService.ObterPorId(id);
+                var veiculo = await _veiculoService.ObterPorIdAsync(id);
 
                 if (veiculo == null)
                     return NotFound("Veículo não encontrado.");
@@ -145,7 +144,7 @@ namespace API.Controllers
         {
             try
             {
-                var veiculos = await _veiculoService.ObterTodos();
+                var veiculos = await _veiculoService.ObterTodosAsync();
                 return Ok(veiculos);
             }
             catch (Exception)
