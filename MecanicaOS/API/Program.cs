@@ -1,6 +1,8 @@
+using Aplicacao.Interfaces;
 using Aplicacao.Jobs;
 using Aplicacao.Logs.Middlewares;
 using Aplicacao.Logs.Services;
+using Aplicacao.Logs.Servicos;
 using Aplicacao.Servicos;
 using Dominio.Entidades;
 using Dominio.Interfaces.Repositorios;
@@ -42,6 +44,7 @@ builder.Services.AddScoped<ICrudRepositorio<Estoque>, EstoqueRepositorio>();
 
 builder.Services.AddScoped<IServicoServico, ServicoServico>();
 builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
+builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 builder.Services.AddScoped<IServicoNotificacaoEmail, ServicoNotificacaoEmail>();
 builder.Services.AddScoped<ICorrelationIdService, CorrelationIdService>();
 builder.Services.AddScoped<CorrelationIdDemoAPILogMiddleware>();

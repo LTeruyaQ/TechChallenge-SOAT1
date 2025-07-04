@@ -1,4 +1,4 @@
-﻿namespace Aplicacao.Logs.Services
+﻿namespace Aplicacao.Interfaces
 {
     public interface ICorrelationIdService
     {

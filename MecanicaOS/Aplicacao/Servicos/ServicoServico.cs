@@ -1,5 +1,5 @@
 ﻿using Aplicacao.DTOs.Servico;
-using Aplicacao.Logs.Services;
+using Aplicacao.Interfaces;
 using Aplicacao.Servicos.Abstrato;
 using Dominio.DTOs;
 using Dominio.Entidades;
@@ -8,16 +8,14 @@ using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Services;
-using Microsoft.Extensions.Logging;
 
 namespace Aplicacao.Servicos
 {
-    public class ServicoServico : ServicoAbstratoLog<ServicoServico>, IServicoServico
+    public class ServicoServico : ServicoAbstrato<ServicoServico>, IServicoServico
     {
         private readonly ICrudRepositorio<Servico> _repositorio;
 
-        public ServicoServico(ICorrelationIdService correlationIdLog,
-            ILogger<ServicoServico> logger, ICrudRepositorio<Servico> repositorio) : base(correlationIdLog, logger)
+        public ServicoServico(ICrudRepositorio<Servico> repositorio, ILogServico<ServicoServico> logServico) : base(logServico) 
         {
             _repositorio = repositorio;
         }

@@ -1,3 +1,5 @@
+using Aplicacao.Interfaces;
+
 namespace Aplicacao.Logs.Services
 {
     public class CorrelationIdService : ICorrelationIdService

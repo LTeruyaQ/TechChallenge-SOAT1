@@ -1,4 +1,4 @@
-using Aplicacao.Logs.Services;
+using Aplicacao.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
