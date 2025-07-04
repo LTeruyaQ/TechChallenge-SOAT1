@@ -1,26 +1,22 @@
 ﻿using Aplicacao.DTOs.Estoque;
-using Aplicacao.Logs.Services;
+using Aplicacao.Interfaces;
 using Aplicacao.Servicos.Abstrato;
 using Dominio.Entidades;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Services;
-using Microsoft.Extensions.Logging;
 
 namespace Aplicacao.Servicos;
 
-public class EstoqueServico : ServicoAbstratoLog<EstoqueServico>, IEstoqueServico
+public class EstoqueServico : ServicoAbstrato<EstoqueServico>, IEstoqueServico
 {
     private readonly ICrudRepositorio<Estoque> _repositorio;
 
-    public EstoqueServico(
-            ICorrelationIdService correlationIdLog,
-            ILogger<EstoqueServico> logger,
-            ICrudRepositorio<Estoque> repositorio) : base(correlationIdLog, logger)
+    public EstoqueServico(ILogServico<EstoqueServico> logServico, ICrudRepositorio<Estoque> repositorio) : base(logServico)
     {
         _repositorio = repositorio;
     }
-
+    
     public async Task AtualizarAsync(Guid id, EstoqueAtualizarDto estoqueDto)
     {
         string metodo = nameof(AtualizarAsync);

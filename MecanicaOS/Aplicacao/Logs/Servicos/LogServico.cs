@@ -1,19 +1,21 @@
+﻿using Aplicacao.Interfaces;
 using Aplicacao.Logs.Models;
-using Aplicacao.Logs.Services;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Aplicacao.Servicos.Abstrato
+namespace Aplicacao.Logs.Servicos
 {
-    public abstract class ServicoAbstratoLog<T> where T : class
+    public class LogServico<T> : ILogServico<T>
     {
         private readonly ICorrelationIdService _correlationIdService;
         private readonly ILogger<T> _logger;
         private readonly JsonSerializerOptions _jsonOptions;
-        protected ServicoAbstratoLog(ICorrelationIdService correlationIdLog, ILogger<T> logger)
+        public LogServico(ICorrelationIdService correlationIdService, ILogger<T> logger)
         {
-            _correlationIdService = correlationIdLog;
+            _correlationIdService = correlationIdService;
+            _logger = logger;
+
             _jsonOptions = new JsonSerializerOptions
             {
                 Converters =
@@ -25,16 +27,9 @@ namespace Aplicacao.Servicos.Abstrato
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                 WriteIndented = false
             };
-            _logger = logger;
         }
 
-        protected void LogInicio(string metodo, object? props = null)
-           => LogGeneric(LogLevel.Information, metodo, "Inicio", props);
-
-        protected void LogFim(string metodo, object? retorno = null)
-            => LogGeneric(LogLevel.Information, metodo, "Fim", retorno);
-
-        protected void LogErro(string metodo, Exception ex)
+        public void LogErro(string metodo, Exception ex)
         {
             var dados = new
             {
@@ -45,6 +40,14 @@ namespace Aplicacao.Servicos.Abstrato
 
             LogGeneric(LogLevel.Error, metodo, "Erro", dados, ex);
         }
+
+        public void LogFim(string metodo, object? retorno = null)
+            => LogGeneric(LogLevel.Information, metodo, "Fim", retorno);
+
+
+        public void LogInicio(string metodo, object? props = null)
+            => LogGeneric(LogLevel.Information, metodo, "Inicio", props);
+
 
         private void LogGeneric(
             LogLevel nivel,
@@ -71,5 +74,6 @@ namespace Aplicacao.Servicos.Abstrato
             else
                 _logger.LogInformation("{LogEntry}", payload);
         }
+
     }
 }
