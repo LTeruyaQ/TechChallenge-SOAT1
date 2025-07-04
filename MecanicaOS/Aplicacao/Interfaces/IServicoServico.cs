@@ -6,11 +6,11 @@ namespace Dominio.Interfaces.Services
 {
     public interface IServicoServico
     {
-        Task<Servico> ObterServicoPorId(Guid id);
-        Task<IEnumerable<Servico>> ObterTodos();
-        Task<IEnumerable<Servico>> ObterServicosPorFiltro(FiltrarServicoDto filtro);
-        Task<Servico> CadastrarServico(CadastrarServicoDto servico);
-        Task EditarServico(Guid id, EditarServicoDto servico);
-        Task DeletarServico(Guid id);
+        Task<Servico> ObterServicoPorIdAsync(Guid id);
+        Task<IEnumerable<Servico>> ObterTodosAsync();
+        Task<IEnumerable<Servico>> ObterServicosPorFiltroAsync(FiltrarServicoDto filtro);
+        Task<Servico> CadastrarServicoAsync(CadastrarServicoDto servico);
+        Task EditarServicoAsync(Guid id, EditarServicoDto servico);
+        Task DeletarServicoAsync(Guid id);
     }
 }

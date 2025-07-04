@@ -10,6 +10,7 @@ public class MecanicaContexto : DbContext
 
     public DbSet<Servico> Servicos { get; set; }
     public DbSet<Estoque> Estoques { get; set; }
+    public DbSet<Veiculo> Veiculos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

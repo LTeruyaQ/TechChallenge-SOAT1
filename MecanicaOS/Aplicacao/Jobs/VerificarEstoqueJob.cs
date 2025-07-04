@@ -21,7 +21,7 @@ public class VerificarEstoqueJob
     {
         IEspecificacao<Estoque> filtro = new EstoqueCriticoEspecificacao();
 
-        IEnumerable<Estoque> insumosCriticos = await _estoqueRepositorio.ObterPorFiltro(filtro);
+        IEnumerable<Estoque> insumosCriticos = await _estoqueRepositorio.ObterPorFiltroAsync(filtro);
 
         if (insumosCriticos.Any())
         {

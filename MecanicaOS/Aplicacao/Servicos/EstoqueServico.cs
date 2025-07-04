@@ -34,7 +34,7 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico>, IEstoqueServico
             estoque.QuantidadeMinima = estoqueDto.QuantidadeMinima ?? estoque.QuantidadeMinima;
             estoque.DataAtualizacao = DateTime.UtcNow;
 
-            await _repositorio.Editar(estoque);
+            await _repositorio.EditarAsync(estoque);
 
             LogFim(metodo);
         }
@@ -83,7 +83,7 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico>, IEstoqueServico
         {
             LogInicio(metodo);
 
-            IEnumerable<Estoque> result = await _repositorio.ObterTodos();
+            IEnumerable<Estoque> result = await _repositorio.ObterTodosAsync();
 
             LogFim(metodo, result);
 

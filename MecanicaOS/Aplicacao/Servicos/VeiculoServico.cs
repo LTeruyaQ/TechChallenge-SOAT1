@@ -1,22 +1,19 @@
 ﻿using Aplicacao.DTOs.Veiculo;
-using Aplicacao.Logs.Services;
+using Aplicacao.Interfaces;
 using Aplicacao.Servicos.Abstrato;
 using Dominio.Entidades;
+using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Services;
-using Microsoft.Extensions.Logging;
 
 namespace Aplicacao.Servicos
 {
-    public class VeiculoServico : ServicoAbstratoLog<VeiculoServico>, IVeiculoServico
+    public class VeiculoServico : ServicoAbstrato<VeiculoServico>, IVeiculoServico
     {
         private readonly ICrudRepositorio<Veiculo> _repositorio;
 
-        public VeiculoServico(
-            ICorrelationIdService correlationIdLog,
-            ILogger<VeiculoServico> logger,
-            ICrudRepositorio<Veiculo> repositorio) : base(correlationIdLog, logger)
+        public VeiculoServico(ILogServico<VeiculoServico> logServico, ICrudRepositorio<Veiculo> repositorio) : base(logServico)
         {
             _repositorio = repositorio;
         }
@@ -38,9 +35,9 @@ namespace Aplicacao.Servicos
                 veiculo.Ano = veiculoDto.Ano ?? veiculo.Ano;
                 veiculo.Anotacoes = veiculoDto.Anotacoes ?? veiculo.Anotacoes;
                 veiculo.ClienteId = veiculoDto.ClienteId ?? veiculo.ClienteId;
-                veiculo.Data_Atualizacao = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+                veiculo.DataAtualizacao = DateTime.UtcNow;
 
-                await _repositorio.Editar(veiculo);
+                await _repositorio.EditarAsync(veiculo);
 
                 LogFim(metodo);
             }
@@ -67,8 +64,6 @@ namespace Aplicacao.Servicos
                     Ano = veiculoDto.Ano,
                     Anotacoes = veiculoDto.Anotacoes,
                     ClienteId = veiculoDto.ClienteId,
-                    Data_Cadastro = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
-                    Data_Atualizacao = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
                 };
 
                 var entidade = await _repositorio.CadastrarAsync(veiculo);
@@ -116,7 +111,9 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, clienteId);
 
-                var veiculos = await _repositorio.ObterPorClienteAsync(clienteId);
+                ObterVeiculoPorClienteEspecificacao filtro = new(clienteId);
+
+                var veiculos = await _repositorio.ObterPorFiltroAsync(filtro);
 
                 LogFim(metodo, veiculos);
 
@@ -137,14 +134,15 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, placa);
 
-                var veiculo = await _repositorio.ObterPorPlacaAsync(placa);
+                ObterVeiculoPorPlacaEspecificacao filtro = new(placa);
+                var veiculo = await _repositorio.ObterPorFiltroAsync(filtro);
 
                 if (veiculo is null)
                     throw new EntidadeNaoEncontradaException($"Veículo com placa {placa} não encontrado.");
 
                 LogFim(metodo, veiculo);
 
-                return veiculo;
+                return veiculo.FirstOrDefault();
             }
             catch (Exception e)
             {
@@ -161,7 +159,7 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo);
 
-                var veiculos = await _repositorio.ObterTodos();
+                var veiculos = await _repositorio.ObterTodosAsync();
 
                 LogFim(metodo, veiculos);
 

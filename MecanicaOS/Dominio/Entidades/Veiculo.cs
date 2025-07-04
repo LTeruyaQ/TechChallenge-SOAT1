@@ -10,10 +10,8 @@ public class Veiculo : Entidade
     public string Cor { get; set; } = default!;
     public string Ano { get; set; } = default!;
     public string? Anotacoes { get; set; }
-    public DateTime DataCadastro { get; set; }
-    public DateTime DataAtualizacao { get; set; }
 
     // Relacionamento com Cliente (opcional ou obrigatório?)
-    public int ClienteId { get; set; }
+    public Guid ClienteId { get; set; }
     public Cliente Cliente { get; set; } = default!;
 }

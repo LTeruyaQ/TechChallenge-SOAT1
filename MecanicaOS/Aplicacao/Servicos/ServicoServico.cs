@@ -20,9 +20,9 @@ namespace Aplicacao.Servicos
             _repositorio = repositorio;
         }
 
-        public async Task<Servico> CadastrarServico(CadastrarServicoDto cadastrarServico)
+        public async Task<Servico> CadastrarServicoAsync(CadastrarServicoDto cadastrarServico)
         {
-            var metodo = nameof(CadastrarServico);
+            var metodo = nameof(CadastrarServicoAsync);
             try
             {
                 LogInicio(metodo, cadastrarServico);
@@ -48,14 +48,14 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task DeletarServico(Guid id)
+        public async Task DeletarServicoAsync(Guid id)
         {
-            var metodo = nameof(DeletarServico);
+            var metodo = nameof(DeletarServicoAsync);
             try
             {
                 LogInicio(metodo, id);
 
-                var servico = await ObterServicoPorId(id);
+                var servico = await ObterServicoPorIdAsync(id);
                 await _repositorio.DeletarAsync(servico);
 
                 LogFim(metodo);
@@ -67,14 +67,14 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task EditarServico(Guid id, EditarServicoDto novoServico)
+        public async Task EditarServicoAsync(Guid id, EditarServicoDto novoServico)
         {
-            var metodo = nameof(EditarServico);
+            var metodo = nameof(EditarServicoAsync);
 
             try
             {
                 LogInicio(metodo, new { id, novoServico });
-                var servico = await ObterServicoPorId(id);
+                var servico = await ObterServicoPorIdAsync(id);
 
                 if (servico.Nome != novoServico.Nome)
                     servico.Nome = novoServico.Nome;
@@ -90,7 +90,7 @@ namespace Aplicacao.Servicos
 
                 servico.DataAtualizacao = DateTime.UtcNow;
 
-                await _repositorio.Editar(servico);
+                await _repositorio.EditarAsync(servico);
 
                 LogFim(metodo);
             }
@@ -101,9 +101,9 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<Servico> ObterServicoPorId(Guid id)
+        public async Task<Servico> ObterServicoPorIdAsync(Guid id)
         {
-            var metodo = nameof(ObterServicoPorId);
+            var metodo = nameof(ObterServicoPorIdAsync);
             try
             {
                 LogInicio(metodo);
@@ -122,16 +122,16 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<IEnumerable<Servico>> ObterServicosPorFiltro(FiltrarServicoDto filtroDto)
+        public async Task<IEnumerable<Servico>> ObterServicosPorFiltroAsync(FiltrarServicoDto filtroDto)
         {
-            var metodo = nameof(ObterServicosPorFiltro);
+            var metodo = nameof(ObterServicosPorFiltroAsync);
             try
             {
                 LogInicio(metodo, filtroDto);
 
-                IEspecificacao<Servico> filtro = new ServicoDisponivelEspecificacao();
+                IEspecificacao<Servico> filtro = new ObterServicoDisponivelEspecificacao();
 
-                var result = await _repositorio.ObterPorFiltro(filtro);
+                var result = await _repositorio.ObterPorFiltroAsync(filtro);
 
                 LogFim(metodo, result);
 
@@ -144,14 +144,14 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<IEnumerable<Servico>> ObterTodos()
+        public async Task<IEnumerable<Servico>> ObterTodosAsync()
         {
-            var metodo = nameof(ObterTodos);
+            var metodo = nameof(ObterTodosAsync);
             try
             {
                 LogInicio(metodo);
 
-                var result = await _repositorio.ObterTodos();
+                var result = await _repositorio.ObterTodosAsync();
 
                 LogFim(metodo, result);
 

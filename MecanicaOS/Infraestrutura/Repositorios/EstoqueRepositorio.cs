@@ -28,13 +28,13 @@ public class EstoqueRepositorio : ICrudRepositorio<Estoque>
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task Editar(Estoque novaEntidade)
+    public async Task EditarAsync(Estoque novaEntidade)
     {
         _dbContext.Estoques.Update(novaEntidade);
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Estoque>> ObterPorFiltro(IEspecificacao<Estoque> especificacao)
+    public async Task<IEnumerable<Estoque>> ObterPorFiltroAsync(IEspecificacao<Estoque> especificacao)
     {
         return await _dbContext.Estoques.AsNoTracking().Where(especificacao.Expressao).ToListAsync();
     }
@@ -44,7 +44,7 @@ public class EstoqueRepositorio : ICrudRepositorio<Estoque>
         return await _dbContext.Estoques.FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<IEnumerable<Estoque>> ObterTodos()
+    public async Task<IEnumerable<Estoque>> ObterTodosAsync()
     {
         return await _dbContext.Estoques.AsNoTracking().ToListAsync();
     }

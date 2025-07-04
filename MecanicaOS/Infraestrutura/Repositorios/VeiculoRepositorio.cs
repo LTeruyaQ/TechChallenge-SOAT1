@@ -28,13 +28,13 @@ public class VeiculoRepositorio : ICrudRepositorio<Veiculo>
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task Editar(Veiculo novaEntidade)
+    public async Task EditarAsync(Veiculo novaEntidade)
     {
         _dbContext.Veiculos.Update(novaEntidade);
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Veiculo>> ObterPorFiltro(IEspecificacao<Veiculo> especificacao)
+    public async Task<IEnumerable<Veiculo>> ObterPorFiltroAsync(IEspecificacao<Veiculo> especificacao)
     {
         return await _dbContext.Veiculos
             .AsNoTracking()
@@ -49,7 +49,7 @@ public class VeiculoRepositorio : ICrudRepositorio<Veiculo>
             .FirstOrDefaultAsync(v => v.Id == id);
     }
 
-    public async Task<IEnumerable<Veiculo>> ObterTodos()
+    public async Task<IEnumerable<Veiculo>> ObterTodosAsync()
     {
         return await _dbContext.Veiculos
             .AsNoTracking()
