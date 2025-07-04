@@ -1,45 +1,79 @@
 ﻿using Aplicacao.DTOs.Veiculo;
 using Aplicacao.Logs.Services;
-using Aplicacao.Veiculos.Abstrato;
-using Dominio.DTOs;
+using Aplicacao.Servicos.Abstrato;
 using Dominio.Entidades;
-using Dominio.Especificacoes;
-using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Aplicacao.Veiculos
+namespace Aplicacao.Servicos
 {
-    public class VeiculoVeiculo : VeiculoAbstratoLog<VeiculoVeiculo>, IVeiculoVeiculo
+    public class VeiculoServico : ServicoAbstratoLog<VeiculoServico>, IVeiculoServico
     {
         private readonly ICrudRepositorio<Veiculo> _repositorio;
 
-        public VeiculoVeiculo(ICorrelationIdService correlationIdLog,
-            ILogger<VeiculoVeiculo> logger, ICrudRepositorio<Veiculo> repositorio) : base(correlationIdLog, logger)
+        public VeiculoServico(
+            ICorrelationIdService correlationIdLog,
+            ILogger<VeiculoServico> logger,
+            ICrudRepositorio<Veiculo> repositorio) : base(correlationIdLog, logger)
         {
             _repositorio = repositorio;
         }
 
-        public async Task<Veiculo> CadastrarVeiculo(CadastrarVeiculoDto cadastrarVeiculo)
+        public async Task AtualizarAsync(Guid id, EditarVeiculoDto veiculoDto)
         {
-            var metodo = nameof(CadastrarVeiculo);
+            string metodo = nameof(AtualizarAsync);
+
             try
             {
-                LogInicio(metodo, cadastrarVeiculo);
+                LogInicio(metodo, new { id, veiculoDto });
 
-                Veiculo Veiculo = new Veiculo()
-                {
-                    Descricao = cadastrarVeiculo.Descricao,
-                    Nome = cadastrarVeiculo.Nome,
-                    Disponivel = cadastrarVeiculo.Disponivel,
-                    Valor = cadastrarVeiculo.Valor
-                };
+                var veiculo = await ObterPorIdAsync(id);
 
-                var entidade = await _repositorio.CadastrarAsync(Veiculo);
+                veiculo.Placa = veiculoDto.Placa ?? veiculo.Placa;
+                veiculo.Marca = veiculoDto.Marca ?? veiculo.Marca;
+                veiculo.Modelo = veiculoDto.Modelo ?? veiculo.Modelo;
+                veiculo.Cor = veiculoDto.Cor ?? veiculo.Cor;
+                veiculo.Ano = veiculoDto.Ano ?? veiculo.Ano;
+                veiculo.Anotacoes = veiculoDto.Anotacoes ?? veiculo.Anotacoes;
+                veiculo.ClienteId = veiculoDto.ClienteId ?? veiculo.ClienteId;
+                veiculo.Data_Atualizacao = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+
+                await _repositorio.Editar(veiculo);
 
                 LogFim(metodo);
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+        public async Task<Veiculo> CadastrarAsync(CadastrarVeiculoDto veiculoDto)
+        {
+            string metodo = nameof(CadastrarAsync);
+
+            try
+            {
+                LogInicio(metodo, veiculoDto);
+
+                var veiculo = new Veiculo
+                {
+                    Placa = veiculoDto.Placa,
+                    Marca = veiculoDto.Marca,
+                    Modelo = veiculoDto.Modelo,
+                    Cor = veiculoDto.Cor,
+                    Ano = veiculoDto.Ano,
+                    Anotacoes = veiculoDto.Anotacoes,
+                    ClienteId = veiculoDto.ClienteId,
+                    Data_Cadastro = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                    Data_Atualizacao = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
+                };
+
+                var entidade = await _repositorio.CadastrarAsync(veiculo);
+
+                LogFim(metodo, entidade);
 
                 return entidade;
             }
@@ -50,17 +84,22 @@ namespace Aplicacao.Veiculos
             }
         }
 
-        public async Task DeletarVeiculo(Guid id)
+        public async Task<Veiculo> ObterPorIdAsync(Guid id)
         {
-            var metodo = nameof(DeletarVeiculo);
+            string metodo = nameof(ObterPorIdAsync);
+
             try
             {
                 LogInicio(metodo, id);
 
-                var Veiculo = await ObterVeiculoPorId(id);
-                await _repositorio.DeletarAsync(Veiculo);
+                var veiculo = await _repositorio.ObterPorIdAsync(id);
 
-                LogFim(metodo);
+                if (veiculo is null)
+                    throw new EntidadeNaoEncontradaException($"Veículo com ID {id} não encontrado.");
+
+                LogFim(metodo, veiculo);
+
+                return veiculo;
             }
             catch (Exception e)
             {
@@ -69,32 +108,19 @@ namespace Aplicacao.Veiculos
             }
         }
 
-        public async Task EditarVeiculo(Guid id, EditarVeiculoDto novoVeiculo)
+        public async Task<IEnumerable<Veiculo>> ObterPorClienteAsync(Guid clienteId)
         {
-            var metodo = nameof(EditarVeiculo);
+            string metodo = nameof(ObterPorClienteAsync);
 
             try
             {
-                LogInicio(metodo, new { id, novoVeiculo });
-                var Veiculo = await ObterVeiculoPorId(id);
+                LogInicio(metodo, clienteId);
 
-                if (Veiculo.Nome != novoVeiculo.Nome)
-                    Veiculo.Nome = novoVeiculo.Nome;
+                var veiculos = await _repositorio.ObterPorClienteAsync(clienteId);
 
-                if (Veiculo.Descricao != novoVeiculo.Descricao)
-                    Veiculo.Descricao = novoVeiculo.Descricao;
+                LogFim(metodo, veiculos);
 
-                if (Veiculo.Valor != novoVeiculo.Valor)
-                    Veiculo.Valor = novoVeiculo.Valor;
-
-                if (Veiculo.Disponivel != novoVeiculo.Disponivel)
-                    Veiculo.Disponivel = novoVeiculo.Disponivel;
-
-                Veiculo.DataAtualizacao = DateTime.UtcNow;
-
-                await _repositorio.Editar(Veiculo);
-
-                LogFim(metodo);
+                return veiculos;
             }
             catch (Exception e)
             {
@@ -103,19 +129,22 @@ namespace Aplicacao.Veiculos
             }
         }
 
-        public async Task<Veiculo> ObterVeiculoPorId(Guid id)
+        public async Task<Veiculo> ObterPorPlacaAsync(string placa)
         {
-            var metodo = nameof(ObterVeiculoPorId);
+            string metodo = nameof(ObterPorPlacaAsync);
+
             try
             {
-                LogInicio(metodo);
-                var Veiculo = await _repositorio.ObterPorIdAsync(id);
+                LogInicio(metodo, placa);
 
-                if (Veiculo is null) throw new EntidadeNaoEncontradaException($"Não foi encontrado o serviço de id: {id}");
+                var veiculo = await _repositorio.ObterPorPlacaAsync(placa);
 
-                LogFim(metodo, Veiculo);
+                if (veiculo is null)
+                    throw new EntidadeNaoEncontradaException($"Veículo com placa {placa} não encontrado.");
 
-                return Veiculo;
+                LogFim(metodo, veiculo);
+
+                return veiculo;
             }
             catch (Exception e)
             {
@@ -124,40 +153,38 @@ namespace Aplicacao.Veiculos
             }
         }
 
-        public async Task<IEnumerable<Veiculo>> ObterVeiculosPorFiltro(FiltrarVeiculoDto filtroDto)
+        public async Task<IEnumerable<Veiculo>> ObterTodosAsync()
         {
-            var metodo = nameof(ObterVeiculosPorFiltro);
-            try
-            {
-                LogInicio(metodo, filtroDto);
+            string metodo = nameof(ObterTodosAsync);
 
-                IEspecificacao<Veiculo> filtro = new VeiculoDisponivelEspecificacao();
-
-                var result = await _repositorio.ObterPorFiltro(filtro);
-
-                LogFim(metodo, result);
-
-                return result;
-            }
-            catch (Exception e)
-            {
-                LogErro(metodo, e);
-                throw;
-            }
-        }
-
-        public async Task<IEnumerable<Veiculo>> ObterTodos()
-        {
-            var metodo = nameof(ObterTodos);
             try
             {
                 LogInicio(metodo);
 
-                var result = await _repositorio.ObterTodos();
+                var veiculos = await _repositorio.ObterTodos();
 
-                LogFim(metodo, result);
+                LogFim(metodo, veiculos);
 
-                return result;
+                return veiculos;
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+        public async Task RemoverAsync(Guid id)
+        {
+            string metodo = nameof(RemoverAsync);
+
+            try
+            {
+                LogInicio(metodo, id);
+
+                var veiculo = await ObterPorIdAsync(id);
+                await _repositorio.DeletarAsync(veiculo);
+
+                LogFim(metodo);
             }
             catch (Exception e)
             {
