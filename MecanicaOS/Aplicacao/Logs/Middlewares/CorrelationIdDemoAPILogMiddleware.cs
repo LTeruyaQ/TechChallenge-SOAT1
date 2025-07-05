@@ -11,15 +11,15 @@ namespace Aplicacao.Logs.Middlewares
         public Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             var correlationIdDemoAPILogService = context.RequestServices.GetRequiredService<ICorrelationIdService>();
-            
-            if(correlationIdDemoAPILogService is not null)
+
+            if (correlationIdDemoAPILogService is not null)
             {
-                if (context.Request.Headers.TryGetValue(CorrelationIdHeader, out var correlationId) && 
+                if (context.Request.Headers.TryGetValue(CorrelationIdHeader, out var correlationId) &&
                     Guid.TryParse(correlationId, out var correlationIdGuid))
                 {
                     correlationIdDemoAPILogService.SetCorrelationId(correlationIdGuid);
                 }
-            
+
                 context.Response.OnStarting(() =>
                 {
                     if (!context.Response.Headers.ContainsKey(CorrelationIdHeader))
@@ -29,7 +29,7 @@ namespace Aplicacao.Logs.Middlewares
                     return Task.CompletedTask;
                 });
             }
-            
+
             return next(context);
         }
     }

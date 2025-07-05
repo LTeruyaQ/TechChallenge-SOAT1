@@ -1,5 +1,5 @@
-﻿using Dominio.Entidades;
-using Aplicacao.DTOs.Estoque;
+﻿using Aplicacao.DTOs.Estoque;
+using Dominio.Entidades;
 
 namespace Dominio.Interfaces.Services;
 

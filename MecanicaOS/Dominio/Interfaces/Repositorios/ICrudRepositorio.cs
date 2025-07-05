@@ -2,7 +2,7 @@
 
 namespace Dominio.Interfaces.Repositorios;
 
-public interface ICrudRepositorio<T>
+public interface ICrudRepositorio<T> where T : class
 {
     Task<T?> ObterPorIdAsync(Guid id);
     Task<IEnumerable<T>> ObterTodosAsync();

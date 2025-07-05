@@ -1,4 +1,4 @@
-﻿using Dominio.Entidades;
+using Dominio.Entidades;
 using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;
@@ -17,21 +17,18 @@ namespace Infraestrutura.Repositorios
 
         public async Task<Servico> CadastrarAsync(Servico servico)
         {
-            var entidade =_dbContext.Servicos.Add(servico);
-            await _dbContext.SaveChangesAsync();
+            var entidade = _dbContext.Servicos.Add(servico);
             return entidade.Entity;
         }
 
         public async Task DeletarAsync(Servico servico)
         {
             _dbContext.Servicos.Remove(servico);
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task EditarAsync(Servico novoServico)
         {
             _dbContext.Servicos.Update(novoServico);
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Servico>> ObterPorFiltroAsync(IEspecificacao<Servico> especificacao)

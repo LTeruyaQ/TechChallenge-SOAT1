@@ -13,7 +13,7 @@ namespace Aplicacao.Servicos
     {
         private readonly ICrudRepositorio<Veiculo> _repositorio;
 
-        public VeiculoServico(ILogServico<VeiculoServico> logServico, ICrudRepositorio<Veiculo> repositorio) : base(logServico)
+        public VeiculoServico(ILogServico<VeiculoServico> logServico, ICrudRepositorio<Veiculo> repositorio, IUnidadeDeTrabalho uot) : base(logServico, uot)
         {
             _repositorio = repositorio;
         }
@@ -38,6 +38,9 @@ namespace Aplicacao.Servicos
                 veiculo.DataAtualizacao = DateTime.UtcNow;
 
                 await _repositorio.EditarAsync(veiculo);
+
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao atualizar veiculo");
 
                 LogFim(metodo);
             }
@@ -67,6 +70,9 @@ namespace Aplicacao.Servicos
                 };
 
                 var entidade = await _repositorio.CadastrarAsync(veiculo);
+
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao cadastrar veiculo");
 
                 LogFim(metodo, entidade);
 
@@ -181,6 +187,9 @@ namespace Aplicacao.Servicos
 
                 var veiculo = await ObterPorIdAsync(id);
                 await _repositorio.DeletarAsync(veiculo);
+
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao remover veiculo");
 
                 LogFim(metodo);
             }

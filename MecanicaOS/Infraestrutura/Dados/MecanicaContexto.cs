@@ -1,4 +1,4 @@
-﻿using Dominio.Entidades;
+using Dominio.Entidades;
 using Infraestrutura.Dados.Mapeamentos;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +11,24 @@ public class MecanicaContexto : DbContext
     public DbSet<Servico> Servicos { get; set; }
     public DbSet<Estoque> Estoques { get; set; }
     public DbSet<Veiculo> Veiculos { get; set; }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("DataCadastro") != null))
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Property("DataCadastro").CurrentValue = DateTime.UtcNow;
+            }
+
+            if (entry.State == EntityState.Modified)
+            {
+                entry.Property("DataCadastro").IsModified = false;
+            }
+        }
+
+        return base.SaveChangesAsync(cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -18,20 +18,17 @@ public class VeiculoRepositorio : ICrudRepositorio<Veiculo>
     public async Task<Veiculo> CadastrarAsync(Veiculo veiculo)
     {
         var entidade = _dbContext.Veiculos.Add(veiculo);
-        await _dbContext.SaveChangesAsync();
         return entidade.Entity;
     }
 
     public async Task DeletarAsync(Veiculo veiculo)
     {
         _dbContext.Veiculos.Remove(veiculo);
-        await _dbContext.SaveChangesAsync();
     }
 
     public async Task EditarAsync(Veiculo novaEntidade)
     {
         _dbContext.Veiculos.Update(novaEntidade);
-        await _dbContext.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Veiculo>> ObterPorFiltroAsync(IEspecificacao<Veiculo> especificacao)

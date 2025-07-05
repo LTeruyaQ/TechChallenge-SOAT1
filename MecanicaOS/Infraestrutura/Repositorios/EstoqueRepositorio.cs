@@ -15,23 +15,21 @@ public class EstoqueRepositorio : ICrudRepositorio<Estoque>
         _dbContext = dbContext;
     }
 
+
     public async Task<Estoque> CadastrarAsync(Estoque estoque)
     {
-        var entidade =_dbContext.Estoques.Add(estoque);
-        await _dbContext.SaveChangesAsync();
+        var entidade = _dbContext.Estoques.Add(estoque);
         return entidade.Entity;
     }
 
     public async Task DeletarAsync(Estoque estoque)
     {
         _dbContext.Estoques.Remove(estoque);
-        await _dbContext.SaveChangesAsync();
     }
 
     public async Task EditarAsync(Estoque novaEntidade)
     {
         _dbContext.Estoques.Update(novaEntidade);
-        await _dbContext.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Estoque>> ObterPorFiltroAsync(IEspecificacao<Estoque> especificacao)

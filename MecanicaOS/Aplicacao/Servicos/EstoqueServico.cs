@@ -12,11 +12,12 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico>, IEstoqueServico
 {
     private readonly ICrudRepositorio<Estoque> _repositorio;
 
-    public EstoqueServico(ILogServico<EstoqueServico> logServico, ICrudRepositorio<Estoque> repositorio) : base(logServico)
+    public EstoqueServico(ILogServico<EstoqueServico> logServico, ICrudRepositorio<Estoque> repositorio, IUnidadeDeTrabalho uot)
+        : base(logServico, uot)
     {
         _repositorio = repositorio;
     }
-    
+
     public async Task AtualizarAsync(Guid id, EstoqueAtualizarDto estoqueDto)
     {
         string metodo = nameof(AtualizarAsync);
@@ -35,6 +36,9 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico>, IEstoqueServico
             estoque.DataAtualizacao = DateTime.UtcNow;
 
             await _repositorio.EditarAsync(estoque);
+
+            if (!await Commit())
+                throw new PersistirDadosException("Erro ao atualizar estoque");
 
             LogFim(metodo);
         }
@@ -63,9 +67,14 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico>, IEstoqueServico
                 QuantidadeMinima = estoqueDto.QuantidadeMinima,
             };
 
-            LogFim(metodo);
+            var novoEstoque = await _repositorio.CadastrarAsync(estoque);
 
-            return await _repositorio.CadastrarAsync(estoque);
+            if (!await Commit())
+                throw new PersistirDadosException("Erro ao cadastrar estoque");
+
+            LogFim(metodo, novoEstoque);
+
+            return novoEstoque;
         }
         catch (Exception e)
         {
