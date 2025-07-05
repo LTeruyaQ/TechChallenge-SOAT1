@@ -15,7 +15,7 @@ namespace Aplicacao.Servicos
     {
         private readonly ICrudRepositorio<Servico> _repositorio;
 
-        public ServicoServico(ICrudRepositorio<Servico> repositorio, ILogServico<ServicoServico> logServico) : base(logServico) 
+        public ServicoServico(ICrudRepositorio<Servico> repositorio, ILogServico<ServicoServico> logServico, IUnidadeDeTrabalho uot) : base(logServico, uot)
         {
             _repositorio = repositorio;
         }
@@ -37,7 +37,10 @@ namespace Aplicacao.Servicos
 
                 var entidade = await _repositorio.CadastrarAsync(servico);
 
-                LogFim(metodo);
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao cadastrar serviço");
+
+                LogFim(metodo, entidade);
 
                 return entidade;
             }
@@ -57,6 +60,9 @@ namespace Aplicacao.Servicos
 
                 var servico = await ObterServicoPorIdAsync(id);
                 await _repositorio.DeletarAsync(servico);
+
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao deletar serviço");
 
                 LogFim(metodo);
             }
@@ -91,6 +97,9 @@ namespace Aplicacao.Servicos
                 servico.DataAtualizacao = DateTime.UtcNow;
 
                 await _repositorio.EditarAsync(servico);
+
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao atualizar serviço");
 
                 LogFim(metodo);
             }

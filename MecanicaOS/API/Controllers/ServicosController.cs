@@ -28,7 +28,7 @@ namespace API.Controllers
         public async Task<IActionResult> ObterPorId(Guid id)
         {
             var servico = await _servico.ObterServicoPorIdAsync(id);
-            
+
             return Ok(servico);
         }
 

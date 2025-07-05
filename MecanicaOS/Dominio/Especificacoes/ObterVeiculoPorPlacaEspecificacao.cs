@@ -13,7 +13,7 @@ namespace Dominio.Especificacoes
             _placa = placa;
         }
 
-        public Expression<Func<Veiculo, bool>> Expressao => 
+        public Expression<Func<Veiculo, bool>> Expressao =>
             v => v.Placa == _placa;
     }
 }

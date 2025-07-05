@@ -3,7 +3,6 @@ namespace Dominio.Entidades.Abstratos
 {
     public abstract class Entidade
     {
-
         public Guid Id { get; set; }
         public DateTime DataCadastro { get; set; }
         public DateTime? DataAtualizacao { get; set; }
@@ -11,14 +10,15 @@ namespace Dominio.Entidades.Abstratos
         protected Entidade()
         {
             Id = Guid.NewGuid();
-            DataCadastro = DateTime.UtcNow;
         }
-        
-        public static bool operator ==(Entidade e1, Entidade e2){
+
+        public static bool operator ==(Entidade e1, Entidade e2)
+        {
             return e1.Id.Equals(e2.Id);
         }
 
-        public static bool operator !=(Entidade e1, Entidade e2){
+        public static bool operator !=(Entidade e1, Entidade e2)
+        {
             return !(e1 == e2);
         }
     }

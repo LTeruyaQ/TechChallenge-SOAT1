@@ -1,4 +1,4 @@
-﻿using Dominio.Entidades.Abstratos;
+using Dominio.Entidades.Abstratos;
 
 namespace Dominio.Entidades;
 

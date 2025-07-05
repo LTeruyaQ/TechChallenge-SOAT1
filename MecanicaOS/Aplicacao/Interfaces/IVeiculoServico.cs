@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Aplicacao.DTOs.Veiculo;
+﻿using Aplicacao.DTOs.Veiculo;
 using Dominio.Entidades;
 
 namespace Dominio.Interfaces.Services

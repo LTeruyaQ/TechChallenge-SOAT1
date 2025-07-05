@@ -1,4 +1,4 @@
-﻿namespace Infraestrutura.Repositorios;
+namespace Infraestrutura.Repositorios;
 
 public class OrdemServicoRepositorio
 {

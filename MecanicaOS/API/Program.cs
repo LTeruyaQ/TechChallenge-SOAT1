@@ -11,6 +11,7 @@ using Dominio.Interfaces.Servicos;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Infraestrutura.Dados;
+using Infraestrutura.Dados.UoT;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,7 @@ builder.Services.AddScoped<ICrudRepositorio<Estoque>, EstoqueRepositorio>();
 
 builder.Services.AddScoped<IServicoServico, ServicoServico>();
 builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
+builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 builder.Services.AddScoped<IServicoNotificacaoEmail, ServicoNotificacaoEmail>();
 builder.Services.AddScoped<ICorrelationIdService, CorrelationIdService>();

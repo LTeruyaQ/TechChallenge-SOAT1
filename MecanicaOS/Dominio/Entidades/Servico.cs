@@ -9,5 +9,5 @@ public class Servico : Entidade
     public decimal Valor { get; set; }
     public bool Disponivel { get; set; }
     public Servico()
-    {}
+    { }
 }
