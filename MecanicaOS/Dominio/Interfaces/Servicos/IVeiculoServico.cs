@@ -1,7 +1,7 @@
-﻿using Aplicacao.DTOs.Veiculo;
+﻿using Dominio.DTOs.Veiculo;
 using Dominio.Entidades;
 
-namespace Dominio.Interfaces.Services
+namespace Dominio.Interfaces.Servicos
 {
     public interface IVeiculoServico
     {

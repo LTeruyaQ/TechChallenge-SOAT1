@@ -1,6 +1,6 @@
-﻿using Aplicacao.DTOs.Veiculo;
+﻿using Dominio.DTOs.Veiculo;
 using Dominio.Exceptions;
-using Dominio.Interfaces.Services;
+using Dominio.Interfaces.Servicos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Aplicacao.Logs.Models
+namespace Dominio.DTOs.Logs
 {
-    public sealed class LogEntry
+    public sealed class LogEntryDto
     {
         public LogLevel Nivel { get; init; }
         public string Classe { get; init; }

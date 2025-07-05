@@ -1,7 +1,7 @@
-﻿using Aplicacao.DTOs.Estoque;
+﻿using Dominio.DTOs.Estoque;
 using Dominio.Entidades;
 
-namespace Dominio.Interfaces.Services;
+namespace Dominio.Interfaces.Servicos;
 
 public interface IEstoqueServico
 {

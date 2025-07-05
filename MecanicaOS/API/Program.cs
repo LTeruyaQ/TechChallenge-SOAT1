@@ -1,12 +1,9 @@
-using Aplicacao.Interfaces;
 using Aplicacao.Jobs;
 using Aplicacao.Logs.Middlewares;
-using Aplicacao.Logs.Services;
 using Aplicacao.Logs.Servicos;
 using Aplicacao.Servicos;
 using Dominio.Entidades;
 using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Services;
 using Dominio.Interfaces.Servicos;
 using Hangfire;
 using Hangfire.PostgreSql;

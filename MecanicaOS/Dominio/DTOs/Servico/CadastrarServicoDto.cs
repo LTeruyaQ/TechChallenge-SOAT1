@@ -1,6 +1,6 @@
-﻿namespace Aplicacao.DTOs.Servico
+﻿namespace Dominio.DTOs.Servico
 {
-    public class EditarServicoDto
+    public class CadastrarServicoDto
     {
         public string Nome { get; set; }
         public string Descricao { get; set; }

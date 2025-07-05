@@ -1,7 +1,7 @@
-﻿using Aplicacao.DTOs.Estoque;
+﻿using Dominio.DTOs.Estoque;
 using Dominio.Entidades;
 using Dominio.Exceptions;
-using Dominio.Interfaces.Services;
+using Dominio.Interfaces.Servicos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;

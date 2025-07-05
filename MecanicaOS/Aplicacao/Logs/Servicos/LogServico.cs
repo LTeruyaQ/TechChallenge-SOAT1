@@ -1,5 +1,5 @@
-﻿using Aplicacao.Interfaces;
-using Aplicacao.Logs.Models;
+﻿using Dominio.DTOs.Logs;
+using Dominio.Interfaces.Servicos;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -44,7 +44,6 @@ namespace Aplicacao.Logs.Servicos
         public void LogFim(string metodo, object? retorno = null)
             => LogGeneric(LogLevel.Information, metodo, "Fim", retorno);
 
-
         public void LogInicio(string metodo, object? props = null)
             => LogGeneric(LogLevel.Information, metodo, "Inicio", props);
 
@@ -56,7 +55,7 @@ namespace Aplicacao.Logs.Servicos
             object? dados,
             Exception? exception = null)
         {
-            var entry = new LogEntry
+            var entry = new LogEntryDto
             {
                 Nivel = nivel,
                 Classe = typeof(T).Name,

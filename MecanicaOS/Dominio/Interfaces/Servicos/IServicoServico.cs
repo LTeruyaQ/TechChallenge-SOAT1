@@ -1,8 +1,7 @@
-﻿using Aplicacao.DTOs.Servico;
-using Dominio.DTOs;
+﻿using Dominio.DTOs.Servico;
 using Dominio.Entidades;
 
-namespace Dominio.Interfaces.Services
+namespace Dominio.Interfaces.Servicos
 {
     public interface IServicoServico
     {

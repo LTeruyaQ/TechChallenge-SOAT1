@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Aplicacao.DTOs.Estoque;
+namespace Dominio.DTOs.Estoque;
 
 public class EstoqueAtualizarDto
 {

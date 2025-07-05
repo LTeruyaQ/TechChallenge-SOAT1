@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Aplicacao.DTOs.Veiculo
+namespace Dominio.DTOs.Veiculo
 {
     public class CadastrarVeiculoDto
     {
