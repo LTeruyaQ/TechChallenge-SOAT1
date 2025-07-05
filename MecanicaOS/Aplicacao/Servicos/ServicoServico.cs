@@ -1,19 +1,17 @@
-﻿using Aplicacao.DTOs.Servico;
-using Aplicacao.Interfaces;
-using Aplicacao.Servicos.Abstrato;
-using Dominio.DTOs;
+﻿using Aplicacao.Servicos.Abstrato;
+using Dominio.DTOs.Servico;
 using Dominio.Entidades;
 using Dominio.Especificacoes;
 using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Services;
+using Dominio.Interfaces.Servicos;
 
 namespace Aplicacao.Servicos
 {
     public class ServicoServico : ServicoAbstrato<ServicoServico, Servico>, IServicoServico
     {
-        public ServicoServico(ICrudRepositorio<Servico> repositorio, ILogServico<ServicoServico> logServico, IUnidadeDeTrabalho uot) 
+        public ServicoServico(ICrudRepositorio<Servico> repositorio, ILogServico<ServicoServico> logServico, IUnidadeDeTrabalho uot)
             : base(repositorio, logServico, uot)
         {
         }

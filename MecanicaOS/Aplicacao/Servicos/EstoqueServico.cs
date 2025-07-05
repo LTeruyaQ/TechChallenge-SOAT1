@@ -1,16 +1,15 @@
-﻿using Aplicacao.DTOs.Estoque;
-using Aplicacao.Interfaces;
-using Aplicacao.Servicos.Abstrato;
+﻿using Aplicacao.Servicos.Abstrato;
+using Dominio.DTOs.Estoque;
 using Dominio.Entidades;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Services;
+using Dominio.Interfaces.Servicos;
 
 namespace Aplicacao.Servicos;
 
 public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoqueServico
 {
-    public EstoqueServico(ICrudRepositorio<Estoque> repositorio, ILogServico<EstoqueServico> logServico, IUnidadeDeTrabalho uot) 
+    public EstoqueServico(ICrudRepositorio<Estoque> repositorio, ILogServico<EstoqueServico> logServico, IUnidadeDeTrabalho uot)
         : base(repositorio, logServico, uot)
     {
     }

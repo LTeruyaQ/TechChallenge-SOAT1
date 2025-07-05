@@ -1,7 +1,6 @@
-using Aplicacao.Interfaces;
-using Dominio.Entidades;
 using Dominio.Entidades.Abstratos;
 using Dominio.Interfaces.Repositorios;
+using Dominio.Interfaces.Servicos;
 
 namespace Aplicacao.Servicos.Abstrato
 {

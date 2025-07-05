@@ -1,17 +1,16 @@
-﻿using Aplicacao.DTOs.Veiculo;
-using Aplicacao.Interfaces;
-using Aplicacao.Servicos.Abstrato;
+﻿using Aplicacao.Servicos.Abstrato;
+using Dominio.DTOs.Veiculo;
 using Dominio.Entidades;
 using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Services;
+using Dominio.Interfaces.Servicos;
 
 namespace Aplicacao.Servicos
 {
     public class VeiculoServico : ServicoAbstrato<VeiculoServico, Veiculo>, IVeiculoServico
     {
-        public VeiculoServico(ICrudRepositorio<Veiculo> repositorio, ILogServico<VeiculoServico> logServico, IUnidadeDeTrabalho uot) 
+        public VeiculoServico(ICrudRepositorio<Veiculo> repositorio, ILogServico<VeiculoServico> logServico, IUnidadeDeTrabalho uot)
             : base(repositorio, logServico, uot)
         {
         }
@@ -136,7 +135,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, placa);
 
                 ObterVeiculoPorPlacaEspecificacao filtro = new(placa);
-                var veiculo = await _repositorio.ObterPorFiltroAsync(filtro) ?? throw new EntidadeNaoEncontradaException($"Veículo com placa {placa} não encontrado.");                    
+                var veiculo = await _repositorio.ObterPorFiltroAsync(filtro) ?? throw new EntidadeNaoEncontradaException($"Veículo com placa {placa} não encontrado.");
 
                 LogFim(metodo, veiculo);
 

@@ -1,4 +1,4 @@
-using Aplicacao.Interfaces;
+using Dominio.Interfaces.Servicos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 

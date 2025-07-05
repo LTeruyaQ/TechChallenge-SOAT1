@@ -1,6 +1,6 @@
-using Aplicacao.Interfaces;
+using Dominio.Interfaces.Servicos;
 
-namespace Aplicacao.Logs.Services
+namespace Aplicacao.Logs.Servicos
 {
     public class CorrelationIdService : ICorrelationIdService
     {

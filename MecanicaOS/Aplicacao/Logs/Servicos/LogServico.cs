@@ -1,5 +1,5 @@
-﻿using Aplicacao.Interfaces;
-using Aplicacao.Logs.Models;
+﻿using Aplicacao.Logs.Models;
+using Dominio.Interfaces.Servicos;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -56,7 +56,7 @@ namespace Aplicacao.Logs.Servicos
             object? dados,
             Exception? exception = null)
         {
-            var entry = new LogEntry
+            var entry = new LogEntryDto
             {
                 Nivel = nivel,
                 Classe = typeof(T).Name,
