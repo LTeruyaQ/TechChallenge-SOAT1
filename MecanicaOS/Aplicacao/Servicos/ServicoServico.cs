@@ -51,7 +51,7 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<Servico> ObterServicoPorNomeAsync(string nome)
+        public async Task<Servico?> ObterServicoPorNomeAsync(string nome)
         {
             var metodo = nameof(ObterServicosDisponiveisAsync);
             try
@@ -140,7 +140,7 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo);
 
-                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new EntidadeNaoEncontradaException($"Não foi encontrado o serviço de id: {id}");
+                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new RegistroNaoEncontradaException($"Não foi encontrado o serviço de id: {id}");
 
                 LogFim(metodo, servico);
 

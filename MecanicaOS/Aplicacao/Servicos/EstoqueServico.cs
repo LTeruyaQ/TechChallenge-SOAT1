@@ -110,7 +110,7 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
         {
             LogInicio(metodo);
 
-            Estoque? estoque = await _repositorio.ObterPorIdAsync(id) ?? throw new EntidadeNaoEncontradaException("Estoque não encontrado.");
+            Estoque? estoque = await _repositorio.ObterPorIdAsync(id) ?? throw new RegistroNaoEncontradaException("Estoque não encontrado.");
 
             LogFim(metodo, estoque);
 
