@@ -11,13 +11,11 @@ using Dominio.Interfaces.Services;
 
 namespace Aplicacao.Servicos
 {
-    public class ServicoServico : ServicoAbstrato<ServicoServico>, IServicoServico
+    public class ServicoServico : ServicoAbstrato<ServicoServico, Servico>, IServicoServico
     {
-        private readonly ICrudRepositorio<Servico> _repositorio;
-
-        public ServicoServico(ICrudRepositorio<Servico> repositorio, ILogServico<ServicoServico> logServico, IUnidadeDeTrabalho uot) : base(logServico, uot)
+        public ServicoServico(ICrudRepositorio<Servico> repositorio, ILogServico<ServicoServico> logServico, IUnidadeDeTrabalho uot) 
+            : base(repositorio, logServico, uot)
         {
-            _repositorio = repositorio;
         }
 
         public async Task<Servico> CadastrarServicoAsync(CadastrarServicoDto cadastrarServico)

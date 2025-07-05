@@ -8,14 +8,11 @@ using Dominio.Interfaces.Services;
 
 namespace Aplicacao.Servicos;
 
-public class EstoqueServico : ServicoAbstrato<EstoqueServico>, IEstoqueServico
+public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoqueServico
 {
-    private readonly ICrudRepositorio<Estoque> _repositorio;
-
-    public EstoqueServico(ILogServico<EstoqueServico> logServico, ICrudRepositorio<Estoque> repositorio, IUnidadeDeTrabalho uot)
-        : base(logServico, uot)
+    public EstoqueServico(ICrudRepositorio<Estoque> repositorio, ILogServico<EstoqueServico> logServico, IUnidadeDeTrabalho uot) 
+        : base(repositorio, logServico, uot)
     {
-        _repositorio = repositorio;
     }
 
     public async Task AtualizarAsync(Guid id, EstoqueAtualizarDto estoqueDto)

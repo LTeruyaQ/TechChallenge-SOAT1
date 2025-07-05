@@ -1,13 +1,15 @@
 ﻿using Aplicacao.Interfaces;
 using Aplicacao.Servicos.Abstrato;
+using Dominio.Entidades;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 
 namespace Aplicacao.Servicos;
 
-public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico>, IOrdemServicoServico
+public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemServico>, IOrdemServicoServico
 {
-    public OrdemServicoServico(ILogServico<OrdemServicoServico> logServico, IUnidadeDeTrabalho uot) : base(logServico, uot)
+    public OrdemServicoServico(ICrudRepositorio<OrdemServico> repositorio, ILogServico<OrdemServicoServico> logServico, IUnidadeDeTrabalho uot) : 
+        base(repositorio, logServico, uot)
     {
     }
 }

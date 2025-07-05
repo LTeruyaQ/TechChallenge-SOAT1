@@ -1,17 +1,21 @@
 using Aplicacao.Interfaces;
+using Dominio.Entidades;
+using Dominio.Entidades.Abstratos;
 using Dominio.Interfaces.Repositorios;
 
 namespace Aplicacao.Servicos.Abstrato
 {
-    public abstract class ServicoAbstrato<T> where T : class
+    public abstract class ServicoAbstrato<T, R> where T : class where R : Entidade, new()
     {
         private readonly ILogServico<T> _logServico;
         private readonly IUnidadeDeTrabalho _uot;
+        protected readonly ICrudRepositorio<R> _repositorio;
 
-        protected ServicoAbstrato(ILogServico<T> logServico, IUnidadeDeTrabalho uot)
+        protected ServicoAbstrato(ICrudRepositorio<R> repositorio, ILogServico<T> logServico, IUnidadeDeTrabalho uot)
         {
             _logServico = logServico;
             _uot = uot;
+            _repositorio = repositorio;
         }
 
         protected async Task<bool> Commit()
