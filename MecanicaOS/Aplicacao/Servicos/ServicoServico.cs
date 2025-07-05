@@ -59,7 +59,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo);
 
                 IEspecificacao<Servico> filtro = new ObterServicoPorNomeEspecificacao(nome);
-                filtro.E(new ObterServicoDisponivelEspecificacao());
+                filtro = filtro.E(new ObterServicoDisponivelEspecificacao());
 
                 var result = await _repositorio.ObterPorFiltroAsync(filtro);
 
