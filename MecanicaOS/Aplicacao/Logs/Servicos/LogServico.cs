@@ -44,7 +44,6 @@ namespace Aplicacao.Logs.Servicos
         public void LogFim(string metodo, object? retorno = null)
             => LogGeneric(LogLevel.Information, metodo, "Fim", retorno);
 
-
         public void LogInicio(string metodo, object? props = null)
             => LogGeneric(LogLevel.Information, metodo, "Inicio", props);
 
