@@ -1,5 +1,8 @@
-﻿using Aplicacao.Servicos.Abstrato;
-using Dominio.DTOs.Veiculo;
+using Aplicacao.DTOs.Requests.Veiculo;
+using Aplicacao.DTOs.Responses.Veiculo;
+using Aplicacao.Interfaces.Servicos;
+using Aplicacao.Servicos.Abstrato;
+using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Especificacoes;
 using Dominio.Exceptions;
@@ -10,36 +13,48 @@ namespace Aplicacao.Servicos
 {
     public class VeiculoServico : ServicoAbstrato<VeiculoServico, Veiculo>, IVeiculoServico
     {
-        public VeiculoServico(ICrudRepositorio<Veiculo> repositorio, ILogServico<VeiculoServico> logServico, IUnidadeDeTrabalho uot)
+        private readonly IMapper _mapper;
+
+        public VeiculoServico(
+            ICrudRepositorio<Veiculo> repositorio, 
+            ILogServico<VeiculoServico> logServico, 
+            IUnidadeDeTrabalho uot,
+            IMapper mapper)
             : base(repositorio, logServico, uot)
         {
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task AtualizarAsync(Guid id, EditarVeiculoDto veiculoDto)
+        public async Task<VeiculoResponse> AtualizarAsync(Guid id, AtualizarVeiculoRequest request)
         {
             string metodo = nameof(AtualizarAsync);
 
             try
             {
-                LogInicio(metodo, new { id, veiculoDto });
+                LogInicio(metodo, new { id, request });
 
-                var veiculo = await ObterPorIdAsync(id);
+                var veiculo = await _repositorio.ObterPorIdAsync(id) 
+                    ?? throw new RegistroNaoEncontradoException("Veículo não encontrado");
 
-                veiculo.Placa = veiculoDto.Placa ?? veiculo.Placa;
-                veiculo.Marca = veiculoDto.Marca ?? veiculo.Marca;
-                veiculo.Modelo = veiculoDto.Modelo ?? veiculo.Modelo;
-                veiculo.Cor = veiculoDto.Cor ?? veiculo.Cor;
-                veiculo.Ano = veiculoDto.Ano ?? veiculo.Ano;
-                veiculo.Anotacoes = veiculoDto.Anotacoes ?? veiculo.Anotacoes;
-                veiculo.ClienteId = veiculoDto.ClienteId ?? veiculo.ClienteId;
+                if (request.Placa != null) veiculo.Placa = request.Placa;
+                if (request.Marca != null) veiculo.Marca = request.Marca;
+                if (request.Modelo != null) veiculo.Modelo = request.Modelo;
+                if (request.Cor != null) veiculo.Cor = request.Cor;
+                if (request.Ano != null) veiculo.Ano = request.Ano;
+                if (request.Anotacoes != null) veiculo.Anotacoes = request.Anotacoes;
+                //if (request.ClienteId.HasValue) veiculo.ClienteId = request.ClienteId.Value;
+                
                 veiculo.DataAtualizacao = DateTime.UtcNow;
 
                 await _repositorio.EditarAsync(veiculo);
 
                 if (!await Commit())
-                    throw new PersistirDadosException("Erro ao atualizar veiculo");
+                    throw new PersistirDadosException("Erro ao atualizar veículo");
 
-                LogFim(metodo);
+                var response = _mapper.Map<VeiculoResponse>(veiculo);
+                LogFim(metodo, response);
+
+                return response;
             }
             catch (Exception e)
             {
@@ -47,33 +62,25 @@ namespace Aplicacao.Servicos
                 throw;
             }
         }
-        public async Task<Veiculo> CadastrarAsync(CadastrarVeiculoDto veiculoDto)
+        public async Task<VeiculoResponse> CadastrarAsync(CadastrarVeiculoRequest request)
         {
             string metodo = nameof(CadastrarAsync);
 
             try
             {
-                LogInicio(metodo, veiculoDto);
+                LogInicio(metodo, request);
 
-                var veiculo = new Veiculo
-                {
-                    Placa = veiculoDto.Placa,
-                    Marca = veiculoDto.Marca,
-                    Modelo = veiculoDto.Modelo,
-                    Cor = veiculoDto.Cor,
-                    Ano = veiculoDto.Ano,
-                    Anotacoes = veiculoDto.Anotacoes,
-                    ClienteId = veiculoDto.ClienteId,
-                };
+                var veiculo = _mapper.Map<Veiculo>(request);
 
-                var entidade = await _repositorio.CadastrarAsync(veiculo);
+                await _repositorio.CadastrarAsync(veiculo);
 
                 if (!await Commit())
-                    throw new PersistirDadosException("Erro ao cadastrar veiculo");
+                    throw new PersistirDadosException("Erro ao cadastrar veículo");
 
-                LogFim(metodo, entidade);
+                var response = _mapper.Map<VeiculoResponse>(veiculo);
+                LogFim(metodo, response);
 
-                return entidade;
+                return response;
             }
             catch (Exception e)
             {
@@ -82,7 +89,7 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<Veiculo> ObterPorIdAsync(Guid id)
+        public async Task<VeiculoResponse> ObterPorIdAsync(Guid id)
         {
             string metodo = nameof(ObterPorIdAsync);
 
@@ -90,11 +97,13 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, id);
 
-                var veiculo = await _repositorio.ObterPorIdAsync(id) ?? throw new RegistroNaoEncontradaException($"Veículo com ID {id} não encontrado.");
+                var veiculo = await _repositorio.ObterPorIdAsync(id) 
+                    ?? throw new RegistroNaoEncontradoException($"Veículo com ID {id} não encontrado.");
 
-                LogFim(metodo, veiculo);
+                var response = _mapper.Map<VeiculoResponse>(veiculo);
+                LogFim(metodo, response);
 
-                return veiculo;
+                return response;
             }
             catch (Exception e)
             {
@@ -103,7 +112,7 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<IEnumerable<Veiculo>> ObterPorClienteAsync(Guid clienteId)
+        public async Task<IEnumerable<VeiculoResponse>> ObterPorClienteAsync(Guid clienteId)
         {
             string metodo = nameof(ObterPorClienteAsync);
 
@@ -111,13 +120,14 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, clienteId);
 
-                ObterVeiculoPorClienteEspecificacao filtro = new(clienteId);
+                var filtro = new ObterVeiculoPorClienteEspecificacao(clienteId);
+                var veiculos = await _repositorio.ObterPorFiltroAsync(filtro) 
+                    ?? throw new RegistroNaoEncontradoException("Cliente não possui nenhum veículo.");
 
-                var veiculos = await _repositorio.ObterPorFiltroAsync(filtro) ?? throw new RegistroNaoEncontradaException($"Cliente não possui nenhum veículo.");
+                var response = _mapper.Map<IEnumerable<VeiculoResponse>>(veiculos);
+                LogFim(metodo, response);
 
-                LogFim(metodo, veiculos);
-
-                return veiculos;
+                return response;
             }
             catch (Exception e)
             {
@@ -126,7 +136,7 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<Veiculo> ObterPorPlacaAsync(string placa)
+        public async Task<VeiculoResponse?> ObterPorPlacaAsync(string placa)
         {
             string metodo = nameof(ObterPorPlacaAsync);
 
@@ -134,12 +144,16 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, placa);
 
-                ObterVeiculoPorPlacaEspecificacao filtro = new(placa);
-                var veiculo = await _repositorio.ObterPorFiltroAsync(filtro) ?? throw new RegistroNaoEncontradaException($"Veículo com placa {placa} não encontrado.");
+                var filtro = new ObterVeiculoPorPlacaEspecificacao(placa);
+                var veiculos = await _repositorio.ObterPorFiltroAsync(filtro) 
+                    ?? throw new RegistroNaoEncontradoException($"Veículo com placa {placa} não encontrado.");
 
-                LogFim(metodo, veiculo);
+                var veiculo = veiculos.FirstOrDefault();
+                var response = veiculo is not null ? _mapper.Map<VeiculoResponse>(veiculo) : null;
+                
+                LogFim(metodo, response);
 
-                return veiculo.FirstOrDefault();
+                return response;
             }
             catch (Exception e)
             {
@@ -148,7 +162,7 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<IEnumerable<Veiculo>> ObterTodosAsync()
+        public async Task<IEnumerable<VeiculoResponse>> ObterTodosAsync()
         {
             string metodo = nameof(ObterTodosAsync);
 
@@ -157,10 +171,11 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo);
 
                 var veiculos = await _repositorio.ObterTodosAsync();
+                var response = _mapper.Map<IEnumerable<VeiculoResponse>>(veiculos);
 
-                LogFim(metodo, veiculos);
+                LogFim(metodo, response);
 
-                return veiculos;
+                return response;
             }
             catch (Exception e)
             {
@@ -168,21 +183,26 @@ namespace Aplicacao.Servicos
                 throw;
             }
         }
-        public async Task RemoverAsync(Guid id)
+        public async Task<bool> DeletarAsync(Guid id)
         {
-            string metodo = nameof(RemoverAsync);
+            string metodo = nameof(DeletarAsync);
 
             try
             {
                 LogInicio(metodo, id);
 
-                var veiculo = await ObterPorIdAsync(id);
+                var veiculo = await _repositorio.ObterPorIdAsync(id) 
+                    ?? throw new RegistroNaoEncontradoException("Veículo não encontrado");
+                
                 await _repositorio.DeletarAsync(veiculo);
+                var sucesso = await Commit();
 
-                if (!await Commit())
-                    throw new PersistirDadosException("Erro ao remover veiculo");
+                if (!sucesso)
+                    throw new PersistirDadosException("Erro ao remover veículo");
 
-                LogFim(metodo);
+                LogFim(metodo, sucesso);
+
+                return sucesso;
             }
             catch (Exception e)
             {

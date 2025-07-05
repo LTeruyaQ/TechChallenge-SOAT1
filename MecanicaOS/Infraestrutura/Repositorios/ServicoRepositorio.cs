@@ -3,6 +3,7 @@ using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Infraestrutura.Repositorios
 {
@@ -44,6 +45,11 @@ namespace Infraestrutura.Repositorios
         public async Task<IEnumerable<Servico>> ObterTodosAsync()
         {
             return await _dbContext.Servicos.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<Servico?> ObterUmAsync(IEspecificacao<Servico> especificacao)
+        {
+            return await _dbContext.Servicos.AsNoTracking().Where(especificacao.Expressao).SingleOrDefaultAsync();
         }
     }
 }

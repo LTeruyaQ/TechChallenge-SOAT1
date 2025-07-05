@@ -22,23 +22,6 @@ namespace Infraestrutura.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Dominio.Entidades.Cliente", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("DataAtualizacao")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cliente");
-                });
-
             modelBuilder.Entity("Dominio.Entidades.Estoque", b =>
                 {
                     b.Property<Guid>("Id")
@@ -113,17 +96,17 @@ namespace Infraestrutura.Migrations
 
                     b.Property<string>("Ano")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(4)
+                        .HasColumnType("character varying(4)");
 
                     b.Property<string>("Anotacoes")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("ClienteId")
-                        .HasColumnType("uuid");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("Cor")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<DateTime?>("DataAtualizacao")
                         .HasColumnType("timestamp with time zone");
@@ -133,32 +116,22 @@ namespace Infraestrutura.Migrations
 
                     b.Property<string>("Marca")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Modelo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Placa")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteId");
-
-                    b.ToTable("Veiculos");
-                });
-
-            modelBuilder.Entity("Dominio.Entidades.Veiculo", b =>
-                {
-                    b.HasOne("Dominio.Entidades.Cliente", "Cliente")
-                        .WithMany()
-                        .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cliente");
+                    b.ToTable("Veiculos", (string)null);
                 });
 #pragma warning restore 612, 618
         }

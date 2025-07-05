@@ -2,9 +2,9 @@
 {
     public class CadastrarServicoDto
     {
-        public string Nome { get; set; }
-        public string Descricao { get; set; }
-        public decimal Valor { get; set; }
-        public bool Disponivel { get; set; }
+        public required string Nome { get; set; }
+        public required string Descricao { get; set; }
+        public required decimal Valor { get; set; }
+        public required bool Disponivel { get; set; }
     }
 }

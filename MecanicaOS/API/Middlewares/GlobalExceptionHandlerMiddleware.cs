@@ -1,6 +1,6 @@
+using Dominio.Exceptions;
 using System.Net;
 using System.Text.Json;
-using Dominio.Exceptions;
 
 namespace API.Middlewares;
 
@@ -31,11 +31,11 @@ public class GlobalExceptionHandlerMiddleware
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
-        
+
         var statusCode = exception switch
         {
             DadosInvalidosException => HttpStatusCode.BadRequest,
-            RegistroNaoEncontradaException => HttpStatusCode.NotFound,
+            RegistroNaoEncontradoException or KeyNotFoundException => HttpStatusCode.NotFound,
             RegistroJaCadastradoException => HttpStatusCode.Conflict,
             _ => HttpStatusCode.InternalServerError
         };

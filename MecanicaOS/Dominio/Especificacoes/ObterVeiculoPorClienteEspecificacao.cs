@@ -13,7 +13,7 @@ namespace Dominio.Especificacoes
             _clienteId = clienteId;
         }
 
-        public Expression<Func<Veiculo, bool>> Expressao =>
-            v => v.ClienteId == _clienteId;
+        public Expression<Func<Veiculo, bool>> Expressao => v => true;
+            //v => v.ClienteId == _clienteId;
     }
 }

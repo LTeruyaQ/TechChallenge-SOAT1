@@ -1,4 +1,5 @@
-﻿using Aplicacao.Servicos.Abstrato;
+﻿using Aplicacao.Interfaces.Servicos;
+using Aplicacao.Servicos.Abstrato;
 using Dominio.Entidades;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;

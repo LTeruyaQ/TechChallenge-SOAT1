@@ -1,7 +1,7 @@
 ﻿namespace Dominio.Exceptions;
 
-public class RegistroNaoEncontradaException : Exception
+public class RegistroNaoEncontradoException : Exception
 {
-    public RegistroNaoEncontradaException(string mensagem) : base(mensagem) { }
+    public RegistroNaoEncontradoException(string mensagem) : base(mensagem) { }
 }
 

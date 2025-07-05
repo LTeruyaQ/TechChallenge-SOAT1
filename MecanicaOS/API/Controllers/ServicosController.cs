@@ -1,15 +1,12 @@
+using Aplicacao.DTOs.Requests.Servico;
+using Aplicacao.DTOs.Responses.Servico;
+using Aplicacao.Interfaces.Servicos;
 using API.Models;
-using Dominio.DTOs.Servico;
-using Dominio.Entidades;
-using Dominio.Exceptions;
-using Dominio.Interfaces.Servicos;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers;
 
-[Route("api/[controller]")]
+[Route("[controller]")]
 [ApiController]
 [Produces("application/json")]
 [Consumes("application/json")]
@@ -23,21 +20,31 @@ public class ServicosController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<Servico>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<ServicoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterTodos()
     {
         var servicos = await _servico.ObterTodosAsync();
         return Ok(servicos);
     }
-    
+
+    [HttpGet("disponiveis")]
+    [ProducesResponseType(typeof(IEnumerable<ServicoResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ObterServicosDisponiveis()
+    {
+        var servicos = await _servico.ObterServicosDisponiveisAsync();
+        return Ok(servicos);
+    }
+
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(Servico), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ServicoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterPorId(Guid id)
     {
-        var servico = await _servico.ObterServicoPorIdAsync(id);
+        var servico = await _servico.ObterServicoPorIdAsync(id) 
+            ?? throw new KeyNotFoundException("Serviço não encontrado");
         return Ok(servico);
     }
 
@@ -46,23 +53,23 @@ public class ServicosController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Criar([FromBody] CadastrarServicoDto novoServico)
+    public async Task<IActionResult> Criar([FromBody] CadastrarServicoRequest request)
     {
-        var servico = await _servico.CadastrarServicoAsync(novoServico);
-        return CreatedAtAction(nameof(ObterPorId), new { id = servico.Id }, new { id = servico.Id });
+        var servico = await _servico.CadastrarServicoAsync(request);
+        return CreatedAtAction(nameof(ObterPorId), new { id = servico.Id }, servico);
     }
-    
+
     [HttpPut("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ServicoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Editar(Guid id, [FromBody] EditarServicoDto servicoAtualizado)
+    public async Task<IActionResult> Atualizar(Guid id, [FromBody] EditarServicoRequest request)
     {
-        await _servico.EditarServicoAsync(id, servicoAtualizado);
-        return NoContent();
+        var servicoAtualizado = await _servico.EditarServicoAsync(id, request);
+        return Ok(servicoAtualizado);
     }
-    
+
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
