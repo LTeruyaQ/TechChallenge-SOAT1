@@ -4,9 +4,9 @@ namespace Dominio.Especificacoes.Base.Extensoes
 {
     public static class OuExtensao
     {
-        public static void Ou<T>(this IEspecificacao<T> esquerda, IEspecificacao<T> direita)
+        public static IEspecificacao<T> Ou<T>(this IEspecificacao<T> esquerda, IEspecificacao<T> direita)
         {
-            esquerda = new OuEspecificacao<T>(esquerda, direita);
+            return new OuEspecificacao<T>(esquerda, direita);
         }
     }
 }

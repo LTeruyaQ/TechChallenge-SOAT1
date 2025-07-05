@@ -1,12 +1,18 @@
+using API.Models;
 using Dominio.DTOs.Estoque;
 using Dominio.Entidades;
+using Dominio.Exceptions;
 using Dominio.Interfaces.Servicos;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Produces("application/json")]
+[Consumes("application/json")]
 public class EstoqueController : ControllerBase
 {
     private readonly IEstoqueServico _estoqueService;
@@ -17,6 +23,9 @@ public class EstoqueController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(Estoque), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterPorId(Guid id)
     {
         var estoque = await _estoqueService.ObterPorIdAsync(id);
@@ -24,6 +33,10 @@ public class EstoqueController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CadastrarEstoque([FromBody] EstoqueRegistrarDto dto)
     {
         var estoque = await _estoqueService.CadastrarAsync(dto);
@@ -31,6 +44,10 @@ public class EstoqueController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AtualizarEstoque(Guid id, [FromBody] EstoqueAtualizarDto dto)
     {
         await _estoqueService.AtualizarAsync(id, dto);
@@ -38,6 +55,9 @@ public class EstoqueController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeletarEstoque(Guid id)
     {
         await _estoqueService.RemoverAsync(id);
