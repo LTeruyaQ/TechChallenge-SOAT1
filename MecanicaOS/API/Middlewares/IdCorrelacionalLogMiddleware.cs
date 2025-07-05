@@ -1,10 +1,8 @@
 using Dominio.Interfaces.Servicos;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Aplicacao.Logs.Middlewares
+namespace API.Middlewares
 {
-    public class CorrelationIdDemoAPILogMiddleware : IMiddleware
+    public class IdCorrelacionalLogMiddleware : IMiddleware
     {
         private const string CorrelationIdHeader = "X-Correlation-ID";
 

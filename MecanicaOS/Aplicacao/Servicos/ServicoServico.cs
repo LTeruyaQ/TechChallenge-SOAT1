@@ -2,6 +2,7 @@
 using Dominio.DTOs.Servico;
 using Dominio.Entidades;
 using Dominio.Especificacoes;
+using Dominio.Especificacoes.Base.Extensoes;
 using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
@@ -23,6 +24,9 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, cadastrarServico);
 
+                if (await ObterServicoPorNomeAsync(cadastrarServico.Nome) is Servico servicoJaCadastrado)
+                    throw new RegistroJaCadastradoException("Serviço já cadastrado");
+
                 Servico servico = new Servico()
                 {
                     Descricao = cadastrarServico.Descricao,
@@ -39,6 +43,29 @@ namespace Aplicacao.Servicos
                 LogFim(metodo, entidade);
 
                 return entidade;
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+
+        public async Task<Servico> ObterServicoPorNomeAsync(string nome)
+        {
+            var metodo = nameof(ObterServicosDisponiveisAsync);
+            try
+            {
+                LogInicio(metodo);
+
+                IEspecificacao<Servico> filtro = new ObterServicoPorNomeEspecificacao(nome);
+                filtro = filtro.E(new ObterServicoDisponivelEspecificacao());
+
+                var result = await _repositorio.ObterPorFiltroAsync(filtro);
+
+                LogFim(metodo, result);
+
+                return result.SingleOrDefault();
             }
             catch (Exception e)
             {
@@ -126,12 +153,12 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<IEnumerable<Servico>> ObterServicosPorFiltroAsync(FiltrarServicoDto filtroDto)
+        public async Task<IEnumerable<Servico>> ObterServicosDisponiveisAsync()
         {
-            var metodo = nameof(ObterServicosPorFiltroAsync);
+            var metodo = nameof(ObterServicosDisponiveisAsync);
             try
             {
-                LogInicio(metodo, filtroDto);
+                LogInicio(metodo);
 
                 IEspecificacao<Servico> filtro = new ObterServicoDisponivelEspecificacao();
 
