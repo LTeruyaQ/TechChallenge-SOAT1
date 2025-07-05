@@ -1,6 +1,136 @@
-@API_HostAddress = http://localhost:5221
+@hostname = localhost
+@port = 5221
+@baseUrl = http://{{hostname}}:{{port}}/api
 
-GET {{API_HostAddress}}/weatherforecast/
+### Documentação
+# Acesse a documentação em: {{baseUrl}}/docs
+# Acesse o dashboard do Hangfire em: {{baseUrl}}/hangfire
+
+### VEÍCULOS
+
+# Cadastrar novo veículo
+POST {{baseUrl}}/veiculos
+Content-Type: application/json
+
+{
+  "placa": "ABC1D23",
+  "marca": "Fiat",
+  "modelo": "Uno",
+  "cor": "Vermelho",
+  "ano": "2020",
+  "anotacoes": "Veículo em bom estado",
+  "clienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+}
+
+# Obter veículo por ID
+GET {{baseUrl}}/veiculos/3fa85f64-5717-4562-b3fc-2c963f66afa6
 Accept: application/json
 
-###
+# Listar veículos por cliente
+GET {{baseUrl}}/veiculos/cliente/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Accept: application/json
+
+# Atualizar veículo
+PUT {{baseUrl}}/veiculos/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Content-Type: application/json
+
+{
+  "placa": "ABC1D24",
+  "marca": "Fiat",
+  "modelo": "Uno",
+  "cor": "Azul",
+  "ano": "2020",
+  "anotacoes": "Veículo em excelente estado",
+  "clienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+}
+
+# Remover veículo
+DELETE {{baseUrl}}/veiculos/3fa85f64-5717-4562-b3fc-2c963f66afa6
+
+### CLIENTES
+# Os endpoints de cliente seguem o mesmo padrão de veículos
+# POST /api/clientes - Cadastrar cliente
+# GET /api/clientes/{id} - Obter cliente por ID
+# GET /api/clientes - Listar todos os clientes
+# PUT /api/clientes/{id} - Atualizar cliente
+# DELETE /api/clientes/{id} - Remover cliente
+
+### SERVIÇOS
+
+# Cadastrar novo serviço
+POST {{baseUrl}}/servicos
+Content-Type: application/json
+
+{
+  "nome": "Troca de Óleo",
+  "descricao": "Troca de óleo e filtro",
+  "valor": 150.00,
+  "disponivel": true
+}
+
+# Obter serviço por ID
+GET {{baseUrl}}/servicos/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Accept: application/json
+
+# Listar todos os serviços
+GET {{baseUrl}}/servicos
+Accept: application/json
+
+# Atualizar serviço
+PUT {{baseUrl}}/servicos/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Content-Type: application/json
+
+{
+  "nome": "Troca de Óleo Completa",
+  "descricao": "Troca de óleo, filtro de óleo e filtro de ar",
+  "valor": 199.90,
+  "disponivel": true
+}
+
+# Remover serviço
+DELETE {{baseUrl}}/servicos/3fa85f64-5717-4562-b3fc-2c963f66afa6
+
+### ESTOQUE
+
+# Cadastrar novo item no estoque
+POST {{baseUrl}}/estoque
+Content-Type: application/json
+
+{
+  "insumo": "Óleo 10W40",
+  "descricao": "Óleo sintético 4L",
+  "quantidadeDisponivel": 50,
+  "quantidadeMinima": 10,
+  "preco": 89.90
+}
+
+# Obter item por ID
+GET {{baseUrl}}/estoque/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Accept: application/json
+
+# Listar todos os itens
+GET {{baseUrl}}/estoque
+Accept: application/json
+
+# Atualizar item
+PUT {{baseUrl}}/estoque/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Content-Type: application/json
+
+{
+  "insumo": "Óleo 10W40",
+  "descricao": "Óleo sintético 4L - Nova geração",
+  "quantidadeDisponivel": 45,
+  "quantidadeMinima": 15,
+  "preco": 95.90
+}
+
+# Remover item
+DELETE {{baseUrl}}/estoque/3fa85f64-5717-4562-b3fc-2c963f66afa6
+
+### ORDENS DE SERVIÇO
+# Os endpoints de ordens de serviço seguem o mesmo padrão
+# POST /api/ordens-servico - Cadastrar OS
+# GET /api/ordens-servico/{id} - Obter OS por ID
+# GET /api/ordens-servico - Listar todas as OS
+# PUT /api/ordens-servico/{id} - Atualizar OS
+# DELETE /api/ordens-servico/{id} - Remover OS

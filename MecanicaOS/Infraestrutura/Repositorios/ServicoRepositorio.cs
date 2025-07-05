@@ -17,18 +17,18 @@ namespace Infraestrutura.Repositorios
 
         public async Task<Servico> CadastrarAsync(Servico servico)
         {
-            var entidade = _dbContext.Servicos.Add(servico);
+            var entidade = await Task.Run(() => _dbContext.Servicos.Add(servico));
             return entidade.Entity;
         }
 
         public async Task DeletarAsync(Servico servico)
         {
-            _dbContext.Servicos.Remove(servico);
+            await Task.Run(() => _dbContext.Servicos.Remove(servico));
         }
 
         public async Task EditarAsync(Servico novoServico)
         {
-            _dbContext.Servicos.Update(novoServico);
+            await Task.Run(() => _dbContext.Servicos.Update(novoServico));
         }
 
         public async Task<IEnumerable<Servico>> ObterPorFiltroAsync(IEspecificacao<Servico> especificacao)
@@ -36,7 +36,7 @@ namespace Infraestrutura.Repositorios
             return await _dbContext.Servicos.AsNoTracking().Where(especificacao.Expressao).ToListAsync();
         }
 
-        public async Task<Servico> ObterPorIdAsync(Guid id)
+        public async Task<Servico?> ObterPorIdAsync(Guid id)
         {
             return await _dbContext.Servicos.FirstOrDefaultAsync(s => s.Id == id);
         }

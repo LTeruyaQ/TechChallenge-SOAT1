@@ -116,9 +116,8 @@ namespace Aplicacao.Servicos
             try
             {
                 LogInicio(metodo);
-                var servico = await _repositorio.ObterPorIdAsync(id);
 
-                if (servico is null) throw new EntidadeNaoEncontradaException($"Não foi encontrado o serviço de id: {id}");
+                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new EntidadeNaoEncontradaException($"Não foi encontrado o serviço de id: {id}");
 
                 LogFim(metodo, servico);
 

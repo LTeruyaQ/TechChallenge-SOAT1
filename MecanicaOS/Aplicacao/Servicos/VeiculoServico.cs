@@ -6,6 +6,7 @@ using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Services;
+using System.Numerics;
 
 namespace Aplicacao.Servicos
 {
@@ -93,10 +94,7 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, id);
 
-                var veiculo = await _repositorio.ObterPorIdAsync(id);
-
-                if (veiculo is null)
-                    throw new EntidadeNaoEncontradaException($"Veículo com ID {id} não encontrado.");
+                var veiculo = await _repositorio.ObterPorIdAsync(id) ?? throw new EntidadeNaoEncontradaException($"Veículo com ID {id} não encontrado.");
 
                 LogFim(metodo, veiculo);
 
@@ -119,7 +117,7 @@ namespace Aplicacao.Servicos
 
                 ObterVeiculoPorClienteEspecificacao filtro = new(clienteId);
 
-                var veiculos = await _repositorio.ObterPorFiltroAsync(filtro);
+                var veiculos = await _repositorio.ObterPorFiltroAsync(filtro) ?? throw new EntidadeNaoEncontradaException($"Cliente não possui nenhum veículo.");
 
                 LogFim(metodo, veiculos);
 
@@ -141,10 +139,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, placa);
 
                 ObterVeiculoPorPlacaEspecificacao filtro = new(placa);
-                var veiculo = await _repositorio.ObterPorFiltroAsync(filtro);
-
-                if (veiculo is null)
-                    throw new EntidadeNaoEncontradaException($"Veículo com placa {placa} não encontrado.");
+                var veiculo = await _repositorio.ObterPorFiltroAsync(filtro) ?? throw new EntidadeNaoEncontradaException($"Veículo com placa {placa} não encontrado.");                    
 
                 LogFim(metodo, veiculo);
 
