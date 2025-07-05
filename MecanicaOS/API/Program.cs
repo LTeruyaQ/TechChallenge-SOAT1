@@ -1,6 +1,4 @@
 using Aplicacao.Jobs;
-using Aplicacao.Logs.Middlewares;
-using Aplicacao.Logs.Servicos;
 using Aplicacao.Servicos;
 using Dominio.Entidades;
 using Dominio.Interfaces.Repositorios;
@@ -13,6 +11,8 @@ using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using API.Middlewares;
+using Aplicacao.Servicos.Logs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,7 +46,7 @@ builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 builder.Services.AddScoped<IServicoNotificacaoEmail, ServicoNotificacaoEmail>();
 builder.Services.AddScoped<ICorrelationIdService, CorrelationIdService>();
-builder.Services.AddScoped<CorrelationIdDemoAPILogMiddleware>();
+builder.Services.AddScoped<IdCorrelacionalLogMiddleware>();
 
 var app = builder.Build();
 
@@ -60,7 +60,8 @@ app.UseReDoc(c =>
 });
 
 app.MapControllers();
-app.UseMiddleware<CorrelationIdDemoAPILogMiddleware>();
+app.UseMiddleware<IdCorrelacionalLogMiddleware>();
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.UseHangfireDashboard("/hangfire");
 RecurringJob.AddOrUpdate<VerificarEstoqueJob>(

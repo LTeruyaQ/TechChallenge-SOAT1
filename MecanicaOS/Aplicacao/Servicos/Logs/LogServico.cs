@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Aplicacao.Logs.Servicos
+namespace Aplicacao.Servicos.Logs
 {
     public class LogServico<T> : ILogServico<T>
     {

@@ -1,6 +1,5 @@
-﻿using Dominio.DTOs.Estoque;
+using Dominio.DTOs.Estoque;
 using Dominio.Entidades;
-using Dominio.Exceptions;
 using Dominio.Interfaces.Servicos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,84 +16,31 @@ public class EstoqueController : ControllerBase
         _estoqueService = estoqueService;
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> ObterPorId(Guid id)
     {
-        try
-        {
-            if (id == Guid.Empty)
-                return BadRequest("ID inválido.");
-
-            Estoque estoque = await _estoqueService.ObterPorIdAsync(id);
-
-            return Ok(estoque);
-        }
-        catch (EntidadeNaoEncontradaException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Ocorreu um erro inesperado.");
-        }
+        var estoque = await _estoqueService.ObterPorIdAsync(id);
+        return Ok(estoque);
     }
 
     [HttpPost]
     public async Task<IActionResult> CadastrarEstoque([FromBody] EstoqueRegistrarDto dto)
     {
-        try
-        {
-            Estoque estoque = await _estoqueService.CadastrarAsync(dto);
-
-            return CreatedAtAction(nameof(ObterPorId), new { id = estoque.Id }, estoque);
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Erro interno ao cadastrar o estoque.");
-        }
+        var estoque = await _estoqueService.CadastrarAsync(dto);
+        return CreatedAtAction(nameof(ObterPorId), new { id = estoque.Id }, new { id = estoque.Id });
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     public async Task<IActionResult> AtualizarEstoque(Guid id, [FromBody] EstoqueAtualizarDto dto)
     {
-        try
-        {
-            if (id == Guid.Empty)
-                return BadRequest("ID inválido.");
-
-            await _estoqueService.AtualizarAsync(id, dto);
-
-            return NoContent();
-        }
-        catch (EntidadeNaoEncontradaException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Erro interno ao atualizar o estoque.");
-        }
+        await _estoqueService.AtualizarAsync(id, dto);
+        return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeletarEstoque(Guid id)
     {
-        try
-        {
-            if (id == Guid.Empty)
-                return BadRequest("ID inválido.");
-
-            await _estoqueService.RemoverAsync(id);
-
-            return NoContent();
-        }
-        catch (EntidadeNaoEncontradaException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "Erro interno ao deletar o estoque.");
-        }
+        await _estoqueService.RemoverAsync(id);
+        return NoContent();
     }
 }
