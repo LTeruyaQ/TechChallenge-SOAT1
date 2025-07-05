@@ -45,8 +45,7 @@ public class GlobalExceptionHandlerMiddleware
         var response = new
         {
             StatusCode = context.Response.StatusCode,
-            Message = exception.Message,
-            Source = exception.Source
+            Message = exception.Message
         };
 
         var jsonResponse = JsonSerializer.Serialize(response);
