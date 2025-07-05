@@ -1,5 +1,8 @@
-﻿using Aplicacao.Servicos.Abstrato;
-using Dominio.DTOs.Estoque;
+using Aplicacao.DTOs.Requests.Estoque;
+using Aplicacao.DTOs.Responses.Estoque;
+using Aplicacao.Interfaces.Servicos;
+using Aplicacao.Servicos.Abstrato;
+using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
@@ -9,26 +12,35 @@ namespace Aplicacao.Servicos;
 
 public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoqueServico
 {
-    public EstoqueServico(ICrudRepositorio<Estoque> repositorio, ILogServico<EstoqueServico> logServico, IUnidadeDeTrabalho uot)
+    private readonly IMapper _mapper;
+
+    public EstoqueServico(
+        ICrudRepositorio<Estoque> repositorio, 
+        ILogServico<EstoqueServico> logServico, 
+        IUnidadeDeTrabalho uot,
+        IMapper mapper)
         : base(repositorio, logServico, uot)
     {
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task AtualizarAsync(Guid id, EstoqueAtualizarDto estoqueDto)
+    public async Task<EstoqueResponse> AtualizarAsync(Guid id, AtualizarEstoqueRequest request)
     {
         string metodo = nameof(AtualizarAsync);
 
         try
         {
-            LogInicio(metodo, estoqueDto);
+            LogInicio(metodo, request);
 
-            Estoque estoque = await ObterPorIdAsync(id);
+            var estoque = await _repositorio.ObterPorIdAsync(id) 
+                ?? throw new RegistroNaoEncontradoException("Estoque não encontrado");
 
-            estoque.Insumo = estoqueDto.Insumo ?? estoque.Insumo;
-            estoque.Descricao = estoqueDto.Descricao ?? estoque.Descricao;
-            estoque.Preco = estoqueDto.Preco ?? estoque.Preco;
-            estoque.QuantidadeDisponivel = estoqueDto.QuantidadeDisponivel ?? estoque.QuantidadeDisponivel;
-            estoque.QuantidadeMinima = estoqueDto.QuantidadeMinima ?? estoque.QuantidadeMinima;
+            if (request.Insumo != null) estoque.Insumo = request.Insumo;
+            if (request.Descricao != null) estoque.Descricao = request.Descricao;
+            if (request.Preco.HasValue) estoque.Preco = request.Preco.Value;
+            if (request.QuantidadeDisponivel.HasValue) estoque.QuantidadeDisponivel = request.QuantidadeDisponivel.Value;
+            if (request.QuantidadeMinima.HasValue) estoque.QuantidadeMinima = request.QuantidadeMinima.Value;
+            
             estoque.DataAtualizacao = DateTime.UtcNow;
 
             await _repositorio.EditarAsync(estoque);
@@ -36,73 +48,68 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao atualizar estoque");
 
-            LogFim(metodo);
+            var response = _mapper.Map<EstoqueResponse>(estoque);
+            LogFim(metodo, response);
+
+            return response;
         }
         catch (Exception e)
         {
             LogErro(metodo, e);
-
             throw;
         }
     }
 
-    public async Task<Estoque> CadastrarAsync(EstoqueRegistrarDto estoqueDto)
+    public async Task<EstoqueResponse> CadastrarAsync(CadastrarEstoqueRequest request)
     {
         string metodo = nameof(CadastrarAsync);
 
         try
         {
-            LogInicio(metodo, estoqueDto);
+            LogInicio(metodo, request);
 
-            Estoque estoque = new()
-            {
-                Insumo = estoqueDto.Insumo,
-                Descricao = estoqueDto.Descricao,
-                Preco = estoqueDto.Preco,
-                QuantidadeDisponivel = estoqueDto.QuantidadeDisponivel,
-                QuantidadeMinima = estoqueDto.QuantidadeMinima,
-            };
+            var estoque = _mapper.Map<Estoque>(request);
 
-            var novoEstoque = await _repositorio.CadastrarAsync(estoque);
+            await _repositorio.CadastrarAsync(estoque);
 
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao cadastrar estoque");
 
-            LogFim(metodo, novoEstoque);
+            var response = _mapper.Map<EstoqueResponse>(estoque);
+            LogFim(metodo, response);
 
-            return novoEstoque;
+            return response;
         }
         catch (Exception e)
         {
             LogErro(metodo, e);
-
             throw;
         }
     }
 
-    public async Task<IEnumerable<Estoque>> ListarEstoquesAsync()
+    public async Task<IEnumerable<EstoqueResponse>> ObterTodosAsync()
     {
-        string metodo = nameof(ListarEstoquesAsync);
+        string metodo = nameof(ObterTodosAsync);
 
         try
         {
             LogInicio(metodo);
 
-            IEnumerable<Estoque> result = await _repositorio.ObterTodosAsync();
+            var estoques = await _repositorio.ObterTodosAsync();
+            var response = _mapper.Map<IEnumerable<EstoqueResponse>>(estoques);
 
-            LogFim(metodo, result);
+            LogFim(metodo, response);
 
-            return result;
+            return response;
         }
         catch (Exception e)
         {
             LogErro(metodo, e);
-
             throw;
         }
     }
 
-    public async Task<Estoque> ObterPorIdAsync(Guid id)
+    public async Task<EstoqueResponse> ObterPorIdAsync(Guid id)
     {
         string metodo = nameof(ObterPorIdAsync);
 
@@ -110,38 +117,42 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
         {
             LogInicio(metodo);
 
-            Estoque? estoque = await _repositorio.ObterPorIdAsync(id) ?? throw new RegistroNaoEncontradaException("Estoque não encontrado.");
+            var estoque = await _repositorio.ObterPorIdAsync(id) 
+                ?? throw new RegistroNaoEncontradoException("Estoque não encontrado");
 
-            LogFim(metodo, estoque);
+            var response = _mapper.Map<EstoqueResponse>(estoque);
+            LogFim(metodo, response);
 
-            return estoque;
+            return response;
         }
         catch (Exception e)
         {
             LogErro(metodo, e);
-
             throw;
         }
     }
 
-    public async Task RemoverAsync(Guid id)
+    public async Task<bool> DeletarAsync(Guid id)
     {
-        string metodo = nameof(RemoverAsync);
+        string metodo = nameof(DeletarAsync);
 
         try
         {
             LogInicio(metodo);
 
-            Estoque estoque = await ObterPorIdAsync(id);
-
-            LogFim(metodo, estoque);
+            var estoque = await _repositorio.ObterPorIdAsync(id) 
+                ?? throw new RegistroNaoEncontradoException("Estoque não encontrado");
 
             await _repositorio.DeletarAsync(estoque);
+            var sucesso = await Commit();
+
+            LogFim(metodo, sucesso);
+
+            return sucesso;
         }
         catch (Exception e)
         {
             LogErro(metodo, e);
-
             throw;
         }
     }

@@ -45,4 +45,9 @@ public class EstoqueRepositorio : ICrudRepositorio<Estoque>
     {
         return await _dbContext.Estoques.AsNoTracking().ToListAsync();
     }
+
+    public async Task<Estoque?> ObterUmAsync(IEspecificacao<Estoque> especificacao)
+    {
+        return await _dbContext.Estoques.AsNoTracking().Where(especificacao.Expressao).SingleOrDefaultAsync();
+    }
 }

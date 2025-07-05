@@ -33,6 +33,7 @@ public class MecanicaContexto : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new EstoqueMapeamento());
+        modelBuilder.ApplyConfiguration(new VeiculoMapeamento());
 
         base.OnModelCreating(modelBuilder);
     }

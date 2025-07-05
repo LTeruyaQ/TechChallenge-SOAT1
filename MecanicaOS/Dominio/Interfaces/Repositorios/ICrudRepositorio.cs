@@ -1,4 +1,5 @@
-﻿using Dominio.Especificacoes.Base.Interfaces;
+﻿using Dominio.Entidades;
+using Dominio.Especificacoes.Base.Interfaces;
 
 namespace Dominio.Interfaces.Repositorios;
 
@@ -10,4 +11,5 @@ public interface ICrudRepositorio<T> where T : class
     Task<T> CadastrarAsync(T entidade);
     Task EditarAsync(T novaEntidade);
     Task DeletarAsync(T entidade);
+    Task<T?> ObterUmAsync(IEspecificacao<T> especificacao);
 }

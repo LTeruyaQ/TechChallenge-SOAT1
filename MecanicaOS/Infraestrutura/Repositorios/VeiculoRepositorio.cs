@@ -52,4 +52,12 @@ public class VeiculoRepositorio : ICrudRepositorio<Veiculo>
             .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task<Veiculo?> ObterUmAsync(IEspecificacao<Veiculo> especificacao)
+    {
+        return await _dbContext.Veiculos
+            .AsNoTracking()
+            .Where(especificacao.Expressao)
+            .SingleOrDefaultAsync();
+    }
 }
