@@ -6,17 +6,14 @@ using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Services;
-using System.Numerics;
 
 namespace Aplicacao.Servicos
 {
-    public class VeiculoServico : ServicoAbstrato<VeiculoServico>, IVeiculoServico
+    public class VeiculoServico : ServicoAbstrato<VeiculoServico, Veiculo>, IVeiculoServico
     {
-        private readonly ICrudRepositorio<Veiculo> _repositorio;
-
-        public VeiculoServico(ILogServico<VeiculoServico> logServico, ICrudRepositorio<Veiculo> repositorio, IUnidadeDeTrabalho uot) : base(logServico, uot)
+        public VeiculoServico(ICrudRepositorio<Veiculo> repositorio, ILogServico<VeiculoServico> logServico, IUnidadeDeTrabalho uot) 
+            : base(repositorio, logServico, uot)
         {
-            _repositorio = repositorio;
         }
 
         public async Task AtualizarAsync(Guid id, EditarVeiculoDto veiculoDto)
