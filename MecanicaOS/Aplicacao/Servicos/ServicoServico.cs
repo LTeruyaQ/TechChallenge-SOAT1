@@ -35,7 +35,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, request);
 
                 if (await ObterServicoPorNomeAsync(request.Nome) != null)
-                    throw new DadosJaCadastradoException("Serviço já cadastrado");
+                    throw new DadosJaCadastradosException("Serviço já cadastrado");
 
                 var servico = _mapper.Map<Servico>(request);
 
@@ -85,7 +85,7 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, id);
 
-                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradoException("Serviço não encontrado");
+                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
                 await _repositorio.DeletarAsync(servico);
 
                 if (!await Commit())
@@ -108,7 +108,7 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, new { id, request });
 
-                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradoException("Serviço não encontrado");
+                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
 
                 servico.Atualizar(request.Nome, request.Descricao, request.Valor, request.Disponivel);
 
