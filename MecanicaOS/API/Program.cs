@@ -43,6 +43,8 @@ builder.Services.AddHangfireServer();
 builder.Services.AddScoped<ICrudRepositorio<Servico>, ServicoRepositorio>();
 builder.Services.AddScoped<ICrudRepositorio<Estoque>, EstoqueRepositorio>();
 builder.Services.AddScoped<ICrudRepositorio<Veiculo>, VeiculoRepositorio>();
+builder.Services.AddScoped<ICrudRepositorio<Cliente>, ClienteRepositorio>();
+builder.Services.AddScoped<ICrudRepositorio<Endereco>, EnderecoRepositorio>();
 
 // Serviços
 builder.Services.AddScoped<Aplicacao.Interfaces.Servicos.IServicoServico, ServicoServico>();

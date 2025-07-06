@@ -4,21 +4,21 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infraestrutura.Dados.Mapeamentos;
 
-public class ContatoMap : IEntityTypeConfiguration<Contato>
+public class UsuarioMap : IEntityTypeConfiguration<Usuario>
 {
-    public void Configure(EntityTypeBuilder<Contato> builder)
+    public void Configure(EntityTypeBuilder<Usuario> builder)
     {
         builder.HasKey(c => c.Id);
         builder.Property(e => e.DataCadastro).IsRequired();        
         builder.Property(e => e.Ativo).IsRequired();
         builder.Property(e => e.DataAtualizacao).IsRequired(false);
 
-        builder.Property(e => e.Email).IsRequired();
-        builder.Property(e => e.Telefone).IsRequired();
+        builder.Property(e => e.Login).IsRequired();
+        builder.Property(e => e.Senha).IsRequired();
 
         builder.HasOne(e => e.Cliente)
-               .WithOne(c => c.Contato)
-               .HasForeignKey<Cliente>(e => e.Contato)
+               .WithOne(c => c.Usuario)
+               .HasForeignKey<Cliente>(e => e.Usuario)
                .OnDelete(DeleteBehavior.Cascade);
     }
 }
