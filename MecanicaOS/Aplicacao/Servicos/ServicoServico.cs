@@ -1,47 +1,52 @@
-﻿using Aplicacao.DTOs.Servico;
-using Aplicacao.Logs.Services;
+using Aplicacao.DTOs.Requests.Servico;
+using Aplicacao.DTOs.Responses.Servico;
+using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
-using Dominio.DTOs;
+using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Especificacoes;
+using Dominio.Especificacoes.Base.Extensoes;
 using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Services;
-using Microsoft.Extensions.Logging;
+using Dominio.Interfaces.Servicos;
 
 namespace Aplicacao.Servicos
 {
-    public class ServicoServico : ServicoAbstratoLog<ServicoServico>, IServicoServico
+    public class ServicoServico : ServicoAbstrato<ServicoServico, Servico>, IServicoServico
     {
-        private readonly ICrudRepositorio<Servico> _repositorio;
+        private readonly IMapper _mapper;
 
-        public ServicoServico(ICorrelationIdService correlationIdLog,
-            ILogger<ServicoServico> logger, ICrudRepositorio<Servico> repositorio) : base(correlationIdLog, logger)
+        public ServicoServico(
+            ICrudRepositorio<Servico> repositorio, 
+            ILogServico<ServicoServico> logServico, 
+            IUnidadeDeTrabalho uot,
+            IMapper mapper)
+            : base(repositorio, logServico, uot)
         {
-            _repositorio = repositorio;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<Servico> CadastrarServico(CadastrarServicoDto cadastrarServico)
+        public async Task<ServicoResponse> CadastrarServicoAsync(CadastrarServicoRequest request)
         {
-            var metodo = nameof(CadastrarServico);
+            var metodo = nameof(CadastrarServicoAsync);
             try
             {
-                LogInicio(metodo, cadastrarServico);
+                LogInicio(metodo, request);
 
-                Servico servico = new Servico()
-                {
-                    Descricao = cadastrarServico.Descricao,
-                    Nome = cadastrarServico.Nome,
-                    Disponivel = cadastrarServico.Disponivel,
-                    Valor = cadastrarServico.Valor
-                };
+                if (await ObterServicoPorNomeAsync(request.Nome) != null)
+                    throw new RegistroJaCadastradoException("Serviço já cadastrado");
+
+                var servico = _mapper.Map<Servico>(request);
 
                 var entidade = await _repositorio.CadastrarAsync(servico);
 
-                LogFim(metodo);
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao cadastrar serviço");
 
-                return entidade;
+                LogFim(metodo, entidade);
+
+                return _mapper.Map<ServicoResponse>(entidade);
             }
             catch (Exception e)
             {
@@ -50,49 +55,41 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task DeletarServico(Guid id)
+        public async Task<ServicoResponse?> ObterServicoPorNomeAsync(string nome)
         {
-            var metodo = nameof(DeletarServico);
+            var metodo = nameof(ObterServicosDisponiveisAsync);
+            try
+            {
+                LogInicio(metodo);
+
+                var especificacao = new ObterServicoPorNomeEspecificacao(nome)
+                    .E(new ObterServicoDisponivelEspecificacao());
+
+                var servico = await _repositorio.ObterUmAsync(especificacao);
+
+                LogFim(metodo, servico);
+
+                return _mapper.Map<ServicoResponse>(servico);
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+
+        public async Task DeletarServicoAsync(Guid id)
+        {
+            var metodo = nameof(DeletarServicoAsync);
             try
             {
                 LogInicio(metodo, id);
 
-                var servico = await ObterServicoPorId(id);
+                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new RegistroNaoEncontradoException("Serviço não encontrado");
                 await _repositorio.DeletarAsync(servico);
 
-                LogFim(metodo);
-            }
-            catch (Exception e)
-            {
-                LogErro(metodo, e);
-                throw;
-            }
-        }
-
-        public async Task EditarServico(Guid id, EditarServicoDto novoServico)
-        {
-            var metodo = nameof(EditarServico);
-
-            try
-            {
-                LogInicio(metodo, new { id, novoServico });
-                var servico = await ObterServicoPorId(id);
-
-                if (servico.Nome != novoServico.Nome)
-                    servico.Nome = novoServico.Nome;
-
-                if (servico.Descricao != novoServico.Descricao)
-                    servico.Descricao = novoServico.Descricao;
-
-                if (servico.Valor != novoServico.Valor)
-                    servico.Valor = novoServico.Valor;
-
-                if (servico.Disponivel != novoServico.Disponivel)
-                    servico.Disponivel = novoServico.Disponivel;
-
-                servico.DataAtualizacao = DateTime.UtcNow;
-
-                await _repositorio.Editar(servico);
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao deletar serviço");
 
                 LogFim(metodo);
             }
@@ -103,19 +100,26 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<Servico> ObterServicoPorId(Guid id)
+        public async Task<ServicoResponse> EditarServicoAsync(Guid id, EditarServicoRequest request)
         {
-            var metodo = nameof(ObterServicoPorId);
+            var metodo = nameof(EditarServicoAsync);
+
             try
             {
-                LogInicio(metodo);
-                var servico = await _repositorio.ObterPorIdAsync(id);
+                LogInicio(metodo, new { id, request });
 
-                if (servico is null) throw new EntidadeNaoEncontradaException($"Não foi encontrado o serviço de id: {id}");
+                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new RegistroNaoEncontradoException("Serviço não encontrado");
+
+                servico.Atualizar(request.Nome, request.Descricao, request.Valor, request.Disponivel);
+
+                await _repositorio.EditarAsync(servico);
+
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao atualizar serviço");
 
                 LogFim(metodo, servico);
 
-                return servico;
+                return _mapper.Map<ServicoResponse>(servico);
             }
             catch (Exception e)
             {
@@ -124,40 +128,60 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<IEnumerable<Servico>> ObterServicosPorFiltro(FiltrarServicoDto filtroDto)
+        public async Task<ServicoResponse> ObterServicoPorIdAsync(Guid id)
         {
-            var metodo = nameof(ObterServicosPorFiltro);
-            try
-            {
-                LogInicio(metodo, filtroDto);
-
-                IEspecificacao<Servico> filtro = new ServicoDisponivelEspecificacao();
-
-                var result = await _repositorio.ObterPorFiltro(filtro);
-
-                LogFim(metodo, result);
-
-                return result;
-            }
-            catch (Exception e)
-            {
-                LogErro(metodo, e);
-                throw;
-            }
-        }
-
-        public async Task<IEnumerable<Servico>> ObterTodos()
-        {
-            var metodo = nameof(ObterTodos);
+            var metodo = nameof(ObterServicoPorIdAsync);
             try
             {
                 LogInicio(metodo);
 
-                var result = await _repositorio.ObterTodos();
+                var servico = await _repositorio.ObterPorIdAsync(id);
 
-                LogFim(metodo, result);
+                LogFim(metodo, servico);
 
-                return result;
+                return _mapper.Map<ServicoResponse>(servico);
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<ServicoResponse>> ObterServicosDisponiveisAsync()
+        {
+            var metodo = nameof(ObterServicosDisponiveisAsync);
+            try
+            {
+                LogInicio(metodo);
+
+                IEspecificacao<Servico> filtro = new ObterServicoDisponivelEspecificacao();
+
+                var servicos = await _repositorio.ObterPorFiltroAsync(filtro);
+
+                LogFim(metodo, servicos);
+
+                return _mapper.Map<IEnumerable<ServicoResponse>>(servicos);
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<ServicoResponse>> ObterTodosAsync()
+        {
+            var metodo = nameof(ObterTodosAsync);
+            try
+            {
+                LogInicio(metodo);
+
+                var servicos = await _repositorio.ObterTodosAsync();
+
+                LogFim(metodo, servicos);
+
+                return _mapper.Map<IEnumerable<ServicoResponse>>(servicos);
             }
             catch (Exception e)
             {

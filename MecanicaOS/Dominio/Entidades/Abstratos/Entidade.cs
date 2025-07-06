@@ -11,14 +11,15 @@ namespace Dominio.Entidades.Abstratos
         protected Entidade()
         {
             Id = Guid.NewGuid();
-            DataCadastro = DateTime.UtcNow;
         }
-        
-        public static bool operator ==(Entidade e1, Entidade e2){
+
+        public static bool operator ==(Entidade e1, Entidade e2)
+        {
             return e1.Id.Equals(e2.Id);
         }
 
-        public static bool operator !=(Entidade e1, Entidade e2){
+        public static bool operator !=(Entidade e1, Entidade e2)
+        {
             return !(e1 == e2);
         }
     }

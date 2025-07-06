@@ -17,24 +17,21 @@ public class EstoqueRepositorio : ICrudRepositorio<Estoque>
 
     public async Task<Estoque> CadastrarAsync(Estoque estoque)
     {
-        var entidade =_dbContext.Estoques.Add(estoque);
-        await _dbContext.SaveChangesAsync();
+        var entidade = await Task.Run(() => _dbContext.Estoques.Add(estoque));
         return entidade.Entity;
     }
 
     public async Task DeletarAsync(Estoque estoque)
     {
-        _dbContext.Estoques.Remove(estoque);
-        await _dbContext.SaveChangesAsync();
+        await Task.Run(() => _dbContext.Estoques.Remove(estoque));
     }
 
-    public async Task Editar(Estoque novaEntidade)
+    public async Task EditarAsync(Estoque novaEntidade)
     {
-        _dbContext.Estoques.Update(novaEntidade);
-        await _dbContext.SaveChangesAsync();
+        await Task.Run(() => _dbContext.Estoques.Update(novaEntidade));
     }
 
-    public async Task<IEnumerable<Estoque>> ObterPorFiltro(IEspecificacao<Estoque> especificacao)
+    public async Task<IEnumerable<Estoque>> ObterPorFiltroAsync(IEspecificacao<Estoque> especificacao)
     {
         return await _dbContext.Estoques.AsNoTracking().Where(especificacao.Expressao).ToListAsync();
     }
@@ -44,8 +41,13 @@ public class EstoqueRepositorio : ICrudRepositorio<Estoque>
         return await _dbContext.Estoques.FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<IEnumerable<Estoque>> ObterTodos()
+    public async Task<IEnumerable<Estoque>> ObterTodosAsync()
     {
         return await _dbContext.Estoques.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<Estoque?> ObterUmAsync(IEspecificacao<Estoque> especificacao)
+    {
+        return await _dbContext.Estoques.AsNoTracking().Where(especificacao.Expressao).SingleOrDefaultAsync();
     }
 }

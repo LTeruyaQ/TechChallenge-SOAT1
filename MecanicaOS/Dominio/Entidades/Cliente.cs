@@ -1,4 +1,5 @@
-﻿using Dominio.Entidades.Abstratos;
+using Dominio.Entidades.Abstratos;
+using System.Collections.Generic;
 
 namespace Dominio.Entidades;
 
@@ -11,5 +12,6 @@ public class Cliente : Entidade
     public string? TipoCliente { get; set; }
     public Endereco? Endereco { get; set; }
     public Contato? Contato { get; set; }
+    public ICollection<Veiculo> Veiculos { get; set; } = new List<Veiculo>();
 
 }

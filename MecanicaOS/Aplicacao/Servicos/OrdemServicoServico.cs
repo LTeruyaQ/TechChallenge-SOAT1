@@ -1,14 +1,15 @@
-﻿using Aplicacao.Logs.Services;
+﻿using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
+using Dominio.Entidades;
+using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
-using Microsoft.Extensions.Logging;
 
 namespace Aplicacao.Servicos;
 
-public class OrdemServicoServico : ServicoAbstratoLog<OrdemServicoServico>, IOrdemServicoServico
+public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemServico>, IOrdemServicoServico
 {
-    public OrdemServicoServico(ICorrelationIdService correlationIdLog, 
-        ILogger<OrdemServicoServico> logger) : base(correlationIdLog, logger)
+    public OrdemServicoServico(ICrudRepositorio<OrdemServico> repositorio, ILogServico<OrdemServicoServico> logServico, IUnidadeDeTrabalho uot) :
+        base(repositorio, logServico, uot)
     {
     }
 }
