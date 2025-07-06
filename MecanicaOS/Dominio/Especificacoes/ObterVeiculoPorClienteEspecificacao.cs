@@ -14,6 +14,6 @@ namespace Dominio.Especificacoes
         }
 
         public Expression<Func<Veiculo, bool>> Expressao => v => true;
-            //v => v.ClienteId == _clienteId;
+        //v => v.ClienteId == _clienteId;
     }
 }

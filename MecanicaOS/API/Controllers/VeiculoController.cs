@@ -2,7 +2,6 @@ using Aplicacao.DTOs.Requests.Veiculo;
 using Aplicacao.DTOs.Responses.Veiculo;
 using Aplicacao.Interfaces.Servicos;
 using Microsoft.AspNetCore.Mvc;
-using Dominio.Exceptions;
 
 namespace API.Controllers;
 
@@ -42,8 +41,8 @@ public class VeiculoController : ControllerBase
         var sucesso = await _veiculoServico.DeletarAsync(id);
         if (!sucesso)
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Ocorreu um erro ao remover o veículo." });
-        
-        return NoContent(); 
+
+        return NoContent();
     }
 
     [HttpPut("{id:guid}")]

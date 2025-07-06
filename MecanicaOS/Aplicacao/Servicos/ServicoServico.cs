@@ -18,8 +18,8 @@ namespace Aplicacao.Servicos
         private readonly IMapper _mapper;
 
         public ServicoServico(
-            ICrudRepositorio<Servico> repositorio, 
-            ILogServico<ServicoServico> logServico, 
+            ICrudRepositorio<Servico> repositorio,
+            ILogServico<ServicoServico> logServico,
             IUnidadeDeTrabalho uot,
             IMapper mapper)
             : base(repositorio, logServico, uot)

@@ -3,7 +3,6 @@ using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Infraestrutura.Repositorios
 {

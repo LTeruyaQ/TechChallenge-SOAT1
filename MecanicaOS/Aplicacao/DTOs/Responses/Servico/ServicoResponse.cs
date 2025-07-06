@@ -1,5 +1,3 @@
-using Dominio.Entidades;
-
 namespace Aplicacao.DTOs.Responses.Servico
 {
     public class ServicoResponse
