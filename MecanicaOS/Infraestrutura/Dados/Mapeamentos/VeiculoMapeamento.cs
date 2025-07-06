@@ -34,7 +34,7 @@ public class VeiculoMapeamento : IEntityTypeConfiguration<Veiculo>
 
         builder.Property(v => v.Anotacoes)
             .HasMaxLength(500);
-        
+
         builder.Property(v => v.DataCadastro)
             .IsRequired();
 

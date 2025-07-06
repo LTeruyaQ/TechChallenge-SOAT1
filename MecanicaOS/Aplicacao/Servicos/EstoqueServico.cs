@@ -15,8 +15,8 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
     private readonly IMapper _mapper;
 
     public EstoqueServico(
-        ICrudRepositorio<Estoque> repositorio, 
-        ILogServico<EstoqueServico> logServico, 
+        ICrudRepositorio<Estoque> repositorio,
+        ILogServico<EstoqueServico> logServico,
         IUnidadeDeTrabalho uot,
         IMapper mapper)
         : base(repositorio, logServico, uot)
@@ -32,15 +32,15 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
         {
             LogInicio(metodo, request);
 
-            var estoque = await _repositorio.ObterPorIdAsync(id) 
-                ?? throw new RegistroNaoEncontradoException("Estoque não encontrado");
+            var estoque = await _repositorio.ObterPorIdAsync(id)
+                ?? throw new DadosNaoEncontradoException("Estoque não encontrado");
 
             if (request.Insumo != null) estoque.Insumo = request.Insumo;
             if (request.Descricao != null) estoque.Descricao = request.Descricao;
             if (request.Preco.HasValue) estoque.Preco = request.Preco.Value;
             if (request.QuantidadeDisponivel.HasValue) estoque.QuantidadeDisponivel = request.QuantidadeDisponivel.Value;
             if (request.QuantidadeMinima.HasValue) estoque.QuantidadeMinima = request.QuantidadeMinima.Value;
-            
+
             estoque.DataAtualizacao = DateTime.UtcNow;
 
             await _repositorio.EditarAsync(estoque);
@@ -117,8 +117,8 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
         {
             LogInicio(metodo);
 
-            var estoque = await _repositorio.ObterPorIdAsync(id) 
-                ?? throw new RegistroNaoEncontradoException("Estoque não encontrado");
+            var estoque = await _repositorio.ObterPorIdAsync(id)
+                ?? throw new DadosNaoEncontradoException("Estoque não encontrado");
 
             var response = _mapper.Map<EstoqueResponse>(estoque);
             LogFim(metodo, response);
@@ -140,8 +140,8 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
         {
             LogInicio(metodo);
 
-            var estoque = await _repositorio.ObterPorIdAsync(id) 
-                ?? throw new RegistroNaoEncontradoException("Estoque não encontrado");
+            var estoque = await _repositorio.ObterPorIdAsync(id)
+                ?? throw new DadosNaoEncontradoException("Estoque não encontrado");
 
             await _repositorio.DeletarAsync(estoque);
             var sucesso = await Commit();

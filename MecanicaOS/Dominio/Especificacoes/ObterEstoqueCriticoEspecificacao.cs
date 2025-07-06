@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes;
 
-public class EstoqueCriticoEspecificacao : IEspecificacao<Estoque>
+public class ObterEstoqueCriticoEspecificacao : IEspecificacao<Estoque>
 {
     public Expression<Func<Estoque, bool>> Expressao =>
          e => e.QuantidadeDisponivel <= e.QuantidadeMinima;

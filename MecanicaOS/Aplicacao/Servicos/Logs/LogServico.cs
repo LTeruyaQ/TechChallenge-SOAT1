@@ -1,4 +1,4 @@
-﻿using Dominio.DTOs.Logs;
+﻿using Aplicacao.DTOs.Log;
 using Dominio.Interfaces.Servicos;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;

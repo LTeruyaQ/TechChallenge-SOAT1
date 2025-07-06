@@ -51,7 +51,7 @@ builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 // Aplicacao
 builder.Services.AddAutoMapper(
-    typeof(Aplicacao.Mappings.AutoMapperServicoProfile), 
+    typeof(Aplicacao.Mappings.AutoMapperServicoProfile),
     typeof(Aplicacao.Mappings.EstoqueProfile),
     typeof(Aplicacao.Mappings.VeiculoProfile));
 
@@ -63,7 +63,7 @@ builder.Services.AddScoped<ICorrelationIdService, CorrelationIdService>();
 builder.Services.AddScoped<IdCorrelacionalLogMiddleware>();
 
 // Configuração de compactação de resposta
-builder.Services.Configure<GzipCompressionProviderOptions>(options => 
+builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
     options.Level = CompressionLevel.Optimal;
 });
@@ -119,7 +119,7 @@ app.UseReDoc(c =>
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllers();
+    _ = endpoints.MapControllers();
 });
 
 app.UseHangfireDashboard("/hangfire");

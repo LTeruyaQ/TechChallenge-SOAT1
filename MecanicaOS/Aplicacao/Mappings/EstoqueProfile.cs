@@ -10,7 +10,7 @@ namespace Aplicacao.Mappings
         public EstoqueProfile()
         {
             CreateMap<Estoque, EstoqueResponse>();
-            
+
             CreateMap<CadastrarEstoqueRequest, Estoque>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.DataCadastro, opt => opt.MapFrom(_ => DateTime.UtcNow));

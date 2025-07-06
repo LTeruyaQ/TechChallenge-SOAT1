@@ -1,7 +1,7 @@
+using API.Models;
 using Aplicacao.DTOs.Requests.Servico;
 using Aplicacao.DTOs.Responses.Servico;
 using Aplicacao.Interfaces.Servicos;
-using API.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -43,7 +43,7 @@ public class ServicosController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterPorId(Guid id)
     {
-        var servico = await _servico.ObterServicoPorIdAsync(id) 
+        var servico = await _servico.ObterServicoPorIdAsync(id)
             ?? throw new KeyNotFoundException("Serviço não encontrado");
         return Ok(servico);
     }

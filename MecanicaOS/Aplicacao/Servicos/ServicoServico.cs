@@ -18,8 +18,8 @@ namespace Aplicacao.Servicos
         private readonly IMapper _mapper;
 
         public ServicoServico(
-            ICrudRepositorio<Servico> repositorio, 
-            ILogServico<ServicoServico> logServico, 
+            ICrudRepositorio<Servico> repositorio,
+            ILogServico<ServicoServico> logServico,
             IUnidadeDeTrabalho uot,
             IMapper mapper)
             : base(repositorio, logServico, uot)
@@ -35,7 +35,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, request);
 
                 if (await ObterServicoPorNomeAsync(request.Nome) != null)
-                    throw new RegistroJaCadastradoException("Serviço já cadastrado");
+                    throw new DadosJaCadastradoException("Serviço já cadastrado");
 
                 var servico = _mapper.Map<Servico>(request);
 
@@ -85,7 +85,7 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, id);
 
-                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new RegistroNaoEncontradoException("Serviço não encontrado");
+                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradoException("Serviço não encontrado");
                 await _repositorio.DeletarAsync(servico);
 
                 if (!await Commit())
@@ -108,7 +108,7 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, new { id, request });
 
-                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new RegistroNaoEncontradoException("Serviço não encontrado");
+                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradoException("Serviço não encontrado");
 
                 servico.Atualizar(request.Nome, request.Descricao, request.Valor, request.Disponivel);
 
