@@ -15,8 +15,5 @@ namespace Aplicacao.DTOs.Responses.Estoque
         public Guid? UsuarioId { get; set; }
         public string? DataCadastro { get; set; }
         public string? DataAtualizacao { get; set; }
-
-
-
     }
 }

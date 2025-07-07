@@ -10,5 +10,4 @@ public class Usuario : Entidade
     public string? Login { get; set; }
     public string? Senha { get; set; }
     public string? TipoUsuario { get; set; }    
-
 }

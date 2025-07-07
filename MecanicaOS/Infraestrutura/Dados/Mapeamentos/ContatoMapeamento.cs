@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infraestrutura.Dados.Mapeamentos;
 
-public class ContatoMap : IEntityTypeConfiguration<Contato>
+public class ContatoMapeamento : IEntityTypeConfiguration<Contato>
 {
     public void Configure(EntityTypeBuilder<Contato> builder)
     {

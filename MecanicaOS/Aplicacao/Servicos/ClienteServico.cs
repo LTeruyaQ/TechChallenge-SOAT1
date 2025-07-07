@@ -43,7 +43,6 @@ namespace Aplicacao.Servicos
                 if (request.Documento != null) cliente.Documento = request.Documento;
                 if (request.DataNascimento != null) cliente.DataNascimento = request.DataNascimento;               
                 
-                
                 cliente.DataAtualizacao = DateTime.UtcNow;
 
                 await _repositorio.EditarAsync(cliente);

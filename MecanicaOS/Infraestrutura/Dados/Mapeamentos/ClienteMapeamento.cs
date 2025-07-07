@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infraestrutura.Dados.Mapeamentos;
 
-public class ClienteMap : IEntityTypeConfiguration<Cliente>
+public class ClienteMapeamento : IEntityTypeConfiguration<Cliente>
 {
     public void Configure(EntityTypeBuilder<Cliente> builder)
     {

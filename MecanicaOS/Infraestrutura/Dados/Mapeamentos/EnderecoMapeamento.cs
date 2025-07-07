@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infraestrutura.Dados.Mapeamentos;
 
-public class EnderecoMap : IEntityTypeConfiguration<Endereco>
+public class EnderecoMapeamento : IEntityTypeConfiguration<Endereco>
 {
     public void Configure(EntityTypeBuilder<Endereco> builder)
     {
