@@ -35,8 +35,8 @@ public class GlobalExceptionHandlerMiddleware
         var statusCode = exception switch
         {
             DadosInvalidosException => HttpStatusCode.BadRequest,
-            RegistroNaoEncontradoException or KeyNotFoundException => HttpStatusCode.NotFound,
-            RegistroJaCadastradoException => HttpStatusCode.Conflict,
+            DadosNaoEncontradosException or KeyNotFoundException => HttpStatusCode.NotFound,
+            DadosJaCadastradosException => HttpStatusCode.Conflict,
             _ => HttpStatusCode.InternalServerError
         };
 

@@ -121,7 +121,7 @@ app.UseReDoc(c =>
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllers();
+    _ = endpoints.MapControllers();
 });
 
 app.UseHangfireDashboard("/hangfire");

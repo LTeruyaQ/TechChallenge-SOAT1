@@ -11,9 +11,9 @@ namespace API.Controllers;
 [Consumes("application/json")]
 public class EstoqueController : ControllerBase
 {
-    private readonly Aplicacao.Interfaces.Servicos.IEstoqueServico _estoqueService;
+    private readonly IEstoqueServico _estoqueService;
 
-    public EstoqueController(Aplicacao.Interfaces.Servicos.IEstoqueServico estoqueService)
+    public EstoqueController(IEstoqueServico estoqueService)
     {
         _estoqueService = estoqueService;
     }

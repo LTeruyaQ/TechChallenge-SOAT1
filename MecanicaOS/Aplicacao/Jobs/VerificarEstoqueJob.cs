@@ -19,7 +19,7 @@ public class VerificarEstoqueJob
 
     public async Task ExecutarAsync()
     {
-        IEspecificacao<Estoque> filtro = new EstoqueCriticoEspecificacao();
+        IEspecificacao<Estoque> filtro = new ObterEstoqueCriticoEspecificacao();
 
         IEnumerable<Estoque> insumosCriticos = await _estoqueRepositorio.ObterPorFiltroAsync(filtro);
 

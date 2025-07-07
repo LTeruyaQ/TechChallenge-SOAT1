@@ -34,7 +34,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, new { id, request });
 
                 var veiculo = await _repositorio.ObterPorIdAsync(id)
-                    ?? throw new RegistroNaoEncontradoException("Veículo não encontrado");
+                    ?? throw new DadosNaoEncontradosException("Veículo não encontrado");
 
                 if (request.Placa != null) veiculo.Placa = request.Placa;
                 if (request.Marca != null) veiculo.Marca = request.Marca;
@@ -98,7 +98,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, id);
 
                 var veiculo = await _repositorio.ObterPorIdAsync(id)
-                    ?? throw new RegistroNaoEncontradoException($"Veículo com ID {id} não encontrado.");
+                    ?? throw new DadosNaoEncontradosException($"Veículo com ID {id} não encontrado.");
 
                 var response = _mapper.Map<VeiculoResponse>(veiculo);
                 LogFim(metodo, response);
@@ -122,7 +122,7 @@ namespace Aplicacao.Servicos
 
                 var filtro = new ObterVeiculoPorClienteEspecificacao(clienteId);
                 var veiculos = await _repositorio.ObterPorFiltroAsync(filtro)
-                    ?? throw new RegistroNaoEncontradoException("Cliente não possui nenhum veículo.");
+                    ?? throw new DadosNaoEncontradosException("Cliente não possui nenhum veículo.");
 
                 var response = _mapper.Map<IEnumerable<VeiculoResponse>>(veiculos);
                 LogFim(metodo, response);
@@ -146,7 +146,7 @@ namespace Aplicacao.Servicos
 
                 var filtro = new ObterVeiculoPorPlacaEspecificacao(placa);
                 var veiculos = await _repositorio.ObterPorFiltroAsync(filtro)
-                    ?? throw new RegistroNaoEncontradoException($"Veículo com placa {placa} não encontrado.");
+                    ?? throw new DadosNaoEncontradosException($"Veículo com placa {placa} não encontrado.");
 
                 var veiculo = veiculos.FirstOrDefault();
                 var response = veiculo is not null ? _mapper.Map<VeiculoResponse>(veiculo) : null;
@@ -192,7 +192,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, id);
 
                 var veiculo = await _repositorio.ObterPorIdAsync(id)
-                    ?? throw new RegistroNaoEncontradoException("Veículo não encontrado");
+                    ?? throw new DadosNaoEncontradosException("Veículo não encontrado");
 
                 await _repositorio.DeletarAsync(veiculo);
                 var sucesso = await Commit();

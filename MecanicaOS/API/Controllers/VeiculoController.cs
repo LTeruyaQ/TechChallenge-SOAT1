@@ -29,21 +29,8 @@ public class VeiculoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Cadastrar([FromBody] CadastrarVeiculoRequest request)
     {
-        try
-        {
-            var response = await _veiculoServico.CadastrarAsync(request);
-            return CreatedAtAction(nameof(ObterPorId), new { id = response.Id }, response);
-        }
-        catch (RegistroNaoEncontradoException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao cadastrar veículo: {Mensagem}", ex.Message);
-            return NotFound(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao cadastrar veículo");
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Ocorreu um erro interno ao processar sua solicitação." });
-        }
+        var response = await _veiculoServico.CadastrarAsync(request);
+        return CreatedAtAction(nameof(ObterPorId), new { id = response.Id }, response);
     }
 
     [HttpDelete("{id:guid}")]
@@ -52,24 +39,11 @@ public class VeiculoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Deletar(Guid id)
     {
-        try
-        {
-            var sucesso = await _veiculoServico.DeletarAsync(id);
-            if (!sucesso)
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Ocorreu um erro ao remover o veículo." });
+        var sucesso = await _veiculoServico.DeletarAsync(id);
+        if (!sucesso)
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Ocorreu um erro ao remover o veículo." });
 
-            return NoContent();
-        }
-        catch (RegistroNaoEncontradoException ex)
-        {
-            _logger.LogWarning(ex, "Veículo não encontrado: {Id}", id);
-            return NotFound(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao remover veículo: {Id}", id);
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Ocorreu um erro interno ao processar sua solicitação." });
-        }
+        return NoContent();
     }
 
     [HttpPut("{id:guid}")]
@@ -79,21 +53,8 @@ public class VeiculoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Editar(Guid id, [FromBody] AtualizarVeiculoRequest request)
     {
-        try
-        {
-            var response = await _veiculoServico.AtualizarAsync(id, request);
-            return Ok(response);
-        }
-        catch (RegistroNaoEncontradoException ex)
-        {
-            _logger.LogWarning(ex, "Veículo não encontrado: {Id}", id);
-            return NotFound(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao atualizar veículo: {Id}", id);
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Ocorreu um erro interno ao processar sua solicitação." });
-        }
+        var response = await _veiculoServico.AtualizarAsync(id, request);
+        return Ok(response);
     }
 
     [HttpGet("cliente/{clienteId:guid}")]
@@ -102,21 +63,8 @@ public class VeiculoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterPorCliente(Guid clienteId)
     {
-        try
-        {
-            var response = await _veiculoServico.ObterPorClienteAsync(clienteId);
-            return Ok(response);
-        }
-        catch (RegistroNaoEncontradoException ex)
-        {
-            _logger.LogWarning(ex, "Nenhum veículo encontrado para o cliente: {ClienteId}", clienteId);
-            return NotFound(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao buscar veículos do cliente: {ClienteId}", clienteId);
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Ocorreu um erro interno ao processar sua solicitação." });
-        }
+        var response = await _veiculoServico.ObterPorClienteAsync(clienteId);
+        return Ok(response);
     }
 
     [HttpGet("{id:guid}")]
@@ -125,21 +73,8 @@ public class VeiculoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterPorId(Guid id)
     {
-        try
-        {
-            var response = await _veiculoServico.ObterPorIdAsync(id);
-            return Ok(response);
-        }
-        catch (RegistroNaoEncontradoException ex)
-        {
-            _logger.LogWarning(ex, "Veículo não encontrado: {Id}", id);
-            return NotFound(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao buscar veículo: {Id}", id);
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Ocorreu um erro interno ao processar sua solicitação." });
-        }
+        var response = await _veiculoServico.ObterPorIdAsync(id);
+        return Ok(response);
     }
 
     [HttpGet]
@@ -147,15 +82,7 @@ public class VeiculoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterTodos()
     {
-        try
-        {
-            var response = await _veiculoServico.ObterTodosAsync();
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao listar veículos");
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Ocorreu um erro interno ao processar sua solicitação." });
-        }
+        var response = await _veiculoServico.ObterTodosAsync();
+        return Ok(response);
     }
 }
