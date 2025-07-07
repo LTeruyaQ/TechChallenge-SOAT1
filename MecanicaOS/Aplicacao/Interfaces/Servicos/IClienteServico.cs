@@ -11,7 +11,6 @@ namespace Aplicacao.Interfaces.Servicos
         Task<ClienteResponse> AtualizarAsync(Guid id, AtualizarClienteRequest request);
         Task<bool> DeletarAsync(Guid id);
         Task<ClienteResponse> ObterPorIdAsync(Guid id);
-        Task<IEnumerable<ClienteResponse>> ObterTodosAsync();
-        Task<IEnumerable<ClienteResponse>> ObterPorClienteAsync(Guid clienteId);
+        Task<IEnumerable<ClienteResponse>> ObterTodosAsync();        
     }
 }
