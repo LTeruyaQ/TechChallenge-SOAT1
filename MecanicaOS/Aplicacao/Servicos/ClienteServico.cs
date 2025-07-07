@@ -40,7 +40,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, new { id, request });
 
                 var cliente = await _repositorio.ObterPorIdAsync(id)
-                    ?? throw new RegistroNaoEncontradoException("cliente não encontrado");
+                    ?? throw new DadosNaoEncontradosException("cliente não encontrado");
 
                 if (request.Nome != null) cliente.Nome = request.Nome;
                 if (request.Sexo != null) cliente.Sexo = request.Sexo;
@@ -194,7 +194,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, id);
 
                 var veiculo = await _repositorio.ObterPorIdAsync(id)
-                    ?? throw new RegistroNaoEncontradoException($"Cliente com ID {id} não encontrado.");
+                    ?? throw new DadosNaoEncontradosException($"Cliente com ID {id} não encontrado.");
 
                 var response = _mapper.Map<ClienteResponse>(veiculo);
                 LogFim(metodo, response);
@@ -238,7 +238,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, id);
 
                 var veiculo = await _repositorio.ObterPorIdAsync(id)
-                    ?? throw new RegistroNaoEncontradoException("Cliente não encontrado");
+                    ?? throw new DadosNaoEncontradosException("Cliente não encontrado");
 
                 await _repositorio.DeletarAsync(veiculo);
                 var sucesso = await Commit();
