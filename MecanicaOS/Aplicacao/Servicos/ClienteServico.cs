@@ -43,7 +43,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, new { id, request });
 
                 var cliente = await _repositorio.ObterPorIdAsync(id)
-                    ?? throw new RegistroNaoEncontradoException("Veículo não encontrado");
+                    ?? throw new RegistroNaoEncontradoException("cliente não encontrado");
 
                 if (request.Nome != null) cliente.Nome = request.Nome;
                 if (request.Sexo != null) cliente.Sexo = request.Sexo;
