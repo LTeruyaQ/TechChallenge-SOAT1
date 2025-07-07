@@ -1,3 +1,5 @@
+using System.IO.Compression;
+using System.Text.Json.Serialization;
 using API.Middlewares;
 using Aplicacao.Jobs;
 using Aplicacao.Servicos;
@@ -13,8 +15,6 @@ using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using System.IO.Compression;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +43,8 @@ builder.Services.AddHangfireServer();
 builder.Services.AddScoped<ICrudRepositorio<Servico>, ServicoRepositorio>();
 builder.Services.AddScoped<ICrudRepositorio<Estoque>, EstoqueRepositorio>();
 builder.Services.AddScoped<ICrudRepositorio<Veiculo>, VeiculoRepositorio>();
+builder.Services.AddScoped<ICrudRepositorio<Cliente>, ClienteRepositorio>();
+builder.Services.AddScoped<ICrudRepositorio<Endereco>, EnderecoRepositorio>();
 
 // Serviços
 builder.Services.AddScoped<Aplicacao.Interfaces.Servicos.IServicoServico, ServicoServico>();

@@ -1,8 +1,8 @@
-﻿using Aplicacao.DTOs.Log;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Aplicacao.DTOs.Log;
 using Dominio.Interfaces.Servicos;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Aplicacao.Servicos.Logs
 {

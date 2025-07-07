@@ -11,6 +11,10 @@ public class MecanicaContexto : DbContext
     public DbSet<Servico> Servicos { get; set; }
     public DbSet<Estoque> Estoques { get; set; }
     public DbSet<Veiculo> Veiculos { get; set; }
+    public DbSet<Cliente> Clientes { get; set; }
+    public DbSet<Endereco> Enderecos { get; set; }
+    public DbSet<Contato> Contatos { get; set; }
+    public DbSet<Usuario> Usuarios { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

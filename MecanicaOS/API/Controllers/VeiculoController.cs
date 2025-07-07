@@ -1,6 +1,7 @@
 using Aplicacao.DTOs.Requests.Veiculo;
 using Aplicacao.DTOs.Responses.Veiculo;
 using Aplicacao.Interfaces.Servicos;
+using Dominio.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
