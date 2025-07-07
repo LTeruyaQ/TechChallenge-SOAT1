@@ -1,5 +1,4 @@
 using Dominio.Entidades.Abstratos;
-using System.Collections.Generic;
 
 namespace Dominio.Entidades;
 

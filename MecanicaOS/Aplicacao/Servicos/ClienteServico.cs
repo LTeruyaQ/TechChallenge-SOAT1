@@ -1,11 +1,9 @@
 using Aplicacao.DTOs.Requests.Veiculo;
 using Aplicacao.DTOs.Responses.Estoque;
-using Aplicacao.DTOs.Responses.Veiculo;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
-using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
@@ -15,14 +13,21 @@ namespace Aplicacao.Servicos
     public class ClienteServico : ServicoAbstrato<ClienteServico, Cliente>, IClienteServico
     {
         private readonly IMapper _mapper;
+        private readonly ICrudRepositorio<Endereco> _repositoryEndereco;
+        private readonly ICrudRepositorio<Contato> _repositoryContato;
+
 
         public ClienteServico(
-            ICrudRepositorio<Cliente> repositorio, 
-            ILogServico<ClienteServico> logServico, 
+            ICrudRepositorio<Cliente> repositorio,
+            ICrudRepositorio<Endereco> repositoryEndereco,
+            ICrudRepositorio<Contato> repositoryContato,
+            ILogServico<ClienteServico> logServico,
             IUnidadeDeTrabalho uot,
             IMapper mapper)
             : base(repositorio, logServico, uot)
         {
+            _repositoryContato = repositoryContato;
+            _repositoryEndereco = repositoryEndereco;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -34,18 +39,23 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, new { id, request });
 
-                var cliente = await _repositorio.ObterPorIdAsync(id) 
-                    ?? throw new RegistroNaoEncontradoException("Veículo não encontrado");
+                var cliente = await _repositorio.ObterPorIdAsync(id)
+                    ?? throw new DadosNaoEncontradosException("cliente não encontrado");
 
                 if (request.Nome != null) cliente.Nome = request.Nome;
                 if (request.Sexo != null) cliente.Sexo = request.Sexo;
                 if (request.TipoCliente != null) cliente.TipoCliente = request.TipoCliente;
                 if (request.Documento != null) cliente.Documento = request.Documento;
-                if (request.DataNascimento != null) cliente.DataNascimento = request.DataNascimento;               
-                
+                if (request.DataNascimento != null) cliente.DataNascimento = request.DataNascimento;
                 cliente.DataAtualizacao = DateTime.UtcNow;
 
                 await _repositorio.EditarAsync(cliente);
+
+                if (!request.EnderecoId.Equals(Guid.Empty))
+                    await UpdateEnderecoCliente(request);
+
+                if (!request.ContatoId.Equals(Guid.Empty))
+                    await UpdateContatoCliente(request);
 
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao atualizar cliente");
@@ -61,6 +71,85 @@ namespace Aplicacao.Servicos
                 throw;
             }
         }
+
+        private async Task UpdateEnderecoCliente(AtualizarClienteRequest enderecoCliente)
+        {
+            Endereco endereco = null;
+
+            if (!enderecoCliente.EnderecoId.Equals(Guid.Empty))
+            {
+                endereco = await _repositoryEndereco.ObterPorIdAsync(enderecoCliente.EnderecoId);
+
+                if (endereco == null)
+                    throw new Exception("Endereço inexistente");
+
+                endereco.Bairro = enderecoCliente.Bairro;
+                endereco.Numero = enderecoCliente.Numero;
+                endereco.CEP = enderecoCliente.CEP;
+                endereco.Cidade = enderecoCliente.Cidade;
+                endereco.Complemento = enderecoCliente.Complemento;
+                endereco.Rua = enderecoCliente.Rua;
+                endereco.DataAtualizacao = DateTime.UtcNow;
+                await _repositoryEndereco.EditarAsync(endereco);
+            }
+        }
+
+        private async Task UpdateContatoCliente(AtualizarClienteRequest contatoCliente)
+        {
+
+            if (!contatoCliente.ContatoId.Equals(Guid.Empty))
+            {
+                var entityContato = await _repositoryContato.ObterPorIdAsync(contatoCliente.ContatoId);
+
+                if (entityContato == null)
+                    throw new Exception("Endereço inexistente");
+
+                entityContato.Telefone = contatoCliente.Telefone;
+                entityContato.IdCliente = contatoCliente.Id.Value;
+                entityContato.Email = contatoCliente.Email;
+                entityContato.DataAtualizacao = DateTime.UtcNow;
+                await _repositoryContato.EditarAsync(entityContato);
+            }
+        }
+
+
+
+        private async Task InsertEnderecoCliente(CadastrarClienteRequest enderecoCliente)
+        {
+            Endereco endereco = null;
+
+            if (!enderecoCliente.Id.Equals(Guid.Empty))
+            {
+                endereco = new Endereco();
+                endereco.Bairro = enderecoCliente.Bairro;
+                endereco.Numero = enderecoCliente.Numero;
+                endereco.CEP = enderecoCliente.CEP;
+                endereco.Cidade = enderecoCliente.Cidade;
+                endereco.Complemento = enderecoCliente.Complemento;
+                endereco.Rua = enderecoCliente.Rua;
+                endereco.IdCliente = enderecoCliente.Id;
+                endereco.DataCadastro = DateTime.UtcNow;
+                await _repositoryEndereco.CadastrarAsync(endereco);
+            }
+        }
+
+        private async Task InsertContatoCliente(CadastrarClienteRequest contatoCliente)
+        {
+            Contato contato = null;
+
+            if (!contatoCliente.Id.Equals(Guid.Empty))
+            {
+                contato = new Contato();
+                contato.DataCadastro = DateTime.UtcNow;
+                contato.IdCliente = contatoCliente.Id;
+                contato.Email = contatoCliente.Email;
+                contato.Telefone = contatoCliente.Telefone;
+
+                await _repositoryContato.CadastrarAsync(contato);
+            }
+        }
+
+
         public async Task<ClienteResponse> CadastrarAsync(CadastrarClienteRequest request)
         {
             string metodo = nameof(CadastrarAsync);
@@ -71,7 +160,15 @@ namespace Aplicacao.Servicos
 
                 var cliente = _mapper.Map<Cliente>(request);
 
-                await _repositorio.CadastrarAsync(cliente);
+                var entityCliente = await _repositorio.CadastrarAsync(cliente);
+
+                if (!entityCliente.Id.Equals(Guid.Empty))
+                {
+                    request.Id = entityCliente.Id;
+                    await InsertEnderecoCliente(request);
+                    await InsertContatoCliente(request);
+                }
+
 
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao cadastrar cliente");
@@ -96,8 +193,8 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, id);
 
-                var veiculo = await _repositorio.ObterPorIdAsync(id) 
-                    ?? throw new RegistroNaoEncontradoException($"Cliente com ID {id} não encontrado.");
+                var veiculo = await _repositorio.ObterPorIdAsync(id)
+                    ?? throw new DadosNaoEncontradosException($"Cliente com ID {id} não encontrado.");
 
                 var response = _mapper.Map<ClienteResponse>(veiculo);
                 LogFim(metodo, response);
@@ -140,9 +237,9 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, id);
 
-                var veiculo = await _repositorio.ObterPorIdAsync(id) 
-                    ?? throw new RegistroNaoEncontradoException("Cliente não encontrado");
-                
+                var veiculo = await _repositorio.ObterPorIdAsync(id)
+                    ?? throw new DadosNaoEncontradosException("Cliente não encontrado");
+
                 await _repositorio.DeletarAsync(veiculo);
                 var sucesso = await Commit();
 
@@ -158,11 +255,6 @@ namespace Aplicacao.Servicos
                 LogErro(metodo, e);
                 throw;
             }
-        }
-
-        public Task<IEnumerable<ClienteResponse>> ObterPorClienteAsync(Guid clienteId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

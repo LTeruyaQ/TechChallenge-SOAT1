@@ -1,7 +1,7 @@
+using API.Models;
 using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Interfaces.Servicos;
-using API.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -12,9 +12,9 @@ namespace API.Controllers;
 [Consumes("application/json")]
 public class EstoqueController : ControllerBase
 {
-    private readonly Aplicacao.Interfaces.Servicos.IEstoqueServico _estoqueService;
+    private readonly IEstoqueServico _estoqueService;
 
-    public EstoqueController(Aplicacao.Interfaces.Servicos.IEstoqueServico estoqueService)
+    public EstoqueController(IEstoqueServico estoqueService)
     {
         _estoqueService = estoqueService;
     }
@@ -69,7 +69,7 @@ public class EstoqueController : ControllerBase
         var sucesso = await _estoqueService.DeletarAsync(id);
         if (!sucesso)
             return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Erro ao remover o item do estoque" });
-            
+
         return NoContent();
     }
 }

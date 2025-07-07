@@ -1,6 +1,6 @@
-﻿using Dominio.Entidades;
+﻿using System.Linq.Expressions;
+using Dominio.Entidades;
 using Dominio.Especificacoes.Base.Interfaces;
-using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes
 {

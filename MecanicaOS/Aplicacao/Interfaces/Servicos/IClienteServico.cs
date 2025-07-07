@@ -1,7 +1,5 @@
 using Aplicacao.DTOs.Requests.Veiculo;
 using Aplicacao.DTOs.Responses.Estoque;
-using Aplicacao.DTOs.Responses.Veiculo;
-using Dominio.Entidades;
 
 namespace Aplicacao.Interfaces.Servicos
 {
@@ -12,6 +10,5 @@ namespace Aplicacao.Interfaces.Servicos
         Task<bool> DeletarAsync(Guid id);
         Task<ClienteResponse> ObterPorIdAsync(Guid id);
         Task<IEnumerable<ClienteResponse>> ObterTodosAsync();
-        Task<IEnumerable<ClienteResponse>> ObterPorClienteAsync(Guid clienteId);
     }
 }

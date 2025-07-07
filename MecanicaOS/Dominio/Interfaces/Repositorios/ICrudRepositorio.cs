@@ -1,5 +1,4 @@
-﻿using Dominio.Entidades;
-using Dominio.Especificacoes.Base.Interfaces;
+﻿using Dominio.Especificacoes.Base.Interfaces;
 
 namespace Dominio.Interfaces.Repositorios;
 

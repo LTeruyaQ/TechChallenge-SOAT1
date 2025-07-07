@@ -1,6 +1,6 @@
-using Dominio.Exceptions;
 using System.Net;
 using System.Text.Json;
+using Dominio.Exceptions;
 
 namespace API.Middlewares;
 
@@ -35,8 +35,8 @@ public class GlobalExceptionHandlerMiddleware
         var statusCode = exception switch
         {
             DadosInvalidosException => HttpStatusCode.BadRequest,
-            RegistroNaoEncontradoException or KeyNotFoundException => HttpStatusCode.NotFound,
-            RegistroJaCadastradoException => HttpStatusCode.Conflict,
+            DadosNaoEncontradosException or KeyNotFoundException => HttpStatusCode.NotFound,
+            DadosJaCadastradosException => HttpStatusCode.Conflict,
             _ => HttpStatusCode.InternalServerError
         };
 
