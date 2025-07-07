@@ -11,9 +11,11 @@ public class Servico : Entidade
     public Servico()
     { }
 
-    public void Atualizar(string nome, string descricao, decimal valor, bool disponivel)
+    public void Atualizar(string nome, string descricao, decimal? valor, bool? disponivel)
     {
-
-        throw new NotImplementedException();
+        if(!string.IsNullOrEmpty(nome)) Nome = nome;
+        if(!string.IsNullOrEmpty(descricao)) Descricao = descricao;
+        if(valor.HasValue) Valor = valor.Value;
+        if(disponivel.HasValue) Disponivel = disponivel.Value;
     }
 }
