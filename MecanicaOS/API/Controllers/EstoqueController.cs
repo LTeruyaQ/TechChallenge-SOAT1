@@ -1,7 +1,6 @@
+using API.Models;
 using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
-using Aplicacao.Interfaces.Servicos;
-using API.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -69,7 +68,7 @@ public class EstoqueController : ControllerBase
         var sucesso = await _estoqueService.DeletarAsync(id);
         if (!sucesso)
             return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Erro ao remover o item do estoque" });
-            
+
         return NoContent();
     }
 }

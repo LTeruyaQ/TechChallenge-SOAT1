@@ -9,7 +9,7 @@ public class UsuarioMap : IEntityTypeConfiguration<Usuario>
     public void Configure(EntityTypeBuilder<Usuario> builder)
     {
         builder.HasKey(c => c.Id);
-        builder.Property(e => e.DataCadastro).IsRequired();        
+        builder.Property(e => e.DataCadastro).IsRequired();
         builder.Property(e => e.Ativo).IsRequired();
         builder.Property(e => e.DataAtualizacao).IsRequired(false);
 

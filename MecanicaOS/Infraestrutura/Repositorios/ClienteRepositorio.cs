@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Dominio.Entidades;
+﻿using Dominio.Entidades;
 using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;

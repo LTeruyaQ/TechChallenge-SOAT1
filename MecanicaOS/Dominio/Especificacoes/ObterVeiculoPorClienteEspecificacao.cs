@@ -1,6 +1,6 @@
-﻿using Dominio.Entidades;
+﻿using System.Linq.Expressions;
+using Dominio.Entidades;
 using Dominio.Especificacoes.Base.Interfaces;
-using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes
 {
@@ -14,6 +14,6 @@ namespace Dominio.Especificacoes
         }
 
         public Expression<Func<Veiculo, bool>> Expressao => v => true;
-            //v => v.ClienteId == _clienteId;
+        //v => v.ClienteId == _clienteId;
     }
 }

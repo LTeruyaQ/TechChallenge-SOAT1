@@ -1,12 +1,9 @@
-using System.Threading.Tasks;
 using Aplicacao.DTOs.Requests.Veiculo;
 using Aplicacao.DTOs.Responses.Estoque;
-using Aplicacao.DTOs.Responses.Veiculo;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
-using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
@@ -85,21 +82,21 @@ namespace Aplicacao.Servicos
 
                 if (endereco == null)
                     throw new Exception("Endereço inexistente");
-                
-                    endereco.Bairro = enderecoCliente.Bairro;
-                    endereco.Numero = enderecoCliente.Numero;
-                    endereco.CEP = enderecoCliente.CEP;
-                    endereco.Cidade = enderecoCliente.Cidade;
-                    endereco.Complemento = enderecoCliente.Complemento;
-                    endereco.Rua = enderecoCliente.Rua;
-                    endereco.DataAtualizacao = DateTime.UtcNow;
-                    await _repositoryEndereco.EditarAsync(endereco);                
-            }            
+
+                endereco.Bairro = enderecoCliente.Bairro;
+                endereco.Numero = enderecoCliente.Numero;
+                endereco.CEP = enderecoCliente.CEP;
+                endereco.Cidade = enderecoCliente.Cidade;
+                endereco.Complemento = enderecoCliente.Complemento;
+                endereco.Rua = enderecoCliente.Rua;
+                endereco.DataAtualizacao = DateTime.UtcNow;
+                await _repositoryEndereco.EditarAsync(endereco);
+            }
         }
 
         private async Task UpdateContatoCliente(AtualizarClienteRequest contatoCliente)
         {
-            
+
             if (!contatoCliente.ContatoId.Equals(Guid.Empty))
             {
                 var entityContato = await _repositoryContato.ObterPorIdAsync(contatoCliente.ContatoId);
@@ -129,10 +126,10 @@ namespace Aplicacao.Servicos
                 endereco.CEP = enderecoCliente.CEP;
                 endereco.Cidade = enderecoCliente.Cidade;
                 endereco.Complemento = enderecoCliente.Complemento;
-                endereco.Rua = enderecoCliente.Rua;             
+                endereco.Rua = enderecoCliente.Rua;
                 endereco.IdCliente = enderecoCliente.Id;
                 endereco.DataCadastro = DateTime.UtcNow;
-                await _repositoryEndereco.CadastrarAsync(endereco);                
+                await _repositoryEndereco.CadastrarAsync(endereco);
             }
         }
 
@@ -164,8 +161,8 @@ namespace Aplicacao.Servicos
                 var cliente = _mapper.Map<Cliente>(request);
 
                 var entityCliente = await _repositorio.CadastrarAsync(cliente);
-                
-                if (!entityCliente.Id.Equals(Guid.Empty)) 
+
+                if (!entityCliente.Id.Equals(Guid.Empty))
                 {
                     request.Id = entityCliente.Id;
                     await InsertEnderecoCliente(request);

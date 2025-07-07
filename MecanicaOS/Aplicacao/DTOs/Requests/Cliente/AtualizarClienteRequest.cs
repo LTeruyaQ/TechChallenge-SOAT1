@@ -1,5 +1,3 @@
-using Dominio.Entidades;
-
 namespace Aplicacao.DTOs.Requests.Veiculo
 {
     public class AtualizarClienteRequest
@@ -17,9 +15,9 @@ namespace Aplicacao.DTOs.Requests.Veiculo
         public string? Numero { get; set; }
         public string? CEP { get; set; }
         public string? Complemento { get; set; }
-        
+
         public Guid ContatoId { get; set; }
         public string? Email { get; set; }
-        public string? Telefone { get; set; }        
+        public string? Telefone { get; set; }
     }
 }

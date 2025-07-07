@@ -1,6 +1,5 @@
 using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
-using Dominio.Entidades;
 
 namespace Aplicacao.Interfaces.Servicos
 {
