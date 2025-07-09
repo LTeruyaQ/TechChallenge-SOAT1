@@ -4,6 +4,7 @@ using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
+using Dominio.Enumeradores;
 using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
@@ -18,7 +19,6 @@ namespace Aplicacao.Servicos;
 
 public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>, IAutenticacaoServico
 {
-    private const string TIPO_USUARIO_CLIENTE = "Cliente";
     private readonly IConfiguration _configuration;
     private readonly IRepositorio<Cliente> _clienteRepositorio;
 
@@ -46,7 +46,7 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
             ValidarSenha(usuario, request.Senha);
 
             var response = GerarTokenJwt(usuario);
-            LogFim(nameof(AutenticarAsync), new { usuario.Id, usuario.Login });
+            LogFim(nameof(AutenticarAsync), new { usuario.Id, usuario.Email });
 
             return response;
         }
@@ -80,7 +80,7 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
             LogFim(nameof(RegistrarAsync), new
             {
                 usuario.Id,
-                usuario.Login,
+                usuario.Email,
                 ClienteExistente = cliente.DataCadastro < DateTime.UtcNow.AddMinutes(-1)
             });
 
@@ -123,7 +123,6 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
     }
 
     #region Métodos Privados
-
     private async Task<Usuario> ObterUsuarioPorLoginComDadosRelacionados(string login)
     {
         LogInicio(nameof(ObterUsuarioPorLoginComDadosRelacionados), new { login });
@@ -131,9 +130,7 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
         try
         {
             var usuario = await _repositorio.ObterUmAsync(
-                new UsuarioPorLoginEspecificacao(login)
-                    .Incluir(u => u.Cliente)
-                    .Incluir(u => u.Cliente.Contato))
+                new UsuarioPorEmailEspecificacao(login))
                 ?? throw new UsuarioNaoEncontradoException(login);
 
             LogFim(nameof(ObterUsuarioPorLoginComDadosRelacionados), new { usuario.Id });
@@ -153,7 +150,7 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
         try
         {
             var usuario = await _repositorio.ObterUmAsync(
-                new UsuarioPorLoginEspecificacao(login));
+                new UsuarioPorEmailEspecificacao(login));
 
             LogFim(nameof(ObterUsuarioPorLogin), new { login, usuarioEncontrado = usuario != null });
             return usuario;
@@ -202,17 +199,17 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
 
     private async Task ValidarDadosRegistro(RegistroRequest request)
     {
-        LogInicio(nameof(ValidarDadosRegistro), new { request.Login });
+        LogInicio(nameof(ValidarDadosRegistro), new { request.Email });
 
         try
         {
-            if (await LoginJaExiste(request.Login))
-                throw new UsuarioJaCadastradoException(request.Login);
+            if (await LoginJaExiste(request.Email))
+                throw new UsuarioJaCadastradoException(request.Email);
 
             if (request.Senha != request.ConfirmacaoSenha)
                 throw new DadosInvalidosException("A senha e confirmação não conferem");
 
-            LogFim(nameof(ValidarDadosRegistro), new { request.Login });
+            LogFim(nameof(ValidarDadosRegistro), new { request.Email });
         }
         catch (Exception ex) when (ex is not (AutenticacaoException or DadosInvalidosException))
         {
@@ -228,7 +225,7 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
         try
         {
             var existe = await _repositorio.ObterUmAsync(
-                new UsuarioPorLoginEspecificacao(login)) != null;
+                new UsuarioPorEmailEspecificacao(login)) != null;
 
             LogFim(nameof(LoginJaExiste), new { login, existe });
             return existe;
@@ -320,7 +317,7 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
             {
                 Nome = request.Nome,
                 Documento = request.Documento,
-                TipoCliente = TIPO_USUARIO_CLIENTE,
+                TipoCliente = TipoUsuarioEnum.Cliente.ToString(),
                 Contato = new Contato
                 {
                     Email = request.Email,
@@ -342,21 +339,20 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
 
     private async Task<Usuario> CriarUsuario(RegistroRequest request, Guid clienteId)
     {
-        LogInicio(nameof(CriarUsuario), new { request.Login, clienteId });
+        LogInicio(nameof(CriarUsuario), new { request.Email, clienteId });
 
         try
         {
             var usuario = new Usuario
             {
-                Login = request.Login,
+                Email = request.Email,
                 Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha),
-                TipoUsuario = TIPO_USUARIO_CLIENTE,
-                IdCliente = clienteId
+                TipoUsuario = TipoUsuarioEnum.Cliente
             };
 
             await _repositorio.CadastrarAsync(usuario);
 
-            LogFim(nameof(CriarUsuario), new { usuario.Id, usuario.Login });
+            LogFim(nameof(CriarUsuario), new { usuario.Id, usuario.Email });
             return usuario;
         }
         catch (Exception ex)
@@ -368,7 +364,7 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
 
     private LoginResponse GerarTokenJwt(Usuario usuario)
     {
-        LogInicio(nameof(GerarTokenJwt), new { usuario.Id, usuario.Login });
+        LogInicio(nameof(GerarTokenJwt), new { usuario.Id, usuario.Email });
 
         try
         {
@@ -392,9 +388,7 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
             {
                 Token = tokenString,
                 DataExpiracao = token.ValidTo,
-                Nome = usuario.Cliente?.Nome ?? string.Empty,
-                Email = usuario.Cliente?.Contato?.Email ?? string.Empty,
-                TipoUsuario = usuario.TipoUsuario ?? TIPO_USUARIO_CLIENTE
+                TipoUsuario = usuario.TipoUsuario.ToString()
             };
 
             LogFim(nameof(GerarTokenJwt), new { usuario.Id, ExpiraEm = token.ValidTo });
@@ -415,16 +409,10 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
         {
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Name, usuario.Login!),
+                new(ClaimTypes.Name, usuario.Email!),
                 new(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                new(ClaimTypes.Role, usuario.TipoUsuario ?? TIPO_USUARIO_CLIENTE)
+                new(ClaimTypes.Role, usuario.TipoUsuario.ToString())
             };
-
-            if (usuario.Cliente != null)
-            {
-                claims.Add(new(ClaimTypes.GivenName, usuario.Cliente.Nome ?? string.Empty));
-                claims.Add(new(ClaimTypes.Email, usuario.Cliente.Contato?.Email ?? string.Empty));
-            }
 
             LogFim(nameof(ObterClaims), new { usuario.Id, QuantidadeClaims = claims.Count });
             return claims;
