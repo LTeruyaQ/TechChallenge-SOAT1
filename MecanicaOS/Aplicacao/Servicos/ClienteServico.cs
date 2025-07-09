@@ -13,14 +13,14 @@ namespace Aplicacao.Servicos
     public class ClienteServico : ServicoAbstrato<ClienteServico, Cliente>, IClienteServico
     {
         private readonly IMapper _mapper;
-        private readonly ICrudRepositorio<Endereco> _repositoryEndereco;
-        private readonly ICrudRepositorio<Contato> _repositoryContato;
+        private readonly IRepositorio<Endereco> _repositoryEndereco;
+        private readonly IRepositorio<Contato> _repositoryContato;
 
 
         public ClienteServico(
-            ICrudRepositorio<Cliente> repositorio,
-            ICrudRepositorio<Endereco> repositoryEndereco,
-            ICrudRepositorio<Contato> repositoryContato,
+            IRepositorio<Cliente> repositorio,
+            IRepositorio<Endereco> repositoryEndereco,
+            IRepositorio<Contato> repositoryContato,
             ILogServico<ClienteServico> logServico,
             IUnidadeDeTrabalho uot,
             IMapper mapper)

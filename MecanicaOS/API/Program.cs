@@ -42,7 +42,7 @@ builder.Services.AddHangfire(config => config
 builder.Services.AddHangfireServer();
 
 // Repositórios
-builder.Services.AddScoped(typeof(ICrudRepositorio<>), typeof(Repositorio<>));
+builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
 
 // Serviços
 builder.Services.AddScoped<IServicoServico, ServicoServico>();
