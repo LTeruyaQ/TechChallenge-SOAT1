@@ -15,7 +15,7 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
     private readonly IMapper _mapper;
 
     public EstoqueServico(
-        ICrudRepositorio<Estoque> repositorio,
+        IRepositorio<Estoque> repositorio,
         ILogServico<EstoqueServico> logServico,
         IUnidadeDeTrabalho uot,
         IMapper mapper)

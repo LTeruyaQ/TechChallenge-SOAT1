@@ -8,11 +8,11 @@ namespace Aplicacao.Jobs;
 
 public class VerificarEstoqueJob
 {
-    private readonly ICrudRepositorio<Estoque> _estoqueRepositorio;
+    private readonly IRepositorio<Estoque> _estoqueRepositorio;
     private readonly IServicoNotificacaoEmail _notificacaoEmail;
     private readonly ILogServico<VerificarEstoqueJob> _logServico;
 
-    public VerificarEstoqueJob(ICrudRepositorio<Estoque> estoqueRepositorio, 
+    public VerificarEstoqueJob(IRepositorio<Estoque> estoqueRepositorio, 
         IServicoNotificacaoEmail notificacaoEmail, ILogServico<VerificarEstoqueJob> logServico)
     {
         _estoqueRepositorio = estoqueRepositorio;

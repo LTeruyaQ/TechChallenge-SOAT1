@@ -1,15 +1,16 @@
+using Dominio.Entidades.Abstratos;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 
 namespace Aplicacao.Servicos.Abstrato
 {
-    public abstract class ServicoAbstrato<T, R> where T : class where R : class
+    public abstract class ServicoAbstrato<T, R> where T : class where R : Entidade
     {
         private readonly ILogServico<T> _logServico;
         private readonly IUnidadeDeTrabalho _uot;
-        protected readonly ICrudRepositorio<R> _repositorio;
+        protected readonly IRepositorio<R> _repositorio;
 
-        protected ServicoAbstrato(ICrudRepositorio<R> repositorio, ILogServico<T> logServico, IUnidadeDeTrabalho uot)
+        protected ServicoAbstrato(IRepositorio<R> repositorio, ILogServico<T> logServico, IUnidadeDeTrabalho uot)
         {
             _logServico = logServico;
             _uot = uot;

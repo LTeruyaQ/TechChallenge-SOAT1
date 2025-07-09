@@ -16,7 +16,7 @@ namespace Aplicacao.Servicos
         private readonly IMapper _mapper;
 
         public VeiculoServico(
-            ICrudRepositorio<Veiculo> repositorio,
+            IRepositorio<Veiculo> repositorio,
             ILogServico<VeiculoServico> logServico,
             IUnidadeDeTrabalho uot,
             IMapper mapper)

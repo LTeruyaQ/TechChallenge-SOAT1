@@ -18,7 +18,7 @@ namespace Aplicacao.Servicos
         private readonly IMapper _mapper;
 
         public ServicoServico(
-            ICrudRepositorio<Servico> repositorio,
+            IRepositorio<Servico> repositorio,
             ILogServico<ServicoServico> logServico,
             IUnidadeDeTrabalho uot,
             IMapper mapper)

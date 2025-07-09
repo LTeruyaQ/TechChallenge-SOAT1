@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infraestrutura.Repositorios
 {
-    public class Repositorio<T> : ICrudRepositorio<T> where T : Entidade
+    public class Repositorio<T> : IRepositorio<T> where T : Entidade
     {
         protected readonly MecanicaContexto _dbContext;
         protected readonly DbSet<T> _dbSet;
