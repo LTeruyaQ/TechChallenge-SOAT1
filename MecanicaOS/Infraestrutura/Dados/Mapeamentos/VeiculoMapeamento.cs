@@ -41,12 +41,11 @@ public class VeiculoMapeamento : IEntityTypeConfiguration<Veiculo>
         builder.Property(v => v.DataAtualizacao);
 
 
-        //builder.Property(v => v.ClienteId)
-        //    .IsRequired();
+        builder.Property(v => v.ClienteId);
 
-        //builder.HasOne(v => v.Cliente)
-        //    .WithMany(c => c.Veiculos)
-        //    .HasForeignKey(v => v.ClienteId)
-        //    .OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(v => v.Cliente)
+            .WithMany(c => c.Veiculos)
+            .HasForeignKey(v => v.ClienteId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -42,7 +42,7 @@ namespace Aplicacao.Servicos
                 if (request.Cor != null) veiculo.Cor = request.Cor;
                 if (request.Ano != null) veiculo.Ano = request.Ano;
                 if (request.Anotacoes != null) veiculo.Anotacoes = request.Anotacoes;
-                //if (request.ClienteId.HasValue) veiculo.ClienteId = request.ClienteId.Value;
+                if (request.ClienteId.HasValue) veiculo.ClienteId = request.ClienteId.Value;
 
                 veiculo.DataAtualizacao = DateTime.UtcNow;
 

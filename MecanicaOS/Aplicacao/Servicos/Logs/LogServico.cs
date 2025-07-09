@@ -8,10 +8,10 @@ namespace Aplicacao.Servicos.Logs
 {
     public class LogServico<T> : ILogServico<T>
     {
-        private readonly ICorrelationIdService _correlationIdService;
+        private readonly IIdCorrelacionalService _correlationIdService;
         private readonly ILogger<T> _logger;
         private readonly JsonSerializerOptions _jsonOptions;
-        public LogServico(ICorrelationIdService correlationIdService, ILogger<T> logger)
+        public LogServico(IIdCorrelacionalService correlationIdService, ILogger<T> logger)
         {
             _correlationIdService = correlationIdService;
             _logger = logger;

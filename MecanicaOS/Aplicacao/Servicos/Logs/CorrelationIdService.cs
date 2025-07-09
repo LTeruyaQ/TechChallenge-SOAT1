@@ -2,7 +2,7 @@ using Dominio.Interfaces.Servicos;
 
 namespace Aplicacao.Servicos.Logs
 {
-    public class CorrelationIdService : ICorrelationIdService
+    public class IdCorrelacionalService : IIdCorrelacionalService
     {
         private string _correlationId = Guid.NewGuid().ToString();
 
