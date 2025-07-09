@@ -1,5 +1,3 @@
-using System;
-
 namespace Aplicacao.Interfaces.Servicos;
 
 public interface IUsuarioLogado

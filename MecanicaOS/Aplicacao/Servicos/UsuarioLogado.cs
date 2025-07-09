@@ -1,7 +1,6 @@
-using System;
-using System.Security.Claims;
 using Aplicacao.Interfaces.Servicos;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Aplicacao.Servicos;
 
@@ -20,18 +19,18 @@ public class UsuarioLogado : IUsuarioLogado
         return !string.IsNullOrEmpty(id) && Guid.TryParse(id, out var guid) ? guid : null;
     }
 
-    public string ObterLogin() => 
+    public string ObterLogin() =>
         _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
 
-    public string ObterEmail() => 
+    public string ObterEmail() =>
         _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
 
-    public string ObterNome() => 
+    public string ObterNome() =>
         _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.GivenName)?.Value ?? string.Empty;
 
-    public string ObterTipoUsuario() => 
+    public string ObterTipoUsuario() =>
         _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty;
 
-    public bool EstaAutenticado() => 
+    public bool EstaAutenticado() =>
         _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated == true;
 }

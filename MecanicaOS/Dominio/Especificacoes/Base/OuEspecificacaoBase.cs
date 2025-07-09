@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes.Base
 {
-    public abstract class EEspecificacao<T> : IEspecificacao<T>
+    public abstract class OuEspecificacaoBase<T> : IEspecificacao<T>
     {
         private readonly Lazy<List<Expression<Func<T, object>>>> _inclusoes;
         private readonly Lazy<List<string>> _inclusoesPorString;
@@ -12,7 +12,7 @@ namespace Dominio.Especificacoes.Base
         protected readonly IEspecificacao<T> _direita;
         private static readonly ConcurrentDictionary<string, int> _cacheHash = new();
 
-        protected EEspecificacao(IEspecificacao<T> esquerda, IEspecificacao<T> direita)
+        protected OuEspecificacaoBase(IEspecificacao<T> esquerda, IEspecificacao<T> direita)
         {
             _esquerda = esquerda ?? throw new ArgumentNullException(nameof(esquerda));
             _direita = direita ?? throw new ArgumentNullException(nameof(direita));

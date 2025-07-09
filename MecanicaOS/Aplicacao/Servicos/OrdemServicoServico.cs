@@ -9,7 +9,7 @@ namespace Aplicacao.Servicos;
 
 public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemServico>, IOrdemServicoServico
 {
-    public OrdemServicoServico(IRepositorio<OrdemServico> repositorio, ILogServico<OrdemServicoServico> logServico, IUnidadeDeTrabalho uot, IMapper mapper, IUsuarioLogado usuarioLogado) : 
+    public OrdemServicoServico(IRepositorio<OrdemServico> repositorio, ILogServico<OrdemServicoServico> logServico, IUnidadeDeTrabalho uot, IMapper mapper, IUsuarioLogado usuarioLogado) :
         base(repositorio, logServico, uot, mapper, usuarioLogado)
     {
     }
