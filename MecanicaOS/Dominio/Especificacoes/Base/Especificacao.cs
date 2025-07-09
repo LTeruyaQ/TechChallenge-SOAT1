@@ -27,22 +27,5 @@ namespace Dominio.Especificacoes.Base
             }
             return this;
         }
-
-        public static IEspecificacao<T> Criar(Expression<Func<T, bool>> expressao)
-        {
-            return new EspecificacaoGenerica<T>(expressao);
-        }
-    }
-
-    internal class EspecificacaoGenerica<T> : Especificacao<T>
-    {
-        private readonly Expression<Func<T, bool>> _expressao;
-
-        public EspecificacaoGenerica(Expression<Func<T, bool>> expressao)
-        {
-            _expressao = expressao;
-        }
-
-        public override Expression<Func<T, bool>> Expressao => _expressao;
     }
 }

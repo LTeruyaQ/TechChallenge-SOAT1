@@ -28,5 +28,19 @@ namespace Dominio.Especificacoes.Base
                 return Expression.Lambda<Func<T, bool>>(body, param);
             }
         }
+
+        public List<Expression<Func<T, object>>> Inclusoes => throw new NotImplementedException();
+
+        public List<string> InclusoesPorString => throw new NotImplementedException();
+
+        public IEspecificacao<T> Incluir(Expression<Func<T, object>> expressaoInclusao)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEspecificacao<T> Incluir(string stringInclusao)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

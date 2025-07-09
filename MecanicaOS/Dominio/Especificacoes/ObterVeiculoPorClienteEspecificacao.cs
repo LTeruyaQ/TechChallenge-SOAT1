@@ -1,10 +1,10 @@
 ﻿using Dominio.Entidades;
-using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes
 {
-    public class ObterVeiculoPorClienteEspecificacao : IEspecificacao<Veiculo>
+    public class ObterVeiculoPorClienteEspecificacao : Especificacao<Veiculo>
     {
         private readonly Guid _clienteId;
 
@@ -13,7 +13,6 @@ namespace Dominio.Especificacoes
             _clienteId = clienteId;
         }
 
-        public Expression<Func<Veiculo, bool>> Expressao =>
-            v => v.ClienteId == _clienteId;
+        public override Expression<Func<Veiculo, bool>> Expressao => v => v.ClienteId == _clienteId;
     }
 }

@@ -95,7 +95,7 @@ namespace Infraestrutura.Migrations
                     b.HasIndex("IdCliente")
                         .IsUnique();
 
-                    b.ToTable("Contatos");
+                    b.ToTable("Contatos", (string)null);
                 });
 
             modelBuilder.Entity("Dominio.Entidades.Endereco", b =>
@@ -139,7 +139,7 @@ namespace Infraestrutura.Migrations
                     b.HasIndex("IdCliente")
                         .IsUnique();
 
-                    b.ToTable("Enderecos");
+                    b.ToTable("Enderecos", (string)null);
                 });
 
             modelBuilder.Entity("Dominio.Entidades.Estoque", b =>
@@ -177,7 +177,7 @@ namespace Infraestrutura.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Estoques");
+                    b.ToTable("Estoques", (string)null);
                 });
 
             modelBuilder.Entity("Dominio.Entidades.Servico", b =>
@@ -211,7 +211,7 @@ namespace Infraestrutura.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Servicos");
+                    b.ToTable("Servicos", (string)null);
                 });
 
             modelBuilder.Entity("Dominio.Entidades.Usuario", b =>
@@ -251,7 +251,7 @@ namespace Infraestrutura.Migrations
                     b.HasIndex("IdCliente")
                         .IsUnique();
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("Dominio.Entidades.Veiculo", b =>

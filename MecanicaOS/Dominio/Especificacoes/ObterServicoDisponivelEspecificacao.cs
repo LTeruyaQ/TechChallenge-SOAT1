@@ -1,11 +1,11 @@
 ﻿using Dominio.Entidades;
-using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes
 {
-    public class ObterServicoDisponivelEspecificacao : IEspecificacao<Servico>
+    public class ObterServicoDisponivelEspecificacao : Especificacao<Servico>
     {
-        public Expression<Func<Servico, bool>> Expressao => s => s.Disponivel;
+        public override Expression<Func<Servico, bool>> Expressao => s => s.Disponivel;
     }
 }

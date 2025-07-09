@@ -80,10 +80,12 @@ builder.Services.AddScoped<IAutenticacaoServico, AutenticacaoServico>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 
 // Aplicacao
-builder.Services.AddAutoMapper(
-    typeof(ServicoProfile),
-    typeof(EstoqueProfile),
-    typeof(VeiculoProfile));
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<ServicoProfile>();
+    cfg.AddProfile<EstoqueProfile>();
+    cfg.AddProfile<VeiculoProfile>();
+});
 
 // Infraestrutura
 builder.Services.AddScoped<IServicoNotificacaoEmail, ServicoNotificacaoEmail>();
