@@ -16,8 +16,9 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
         IRepositorio<Estoque> repositorio,
         ILogServico<EstoqueServico> logServico,
         IUnidadeDeTrabalho uot,
-        IMapper mapper)
-        : base(repositorio, logServico, uot, mapper)
+        IMapper mapper,
+        IUsuarioLogado usuarioLogado)
+        : base(repositorio, logServico, uot, mapper, usuarioLogado)
     {
     }
 

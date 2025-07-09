@@ -72,11 +72,13 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
 
 // Serviços
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IServicoServico, ServicoServico>();
 builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
 builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
 builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
 builder.Services.AddScoped<IAutenticacaoServico, AutenticacaoServico>();
+builder.Services.AddScoped<IUsuarioLogado, UsuarioLogado>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 
 // Aplicacao

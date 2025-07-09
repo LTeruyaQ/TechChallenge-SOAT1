@@ -28,8 +28,9 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
         ILogServico<AutenticacaoServico> logServico,
         IUnidadeDeTrabalho uot,
         IMapper mapper,
-        IConfiguration configuration)
-        : base(repositorio, logServico, uot, mapper)
+        IConfiguration configuration,
+        IUsuarioLogado usuarioLogado)
+        : base(repositorio, logServico, uot, mapper, usuarioLogado)
     {
         _configuration = configuration;
         _clienteRepositorio = clienteRepositorio;

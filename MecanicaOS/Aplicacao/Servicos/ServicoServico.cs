@@ -19,8 +19,9 @@ namespace Aplicacao.Servicos
             IRepositorio<Servico> repositorio,
             ILogServico<ServicoServico> logServico,
             IUnidadeDeTrabalho uot,
-            IMapper mapper)
-            : base(repositorio, logServico, uot, mapper)
+            IMapper mapper,
+            IUsuarioLogado usuarioLogado)
+            : base(repositorio, logServico, uot, mapper, usuarioLogado)
         { }
 
         public async Task<ServicoResponse> CadastrarServicoAsync(CadastrarServicoRequest request)

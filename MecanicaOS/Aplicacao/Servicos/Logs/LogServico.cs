@@ -1,4 +1,5 @@
 ﻿using Aplicacao.DTOs.Log;
+using Aplicacao.Interfaces.Servicos;
 using Dominio.Interfaces.Servicos;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -9,9 +10,10 @@ namespace Aplicacao.Servicos.Logs
     public class LogServico<T> : ILogServico<T>
     {
         private readonly IIdCorrelacionalService _correlationIdService;
+        private readonly IUsuarioLogado _usuarioLogado;
         private readonly ILogger<T> _logger;
         private readonly JsonSerializerOptions _jsonOptions;
-        public LogServico(IIdCorrelacionalService correlationIdService, ILogger<T> logger)
+        public LogServico(IIdCorrelacionalService correlationIdService, ILogger<T> logger, IUsuarioLogado usuarioLogado)
         {
             _correlationIdService = correlationIdService;
             _logger = logger;
@@ -27,6 +29,7 @@ namespace Aplicacao.Servicos.Logs
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                 WriteIndented = false
             };
+            _usuarioLogado = usuarioLogado;
         }
 
         public void LogErro(string metodo, Exception ex)
@@ -63,6 +66,7 @@ namespace Aplicacao.Servicos.Logs
                 Etapa = etapa,
                 CorrelationId = _correlationIdService.GetCorrelationId(),
                 Dados = dados,
+                Usuario = _usuarioLogado.ObterNome(),
                 Timestamp = DateTime.UtcNow
             };
 
