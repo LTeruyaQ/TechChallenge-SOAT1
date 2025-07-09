@@ -1,8 +1,9 @@
-﻿using Dominio.Especificacoes.Base.Interfaces;
+﻿using Dominio.Entidades.Abstratos;
+using Dominio.Especificacoes.Base.Interfaces;
 
 namespace Dominio.Interfaces.Repositorios;
 
-public interface ICrudRepositorio<T> where T : class
+public interface ICrudRepositorio<T> where T : Entidade
 {
     Task<T?> ObterPorIdAsync(Guid id);
     Task<IEnumerable<T>> ObterTodosAsync();
