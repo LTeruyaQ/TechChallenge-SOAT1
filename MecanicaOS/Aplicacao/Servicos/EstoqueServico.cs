@@ -12,16 +12,13 @@ namespace Aplicacao.Servicos;
 
 public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoqueServico
 {
-    private readonly IMapper _mapper;
-
     public EstoqueServico(
         IRepositorio<Estoque> repositorio,
         ILogServico<EstoqueServico> logServico,
         IUnidadeDeTrabalho uot,
         IMapper mapper)
-        : base(repositorio, logServico, uot)
+        : base(repositorio, logServico, uot, mapper)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public async Task<EstoqueResponse> AtualizarAsync(Guid id, AtualizarEstoqueRequest request)

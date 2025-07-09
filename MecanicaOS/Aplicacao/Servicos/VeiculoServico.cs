@@ -13,16 +13,13 @@ namespace Aplicacao.Servicos
 {
     public class VeiculoServico : ServicoAbstrato<VeiculoServico, Veiculo>, IVeiculoServico
     {
-        private readonly IMapper _mapper;
-
         public VeiculoServico(
             IRepositorio<Veiculo> repositorio,
             ILogServico<VeiculoServico> logServico,
             IUnidadeDeTrabalho uot,
             IMapper mapper)
-            : base(repositorio, logServico, uot)
+            : base(repositorio, logServico, uot, mapper)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<VeiculoResponse> AtualizarAsync(Guid id, AtualizarVeiculoRequest request)

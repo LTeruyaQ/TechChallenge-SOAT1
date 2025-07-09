@@ -3,7 +3,7 @@ using Aplicacao.DTOs.Responses.Estoque;
 using AutoMapper;
 using Dominio.Entidades;
 
-namespace Aplicacao.Mappings
+namespace Aplicacao.Mapeamentos
 {
     public class EstoqueProfile : Profile
     {

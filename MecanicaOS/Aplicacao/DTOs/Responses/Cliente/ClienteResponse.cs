@@ -1,4 +1,4 @@
-namespace Aplicacao.DTOs.Responses.Estoque
+namespace Aplicacao.DTOs.Responses.Cliente
 {
     public class ClienteResponse
     {

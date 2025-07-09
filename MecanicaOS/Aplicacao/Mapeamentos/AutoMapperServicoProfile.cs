@@ -3,11 +3,11 @@ using Aplicacao.DTOs.Responses.Servico;
 using AutoMapper;
 using Dominio.Entidades;
 
-namespace Aplicacao.Mappings
+namespace Aplicacao.Mapeamentos
 {
-    public class AutoMapperServicoProfile : Profile
+    public class ServicoProfile : Profile
     {
-        public AutoMapperServicoProfile()
+        public ServicoProfile()
         {
             CreateMap<Servico, ServicoResponse>()
                 .ReverseMap();

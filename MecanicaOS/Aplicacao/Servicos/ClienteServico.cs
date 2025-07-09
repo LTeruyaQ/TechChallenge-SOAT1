@@ -1,5 +1,5 @@
-using Aplicacao.DTOs.Requests.Veiculo;
-using Aplicacao.DTOs.Responses.Estoque;
+using Aplicacao.DTOs.Requests.Cliente;
+using Aplicacao.DTOs.Responses.Cliente;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
@@ -12,10 +12,8 @@ namespace Aplicacao.Servicos
 {
     public class ClienteServico : ServicoAbstrato<ClienteServico, Cliente>, IClienteServico
     {
-        private readonly IMapper _mapper;
         private readonly IRepositorio<Endereco> _repositoryEndereco;
         private readonly IRepositorio<Contato> _repositoryContato;
-
 
         public ClienteServico(
             IRepositorio<Cliente> repositorio,
@@ -24,11 +22,10 @@ namespace Aplicacao.Servicos
             ILogServico<ClienteServico> logServico,
             IUnidadeDeTrabalho uot,
             IMapper mapper)
-            : base(repositorio, logServico, uot)
+            : base(repositorio, logServico, uot, mapper)
         {
-            _repositoryContato = repositoryContato;
-            _repositoryEndereco = repositoryEndereco;
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _repositoryContato = repositoryContato ?? throw new ArgumentNullException(nameof(repositoryContato));
+            _repositoryEndereco = repositoryEndereco ?? throw new ArgumentNullException(nameof(repositoryEndereco));
         }
 
         public async Task<ClienteResponse> AtualizarAsync(Guid id, AtualizarClienteRequest request)
