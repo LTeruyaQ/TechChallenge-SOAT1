@@ -8,7 +8,7 @@ namespace API.Middlewares
 
         public Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var correlationIdDemoAPILogService = context.RequestServices.GetRequiredService<ICorrelationIdService>();
+            var correlationIdDemoAPILogService = context.RequestServices.GetRequiredService<IIdCorrelacionalService>();
 
             if (correlationIdDemoAPILogService is not null)
             {

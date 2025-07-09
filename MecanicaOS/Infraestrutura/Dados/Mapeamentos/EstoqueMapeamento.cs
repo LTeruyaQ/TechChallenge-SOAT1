@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infraestrutura.Dados.Mapeamentos;
 
-public class EstoqueMapeamento : IEntityTypeConfiguration<Estoque>
+public partial class EstoqueMapeamento : IEntityTypeConfiguration<Estoque>
 {
     public void Configure(EntityTypeBuilder<Estoque> builder)
     {

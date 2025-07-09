@@ -10,6 +10,7 @@ using Dominio.Interfaces.Servicos;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Infraestrutura.Dados;
+using Infraestrutura.Dados.Extensions;
 using Infraestrutura.Dados.UoT;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
@@ -61,7 +62,7 @@ builder.Services.AddScoped<Aplicacao.Interfaces.Servicos.IEstoqueServico, Estoqu
 
 // Infraestrutura
 builder.Services.AddScoped<IServicoNotificacaoEmail, ServicoNotificacaoEmail>();
-builder.Services.AddScoped<ICorrelationIdService, CorrelationIdService>();
+builder.Services.AddScoped<IIdCorrelacionalService, IdCorrelacionalService>();
 builder.Services.AddScoped<IdCorrelacionalLogMiddleware>();
 
 // Configuração de compactação de resposta
@@ -134,5 +135,21 @@ RecurringJob.AddOrUpdate<VerificarEstoqueJob>(
         TimeZone = TimeZoneInfo.Local
     }
 );
+
+try
+{
+    // Aplicar migrações automaticamente
+    using var escopo = app.Services.CreateScope();
+    app.Logger.LogInformation("Iniciando aplicação...");
+    
+    await app.Services.AplicarMigracoesAsync<MecanicaContexto>();
+    
+    app.Logger.LogInformation("Aplicação iniciada com sucesso!");
+}
+catch (Exception ex)
+{
+    app.Logger.LogCritical(ex, "Falha crítica ao iniciar a aplicação");
+    throw;
+}
 
 app.Run();

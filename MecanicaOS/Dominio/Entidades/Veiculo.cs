@@ -11,7 +11,6 @@ public class Veiculo : Entidade
     public string Ano { get; set; } = default!;
     public string? Anotacoes { get; set; }
 
-    // Relacionamento com Cliente (opcional ou obrigatório?)
-    //public Guid ClienteId { get; set; }
-    //public Cliente Cliente { get; set; } = default!;
+    public Guid? ClienteId { get; set; }
+    public Cliente Cliente { get; set; } = default!;
 }
