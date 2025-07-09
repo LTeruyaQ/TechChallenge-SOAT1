@@ -38,14 +38,6 @@ namespace Infraestrutura.Repositorios
             await Task.Run(() => _dbContext.Entry(entidade).State = EntityState.Modified);
         }
 
-        public virtual async Task<IEnumerable<T>> ObterPorFiltroAsync(IEspecificacao<T> especificacao)
-        {
-            return await _dbSet
-                .AsNoTracking()
-                .Where(especificacao.Expressao)
-                .ToListAsync();
-        }
-
         public virtual async Task<T?> ObterPorIdAsync(Guid id)
         {
             return await _dbSet
@@ -60,28 +52,43 @@ namespace Infraestrutura.Repositorios
                 .ToListAsync();
         }
 
+        public virtual async Task<IEnumerable<T>> ObterPorFiltroAsync(IEspecificacao<T> especificacao)
+        {
+            var query = _dbSet.AsQueryable();
+            query = AplicarInclusoes(query, especificacao);
+
+            return await query
+                .AsNoTracking()
+                .Where(especificacao.Expressao)
+                .ToListAsync();
+        }
+
         public virtual async Task<T?> ObterUmAsync(IEspecificacao<T> especificacao)
         {
             var query = _dbSet.AsQueryable();
+            query = AplicarInclusoes(query, especificacao);
 
-            // Aplicar inclusões baseadas em expressões
+            return await query
+                .AsNoTracking()
+                .Where(especificacao.Expressao)
+                .FirstOrDefaultAsync();
+        }
+
+        private IQueryable<T> AplicarInclusoes(IQueryable<T> query, IEspecificacao<T> especificacao)
+        {
             if (especificacao.Inclusoes != null && especificacao.Inclusoes.Any())
             {
                 query = especificacao.Inclusoes
                     .Aggregate(query, (current, include) => current.Include(include));
             }
 
-            // Aplicar inclusões baseadas em strings (para propriedades aninhadas)
             if (especificacao.InclusoesPorString != null && especificacao.InclusoesPorString.Any())
             {
                 query = especificacao.InclusoesPorString
                     .Aggregate(query, (current, include) => current.Include(include));
             }
 
-            return await query
-                .AsNoTracking()
-                .Where(especificacao.Expressao)
-                .FirstOrDefaultAsync();
+            return query;
         }
     }
 }
