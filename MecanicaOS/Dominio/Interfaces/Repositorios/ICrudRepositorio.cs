@@ -11,4 +11,5 @@ public interface ICrudRepositorio<T> where T : class
     Task EditarAsync(T novaEntidade);
     Task DeletarAsync(T entidade);
     Task<T?> ObterUmAsync(IEspecificacao<T> especificacao);
+    Task DeletarLogicamenteAsync(T entidade); 
 }

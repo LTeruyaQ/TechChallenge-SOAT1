@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Text.Json.Serialization;
 using API.Middlewares;
+using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
 using Aplicacao.Servicos;
 using Aplicacao.Servicos.Logs;
@@ -41,24 +42,20 @@ builder.Services.AddHangfire(config => config
 builder.Services.AddHangfireServer();
 
 // Repositórios
-builder.Services.AddScoped<ICrudRepositorio<Servico>, ServicoRepositorio>();
-builder.Services.AddScoped<ICrudRepositorio<Estoque>, EstoqueRepositorio>();
-builder.Services.AddScoped<ICrudRepositorio<Veiculo>, VeiculoRepositorio>();
-builder.Services.AddScoped<ICrudRepositorio<Cliente>, ClienteRepositorio>();
-builder.Services.AddScoped<ICrudRepositorio<Endereco>, EnderecoRepositorio>();
+builder.Services.AddScoped(typeof(ICrudRepositorio<>), typeof(Repositorio<>));
 
 // Serviços
-builder.Services.AddScoped<Aplicacao.Interfaces.Servicos.IServicoServico, ServicoServico>();
-builder.Services.AddScoped<Aplicacao.Interfaces.Servicos.IVeiculoServico, VeiculoServico>();
+builder.Services.AddScoped<IServicoServico, ServicoServico>();
+builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
 builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
+builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
+
 // Aplicacao
 builder.Services.AddAutoMapper(
     typeof(Aplicacao.Mappings.AutoMapperServicoProfile),
     typeof(Aplicacao.Mappings.EstoqueProfile),
     typeof(Aplicacao.Mappings.VeiculoProfile));
-
-builder.Services.AddScoped<Aplicacao.Interfaces.Servicos.IEstoqueServico, EstoqueServico>();
 
 // Infraestrutura
 builder.Services.AddScoped<IServicoNotificacaoEmail, ServicoNotificacaoEmail>();
