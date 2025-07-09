@@ -1,5 +1,5 @@
-using Aplicacao.DTOs.Requests.Veiculo;
-using Aplicacao.DTOs.Responses.Estoque;
+using Aplicacao.DTOs.Requests.Cliente;
+using Aplicacao.DTOs.Responses.Cliente;
 
 namespace Aplicacao.Interfaces.Servicos
 {

@@ -1,6 +1,6 @@
 ﻿using API.Models;
-using Aplicacao.DTOs.Requests.Veiculo;
-using Aplicacao.DTOs.Responses.Estoque;
+using Aplicacao.DTOs.Requests.Cliente;
+using Aplicacao.DTOs.Responses.Cliente;
 using Aplicacao.Interfaces.Servicos;
 using Microsoft.AspNetCore.Mvc;
 

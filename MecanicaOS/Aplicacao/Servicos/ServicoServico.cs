@@ -15,17 +15,13 @@ namespace Aplicacao.Servicos
 {
     public class ServicoServico : ServicoAbstrato<ServicoServico, Servico>, IServicoServico
     {
-        private readonly IMapper _mapper;
-
         public ServicoServico(
             IRepositorio<Servico> repositorio,
             ILogServico<ServicoServico> logServico,
             IUnidadeDeTrabalho uot,
             IMapper mapper)
-            : base(repositorio, logServico, uot)
-        {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        }
+            : base(repositorio, logServico, uot, mapper)
+        {}
 
         public async Task<ServicoResponse> CadastrarServicoAsync(CadastrarServicoRequest request)
         {

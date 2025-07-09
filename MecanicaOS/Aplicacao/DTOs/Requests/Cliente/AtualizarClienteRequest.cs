@@ -1,4 +1,4 @@
-namespace Aplicacao.DTOs.Requests.Veiculo
+namespace Aplicacao.DTOs.Requests.Cliente
 {
     public class AtualizarClienteRequest
     {

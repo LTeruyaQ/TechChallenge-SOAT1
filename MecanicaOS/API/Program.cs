@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 using API.Middlewares;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
+using Aplicacao.Mapeamentos;
 using Aplicacao.Servicos;
 using Aplicacao.Servicos.Logs;
-using Dominio.Entidades;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using Hangfire;
@@ -53,9 +53,9 @@ builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 
 // Aplicacao
 builder.Services.AddAutoMapper(
-    typeof(Aplicacao.Mappings.AutoMapperServicoProfile),
-    typeof(Aplicacao.Mappings.EstoqueProfile),
-    typeof(Aplicacao.Mappings.VeiculoProfile));
+    typeof(ServicoProfile),
+    typeof(EstoqueProfile),
+    typeof(VeiculoProfile));
 
 // Infraestrutura
 builder.Services.AddScoped<IServicoNotificacaoEmail, ServicoNotificacaoEmail>();
