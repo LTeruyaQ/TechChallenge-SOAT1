@@ -1,4 +1,4 @@
-﻿using Dominio.Entidades.Abstratos;
+using Dominio.Entidades.Abstratos;
 using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;
@@ -62,10 +62,26 @@ namespace Infraestrutura.Repositorios
 
         public virtual async Task<T?> ObterUmAsync(IEspecificacao<T> especificacao)
         {
-            return await _dbSet
+            var query = _dbSet.AsQueryable();
+
+            // Aplicar inclusões baseadas em expressões
+            if (especificacao.Inclusoes != null && especificacao.Inclusoes.Any())
+            {
+                query = especificacao.Inclusoes
+                    .Aggregate(query, (current, include) => current.Include(include));
+            }
+
+            // Aplicar inclusões baseadas em strings (para propriedades aninhadas)
+            if (especificacao.InclusoesPorString != null && especificacao.InclusoesPorString.Any())
+            {
+                query = especificacao.InclusoesPorString
+                    .Aggregate(query, (current, include) => current.Include(include));
+            }
+
+            return await query
                 .AsNoTracking()
                 .Where(especificacao.Expressao)
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
         }
     }
 }

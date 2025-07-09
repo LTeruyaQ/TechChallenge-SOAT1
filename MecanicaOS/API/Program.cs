@@ -1,5 +1,3 @@
-using System.IO.Compression;
-using System.Text.Json.Serialization;
 using API.Middlewares;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
@@ -15,8 +13,13 @@ using Infraestrutura.Dados.Extensions;
 using Infraestrutura.Dados.UoT;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IO.Compression;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +44,30 @@ builder.Services.AddHangfire(config => config
 
 builder.Services.AddHangfireServer();
 
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
 // Repositórios
 builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
 
@@ -49,6 +76,7 @@ builder.Services.AddScoped<IServicoServico, ServicoServico>();
 builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
 builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
 builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
+builder.Services.AddScoped<IAutenticacaoServico, AutenticacaoServico>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 
 // Aplicacao
@@ -138,9 +166,9 @@ try
     // Aplicar migrações automaticamente
     using var escopo = app.Services.CreateScope();
     app.Logger.LogInformation("Iniciando aplicação...");
-    
+
     await app.Services.AplicarMigracoesAsync<MecanicaContexto>();
-    
+
     app.Logger.LogInformation("Aplicação iniciada com sucesso!");
 }
 catch (Exception ex)

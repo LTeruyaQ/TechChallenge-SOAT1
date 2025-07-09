@@ -12,5 +12,5 @@ public interface IRepositorio<T> where T : Entidade
     Task EditarAsync(T novaEntidade);
     Task DeletarAsync(T entidade);
     Task<T?> ObterUmAsync(IEspecificacao<T> especificacao);
-    Task DeletarLogicamenteAsync(T entidade); 
+    Task DeletarLogicamenteAsync(T entidade);
 }

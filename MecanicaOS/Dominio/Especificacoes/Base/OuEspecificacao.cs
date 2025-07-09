@@ -1,5 +1,5 @@
-﻿using System.Linq.Expressions;
-using Dominio.Especificacoes.Base.Interfaces;
+﻿using Dominio.Especificacoes.Base.Interfaces;
+using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes.Base
 {

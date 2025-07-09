@@ -12,7 +12,7 @@ public class VerificarEstoqueJob
     private readonly IServicoNotificacaoEmail _notificacaoEmail;
     private readonly ILogServico<VerificarEstoqueJob> _logServico;
 
-    public VerificarEstoqueJob(IRepositorio<Estoque> estoqueRepositorio, 
+    public VerificarEstoqueJob(IRepositorio<Estoque> estoqueRepositorio,
         IServicoNotificacaoEmail notificacaoEmail, ILogServico<VerificarEstoqueJob> logServico)
     {
         _estoqueRepositorio = estoqueRepositorio;
