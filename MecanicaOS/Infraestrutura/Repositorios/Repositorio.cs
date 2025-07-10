@@ -23,6 +23,15 @@ namespace Infraestrutura.Repositorios
             return resultado.Entity;
         }
 
+        public virtual async Task<IEnumerable<T>> CadastrarVariosAsync(IEnumerable<T> entidades)
+        {
+            if (entidades == null || !entidades.Any())
+                return Enumerable.Empty<T>();
+
+            await _dbSet.AddRangeAsync(entidades);
+            return entidades;
+        }
+
         public virtual async Task DeletarAsync(T entidade)
         {
             await Task.Run(() => _dbSet.Remove(entidade));

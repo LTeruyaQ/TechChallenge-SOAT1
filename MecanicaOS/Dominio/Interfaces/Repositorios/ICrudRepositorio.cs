@@ -9,6 +9,7 @@ public interface IRepositorio<T> where T : Entidade
     Task<IEnumerable<T>> ObterTodosAsync();
     Task<IEnumerable<T>> ObterPorFiltroAsync(IEspecificacao<T> filtro);
     Task<T> CadastrarAsync(T entidade);
+    Task<IEnumerable<T>> CadastrarVariosAsync(IEnumerable<T> entidades);
     Task EditarAsync(T novaEntidade);
     Task DeletarAsync(T entidade);
     Task<T?> ObterUmAsync(IEspecificacao<T> especificacao);

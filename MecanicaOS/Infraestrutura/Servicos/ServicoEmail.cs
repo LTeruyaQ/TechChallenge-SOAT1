@@ -1,0 +1,45 @@
+﻿using Dominio.Interfaces.Servicos;
+using Microsoft.Extensions.Configuration;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+
+namespace Infraestrutura.Servicos;
+
+public class ServicoEmail : IServicoEmail
+{
+    private readonly string _apiKey;
+
+    public ServicoEmail(IConfiguration configuration)
+    {
+        _apiKey = configuration["SendGrid:ApiKey"]!;
+    }
+
+    public async Task EnviarAsync(IEnumerable<string> emailsDestino, string assunto, string conteudo)
+    {
+        var client = new SendGridClient(_apiKey);
+
+        var remetente = new EmailAddress("mecanicaosbr@gmail.com", "MecânicaOS");
+
+        var destinatarios = emailsDestino
+        .Select(email => new EmailAddress(email))
+        .ToList();
+
+        var msg = MailHelper.CreateSingleEmailToMultipleRecipients(
+            from: remetente,
+            tos: destinatarios,
+            subject: assunto,
+            plainTextContent: null,
+            htmlContent: conteudo,
+            showAllRecipients: false
+        );
+
+        var response = await client.SendEmailAsync(msg);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Body.ReadAsStringAsync();
+
+            throw new Exception($"Erro ao enviar email: {response.StatusCode} - {body}");
+        }
+    }
+}
