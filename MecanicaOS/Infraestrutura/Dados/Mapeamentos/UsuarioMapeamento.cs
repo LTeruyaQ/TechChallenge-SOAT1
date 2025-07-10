@@ -13,12 +13,7 @@ public class UsuarioMapeamento : IEntityTypeConfiguration<Usuario>
         builder.Property(e => e.Ativo).IsRequired();
         builder.Property(e => e.DataAtualizacao).IsRequired(false);
 
-        builder.Property(e => e.Login).IsRequired();
+        builder.Property(e => e.Email).IsRequired();
         builder.Property(e => e.Senha).IsRequired();
-
-        builder.HasOne(e => e.Cliente)
-               .WithOne(c => c.Usuario)
-               .HasForeignKey<Cliente>(e => e.Usuario)
-               .OnDelete(DeleteBehavior.Cascade);
     }
 }

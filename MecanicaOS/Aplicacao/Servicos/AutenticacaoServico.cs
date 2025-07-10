@@ -44,6 +44,7 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
         {
             var usuario = await ObterUsuarioPorLoginComDadosRelacionados(request.Login);
             ValidarSenha(usuario, request.Senha);
+            await AtualizarDataUltimoAcesso(usuario);
 
             var response = GerarTokenJwt(usuario);
             LogFim(nameof(AutenticarAsync), new { usuario.Id, usuario.Email });
@@ -62,15 +63,25 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
         }
     }
 
+    private async Task AtualizarDataUltimoAcesso(Usuario usuario)
+    {
+        var usuarioAtual = await _repositorio.ObterPorIdAsync(usuario.Id);
+
+        usuarioAtual.DataUltimoAcesso = DateTime.UtcNow;
+
+        await _repositorio.EditarAsync(usuario);
+
+        Commit();
+    }
+
     public async Task<LoginResponse> RegistrarAsync(RegistroRequest request)
     {
         LogInicio(nameof(RegistrarAsync), request);
-        Cliente cliente = null;
 
         try
         {
             await ValidarDadosRegistro(request);
-            cliente = await ObterOuCriarCliente(request);
+            Cliente cliente = await ObterOuCriarCliente(request);
             var usuario = await CriarUsuario(request, cliente.Id);
 
             await Commit();
@@ -265,9 +276,7 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
         try
         {
             var cliente = await _clienteRepositorio.ObterUmAsync(
-                new ClientePorDocumentoEspecificacao(documento)
-                    .Incluir(c => c.Usuario)
-                    .Incluir(c => c.Contato));
+                new ClientePorDocumentoEspecificacao(documento));
 
             LogFim(nameof(ObterClientePorDocumento), new { documento, encontrado = cliente != null });
             return cliente;
@@ -285,11 +294,6 @@ public class AutenticacaoServico : ServicoAbstrato<AutenticacaoServico, Usuario>
 
         try
         {
-            if (cliente.Usuario != null)
-            {
-                throw new ClienteJaPossuiCadastroException(request.Documento);
-            }
-
             cliente.Nome = request.Nome;
             cliente.Contato ??= new Contato();
             cliente.Contato.Email = request.Email;
