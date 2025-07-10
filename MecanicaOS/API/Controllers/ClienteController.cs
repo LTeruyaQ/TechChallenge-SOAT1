@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Route("[controller]")]
+[ApiController]
+[Produces("application/json")]
+[Consumes("application/json")]
 public class ClienteController : Controller
 {
     private readonly IClienteServico service;
