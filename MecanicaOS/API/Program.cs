@@ -49,13 +49,15 @@ builder.Services.AddScoped<IServicoServico, ServicoServico>();
 builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
 builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
 builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
+builder.Services.AddScoped<IUsuarioServico, UsuarioServico>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 
 // Aplicacao
 builder.Services.AddAutoMapper(
     typeof(ServicoProfile),
     typeof(EstoqueProfile),
-    typeof(VeiculoProfile));
+    typeof(VeiculoProfile),
+    typeof(UsuarioProfile));
 
 // Infraestrutura
 builder.Services.AddScoped<IServicoNotificacaoEmail, ServicoNotificacaoEmail>();
