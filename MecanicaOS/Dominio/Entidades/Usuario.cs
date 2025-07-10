@@ -1,12 +1,13 @@
 using Dominio.Entidades.Abstratos;
+using Dominio.Enumeradores;
 
 namespace Dominio.Entidades;
 
 public class Usuario : Entidade
 {
-    public Guid IdCliente { get; set; }
-    public Cliente? Cliente { get; set; }
-    public string? Login { get; set; }
-    public string? Senha { get; set; }
-    public string? TipoUsuario { get; set; }    
+    public string Email { get; set; } = default!;
+    public string Senha { get; set; } = default!;
+    public DateTime? DataUltimoAcesso { get; set; }
+    public TipoUsuario TipoUsuario { get; set; }
+    public bool RecebeAlertaEstoque { get; set; }
 }
