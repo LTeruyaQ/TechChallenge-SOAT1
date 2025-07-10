@@ -3,6 +3,7 @@ using Dominio.Especificacoes;
 using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
+using System.Text;
 
 namespace Aplicacao.Jobs;
 
@@ -11,37 +12,41 @@ public class VerificarEstoqueJob
     private readonly IRepositorio<Estoque> _estoqueRepositorio;
     private readonly IRepositorio<Usuario> _usuarioRepositorio;
     private readonly IRepositorio<AlertaEstoque> _alertaEstoqueRepositorio;
-    private readonly IServicoEmail _servicoEmail;
     private readonly ILogServico<VerificarEstoqueJob> _logServico;
+    private readonly IServicoEmail _servicoEmail;
+    private readonly IUnidadeDeTrabalho _uot;
 
     public VerificarEstoqueJob(
-        IRepositorio<Estoque> estoqueRepositorio, 
+        IRepositorio<Estoque> estoqueRepositorio,
         IRepositorio<Usuario> usuarioRepositorio,
         IRepositorio<AlertaEstoque> alertaEstoqueRepositorio,
-        IServicoEmail notificacaoEmail, 
-        ILogServico<VerificarEstoqueJob> logServico)
+        IServicoEmail notificacaoEmail,
+        ILogServico<VerificarEstoqueJob> logServico,
+        IUnidadeDeTrabalho uot)
     {
         _estoqueRepositorio = estoqueRepositorio;
         _usuarioRepositorio = usuarioRepositorio;
         _alertaEstoqueRepositorio = alertaEstoqueRepositorio;
         _servicoEmail = notificacaoEmail;
         _logServico = logServico;
+        _uot = uot;
     }
 
     public async Task ExecutarAsync()
     {
         var metodo = nameof(ExecutarAsync);
-        _logServico.LogInicio(metodo);
 
         try
         {
-            IEspecificacao<Estoque> filtro = new ObterEstoqueCriticoEspecificacao();
+            _logServico.LogInicio(metodo);
 
-            IEnumerable<Estoque> insumosCriticos = await _estoqueRepositorio.ObterPorFiltroAsync(filtro);
+            var insumosCriticos = await ObterInsumosParaAlertaAsync();
 
             if (insumosCriticos.Any())
             {
                 await EnviarAlertaEstoqueAsync(insumosCriticos);
+
+                await SalvarAlertaEnviadoAsync(insumosCriticos);
             }
 
             _logServico.LogFim(metodo, insumosCriticos);
@@ -54,13 +59,37 @@ public class VerificarEstoqueJob
         }
     }
 
+    private async Task<List<Estoque>> ObterInsumosParaAlertaAsync()
+    {
+        var filtroInsumosCriticos = new ObterEstoqueCriticoEspecificacao();
+        var insumosCriticos = await _estoqueRepositorio.ObterPorFiltroAsync(filtroInsumosCriticos);
+
+        var dataAtual = DateTime.UtcNow;
+        var insumosParaAlerta = new List<Estoque>();
+
+        foreach (var insumo in insumosCriticos)
+        {
+            var alertaEnviadoHoje = await _alertaEstoqueRepositorio.ObterPorFiltroAsync(
+                new ObterAlertaDoDiaPorEstoqueEspecificacao(
+                    insumo.Id,
+                    dataAtual));
+
+            if (!alertaEnviadoHoje.Any())
+            {
+                insumosParaAlerta.Add(insumo);
+            }
+        }
+
+        return insumosParaAlerta;
+    }
+
+
     private async Task EnviarAlertaEstoqueAsync(IEnumerable<Estoque> insumosCriticos)
     {
-        IEspecificacao<Usuario> especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
+        var especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
+        var usuariosAlerta = await _usuarioRepositorio.ObterPorFiltroAsync(especificacao);
 
-        IEnumerable<Usuario> usuariosAlerta = await _usuarioRepositorio.ObterPorFiltroAsync(especificacao);
-
-        string? conteudo = await GerarConteudoEmail(insumosCriticos);
+        var conteudo = await GerarConteudoEmailAsync(insumosCriticos);
 
         if (!string.IsNullOrEmpty(conteudo))
         {
@@ -72,34 +101,35 @@ public class VerificarEstoqueJob
         }
     }
 
-    private async Task<string?> GerarConteudoEmail(IEnumerable<Estoque> insumosCriticos)
+    private static async Task<string?> GerarConteudoEmailAsync(IEnumerable<Estoque> insumosCriticos)
     {
-        string conteudo = "Foram identificados insumos com quantidade igual ou inferior ao limite mínimo definido no sistema.\r\n" +
-                          "Itens com estoque crítico:\r\n" +
-                          "-----------------------------------------------------";
+        string templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", "EmailAlertaEstoque.html");
+        string template = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
 
-        bool enviarAlertaHoje = false;
-
+        var sbItens = new StringBuilder();
         foreach (var insumo in insumosCriticos)
         {
-            IEspecificacao<AlertaEstoque> expressaoAlerta = new ObterAlertaDoDiaPorEstoqueEspecificacao (insumo.Id, DateTime.UtcNow);
-
-            var alertasHoje = await _alertaEstoqueRepositorio.ObterPorFiltroAsync(expressaoAlerta);
-
-            if (!alertasHoje.Any())
-            {
-                conteudo += $"• Insumo: {insumo.Insumo}\n" +
-                            $"  Quantidade Atual: {insumo.QuantidadeDisponivel}\n" +
-                            $"  Quantidade Mínima: {insumo.QuantidadeMinima}\n";
-
-                enviarAlertaHoje = true;
-            }
+            sbItens.AppendLine($@"
+            <li>
+                <strong>Insumo:</strong> {insumo.Insumo}<br/>
+                <strong>Quantidade Atual:</strong> {insumo.QuantidadeDisponivel}<br/>
+                <strong>Quantidade Mínima:</strong> {insumo.QuantidadeMinima}
+            </li>
+            <br/>");
         }
 
-        conteudo += "-----------------------------------------------------" +
-            "Recomenda-se a verificação e reposição dos itens listados para evitar impacto nas operações.\r\n\r\n" +
-            "Este é um aviso automático gerado pelo sistema OficinaOS";
+        string conteudoFinal = template.Replace("{{INSUMOS}}", sbItens.ToString());
 
-        return enviarAlertaHoje ? conteudo : null;
+        return conteudoFinal;
+    }
+
+    private async Task SalvarAlertaEnviadoAsync(IEnumerable<Estoque> insumosCriticos)
+    {
+        var alertas = insumosCriticos
+            .Select(insumo => new AlertaEstoque { EstoqueId = insumo.Id });
+
+        await _alertaEstoqueRepositorio.CadastrarVariosAsync(alertas);
+
+        await _uot.Commit();
     }
 }

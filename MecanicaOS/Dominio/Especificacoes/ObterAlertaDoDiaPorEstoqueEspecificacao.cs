@@ -16,5 +16,5 @@ public class ObterAlertaDoDiaPorEstoqueEspecificacao  : IEspecificacao<AlertaEst
     }
 
     public Expression<Func<AlertaEstoque, bool>> Expressao =>
-       a => a.EstoqueId == _estoqueId && a.DataAlerta.Date == _data.Date;
+       a => a.EstoqueId == _estoqueId && a.DataCadastro.Date == _data.Date;
 }

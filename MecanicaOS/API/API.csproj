@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Templates\EmailAlertaEstoque.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Templates\EmailAlertaEstoque.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Hangfire" Version="1.8.20" />
     <PackageReference Include="Hangfire.PostgreSql" Version="1.20.12" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
