@@ -58,7 +58,7 @@ builder.Services.AddAutoMapper(
     typeof(VeiculoProfile));
 
 // Infraestrutura
-builder.Services.AddScoped<IServicoNotificacaoEmail, ServicoNotificacaoEmail>();
+builder.Services.AddScoped<IServicoEmail, ServicoEmail>();
 builder.Services.AddScoped<IIdCorrelacionalService, IdCorrelacionalService>();
 builder.Services.AddScoped<IdCorrelacionalLogMiddleware>();
 
