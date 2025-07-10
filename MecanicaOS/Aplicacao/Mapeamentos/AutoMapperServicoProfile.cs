@@ -14,7 +14,8 @@ namespace Aplicacao.Mapeamentos
 
             CreateMap<CadastrarServicoRequest, Servico>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.DataCadastro, opt => opt.MapFrom(_ => DateTime.UtcNow));
+                .ForMember(dest => dest.DataCadastro, opt => opt.MapFrom(_ => DateTime.UtcNow))
+                .ForMember(dest => dest.Ativo, opt => opt.MapFrom(_ => true));
 
             CreateMap<EditarServicoRequest, Servico>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())

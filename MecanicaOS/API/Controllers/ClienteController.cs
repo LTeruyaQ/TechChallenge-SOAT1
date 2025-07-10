@@ -10,7 +10,7 @@ namespace API.Controllers;
 [ApiController]
 [Produces("application/json")]
 [Consumes("application/json")]
-public class ClienteController : Controller
+public class ClienteController : ControllerBase
 {
     private readonly IClienteServico service;
 

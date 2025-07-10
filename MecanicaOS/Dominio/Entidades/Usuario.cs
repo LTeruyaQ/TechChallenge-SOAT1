@@ -10,4 +10,15 @@ public class Usuario : Entidade
     public DateTime? DataUltimoAcesso { get; set; }
     public TipoUsuario TipoUsuario { get; set; }
     public bool RecebeAlertaEstoque { get; set; }
+
+    public Usuario() { }
+
+    public void Atualizar(string? email, string? senha, DateTime? dataUltimoAcesso, TipoUsuario? tipoUsuario, bool? recebeAlertaEstoque)
+    {
+        if (!string.IsNullOrEmpty(email)) Email = email;
+        if (!string.IsNullOrEmpty(senha)) Senha = senha;
+        if (dataUltimoAcesso != null) DataUltimoAcesso = dataUltimoAcesso;
+        if (tipoUsuario != null) TipoUsuario = tipoUsuario.Value;
+        if (recebeAlertaEstoque != null) RecebeAlertaEstoque = recebeAlertaEstoque.Value;
+    }
 }
