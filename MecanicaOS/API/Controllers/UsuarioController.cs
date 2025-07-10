@@ -1,6 +1,6 @@
-using API.Models;
-using Aplicacao.DTOs.Requests.Estoque;
-using Aplicacao.DTOs.Responses.Estoque;
+﻿using API.Models;
+using Aplicacao.DTOs.Requests.Usuario;
+using Aplicacao.DTOs.Responses.Usuario;
 using Aplicacao.Interfaces.Servicos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,32 +10,33 @@ namespace API.Controllers;
 [ApiController]
 [Produces("application/json")]
 [Consumes("application/json")]
-public class EstoqueController : ControllerBase
+public class UsuarioController : ControllerBase
 {
-    private readonly IEstoqueServico _estoqueService;
+    private readonly IUsuarioServico _usuarioServico;
 
-    public EstoqueController(IEstoqueServico estoqueService)
+    public UsuarioController(IUsuarioServico servico)
     {
-        _estoqueService = estoqueService;
+        _usuarioServico = servico;
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<EstoqueResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<UsuarioResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterTodos()
     {
-        var estoques = await _estoqueService.ObterTodosAsync();
-        return Ok(estoques);
+        var servicos = await _usuarioServico.ObterTodosAsync();
+        return Ok(servicos);
     }
 
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(EstoqueResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UsuarioResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterPorId(Guid id)
     {
-        var estoque = await _estoqueService.ObterPorIdAsync(id);
-        return Ok(estoque);
+        var usuario = await _usuarioServico.ObterPorIdAsync(id)
+            ?? throw new KeyNotFoundException("Usuário não encontrado");
+        return Ok(usuario);
     }
 
     [HttpPost]
@@ -43,33 +44,30 @@ public class EstoqueController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Criar([FromBody] CadastrarEstoqueRequest request)
+    public async Task<IActionResult> Criar([FromBody] CadastrarUsuarioRequest request)
     {
-        var estoque = await _estoqueService.CadastrarAsync(request);
-        return CreatedAtAction(nameof(ObterPorId), new { id = estoque.Id }, estoque);
+        var usuario = await _usuarioServico.CadastrarAsync(request);
+        return CreatedAtAction(nameof(ObterPorId), new { id = usuario.Id }, usuario);
     }
 
     [HttpPut("{id:guid}")]
-    [ProducesResponseType(typeof(EstoqueResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UsuarioResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarEstoqueRequest request)
+    public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarUsuarioRequest request)
     {
-        var estoqueAtualizado = await _estoqueService.AtualizarAsync(id, request);
-        return Ok(estoqueAtualizado);
+        var usuarioAtualizado = await _usuarioServico.AtualizarAsync(id, request);
+        return Ok(usuarioAtualizado);
     }
 
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Remover(Guid id)
+    public async Task<IActionResult> Deletar(Guid id)
     {
-        var sucesso = await _estoqueService.DeletarAsync(id);
-        if (!sucesso)
-            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Erro ao remover o item do estoque" });
-
+        await _usuarioServico.DeletarAsync(id);
         return NoContent();
     }
 }
