@@ -43,13 +43,6 @@ namespace Infraestrutura.Dados.Mapeamentos;
                 .HasForeignKey<Endereco>(e => e.IdCliente)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Relacionamento 1:1 com Usuario
-            builder.HasOne(c => c.Usuario)
-                .WithOne()
-                .HasForeignKey<Usuario>(u => u.IdCliente)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Cascade);
-
             // Relacionamento 1:N com Veiculos
             builder.HasMany(c => c.Veiculos)
                 .WithOne(v => v.Cliente)

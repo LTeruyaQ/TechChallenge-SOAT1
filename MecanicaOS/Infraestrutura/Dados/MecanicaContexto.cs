@@ -39,6 +39,7 @@ public class MecanicaContexto : DbContext
         modelBuilder.ApplyConfiguration(new EstoqueMapeamento());
         modelBuilder.ApplyConfiguration(new VeiculoMapeamento());
         modelBuilder.ApplyConfiguration(new ClienteMapeamento());
+        modelBuilder.ApplyConfiguration(new UsuarioMapeamento());
 
         base.OnModelCreating(modelBuilder);
     }
