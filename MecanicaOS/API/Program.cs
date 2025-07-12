@@ -8,14 +8,20 @@ using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using Hangfire;
 using Hangfire.PostgreSql;
+using Infraestrutura.Autenticacao;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.Extensions;
 using Infraestrutura.Dados.UoT;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.IO.Compression;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +31,38 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(options =>
              options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MecanicaOS API", Version = "v1" });
+
+    // Adiciona suporte a autenticação JWT no Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
+});
 builder.Services.AddOpenApi();
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -44,14 +81,51 @@ builder.Services.AddHangfireServer();
 // Repositórios
 builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
 
+// Configuração JWT
+var jwtConfig = builder.Configuration.GetSection("Jwt").Get<ConfiguracaoJwt>();
+builder.Services.Configure<ConfiguracaoJwt>(builder.Configuration.GetSection("Jwt"));
+
+// Autenticação JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtConfig.Issuer,
+            ValidAudience = jwtConfig.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SecretKey)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+// Autorização
+builder.Services.AddAuthorization(options =>
+{
+    options.DefaultPolicy = new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build();
+});
+
 // Serviços
 builder.Services.AddScoped<IServicoServico, ServicoServico>();
 builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
 builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
 builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
-builder.Services.AddScoped<IUsuarioServico, UsuarioServico>();
 builder.Services.AddScoped<IClienteServico, ClienteServico>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
+
+// Serviços de autenticação
+builder.Services.AddScoped<IServicoJwt, ServicoJwt>();
+builder.Services.AddScoped<IServicoSenha, ServicoSenha>();
+builder.Services.AddScoped<IAutenticacaoServico, AutenticacaoServico>();
+
+// Serviço de usuário deve ser registrado após os serviços de autenticação
+builder.Services.AddScoped<IUsuarioServico, UsuarioServico>();
 
 // Aplicacao
 builder.Services.AddAutoMapper(
@@ -93,6 +167,10 @@ app.UsePathBase(new PathString("/api/v1"));
 
 app.UseRouting();
 
+// Adiciona autenticação e autorização ao pipeline
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseMiddleware<IdCorrelacionalLogMiddleware>();
 
@@ -101,7 +179,7 @@ app.UseSwagger(c =>
     c.RouteTemplate = "swagger/{documentName}/swagger.json";
     c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
     {
-        swaggerDoc.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer>
+        swaggerDoc.Servers = new List<OpenApiServer>
         {
             new() { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}/api/v1" }
         };

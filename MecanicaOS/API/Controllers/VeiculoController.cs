@@ -26,7 +26,7 @@ public class VeiculoController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var response = await _veiculoServico.CadastrarAsync(request);
         return CreatedAtAction(nameof(ObterPorId), new { id = response.Id }, response);
     }
@@ -53,7 +53,7 @@ public class VeiculoController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var response = await _veiculoServico.AtualizarAsync(id, request);
         return Ok(response);
     }

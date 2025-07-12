@@ -17,5 +17,5 @@ public class CadastrarUsuarioRequest
 
     public bool? RecebeAlertaEstoque { get; set; }
 
-    public string Documento { get; set; }
+    public string? Documento { get; set; }
 }

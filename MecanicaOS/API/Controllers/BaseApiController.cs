@@ -19,7 +19,7 @@ public abstract class BaseApiController : ControllerBase
 
             return BadRequest(new { erros });
         }
-        
+
         return null;
     }
 }

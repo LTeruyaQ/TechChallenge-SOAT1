@@ -53,7 +53,7 @@ public class ServicosController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var servico = await _servico.CadastrarServicoAsync(request);
         return CreatedAtAction(nameof(ObterPorId), new { id = servico.Id }, servico);
     }
@@ -67,7 +67,7 @@ public class ServicosController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var servicoAtualizado = await _servico.EditarServicoAsync(id, request);
         return Ok(servicoAtualizado);
     }

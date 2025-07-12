@@ -43,7 +43,7 @@ public class EstoqueController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var estoque = await _estoqueService.CadastrarAsync(request);
         return CreatedAtAction(nameof(ObterPorId), new { id = estoque.Id }, estoque);
     }
@@ -57,7 +57,7 @@ public class EstoqueController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var estoqueAtualizado = await _estoqueService.AtualizarAsync(id, request);
         return Ok(estoqueAtualizado);
     }

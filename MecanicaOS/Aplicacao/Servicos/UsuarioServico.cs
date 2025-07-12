@@ -1,4 +1,4 @@
-﻿using Aplicacao.DTOs.Requests.Usuario;
+using Aplicacao.DTOs.Requests.Usuario;
 using Aplicacao.DTOs.Responses.Usuario;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
@@ -15,14 +15,18 @@ namespace Aplicacao.Servicos;
 public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuarioServico
 {
     private readonly IClienteServico _clienteServico;
+    private readonly IServicoSenha _servicoSenha;
+    
     public UsuarioServico(
         IRepositorio<Usuario> repositorio,
         ILogServico<UsuarioServico> logServico,
         IUnidadeDeTrabalho uot,
         IMapper mapper,
-        IClienteServico clienteServico) : base(repositorio, logServico, uot, mapper)
+        IClienteServico clienteServico,
+        IServicoSenha servicoSenha) : base(repositorio, logServico, uot, mapper)
     {
         _clienteServico = clienteServico;
+        _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
     }
 
     public async Task<UsuarioResponse> AtualizarAsync(Guid id, AtualizarUsuarioRequest request)
@@ -35,7 +39,17 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 
             Usuario usuario = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Usuário não encontrado");
 
-            usuario.Atualizar(request.Email, request.Senha, request.DataUltimoAcesso, request.TipoUsuario, request.RecebeAlertaEstoque);
+            // Se a senha foi fornecida, criptografa antes de atualizar
+            string senhaCriptografada = !string.IsNullOrEmpty(request.Senha) 
+                ? _servicoSenha.CriptografarSenha(request.Senha) 
+                : usuario.Senha;
+
+            usuario.Atualizar(
+                request.Email, 
+                senhaCriptografada, 
+                request.DataUltimoAcesso, 
+                request.TipoUsuario, 
+                request.RecebeAlertaEstoque);
 
             await _repositorio.EditarAsync(usuario);
 
@@ -64,6 +78,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             await VerificarUsuarioCadastradoAsync(request.Email);
 
             var usuario = _mapper.Map<Usuario>(request);
+            usuario.Senha = _servicoSenha.CriptografarSenha(request.Senha);
 
             if (request.TipoUsuario == TipoUsuario.Cliente)
                 await AssociarClienteAsync(request, usuario);
@@ -117,9 +132,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
         {
             LogInicio(metodo);
 
-            var especificacao = new ObterUsuarioPorEmailEspecificacao(email);
-
-            var usuario = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
+            var usuario = await ObterPorEmailAsync(email);
 
             LogFim(metodo, usuario);
 
@@ -198,6 +211,27 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             LogFim(metodo, usuarios);
 
             return _mapper.Map<IEnumerable<UsuarioResponse>>(usuarios);
+        }
+        catch (Exception e)
+        {
+            LogErro(metodo, e);
+            throw;
+        }
+    }
+
+    public async Task<Usuario?> ObterPorEmailAsync(string email)
+    {
+        var metodo = nameof(ObterPorEmailAsync);
+        LogInicio(metodo, new { email });
+        try
+        {
+            var especificacao = new ObterUsuarioPorEmailEspecificacao(email);
+
+            var usuario = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
+
+            LogFim(metodo, usuario);
+
+            return usuario;
         }
         catch (Exception e)
         {

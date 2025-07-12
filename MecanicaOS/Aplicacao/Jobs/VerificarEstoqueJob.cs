@@ -90,7 +90,7 @@ public class VerificarEstoqueJob
         {
             var filtroInsumosCriticos = new ObterEstoqueCriticoEspecificacao();
             var insumosCriticos = await _estoqueRepositorio.ObterPorFiltroAsync(filtroInsumosCriticos);
-            
+
             _logServico.LogFim(metodo, insumosCriticos);
             return insumosCriticos;
         }

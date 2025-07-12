@@ -37,6 +37,7 @@ public class GlobalExceptionHandlerMiddleware
             DadosInvalidosException => HttpStatusCode.BadRequest,
             DadosNaoEncontradosException or KeyNotFoundException => HttpStatusCode.NotFound,
             DadosJaCadastradosException => HttpStatusCode.Conflict,
+            CredenciaisInvalidasException or UsuarioInativoException => HttpStatusCode.Unauthorized,
             _ => HttpStatusCode.InternalServerError
         };
 

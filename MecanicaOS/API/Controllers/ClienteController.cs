@@ -33,7 +33,7 @@ public class ClienteController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         return Ok(await service.CadastrarAsync(request));
     }
 
@@ -46,7 +46,7 @@ public class ClienteController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         return Ok(await service.AtualizarAsync(id, request));
     }
 
