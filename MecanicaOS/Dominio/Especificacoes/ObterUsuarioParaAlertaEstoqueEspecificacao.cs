@@ -1,5 +1,4 @@
 ﻿using Dominio.Entidades;
-using Dominio.Enumeradores;
 using Dominio.Especificacoes.Base.Interfaces;
 using System.Linq.Expressions;
 

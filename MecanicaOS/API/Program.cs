@@ -1,5 +1,3 @@
-using System.IO.Compression;
-using System.Text.Json.Serialization;
 using API.Middlewares;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
@@ -17,6 +15,8 @@ using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using System.IO.Compression;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,6 +90,7 @@ var app = builder.Build();
 app.UseResponseCompression();
 
 app.UsePathBase(new PathString("/api/v1"));
+
 app.UseRouting();
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
@@ -109,14 +110,14 @@ app.UseSwagger(c =>
 
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "MecanicaOS API v1");
+    c.SwaggerEndpoint("/api/v1/swagger/v1/swagger.json", "MecanicaOS API v1");
     c.RoutePrefix = "docs";
 });
 
 app.UseReDoc(c =>
 {
     c.DocumentTitle = "MecanicaOS API Documentation";
-    c.SpecUrl = "/api/swagger/v1/swagger.json";
+    c.SpecUrl = "/api/v1/swagger/v1/swagger.json";
     c.RoutePrefix = "api-docs";
 });
 
@@ -141,9 +142,9 @@ try
     // Aplicar migrações automaticamente
     using var escopo = app.Services.CreateScope();
     app.Logger.LogInformation("Iniciando aplicação...");
-    
+
     await app.Services.AplicarMigracoesAsync<MecanicaContexto>();
-    
+
     app.Logger.LogInformation("Aplicação iniciada com sucesso!");
 }
 catch (Exception ex)

@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-public class OrdemServicoController : Controller
+public class OrdemServicoController : BaseApiController
 {
-    public IActionResult Index()
+    [HttpGet]
+    public IActionResult Get()
     {
-        return View();
+        return Ok("Ordem de Serviço API está funcionando!");
     }
 }

@@ -12,7 +12,7 @@ public static class DatabaseExtensions
     /// <typeparam name="TContext">Tipo do contexto do banco de dados</typeparam>
     /// <param name="provedorServicos">Provedor de serviços</param>
     /// <returns>Task representando a operação assíncrona</returns>
-    public static async Task AplicarMigracoesAsync<TContext>(this IServiceProvider provedorServicos) 
+    public static async Task AplicarMigracoesAsync<TContext>(this IServiceProvider provedorServicos)
         where TContext : DbContext
     {
         using var escopo = provedorServicos.CreateScope();
@@ -24,15 +24,15 @@ public static class DatabaseExtensions
         {
             logger.LogInformation("Verificando migrações pendentes...");
             var migracoesPendentes = await contexto.Database.GetPendingMigrationsAsync();
-            
+
             if (migracoesPendentes.Any())
             {
-                logger.LogInformation("Migrações pendentes encontradas: {MigracoesPendentes}", 
+                logger.LogInformation("Migrações pendentes encontradas: {MigracoesPendentes}",
                     string.Join(", ", migracoesPendentes));
-                
+
                 logger.LogInformation("Aplicando migrações...");
                 await contexto.Database.MigrateAsync();
-                
+
                 logger.LogInformation("Migrações aplicadas com sucesso!");
             }
             else
