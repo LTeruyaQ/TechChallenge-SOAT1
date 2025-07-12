@@ -1,0 +1,255 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\test\\MecanicaOSTests\\MecanicaOSTests.csproj": {}
+  },
+  "projects": {
+    "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Aplicacao\\Aplicacao.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Aplicacao\\Aplicacao.csproj",
+        "projectName": "Aplicacao",
+        "projectPath": "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Aplicacao\\Aplicacao.csproj",
+        "packagesPath": "C:\\Users\\João Paulo\\.nuget\\packages\\",
+        "outputPath": "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Aplicacao\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\João Paulo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Dominio\\Dominio.csproj": {
+                "projectPath": "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Dominio\\Dominio.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[11.9.0, )"
+            },
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Dominio\\Dominio.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Dominio\\Dominio.csproj",
+        "projectName": "Dominio",
+        "projectPath": "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Dominio\\Dominio.csproj",
+        "packagesPath": "C:\\Users\\João Paulo\\.nuget\\packages\\",
+        "outputPath": "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Dominio\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\João Paulo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\test\\MecanicaOSTests\\MecanicaOSTests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\test\\MecanicaOSTests\\MecanicaOSTests.csproj",
+        "projectName": "MecanicaOSTests",
+        "projectPath": "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\test\\MecanicaOSTests\\MecanicaOSTests.csproj",
+        "packagesPath": "C:\\Users\\João Paulo\\.nuget\\packages\\",
+        "outputPath": "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\test\\MecanicaOSTests\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\João Paulo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Aplicacao\\Aplicacao.csproj": {
+                "projectPath": "C:\\JoaoPaulo\\Fiap\\Pos-Tech\\GitHub\\Projeto\\TechChallenge-SOAT1\\MecanicaOS\\Aplicacao\\Aplicacao.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoFixture.AutoMoq": {
+              "target": "Package",
+              "version": "[4.18.1, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.8.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.72, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.5.3, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.5.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
