@@ -51,10 +51,10 @@ namespace Aplicacao.Servicos
                 await _repositorio.EditarAsync(cliente);
 
                 if (!request.EnderecoId.Equals(Guid.Empty))
-                    await UpdateEnderecoCliente(request);
+                    await AtualizarEnderecoCliente(request);
 
                 if (!request.ContatoId.Equals(Guid.Empty))
-                    await UpdateContatoCliente(request);
+                    await AtualizarContatoCliente(request);
 
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao atualizar cliente");
@@ -71,17 +71,13 @@ namespace Aplicacao.Servicos
             }
         }
 
-        private async Task UpdateEnderecoCliente(AtualizarClienteRequest enderecoCliente)
+        private async Task AtualizarEnderecoCliente(AtualizarClienteRequest enderecoCliente)
         {
-            Endereco endereco = null;
+            if (enderecoCliente.EnderecoId.Equals(Guid.Empty))
+                throw new DadosInvalidosException("Deve ser informado o id do endereço a ser editado");
 
-            if (!enderecoCliente.EnderecoId.Equals(Guid.Empty))
+            if (await _repositoryEndereco.ObterPorIdAsync(enderecoCliente.EnderecoId) is Endereco endereco)
             {
-                endereco = await _repositoryEndereco.ObterPorIdAsync(enderecoCliente.EnderecoId);
-
-                if (endereco == null)
-                    throw new Exception("Endereço inexistente");
-
                 endereco.Bairro = enderecoCliente.Bairro;
                 endereco.Numero = enderecoCliente.Numero;
                 endereco.CEP = enderecoCliente.CEP;
@@ -89,65 +85,55 @@ namespace Aplicacao.Servicos
                 endereco.Complemento = enderecoCliente.Complemento;
                 endereco.Rua = enderecoCliente.Rua;
                 endereco.DataAtualizacao = DateTime.UtcNow;
+             
                 await _repositoryEndereco.EditarAsync(endereco);
             }
+
+            throw new DadosNaoEncontradosException("Endereço inexistente");
         }
 
-        private async Task UpdateContatoCliente(AtualizarClienteRequest contatoCliente)
+        private async Task AtualizarContatoCliente(AtualizarClienteRequest contatoCliente)
         {
-
             if (!contatoCliente.ContatoId.Equals(Guid.Empty))
+                throw new Exception("Endereço inexistente");
+
+            if (await _repositoryContato.ObterPorIdAsync(contatoCliente.ContatoId) is Contato contato)
             {
-                var entityContato = await _repositoryContato.ObterPorIdAsync(contatoCliente.ContatoId);
-
-                if (entityContato == null)
-                    throw new Exception("Endereço inexistente");
-
-                entityContato.Telefone = contatoCliente.Telefone;
-                entityContato.IdCliente = contatoCliente.Id.Value;
-                entityContato.Email = contatoCliente.Email;
-                entityContato.DataAtualizacao = DateTime.UtcNow;
-                await _repositoryContato.EditarAsync(entityContato);
-            }
-        }
-
-
-
-        private async Task InsertEnderecoCliente(CadastrarClienteRequest enderecoCliente)
-        {
-            Endereco endereco = null;
-
-            if (!enderecoCliente.Id.Equals(Guid.Empty))
-            {
-                endereco = new Endereco();
-                endereco.Bairro = enderecoCliente.Bairro;
-                endereco.Numero = enderecoCliente.Numero;
-                endereco.CEP = enderecoCliente.CEP;
-                endereco.Cidade = enderecoCliente.Cidade;
-                endereco.Complemento = enderecoCliente.Complemento;
-                endereco.Rua = enderecoCliente.Rua;
-                endereco.IdCliente = enderecoCliente.Id;
-                endereco.DataCadastro = DateTime.UtcNow;
-                await _repositoryEndereco.CadastrarAsync(endereco);
-            }
-        }
-
-        private async Task InsertContatoCliente(CadastrarClienteRequest contatoCliente)
-        {
-            Contato contato = null;
-
-            if (!contatoCliente.Id.Equals(Guid.Empty))
-            {
-                contato = new Contato();
-                contato.DataCadastro = DateTime.UtcNow;
-                contato.IdCliente = contatoCliente.Id;
-                contato.Email = contatoCliente.Email;
                 contato.Telefone = contatoCliente.Telefone;
+                contato.IdCliente = contatoCliente.Id.Value;
+                contato.Email = contatoCliente.Email;
+                contato.DataAtualizacao = DateTime.UtcNow;
 
-                await _repositoryContato.CadastrarAsync(contato);
+                await _repositoryContato.EditarAsync(contato);
             }
         }
 
+        private async Task CadastrarEnderecoCliente(CadastrarClienteRequest enderecoCliente)
+        {
+            Endereco endereco = new Endereco
+            {
+                Bairro = enderecoCliente.Bairro,
+                Numero = enderecoCliente.Numero,
+                CEP = enderecoCliente.CEP,
+                Cidade = enderecoCliente.Cidade,
+                Complemento = enderecoCliente.Complemento,
+                Rua = enderecoCliente.Rua,
+                IdCliente = enderecoCliente.Id
+            };
+
+            await _repositoryEndereco.CadastrarAsync(endereco);
+        }
+
+        private async Task CadastrarContatoCliente(CadastrarClienteRequest contatoCliente)
+        {
+            var contato = new Contato();
+            contato.DataCadastro = DateTime.UtcNow;
+            contato.IdCliente = contatoCliente.Id;
+            contato.Email = contatoCliente.Email;
+            contato.Telefone = contatoCliente.Telefone;
+
+            await _repositoryContato.CadastrarAsync(contato);
+        }
 
         public async Task<ClienteResponse> CadastrarAsync(CadastrarClienteRequest request)
         {
@@ -164,10 +150,9 @@ namespace Aplicacao.Servicos
                 if (!entityCliente.Id.Equals(Guid.Empty))
                 {
                     request.Id = entityCliente.Id;
-                    await InsertEnderecoCliente(request);
-                    await InsertContatoCliente(request);
+                    await CadastrarEnderecoCliente(request);
+                    await CadastrarContatoCliente(request);
                 }
-
 
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao cadastrar cliente");
@@ -263,9 +248,9 @@ namespace Aplicacao.Servicos
 
             try
             {
-                if(await _repositorio.ObterPorFiltroAsync(new ObterClientePorDocumento(documento)) is Cliente cliente)
+                if (await _repositorio.ObterPorFiltroAsync(new ObterClientePorDocumento(documento)) is Cliente cliente)
                 {
-                    LogFim(metodo,cliente);
+                    LogFim(metodo, cliente);
                     return cliente;
                 }
 
