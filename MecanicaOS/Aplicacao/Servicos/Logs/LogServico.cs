@@ -1,5 +1,6 @@
 ﻿using Aplicacao.DTOs.Log;
 using Dominio.Interfaces.Servicos;
+using MecanicaOS.Dominio.Interfaces.Servicos;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,10 +10,12 @@ namespace Aplicacao.Servicos.Logs
     public class LogServico<T> : ILogServico<T>
     {
         private readonly IIdCorrelacionalService _correlationIdService;
+        private readonly IUsuarioLogadoServico _usuarioLogadoServico;
         private readonly ILogger<T> _logger;
         private readonly JsonSerializerOptions _jsonOptions;
-        public LogServico(IIdCorrelacionalService correlationIdService, ILogger<T> logger)
+        public LogServico(IIdCorrelacionalService correlationIdService, ILogger<T> logger, IUsuarioLogadoServico usuarioLogadoServico)
         {
+            _usuarioLogadoServico = usuarioLogadoServico;
             _correlationIdService = correlationIdService;
             _logger = logger;
 
@@ -63,7 +66,8 @@ namespace Aplicacao.Servicos.Logs
                 Etapa = etapa,
                 CorrelationId = _correlationIdService.GetCorrelationId(),
                 Dados = dados,
-                Timestamp = DateTime.UtcNow
+                Timestamp = DateTime.UtcNow,
+                Usuario = _usuarioLogadoServico.Nome
             };
 
             var payload = JsonSerializer.Serialize(entry, _jsonOptions);

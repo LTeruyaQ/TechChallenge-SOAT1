@@ -2,10 +2,12 @@ using API.Models;
 using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Interfaces.Servicos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class EstoqueController : BaseApiController
 {
     private readonly IEstoqueServico _estoqueService;

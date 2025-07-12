@@ -2,10 +2,12 @@ using API.Models;
 using Aplicacao.DTOs.Requests.Servico;
 using Aplicacao.DTOs.Responses.Servico;
 using Aplicacao.Interfaces.Servicos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class ServicosController : BaseApiController
 {
     private readonly IServicoServico _servico;

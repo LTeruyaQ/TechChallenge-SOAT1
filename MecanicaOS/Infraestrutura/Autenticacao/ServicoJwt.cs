@@ -16,20 +16,34 @@ public class ServicoJwt : IServicoJwt
         _configuracaoJwt = configuracaoJwt.Value;
     }
 
-    public string GerarToken(Guid usuarioId, string email, string tipoUsuario)
+    public string GerarToken(Guid usuarioId, string email, string tipoUsuario, string? nome = null, IEnumerable<string>? permissoes = null)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuracaoJwt.SecretKey);
 
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, usuarioId.ToString()),
+            new Claim(ClaimTypes.Email, email),
+            new Claim(ClaimTypes.Role, tipoUsuario),
+            new Claim("tipo_usuario", tipoUsuario),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
+        };
+
+        if (!string.IsNullOrEmpty(nome))
+        {
+            claims.Add(new Claim(ClaimTypes.Name, nome));
+        }
+
+        if (permissoes != null)
+        {
+            claims.AddRange(permissoes.Select(permissao => new Claim("permissao", permissao)));
+        }
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, usuarioId.ToString()),
-                new Claim(ClaimTypes.Email, email),
-                new Claim(ClaimTypes.Role, tipoUsuario),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            }),
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddMinutes(_configuracaoJwt.ExpiryInMinutes),
             Issuer = _configuracaoJwt.Issuer,
             Audience = _configuracaoJwt.Audience,

@@ -14,6 +14,8 @@ using Infraestrutura.Dados.Extensions;
 using Infraestrutura.Dados.UoT;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
+using MecanicaOS.Dominio.Interfaces.Servicos;
+using MecanicaOS.Infraestrutura.Autenticacao;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -123,6 +125,10 @@ builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 builder.Services.AddScoped<IServicoJwt, ServicoJwt>();
 builder.Services.AddScoped<IServicoSenha, ServicoSenha>();
 builder.Services.AddScoped<IAutenticacaoServico, AutenticacaoServico>();
+
+// Serviço de usuário logado
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUsuarioLogadoServico, UsuarioLogadoServico>();
 
 // Serviço de usuário deve ser registrado após os serviços de autenticação
 builder.Services.AddScoped<IUsuarioServico, UsuarioServico>();

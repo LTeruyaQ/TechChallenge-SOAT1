@@ -2,10 +2,12 @@ using API.Models;
 using Aplicacao.DTOs.Requests.Usuario;
 using Aplicacao.DTOs.Responses.Usuario;
 using Aplicacao.Interfaces.Servicos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class UsuarioController : BaseApiController
 {
     private readonly IUsuarioServico _usuarioServico;
