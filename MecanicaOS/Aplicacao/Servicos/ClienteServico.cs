@@ -4,6 +4,8 @@ using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
+using Dominio.Especificacoes;
+using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
@@ -253,5 +255,28 @@ namespace Aplicacao.Servicos
                 throw;
             }
         }
+
+        public async Task<Cliente> ObterPorDocumento(string documento)
+        {
+            const string metodo = nameof(ObterPorDocumento);
+            LogInicio(metodo, documento);
+
+            try
+            {
+                if(await _repositorio.ObterPorFiltroAsync(new ObterClientePorDocumento(documento)) is Cliente cliente)
+                {
+                    LogFim(metodo,cliente);
+                    return cliente;
+                }
+
+                throw new DadosNaoEncontradosException($"Cliente de documento {documento} não encontrado");
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+
     }
 }

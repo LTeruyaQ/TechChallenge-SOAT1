@@ -1,5 +1,6 @@
 using Aplicacao.DTOs.Requests.Cliente;
 using Aplicacao.DTOs.Responses.Cliente;
+using Dominio.Entidades;
 
 namespace Aplicacao.Interfaces.Servicos
 {
@@ -10,5 +11,6 @@ namespace Aplicacao.Interfaces.Servicos
         Task<bool> DeletarAsync(Guid id);
         Task<ClienteResponse> ObterPorIdAsync(Guid id);
         Task<IEnumerable<ClienteResponse>> ObterTodosAsync();
+        Task<Cliente> ObterPorDocumento(string documento);
     }
 }

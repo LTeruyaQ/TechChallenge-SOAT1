@@ -10,6 +10,9 @@ public class Usuario : Entidade
     public DateTime? DataUltimoAcesso { get; set; }
     public TipoUsuario TipoUsuario { get; set; }
     public bool RecebeAlertaEstoque { get; set; }
+    
+    public Guid? ClienteId { get; set; }
+    public Cliente? Cliente { get; set; }
 
     public Usuario() { }
 

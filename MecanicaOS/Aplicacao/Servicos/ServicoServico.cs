@@ -61,7 +61,7 @@ namespace Aplicacao.Servicos
                 var especificacao = new ObterServicoPorNomeEspecificacao(nome)
                     .E(new ObterServicoDisponivelEspecificacao());
 
-                var servico = await _repositorio.ObterUmAsync(especificacao);
+                var servico = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
 
                 LogFim(metodo, servico);
 

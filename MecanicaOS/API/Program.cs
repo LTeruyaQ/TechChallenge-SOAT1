@@ -50,6 +50,7 @@ builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
 builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
 builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
 builder.Services.AddScoped<IUsuarioServico, UsuarioServico>();
+builder.Services.AddScoped<IClienteServico, ClienteServico>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 
 // Aplicacao
