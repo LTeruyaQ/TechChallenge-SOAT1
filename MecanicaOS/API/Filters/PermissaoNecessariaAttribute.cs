@@ -1,9 +1,9 @@
+using Dominio.Interfaces.Servicos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using MecanicaOS.Dominio.Interfaces.Servicos;
 
-namespace MecanicaOS.API.Filters;
+namespace API.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public class PermissaoNecessariaAttribute : AuthorizeAttribute, IAuthorizationFilter
@@ -18,7 +18,7 @@ public class PermissaoNecessariaAttribute : AuthorizeAttribute, IAuthorizationFi
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         var usuarioLogadoServico = context.HttpContext.RequestServices.GetService<IUsuarioLogadoServico>();
-        
+
         if (usuarioLogadoServico == null || !usuarioLogadoServico.EstaAutenticado)
         {
             context.Result = new UnauthorizedResult();
