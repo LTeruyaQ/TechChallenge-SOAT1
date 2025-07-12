@@ -4,6 +4,7 @@ using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
+using Dominio.Enumeradores;
 using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
@@ -13,12 +14,16 @@ namespace Aplicacao.Servicos;
 
 public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuarioServico
 {
+    private readonly IClienteServico _clienteServico;
     public UsuarioServico(
         IRepositorio<Usuario> repositorio,
         ILogServico<UsuarioServico> logServico,
         IUnidadeDeTrabalho uot,
-        IMapper mapper) : base(repositorio, logServico, uot, mapper)
-    {}
+        IMapper mapper,
+        IClienteServico clienteServico) : base(repositorio, logServico, uot, mapper)
+    {
+        _clienteServico = clienteServico;
+    }
 
     public async Task<UsuarioResponse> AtualizarAsync(Guid id, AtualizarUsuarioRequest request)
     {
@@ -60,6 +65,9 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 
             var usuario = _mapper.Map<Usuario>(request);
 
+            if (request.TipoUsuario == TipoUsuario.Cliente)
+                await AssociarClienteAsync(request, usuario);
+
             var entidade = await _repositorio.CadastrarAsync(usuario);
 
             if (!await Commit())
@@ -68,6 +76,31 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             LogFim(metodo, entidade);
 
             return _mapper.Map<UsuarioResponse>(entidade);
+        }
+        catch (Exception e)
+        {
+            LogErro(metodo, e);
+            throw;
+        }
+    }
+
+    private async Task AssociarClienteAsync(CadastrarUsuarioRequest request, Usuario usuario)
+    {
+        const string metodo = nameof(AssociarClienteAsync);
+
+        LogInicio(metodo, new { request, usuario });
+
+        try
+        {
+            if (!string.IsNullOrEmpty(request.Documento))
+                throw new DadosInvalidosException("Deve ser informado o documento do usuario do cliente");
+
+            var cliente = await _clienteServico.ObterPorDocumento(request.Documento);
+
+            usuario.ClienteId = cliente.Id;
+            usuario.Cliente = cliente;
+
+            LogFim(metodo, usuario);
         }
         catch (Exception e)
         {
@@ -86,7 +119,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 
             var especificacao = new ObterUsuarioPorEmailEspecificacao(email);
 
-            var usuario = await _repositorio.ObterUmAsync(especificacao);
+            var usuario = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
 
             LogFim(metodo, usuario);
 

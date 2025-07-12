@@ -16,4 +16,6 @@ public class CadastrarUsuarioRequest
     public TipoUsuario TipoUsuario { get; set; }
 
     public bool? RecebeAlertaEstoque { get; set; }
+
+    public string Documento { get; set; }
 }
