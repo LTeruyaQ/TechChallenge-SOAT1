@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -19,7 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\MecanicaOS\API\API.csproj" />
     <ProjectReference Include="..\..\MecanicaOS\Aplicacao\Aplicacao.csproj" />
+    <ProjectReference Include="..\..\MecanicaOS\Dominio\Dominio.csproj" />
+    <ProjectReference Include="..\..\MecanicaOS\Infraestrutura\Infraestrutura.csproj" />
   </ItemGroup>
 
   <ItemGroup>
