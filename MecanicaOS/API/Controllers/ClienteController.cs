@@ -1,4 +1,4 @@
-﻿using API.Models;
+using API.Models;
 using Aplicacao.DTOs.Requests.Cliente;
 using Aplicacao.DTOs.Responses.Cliente;
 using Aplicacao.Interfaces.Servicos;
@@ -6,11 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Route("[controller]")]
-[ApiController]
-[Produces("application/json")]
-[Consumes("application/json")]
-public class ClienteController : ControllerBase
+public class ClienteController : BaseApiController
 {
     private readonly IClienteServico service;
 
@@ -35,6 +31,9 @@ public class ClienteController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Post([FromBody] CadastrarClienteRequest request)
     {
+        var resultadoValidacao = ValidarModelState();
+        if (resultadoValidacao != null) return resultadoValidacao;
+        
         return Ok(await service.CadastrarAsync(request));
     }
 
@@ -45,6 +44,9 @@ public class ClienteController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Put(Guid id, [FromBody] AtualizarClienteRequest request)
     {
+        var resultadoValidacao = ValidarModelState();
+        if (resultadoValidacao != null) return resultadoValidacao;
+        
         return Ok(await service.AtualizarAsync(id, request));
     }
 

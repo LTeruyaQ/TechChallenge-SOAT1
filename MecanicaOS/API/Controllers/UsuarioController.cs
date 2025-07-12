@@ -1,4 +1,4 @@
-﻿using API.Models;
+using API.Models;
 using Aplicacao.DTOs.Requests.Usuario;
 using Aplicacao.DTOs.Responses.Usuario;
 using Aplicacao.Interfaces.Servicos;
@@ -6,11 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Route("[controller]")]
-[ApiController]
-[Produces("application/json")]
-[Consumes("application/json")]
-public class UsuarioController : ControllerBase
+public class UsuarioController : BaseApiController
 {
     private readonly IUsuarioServico _usuarioServico;
 
@@ -46,6 +42,9 @@ public class UsuarioController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Criar([FromBody] CadastrarUsuarioRequest request)
     {
+        var resultadoValidacao = ValidarModelState();
+        if (resultadoValidacao != null) return resultadoValidacao;
+        
         var usuario = await _usuarioServico.CadastrarAsync(request);
         return CreatedAtAction(nameof(ObterPorId), new { id = usuario.Id }, usuario);
     }
@@ -57,6 +56,9 @@ public class UsuarioController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarUsuarioRequest request)
     {
+        var resultadoValidacao = ValidarModelState();
+        if (resultadoValidacao != null) return resultadoValidacao;
+        
         var usuarioAtualizado = await _usuarioServico.AtualizarAsync(id, request);
         return Ok(usuarioAtualizado);
     }
