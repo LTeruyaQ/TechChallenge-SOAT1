@@ -11,5 +11,6 @@ namespace Aplicacao.DTOs.Log
         public string CorrelationId { get; set; }
         public object Dados { get; set; }
         public DateTime Timestamp { get; set; }
+        public string Usuario { get; set; }
     }
 }

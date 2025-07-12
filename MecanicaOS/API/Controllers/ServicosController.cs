@@ -2,10 +2,12 @@ using API.Models;
 using Aplicacao.DTOs.Requests.Servico;
 using Aplicacao.DTOs.Responses.Servico;
 using Aplicacao.Interfaces.Servicos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class ServicosController : BaseApiController
 {
     private readonly IServicoServico _servico;
@@ -53,7 +55,7 @@ public class ServicosController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var servico = await _servico.CadastrarServicoAsync(request);
         return CreatedAtAction(nameof(ObterPorId), new { id = servico.Id }, servico);
     }
@@ -67,7 +69,7 @@ public class ServicosController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var servicoAtualizado = await _servico.EditarServicoAsync(id, request);
         return Ok(servicoAtualizado);
     }

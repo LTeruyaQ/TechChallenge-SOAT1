@@ -2,10 +2,12 @@ using API.Models;
 using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Interfaces.Servicos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class EstoqueController : BaseApiController
 {
     private readonly IEstoqueServico _estoqueService;
@@ -43,7 +45,7 @@ public class EstoqueController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var estoque = await _estoqueService.CadastrarAsync(request);
         return CreatedAtAction(nameof(ObterPorId), new { id = estoque.Id }, estoque);
     }
@@ -57,7 +59,7 @@ public class EstoqueController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var estoqueAtualizado = await _estoqueService.AtualizarAsync(id, request);
         return Ok(estoqueAtualizado);
     }

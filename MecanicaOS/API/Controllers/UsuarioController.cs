@@ -2,10 +2,12 @@ using API.Models;
 using Aplicacao.DTOs.Requests.Usuario;
 using Aplicacao.DTOs.Responses.Usuario;
 using Aplicacao.Interfaces.Servicos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class UsuarioController : BaseApiController
 {
     private readonly IUsuarioServico _usuarioServico;
@@ -44,7 +46,7 @@ public class UsuarioController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var usuario = await _usuarioServico.CadastrarAsync(request);
         return CreatedAtAction(nameof(ObterPorId), new { id = usuario.Id }, usuario);
     }
@@ -58,7 +60,7 @@ public class UsuarioController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         var usuarioAtualizado = await _usuarioServico.AtualizarAsync(id, request);
         return Ok(usuarioAtualizado);
     }

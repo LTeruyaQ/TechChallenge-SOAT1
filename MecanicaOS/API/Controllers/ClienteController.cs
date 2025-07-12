@@ -2,10 +2,12 @@ using API.Models;
 using Aplicacao.DTOs.Requests.Cliente;
 using Aplicacao.DTOs.Responses.Cliente;
 using Aplicacao.Interfaces.Servicos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class ClienteController : BaseApiController
 {
     private readonly IClienteServico service;
@@ -33,7 +35,7 @@ public class ClienteController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         return Ok(await service.CadastrarAsync(request));
     }
 
@@ -46,7 +48,7 @@ public class ClienteController : BaseApiController
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
-        
+
         return Ok(await service.AtualizarAsync(id, request));
     }
 
