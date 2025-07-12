@@ -1,5 +1,3 @@
-using System.IO.Compression;
-using System.Text.Json.Serialization;
 using API.Middlewares;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
@@ -17,6 +15,8 @@ using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using System.IO.Compression;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -141,9 +141,9 @@ try
     // Aplicar migrações automaticamente
     using var escopo = app.Services.CreateScope();
     app.Logger.LogInformation("Iniciando aplicação...");
-    
+
     await app.Services.AplicarMigracoesAsync<MecanicaContexto>();
-    
+
     app.Logger.LogInformation("Aplicação iniciada com sucesso!");
 }
 catch (Exception ex)

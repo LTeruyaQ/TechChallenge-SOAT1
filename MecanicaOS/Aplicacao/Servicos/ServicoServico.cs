@@ -21,7 +21,7 @@ namespace Aplicacao.Servicos
             IUnidadeDeTrabalho uot,
             IMapper mapper)
             : base(repositorio, logServico, uot, mapper)
-        {}
+        { }
 
         public async Task<ServicoResponse> CadastrarServicoAsync(CadastrarServicoRequest request)
         {

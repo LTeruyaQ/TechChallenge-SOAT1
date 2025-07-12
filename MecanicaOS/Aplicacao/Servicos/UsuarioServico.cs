@@ -143,9 +143,9 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
         {
             LogInicio(metodo, id);
 
-            var usuario = await _repositorio.ObterPorIdAsync(id) ?? 
+            var usuario = await _repositorio.ObterPorIdAsync(id) ??
                 throw new DadosNaoEncontradosException("Usuário não encontrado");
-            
+
             await _repositorio.DeletarAsync(usuario);
 
             if (!await Commit())

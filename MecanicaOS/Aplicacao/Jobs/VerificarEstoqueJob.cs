@@ -1,6 +1,5 @@
 ﻿using Dominio.Entidades;
 using Dominio.Especificacoes;
-using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using System.Text;
