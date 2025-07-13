@@ -18,12 +18,12 @@ public abstract class BaseApiController : ControllerBase
                 .Where(m => !string.IsNullOrEmpty(m))
                 .ToArray();
 
-            var mensagem = mensagensErro.Length > 0 
+            var mensagem = mensagensErro.Length > 0
                 ? string.Join("; ", mensagensErro)
                 : "Dados inválidos";
 
-            return BadRequest(new 
-            { 
+            return BadRequest(new
+            {
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = mensagem
             });

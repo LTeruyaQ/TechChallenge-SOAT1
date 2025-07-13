@@ -39,8 +39,8 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 
             Usuario usuario = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Usuário não encontrado");
 
-            string senhaCriptografada = !string.IsNullOrEmpty(request.Senha) 
-                ? _servicoSenha.CriptografarSenha(request.Senha) 
+            string senhaCriptografada = !string.IsNullOrEmpty(request.Senha)
+                ? _servicoSenha.CriptografarSenha(request.Senha)
                 : usuario.Senha;
 
             usuario.Atualizar(
@@ -50,7 +50,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
                 request.TipoUsuario,
                 request.RecebeAlertaEstoque);
 
-            if (!string.IsNullOrEmpty(request.Documento)) 
+            if (!string.IsNullOrEmpty(request.Documento))
                 await AssociarClienteAsync(request.Documento, usuario);
 
             await _repositorio.EditarAsync(usuario);

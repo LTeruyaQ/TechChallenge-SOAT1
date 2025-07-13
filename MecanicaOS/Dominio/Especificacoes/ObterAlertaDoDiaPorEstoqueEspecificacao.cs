@@ -1,10 +1,10 @@
 ﻿using Dominio.Entidades;
-using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes;
 
-public class ObterAlertaDoDiaPorEstoqueEspecificacao : IEspecificacao<AlertaEstoque>
+public class ObterAlertaDoDiaPorEstoqueEspecificacao : EspecificacaoBase<AlertaEstoque>
 {
     private readonly Guid _estoqueId;
     private readonly DateTime _data;
@@ -15,6 +15,6 @@ public class ObterAlertaDoDiaPorEstoqueEspecificacao : IEspecificacao<AlertaEsto
         _data = (data ?? DateTime.UtcNow).Date;
     }
 
-    public Expression<Func<AlertaEstoque, bool>> Expressao =>
+    public override Expression<Func<AlertaEstoque, bool>> Expressao =>
        a => a.EstoqueId == _estoqueId && a.DataCadastro.Date == _data.Date;
 }

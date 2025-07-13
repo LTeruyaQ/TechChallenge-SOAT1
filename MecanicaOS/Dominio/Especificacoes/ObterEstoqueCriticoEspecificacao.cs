@@ -1,11 +1,11 @@
 ﻿using Dominio.Entidades;
-using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes;
 
-public class ObterEstoqueCriticoEspecificacao : IEspecificacao<Estoque>
+public class ObterEstoqueCriticoEspecificacao : EspecificacaoBase<Estoque>
 {
-    public Expression<Func<Estoque, bool>> Expressao =>
+    public override Expression<Func<Estoque, bool>> Expressao =>
          e => e.QuantidadeDisponivel <= e.QuantidadeMinima;
 }

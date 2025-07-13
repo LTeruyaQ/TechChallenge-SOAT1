@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes.Base
 {
-    public class EEspecificacao<T> : IEspecificacao<T>
+    public class EEspecificacao<T> : EspecificacaoBase<T>
     {
         public IEspecificacao<T> Esquerda { get; }
         public IEspecificacao<T> Direita { get; }
@@ -14,7 +14,7 @@ namespace Dominio.Especificacoes.Base
             Direita = direita;
         }
 
-        public Expression<Func<T, bool>> Expressao
+        public override Expression<Func<T, bool>> Expressao
         {
             get
             {
