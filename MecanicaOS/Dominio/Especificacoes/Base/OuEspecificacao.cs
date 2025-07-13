@@ -12,6 +12,9 @@ namespace Dominio.Especificacoes.Base
         {
             Esquerda = esquerda;
             Direita = direita;
+
+            Inclusoes.AddRange(esquerda.Inclusoes);
+            Inclusoes.AddRange(direita.Inclusoes);
         }
 
         public override Expression<Func<T, bool>> Expressao
