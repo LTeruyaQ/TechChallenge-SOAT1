@@ -47,10 +47,6 @@ namespace Aplicacao.Servicos
                 if (!_servicoSenha.VerificarSenha(request.Senha, usuario.Senha))
                     throw new CredenciaisInvalidasException("E-mail ou senha inválidos");
 
-                await _usuarioServico.AtualizarAsync(usuario.Id, new AtualizarUsuarioRequest
-                {
-                    DataUltimoAcesso = DateTime.UtcNow
-                });
 
                 var permissoes = ObterPermissoesDoUsuario(usuario);
 
@@ -61,8 +57,15 @@ namespace Aplicacao.Servicos
                     nome: await ObterNomeUsuario(usuario),
                     permissoes: permissoes);
 
-                _log.LogFim(metodo, "Autenticação realizada com sucesso");
-                return new AutenticacaoResponse { Token = token };
+                await _usuarioServico.AtualizarAsync(usuario.Id, new AtualizarUsuarioRequest
+                {
+                    DataUltimoAcesso = DateTime.UtcNow
+                });
+
+                var result = new AutenticacaoResponse { Token = token };
+
+                _log.LogFim(metodo, result);
+                return result;
             }
             catch (Exception ex)
             {
@@ -77,15 +80,10 @@ namespace Aplicacao.Servicos
             _log.LogInicio(metodo, usuario);
             try
             {
-                var nome = usuario.Email;
-                if (usuario.TipoUsuario == TipoUsuario.Cliente)
-                {
-                    if (!usuario.ClienteId.HasValue) throw new DadosInvalidosException("Erro ao detectar usuario");
-
-                    var cliente = await _clienteServico.ObterPorIdAsync(usuario.ClienteId.Value);
-                    nome = cliente.Nome;
-                }
-
+                var nome = usuario.TipoUsuario == TipoUsuario.Cliente ? 
+                    await ObterNomeCliente(usuario) ?? usuario.Email : 
+                    usuario.Email;
+                
                 _log.LogFim(metodo, nome);
                 return nome;
             }
@@ -94,6 +92,15 @@ namespace Aplicacao.Servicos
                 _log.LogErro(metodo, e);
                 throw;
             }
+        }
+
+        private async Task<string?> ObterNomeCliente(Usuario usuario)
+        {
+            if (!usuario.ClienteId.HasValue) throw new DadosInvalidosException("Erro ao detectar usuario, por favor associe um cliente a esse usuário");
+
+            var cliente = await _clienteServico.ObterPorIdAsync(usuario.ClienteId.Value);
+            
+            return cliente.Nome;
         }
 
         private IEnumerable<string> ObterPermissoesDoUsuario(Usuario usuario)

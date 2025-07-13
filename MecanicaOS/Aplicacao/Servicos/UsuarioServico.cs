@@ -25,7 +25,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
         IClienteServico clienteServico,
         IServicoSenha servicoSenha) : base(repositorio, logServico, uot, mapper)
     {
-        _clienteServico = clienteServico;
+        _clienteServico = clienteServico ?? throw new ArgumentNullException(nameof(clienteServico));
         _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
     }
 
@@ -39,9 +39,8 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 
             Usuario usuario = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Usuário não encontrado");
 
-            // Se a senha foi fornecida, criptografa antes de atualizar
-            string senhaCriptografada = !string.IsNullOrEmpty(request.Senha)
-                ? _servicoSenha.CriptografarSenha(request.Senha)
+            string senhaCriptografada = !string.IsNullOrEmpty(request.Senha) 
+                ? _servicoSenha.CriptografarSenha(request.Senha) 
                 : usuario.Senha;
 
             usuario.Atualizar(
@@ -50,6 +49,9 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
                 request.DataUltimoAcesso,
                 request.TipoUsuario,
                 request.RecebeAlertaEstoque);
+
+            if (!string.IsNullOrEmpty(request.Documento)) 
+                await AssociarClienteAsync(request.Documento, usuario);
 
             await _repositorio.EditarAsync(usuario);
 
@@ -81,7 +83,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             usuario.Senha = _servicoSenha.CriptografarSenha(request.Senha);
 
             if (request.TipoUsuario == TipoUsuario.Cliente)
-                await AssociarClienteAsync(request, usuario);
+                await AssociarClienteAsync(request.Documento, usuario);
 
             var entidade = await _repositorio.CadastrarAsync(usuario);
 
@@ -99,18 +101,18 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
         }
     }
 
-    private async Task AssociarClienteAsync(CadastrarUsuarioRequest request, Usuario usuario)
+    private async Task AssociarClienteAsync(string documento, Usuario usuario)
     {
         const string metodo = nameof(AssociarClienteAsync);
 
-        LogInicio(metodo, new { request, usuario });
+        LogInicio(metodo, new { documento, usuario });
 
         try
         {
-            if (!string.IsNullOrEmpty(request.Documento))
+            if (!string.IsNullOrEmpty(documento))
                 throw new DadosInvalidosException("Deve ser informado o documento do usuario do cliente");
 
-            var cliente = await _clienteServico.ObterPorDocumento(request.Documento);
+            var cliente = await _clienteServico.ObterPorDocumento(documento);
 
             usuario.ClienteId = cliente.Id;
             usuario.Cliente = cliente;
