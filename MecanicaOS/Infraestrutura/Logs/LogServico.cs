@@ -1,11 +1,10 @@
-﻿using Aplicacao.DTOs.Log;
-using Dominio.Interfaces.Servicos;
-using MecanicaOS.Dominio.Interfaces.Servicos;
+﻿using Dominio.Interfaces.Servicos;
+using Infraestrutura.Logs.DTOs;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Aplicacao.Servicos.Logs
+namespace Infraestrutura.Logs
 {
     public class LogServico<T> : ILogServico<T>
     {

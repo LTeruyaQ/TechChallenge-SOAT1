@@ -1,11 +1,11 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using MecanicaOS.Dominio.Interfaces.Servicos;
-using Dominio.Interfaces.Repositorios;
 using Dominio.Entidades;
 using Dominio.Enumeradores;
+using Dominio.Interfaces.Repositorios;
+using Dominio.Interfaces.Servicos;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
-namespace MecanicaOS.Infraestrutura.Autenticacao;
+namespace Infraestrutura.Autenticacao;
 
 public class UsuarioLogadoServico : IUsuarioLogadoServico
 {
@@ -30,8 +30,8 @@ public class UsuarioLogadoServico : IUsuarioLogadoServico
             if (Usuario?.Identity?.IsAuthenticated != true)
                 return null;
 
-            var userIdClaim = Usuario.FindFirst(ClaimTypes.NameIdentifier) ?? 
-                            Usuario.FindFirst("sub") ?? 
+            var userIdClaim = Usuario.FindFirst(ClaimTypes.NameIdentifier) ??
+                            Usuario.FindFirst("sub") ??
                             Usuario.FindFirst("id");
 
             if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))

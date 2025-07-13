@@ -53,7 +53,7 @@ namespace Aplicacao.Servicos
                 });
 
                 var permissoes = ObterPermissoesDoUsuario(usuario);
-                
+
                 var token = _servicoJwt.GerarToken(
                     usuarioId: usuario.Id,
                     email: usuario.Email,
@@ -80,7 +80,7 @@ namespace Aplicacao.Servicos
                 var nome = usuario.Email;
                 if (usuario.TipoUsuario == TipoUsuario.Cliente)
                 {
-                    if(!usuario.ClienteId.HasValue) throw new DadosInvalidosException("Erro ao detectar usuario");
+                    if (!usuario.ClienteId.HasValue) throw new DadosInvalidosException("Erro ao detectar usuario");
 
                     var cliente = await _clienteServico.ObterPorIdAsync(usuario.ClienteId.Value);
                     nome = cliente.Nome;

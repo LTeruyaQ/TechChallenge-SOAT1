@@ -16,7 +16,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 {
     private readonly IClienteServico _clienteServico;
     private readonly IServicoSenha _servicoSenha;
-    
+
     public UsuarioServico(
         IRepositorio<Usuario> repositorio,
         ILogServico<UsuarioServico> logServico,
@@ -40,15 +40,15 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             Usuario usuario = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Usuário não encontrado");
 
             // Se a senha foi fornecida, criptografa antes de atualizar
-            string senhaCriptografada = !string.IsNullOrEmpty(request.Senha) 
-                ? _servicoSenha.CriptografarSenha(request.Senha) 
+            string senhaCriptografada = !string.IsNullOrEmpty(request.Senha)
+                ? _servicoSenha.CriptografarSenha(request.Senha)
                 : usuario.Senha;
 
             usuario.Atualizar(
-                request.Email, 
-                senhaCriptografada, 
-                request.DataUltimoAcesso, 
-                request.TipoUsuario, 
+                request.Email,
+                senhaCriptografada,
+                request.DataUltimoAcesso,
+                request.TipoUsuario,
                 request.RecebeAlertaEstoque);
 
             await _repositorio.EditarAsync(usuario);
