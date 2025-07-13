@@ -12,13 +12,16 @@ namespace Dominio.Especificacoes.Base
         {
             Esquerda = esquerda;
             Direita = direita;
+
+            Inclusoes.AddRange(esquerda.Inclusoes);
+            Inclusoes.AddRange(direita.Inclusoes);
         }
 
         public override Expression<Func<T, bool>> Expressao
         {
             get
             {
-                var param = Expression.Parameter(typeof(T), "x");
+                var param = Expression.Parameter(typeof(T));
 
                 var esquerdaBody = Expression.Invoke(Esquerda.Expressao, param);
                 var direitaBody = Expression.Invoke(Direita.Expressao, param);
