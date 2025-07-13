@@ -1,8 +1,8 @@
-using System.Security.Claims;
 using Dominio.Entidades;
 using Dominio.Enumeradores;
+using System.Security.Claims;
 
-namespace MecanicaOS.Dominio.Interfaces.Servicos;
+namespace Dominio.Interfaces.Servicos;
 
 public interface IUsuarioLogadoServico
 {

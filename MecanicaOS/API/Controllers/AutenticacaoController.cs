@@ -3,7 +3,6 @@ using Aplicacao.DTOs.Requests.Autenticacao;
 using Aplicacao.DTOs.Requests.Usuario;
 using Aplicacao.DTOs.Responses.Autenticacao;
 using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Servicos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

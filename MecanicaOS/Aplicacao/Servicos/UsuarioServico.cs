@@ -16,7 +16,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 {
     private readonly IClienteServico _clienteServico;
     private readonly IServicoSenha _servicoSenha;
-    
+
     public UsuarioServico(
         IRepositorio<Usuario> repositorio,
         ILogServico<UsuarioServico> logServico,
@@ -44,10 +44,10 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
                 : usuario.Senha;
 
             usuario.Atualizar(
-                request.Email, 
-                senhaCriptografada, 
-                request.DataUltimoAcesso, 
-                request.TipoUsuario, 
+                request.Email,
+                senhaCriptografada,
+                request.DataUltimoAcesso,
+                request.TipoUsuario,
                 request.RecebeAlertaEstoque);
 
             if (!string.IsNullOrEmpty(request.Documento)) 

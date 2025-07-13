@@ -1,16 +1,15 @@
+using API.Filters;
+using Dominio.Interfaces.Servicos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MecanicaOS.Dominio.Interfaces.Servicos;
-using MecanicaOS.API.Filters;
-using API.Controllers;
 
-namespace MecanicaOS.API.Controllers;
+namespace API.Controllers;
 
 [Authorize]
 public class UsuarioLogadoController : BaseApiController
 {
     private readonly IUsuarioLogadoServico _usuarioLogadoServico;
-    
+
     public UsuarioLogadoController(
         IUsuarioLogadoServico usuarioLogadoServico)
     {
@@ -24,7 +23,7 @@ public class UsuarioLogadoController : BaseApiController
             return Unauthorized("Usuário não autenticado");
 
         var usuario = _usuarioLogadoServico.ObterUsuarioLogado();
-        
+
         return Ok(new
         {
             usuario.Id,
@@ -50,7 +49,7 @@ public class UsuarioLogadoController : BaseApiController
     }
 
     [HttpGet("admin")]
-    [Authorize(Roles = "Admin")] 
+    [Authorize(Roles = "Admin")]
     public IActionResult ApenasAdmin()
     {
         return Ok(new { Mensagem = "Acesso permitido apenas para administradores" });

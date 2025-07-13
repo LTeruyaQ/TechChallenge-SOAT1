@@ -49,7 +49,7 @@ namespace Aplicacao.Servicos
 
 
                 var permissoes = ObterPermissoesDoUsuario(usuario);
-                
+
                 var token = _servicoJwt.GerarToken(
                     usuarioId: usuario.Id,
                     email: usuario.Email,

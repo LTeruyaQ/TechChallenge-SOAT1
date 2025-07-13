@@ -12,12 +12,21 @@ public abstract class BaseApiController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            var erros = ModelState.Values
+            var mensagensErro = ModelState.Values
                 .SelectMany(v => v.Errors)
                 .Select(e => e.ErrorMessage)
-                .Where(m => !string.IsNullOrEmpty(m));
+                .Where(m => !string.IsNullOrEmpty(m))
+                .ToArray();
 
-            return BadRequest(new { erros });
+            var mensagem = mensagensErro.Length > 0 
+                ? string.Join("; ", mensagensErro)
+                : "Dados inválidos";
+
+            return BadRequest(new 
+            { 
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = mensagem
+            });
         }
 
         return null;
