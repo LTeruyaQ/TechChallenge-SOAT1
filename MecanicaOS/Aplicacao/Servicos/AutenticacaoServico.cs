@@ -21,12 +21,14 @@ namespace Aplicacao.Servicos
             IUsuarioServico usuarioServico,
             IServicoSenha servicoSenha,
             IServicoJwt servicoJwt,
-            ILogServico<AutenticacaoServico> log)
+            ILogServico<AutenticacaoServico> log,
+            IClienteServico clienteServico)
         {
             _usuarioServico = usuarioServico ?? throw new ArgumentNullException(nameof(usuarioServico));
             _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
             _servicoJwt = servicoJwt ?? throw new ArgumentNullException(nameof(servicoJwt));
             _log = log ?? throw new ArgumentNullException(nameof(log));
+            _clienteServico = clienteServico ?? throw new ArgumentNullException(nameof(clienteServico));
         }
 
         public async Task<AutenticacaoResponse> AutenticarAsync(AutenticacaoRequest request)
