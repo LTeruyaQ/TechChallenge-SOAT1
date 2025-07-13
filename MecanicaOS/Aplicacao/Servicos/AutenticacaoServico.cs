@@ -77,15 +77,10 @@ namespace Aplicacao.Servicos
             _log.LogInicio(metodo, usuario);
             try
             {
-                var nome = usuario.Email;
-                if (usuario.TipoUsuario == TipoUsuario.Cliente)
-                {
-                    if(!usuario.ClienteId.HasValue) throw new DadosInvalidosException("Erro ao detectar usuario");
-
-                    var cliente = await _clienteServico.ObterPorIdAsync(usuario.ClienteId.Value);
-                    nome = cliente.Nome;
-                }
-
+                var nome = usuario.TipoUsuario == TipoUsuario.Cliente ? 
+                    await ObterNomeCliente(usuario) ?? usuario.Email : 
+                    usuario.Email;
+                
                 _log.LogFim(metodo, nome);
                 return nome;
             }
@@ -94,6 +89,15 @@ namespace Aplicacao.Servicos
                 _log.LogErro(metodo, e);
                 throw;
             }
+        }
+
+        private async Task<string?> ObterNomeCliente(Usuario usuario)
+        {
+            if (!usuario.ClienteId.HasValue) throw new DadosInvalidosException("Erro ao detectar usuario, por favor associe um cliente a esse usuário");
+
+            var cliente = await _clienteServico.ObterPorIdAsync(usuario.ClienteId.Value);
+            
+            return cliente.Nome;
         }
 
         private IEnumerable<string> ObterPermissoesDoUsuario(Usuario usuario)
