@@ -107,7 +107,7 @@ namespace Aplicacao.Servicos
             }
         }
 
-        private async Task CadastrarEnderecoCliente(CadastrarClienteRequest enderecoCliente)
+        private async Task CadastrarEnderecoCliente(Guid clienteId, CadastrarClienteRequest enderecoCliente)
         {
             Endereco endereco = new()
             {
@@ -117,18 +117,18 @@ namespace Aplicacao.Servicos
                 Cidade = enderecoCliente.Cidade,
                 Complemento = enderecoCliente.Complemento,
                 Rua = enderecoCliente.Rua,
-                IdCliente = enderecoCliente.Id
+                IdCliente = clienteId
             };
 
             await _repositoryEndereco.CadastrarAsync(endereco);
         }
 
-        private async Task CadastrarContatoCliente(CadastrarClienteRequest contatoCliente)
+        private async Task CadastrarContatoCliente(Guid clienteId, CadastrarClienteRequest contatoCliente)
         {
             Contato contato = new()
             {
                 DataCadastro = DateTime.UtcNow,
-                IdCliente = contatoCliente.Id,
+                IdCliente = clienteId,
                 Email = contatoCliente.Email,
                 Telefone = contatoCliente.Telefone
             };
@@ -150,9 +150,8 @@ namespace Aplicacao.Servicos
 
                 if (!entityCliente.Id.Equals(Guid.Empty))
                 {
-                    request.Id = entityCliente.Id;
-                    await CadastrarEnderecoCliente(request);
-                    await CadastrarContatoCliente(request);
+                    await CadastrarEnderecoCliente(entityCliente.Id, request);
+                    await CadastrarContatoCliente(entityCliente.Id, request);
                 }
 
                 if (!await Commit())

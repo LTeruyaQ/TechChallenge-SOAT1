@@ -8,9 +8,6 @@ namespace Aplicacao.DTOs.Requests.Cliente
     [SwaggerSchema(Title = "Cadastro de Cliente", Description = "Dados necessários para cadastrar um novo cliente")]
     public class CadastrarClienteRequest
     {
-        [SwaggerSchema(Description = "Identificador único do cliente")]
-        public Guid Id { get; set; }
-
         [Required(ErrorMessage = "O campo Nome é obrigatório")]
         [StringLength(100, ErrorMessage = "O Nome deve ter no máximo {1} caracteres")]
         [DisplayName("Nome Completo")]
