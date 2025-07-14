@@ -1,7 +1,7 @@
 using Dominio.Enumeradores;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Aplicacao.DTOs.Requests.Usuario;
 
