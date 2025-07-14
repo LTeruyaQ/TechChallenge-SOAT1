@@ -3,15 +3,13 @@ using Aplicacao.DTOs.Requests.OrdermServico;
 using Aplicacao.DTOs.Responses.OrdemServico;
 using Aplicacao.Interfaces.Servicos;
 using Dominio.Enumeradores;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Route("[controller]")]
-[ApiController]
-[Produces("application/json")]
-[Consumes("application/json")]
-public class OrdemServicoController : ControllerBase
+[Authorize]
+public class OrdemServicoController : BaseApiController
 {
     private readonly IOrdemServicoServico _ordemServico;
 
