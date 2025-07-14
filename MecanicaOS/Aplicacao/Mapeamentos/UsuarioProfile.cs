@@ -1,4 +1,4 @@
-﻿using Aplicacao.DTOs.Requests.Usuario;
+using Aplicacao.DTOs.Requests.Usuario;
 using Aplicacao.DTOs.Responses.Usuario;
 using AutoMapper;
 using Dominio.Entidades;

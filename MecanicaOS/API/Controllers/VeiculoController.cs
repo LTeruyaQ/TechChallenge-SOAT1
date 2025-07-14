@@ -1,16 +1,13 @@
 using Aplicacao.DTOs.Requests.Veiculo;
 using Aplicacao.DTOs.Responses.Veiculo;
 using Aplicacao.Interfaces.Servicos;
-using Dominio.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Route("[controller]")]
-[ApiController]
-[Produces("application/json")]
-[Consumes("application/json")]
-public class VeiculoController : ControllerBase
+[Authorize]
+public class VeiculoController : BaseApiController
 {
     private readonly IVeiculoServico _veiculoServico;
     private readonly ILogger<VeiculoController> _logger;
@@ -29,6 +26,9 @@ public class VeiculoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Cadastrar([FromBody] CadastrarVeiculoRequest request)
     {
+        var resultadoValidacao = ValidarModelState();
+        if (resultadoValidacao != null) return resultadoValidacao;
+
         var response = await _veiculoServico.CadastrarAsync(request);
         return CreatedAtAction(nameof(ObterPorId), new { id = response.Id }, response);
     }
@@ -53,6 +53,9 @@ public class VeiculoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Editar(Guid id, [FromBody] AtualizarVeiculoRequest request)
     {
+        var resultadoValidacao = ValidarModelState();
+        if (resultadoValidacao != null) return resultadoValidacao;
+
         var response = await _veiculoServico.AtualizarAsync(id, request);
         return Ok(response);
     }

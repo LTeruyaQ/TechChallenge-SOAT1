@@ -69,6 +69,14 @@ namespace Infraestrutura.Repositorios
                 .ToListAsync();
         }
 
+        public virtual async Task<T?> ObterUmSemRastreamentoAsync(IEspecificacao<T> especificacao)
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .Where(especificacao.Expressao)
+                .SingleOrDefaultAsync();
+        }
+
         public virtual async Task<T?> ObterUmAsync(IEspecificacao<T> especificacao)
         {
             return await _dbSet

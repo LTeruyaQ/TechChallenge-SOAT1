@@ -1,9 +1,10 @@
-﻿using Aplicacao.DTOs.Requests.Usuario;
+using Aplicacao.DTOs.Requests.Usuario;
 using Aplicacao.DTOs.Responses.Usuario;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
+using Dominio.Enumeradores;
 using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
@@ -13,12 +14,20 @@ namespace Aplicacao.Servicos;
 
 public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuarioServico
 {
+    private readonly IClienteServico _clienteServico;
+    private readonly IServicoSenha _servicoSenha;
+
     public UsuarioServico(
         IRepositorio<Usuario> repositorio,
         ILogServico<UsuarioServico> logServico,
         IUnidadeDeTrabalho uot,
-        IMapper mapper) : base(repositorio, logServico, uot, mapper)
-    {}
+        IMapper mapper,
+        IClienteServico clienteServico,
+        IServicoSenha servicoSenha) : base(repositorio, logServico, uot, mapper)
+    {
+        _clienteServico = clienteServico ?? throw new ArgumentNullException(nameof(clienteServico));
+        _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
+    }
 
     public async Task<UsuarioResponse> AtualizarAsync(Guid id, AtualizarUsuarioRequest request)
     {
@@ -30,7 +39,19 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 
             Usuario usuario = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Usuário não encontrado");
 
-            usuario.Atualizar(request.Email, request.Senha, request.DataUltimoAcesso, request.TipoUsuario, request.RecebeAlertaEstoque);
+            string senhaCriptografada = !string.IsNullOrEmpty(request.Senha) 
+                ? _servicoSenha.CriptografarSenha(request.Senha) 
+                : usuario.Senha;
+
+            usuario.Atualizar(
+                request.Email,
+                senhaCriptografada,
+                request.DataUltimoAcesso,
+                request.TipoUsuario,
+                request.RecebeAlertaEstoque);
+
+            if (!string.IsNullOrEmpty(request.Documento)) 
+                await AssociarClienteAsync(request.Documento, usuario);
 
             await _repositorio.EditarAsync(usuario);
 
@@ -59,6 +80,10 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             await VerificarUsuarioCadastradoAsync(request.Email);
 
             var usuario = _mapper.Map<Usuario>(request);
+            usuario.Senha = _servicoSenha.CriptografarSenha(request.Senha);
+
+            if (request.TipoUsuario == TipoUsuario.Cliente)
+                await AssociarClienteAsync(request.Documento, usuario);
 
             var entidade = await _repositorio.CadastrarAsync(usuario);
 
@@ -76,6 +101,31 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
         }
     }
 
+    private async Task AssociarClienteAsync(string documento, Usuario usuario)
+    {
+        const string metodo = nameof(AssociarClienteAsync);
+
+        LogInicio(metodo, new { documento, usuario });
+
+        try
+        {
+            if (!string.IsNullOrEmpty(documento))
+                throw new DadosInvalidosException("Deve ser informado o documento do usuario do cliente");
+
+            var cliente = await _clienteServico.ObterPorDocumento(documento);
+
+            usuario.ClienteId = cliente.Id;
+            usuario.Cliente = cliente;
+
+            LogFim(metodo, usuario);
+        }
+        catch (Exception e)
+        {
+            LogErro(metodo, e);
+            throw;
+        }
+    }
+
     private async Task VerificarUsuarioCadastradoAsync(string email)
     {
         var metodo = nameof(VerificarUsuarioCadastradoAsync);
@@ -84,9 +134,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
         {
             LogInicio(metodo);
 
-            var especificacao = new ObterUsuarioPorEmailEspecificacao(email);
-
-            var usuario = await _repositorio.ObterUmAsync(especificacao);
+            var usuario = await ObterPorEmailAsync(email);
 
             LogFim(metodo, usuario);
 
@@ -110,9 +158,9 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
         {
             LogInicio(metodo, id);
 
-            var usuario = await _repositorio.ObterPorIdAsync(id) ?? 
+            var usuario = await _repositorio.ObterPorIdAsync(id) ??
                 throw new DadosNaoEncontradosException("Usuário não encontrado");
-            
+
             await _repositorio.DeletarAsync(usuario);
 
             if (!await Commit())
@@ -165,6 +213,27 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             LogFim(metodo, usuarios);
 
             return _mapper.Map<IEnumerable<UsuarioResponse>>(usuarios);
+        }
+        catch (Exception e)
+        {
+            LogErro(metodo, e);
+            throw;
+        }
+    }
+
+    public async Task<Usuario?> ObterPorEmailAsync(string email)
+    {
+        var metodo = nameof(ObterPorEmailAsync);
+        LogInicio(metodo, new { email });
+        try
+        {
+            var especificacao = new ObterUsuarioPorEmailEspecificacao(email);
+
+            var usuario = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
+
+            LogFim(metodo, usuario);
+
+            return usuario;
         }
         catch (Exception e)
         {

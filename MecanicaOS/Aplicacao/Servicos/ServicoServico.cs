@@ -21,7 +21,7 @@ namespace Aplicacao.Servicos
             IUnidadeDeTrabalho uot,
             IMapper mapper)
             : base(repositorio, logServico, uot, mapper)
-        {}
+        { }
 
         public async Task<ServicoResponse> CadastrarServicoAsync(CadastrarServicoRequest request)
         {
@@ -61,7 +61,7 @@ namespace Aplicacao.Servicos
                 var especificacao = new ObterServicoPorNomeEspecificacao(nome)
                     .E(new ObterServicoDisponivelEspecificacao());
 
-                var servico = await _repositorio.ObterUmAsync(especificacao);
+                var servico = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
 
                 LogFim(metodo, servico);
 

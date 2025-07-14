@@ -17,7 +17,7 @@ namespace Infraestrutura.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("ProductVersion", "9.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -28,7 +28,7 @@ namespace Infraestrutura.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("Ativo")
+                    b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("DataAtualizacao")
@@ -53,7 +53,7 @@ namespace Infraestrutura.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("Ativo")
+                    b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("DataAtualizacao")
@@ -97,7 +97,7 @@ namespace Infraestrutura.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("Ativo")
+                    b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("DataAtualizacao")
@@ -129,7 +129,7 @@ namespace Infraestrutura.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("Ativo")
+                    b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Bairro")
@@ -173,7 +173,7 @@ namespace Infraestrutura.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("Ativo")
+                    b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("DataAtualizacao")
@@ -211,7 +211,7 @@ namespace Infraestrutura.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("Ativo")
+                    b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("DataAtualizacao")
@@ -248,6 +248,9 @@ namespace Infraestrutura.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid?>("ClienteId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime?>("DataAtualizacao")
                         .HasColumnType("timestamp with time zone");
 
@@ -276,6 +279,8 @@ namespace Infraestrutura.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClienteId");
+
                     b.ToTable("Usuarios");
                 });
 
@@ -294,7 +299,7 @@ namespace Infraestrutura.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<bool?>("Ativo")
+                    b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("ClienteId")
@@ -362,6 +367,15 @@ namespace Infraestrutura.Migrations
                         .HasForeignKey("Dominio.Entidades.Endereco", "IdCliente")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("Dominio.Entidades.Usuario", b =>
+                {
+                    b.HasOne("Dominio.Entidades.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId");
 
                     b.Navigation("Cliente");
                 });
