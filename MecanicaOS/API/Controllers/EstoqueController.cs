@@ -2,15 +2,13 @@ using API.Models;
 using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Interfaces.Servicos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Route("[controller]")]
-[ApiController]
-[Produces("application/json")]
-[Consumes("application/json")]
-public class EstoqueController : ControllerBase
+[Authorize]
+public class EstoqueController : BaseApiController
 {
     private readonly IEstoqueServico _estoqueService;
 
@@ -45,6 +43,9 @@ public class EstoqueController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Criar([FromBody] CadastrarEstoqueRequest request)
     {
+        var resultadoValidacao = ValidarModelState();
+        if (resultadoValidacao != null) return resultadoValidacao;
+
         var estoque = await _estoqueService.CadastrarAsync(request);
         return CreatedAtAction(nameof(ObterPorId), new { id = estoque.Id }, estoque);
     }
@@ -56,6 +57,9 @@ public class EstoqueController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarEstoqueRequest request)
     {
+        var resultadoValidacao = ValidarModelState();
+        if (resultadoValidacao != null) return resultadoValidacao;
+
         var estoqueAtualizado = await _estoqueService.AtualizarAsync(id, request);
         return Ok(estoqueAtualizado);
     }

@@ -1,6 +1,6 @@
 ﻿using Dominio.Entidades;
 using Dominio.Especificacoes;
-using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using System.Text;
@@ -61,8 +61,7 @@ public class VerificarEstoqueJob
 
     private async Task<List<Estoque>> ObterInsumosParaAlertaAsync()
     {
-        var filtroInsumosCriticos = new ObterEstoqueCriticoEspecificacao();
-        var insumosCriticos = await _estoqueRepositorio.ObterPorFiltroAsync(filtroInsumosCriticos);
+        IEnumerable<Estoque> insumosCriticos = await ObterInsumosAbaixoDaQuantidadeMinima();
 
         var dataAtual = DateTime.UtcNow;
         var insumosParaAlerta = new List<Estoque>();
@@ -83,53 +82,109 @@ public class VerificarEstoqueJob
         return insumosParaAlerta;
     }
 
-
-    private async Task EnviarAlertaEstoqueAsync(IEnumerable<Estoque> insumosCriticos)
+    private async Task<IEnumerable<Estoque>> ObterInsumosAbaixoDaQuantidadeMinima()
     {
-        var especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
-        var usuariosAlerta = await _usuarioRepositorio.ObterPorFiltroAsync(especificacao);
-
-        var conteudo = await GerarConteudoEmailAsync(insumosCriticos);
-
-        if (!string.IsNullOrEmpty(conteudo))
+        var metodo = nameof(ObterInsumosAbaixoDaQuantidadeMinima);
+        _logServico.LogInicio(metodo);
+        try
         {
-            await _servicoEmail.EnviarAsync(
-                usuariosAlerta.Select(u => u.Email),
-                "Alerta de Estoque Baixo",
-                conteudo
-            );
+            var filtroInsumosCriticos = new ObterEstoqueCriticoEspecificacao();
+            var insumosCriticos = await _estoqueRepositorio.ObterPorFiltroAsync(filtroInsumosCriticos);
+
+            _logServico.LogFim(metodo, insumosCriticos);
+            return insumosCriticos;
+        }
+        catch (Exception e)
+        {
+            _logServico.LogErro(metodo, e);
+            throw;
         }
     }
 
-    private static async Task<string?> GerarConteudoEmailAsync(IEnumerable<Estoque> insumosCriticos)
+    private async Task EnviarAlertaEstoqueAsync(IEnumerable<Estoque> insumosCriticos)
     {
-        string templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", "EmailAlertaEstoque.html");
-        string template = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
+        var metodo = nameof(EnviarAlertaEstoqueAsync);
 
-        var sbItens = new StringBuilder();
-        foreach (var insumo in insumosCriticos)
+        _logServico.LogInicio(metodo, insumosCriticos);
+        try
         {
-            sbItens.AppendLine($@"
-            <li>
-                <strong>Insumo:</strong> {insumo.Insumo}<br/>
-                <strong>Quantidade Atual:</strong> {insumo.QuantidadeDisponivel}<br/>
-                <strong>Quantidade Mínima:</strong> {insumo.QuantidadeMinima}
-            </li>
-            <br/>");
+            var especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
+            var usuariosAlerta = await _usuarioRepositorio.ObterPorFiltroAsync(especificacao);
+
+            var conteudo = await GerarConteudoEmailAsync(insumosCriticos);
+
+            if (!string.IsNullOrEmpty(conteudo))
+            {
+                await _servicoEmail.EnviarAsync(
+                    usuariosAlerta.Select(u => u.Email),
+                    "Alerta de Estoque Baixo",
+                    conteudo
+                );
+            }
+
+            _logServico.LogFim(metodo);
         }
+        catch (Exception e)
+        {
+            _logServico.LogErro(metodo, e);
+            throw;
+        }
+    }
 
-        string conteudoFinal = template.Replace("{{INSUMOS}}", sbItens.ToString());
+    private async Task<string?> GerarConteudoEmailAsync(IEnumerable<Estoque> insumosCriticos)
+    {
+        var metodo = nameof(GerarConteudoEmailAsync);
+        _logServico.LogInicio(metodo, insumosCriticos);
 
-        return conteudoFinal;
+        try
+        {
+            string templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", "EmailAlertaEstoque.html");
+            string template = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
+
+            var sbItens = new StringBuilder();
+            foreach (var insumo in insumosCriticos)
+            {
+                sbItens.AppendLine($@"
+                <li>
+                    <strong>Insumo:</strong> {insumo.Insumo}<br/>
+                    <strong>Quantidade Atual:</strong> {insumo.QuantidadeDisponivel}<br/>
+                    <strong>Quantidade Mínima:</strong> {insumo.QuantidadeMinima}
+                </li>
+                <br/>");
+            }
+
+            string conteudoFinal = template.Replace("{{INSUMOS}}", sbItens.ToString());
+
+            _logServico.LogFim(metodo, conteudoFinal);
+            return conteudoFinal;
+        }
+        catch (Exception e)
+        {
+            _logServico.LogErro(metodo, e);
+            throw;
+        }
     }
 
     private async Task SalvarAlertaEnviadoAsync(IEnumerable<Estoque> insumosCriticos)
     {
-        var alertas = insumosCriticos
-            .Select(insumo => new AlertaEstoque { EstoqueId = insumo.Id });
+        var metodo = nameof(SalvarAlertaEnviadoAsync);
+        _logServico.LogInicio(metodo, insumosCriticos);
+        try
+        {
+            var alertas = insumosCriticos
+                .Select(insumo => new AlertaEstoque { EstoqueId = insumo.Id });
 
-        await _alertaEstoqueRepositorio.CadastrarVariosAsync(alertas);
+            await _alertaEstoqueRepositorio.CadastrarVariosAsync(alertas);
 
-        await _uot.Commit();
+            if (!await _uot.Commit())
+                throw new PersistirDadosException("Falha ao cadastrar alertas de estoque");
+
+            _logServico.LogFim(metodo);
+        }
+        catch (Exception e)
+        {
+            _logServico.LogErro(metodo, e);
+            throw;
+        }
     }
 }

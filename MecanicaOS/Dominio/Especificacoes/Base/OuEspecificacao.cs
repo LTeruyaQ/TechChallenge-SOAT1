@@ -1,9 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dominio.Especificacoes.Base.Interfaces;
+﻿using Dominio.Especificacoes.Base.Interfaces;
+using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes.Base
 {
-    public class OuEspecificacao<T> : IEspecificacao<T>
+    public class OuEspecificacao<T> : EspecificacaoBase<T>
     {
         public IEspecificacao<T> Esquerda { get; }
         public IEspecificacao<T> Direita { get; }
@@ -12,13 +12,16 @@ namespace Dominio.Especificacoes.Base
         {
             Esquerda = esquerda;
             Direita = direita;
+
+            Inclusoes.AddRange(esquerda.Inclusoes);
+            Inclusoes.AddRange(direita.Inclusoes);
         }
 
-        public Expression<Func<T, bool>> Expressao
+        public override Expression<Func<T, bool>> Expressao
         {
             get
             {
-                var param = Expression.Parameter(typeof(T), "x");
+                var param = Expression.Parameter(typeof(T));
 
                 var esquerdaBody = Expression.Invoke(Esquerda.Expressao, param);
                 var direitaBody = Expression.Invoke(Direita.Expressao, param);

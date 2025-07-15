@@ -1,4 +1,5 @@
 ﻿using Dominio.Entidades.Abstratos;
+using Dominio.Especificacoes.Base.Extensoes;
 using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;
@@ -49,10 +50,8 @@ namespace Infraestrutura.Repositorios
 
         public virtual async Task<IEnumerable<T>> ObterPorFiltroAsync(IEspecificacao<T> especificacao)
         {
-            return await _dbSet
-                .AsNoTracking()
-                .Where(especificacao.Expressao)
-                .ToListAsync();
+            var query = AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet.AsNoTracking(), especificacao);
+            return await query.ToListAsync();
         }
 
         public virtual async Task<T?> ObterPorIdAsync(Guid id)
@@ -69,11 +68,17 @@ namespace Infraestrutura.Repositorios
                 .ToListAsync();
         }
 
+        public virtual async Task<T?> ObterUmSemRastreamentoAsync(IEspecificacao<T> especificacao)
+        {
+            var query = AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet, especificacao);
+            return await query
+                .SingleOrDefaultAsync();
+        }
+
         public virtual async Task<T?> ObterUmAsync(IEspecificacao<T> especificacao)
         {
-            return await _dbSet
-                .AsNoTracking()
-                .Where(especificacao.Expressao)
+            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
+            return await query
                 .SingleOrDefaultAsync();
         }
     }

@@ -1,12 +1,11 @@
 ﻿using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes;
 
-public class ObterUsuarioParaAlertaEstoqueEspecificacao : IEspecificacao<Usuario>
+public class ObterUsuarioParaAlertaEstoqueEspecificacao : EspecificacaoBase<Usuario>
 {
-    public Expression<Func<Usuario, bool>> Expressao =>
+    public override Expression<Func<Usuario, bool>> Expressao =>
      u => u.RecebeAlertaEstoque;
 }

@@ -2,15 +2,13 @@ using API.Models;
 using Aplicacao.DTOs.Requests.Servico;
 using Aplicacao.DTOs.Responses.Servico;
 using Aplicacao.Interfaces.Servicos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Route("[controller]")]
-[ApiController]
-[Produces("application/json")]
-[Consumes("application/json")]
-public class ServicosController : ControllerBase
+[Authorize]
+public class ServicosController : BaseApiController
 {
     private readonly IServicoServico _servico;
 
@@ -43,8 +41,7 @@ public class ServicosController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterPorId(Guid id)
     {
-        var servico = await _servico.ObterServicoPorIdAsync(id)
-            ?? throw new KeyNotFoundException("Serviço não encontrado");
+        var servico = await _servico.ObterServicoPorIdAsync(id);
         return Ok(servico);
     }
 
@@ -55,6 +52,9 @@ public class ServicosController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Criar([FromBody] CadastrarServicoRequest request)
     {
+        var resultadoValidacao = ValidarModelState();
+        if (resultadoValidacao != null) return resultadoValidacao;
+
         var servico = await _servico.CadastrarServicoAsync(request);
         return CreatedAtAction(nameof(ObterPorId), new { id = servico.Id }, servico);
     }
@@ -66,6 +66,9 @@ public class ServicosController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Atualizar(Guid id, [FromBody] EditarServicoRequest request)
     {
+        var resultadoValidacao = ValidarModelState();
+        if (resultadoValidacao != null) return resultadoValidacao;
+
         var servicoAtualizado = await _servico.EditarServicoAsync(id, request);
         return Ok(servicoAtualizado);
     }

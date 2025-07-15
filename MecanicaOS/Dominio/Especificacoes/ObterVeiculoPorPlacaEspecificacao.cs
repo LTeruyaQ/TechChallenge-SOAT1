@@ -1,10 +1,10 @@
-﻿using System.Linq.Expressions;
-using Dominio.Entidades;
-using Dominio.Especificacoes.Base.Interfaces;
+﻿using Dominio.Entidades;
+using Dominio.Especificacoes.Base;
+using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes
 {
-    public class ObterVeiculoPorPlacaEspecificacao : IEspecificacao<Veiculo>
+    public class ObterVeiculoPorPlacaEspecificacao : EspecificacaoBase<Veiculo>
     {
         private readonly string _placa;
 
@@ -13,7 +13,7 @@ namespace Dominio.Especificacoes
             _placa = placa;
         }
 
-        public Expression<Func<Veiculo, bool>> Expressao =>
+        public override Expression<Func<Veiculo, bool>> Expressao =>
             v => v.Placa == _placa;
     }
 }

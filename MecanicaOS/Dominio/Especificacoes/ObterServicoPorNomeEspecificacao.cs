@@ -1,10 +1,10 @@
-﻿using System.Linq.Expressions;
-using Dominio.Entidades;
-using Dominio.Especificacoes.Base.Interfaces;
+﻿using Dominio.Entidades;
+using Dominio.Especificacoes.Base;
+using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes
 {
-    public class ObterServicoPorNomeEspecificacao : IEspecificacao<Servico>
+    public class ObterServicoPorNomeEspecificacao : EspecificacaoBase<Servico>
     {
         private string nome;
 
@@ -13,6 +13,6 @@ namespace Dominio.Especificacoes
             this.nome = nome;
         }
 
-        public Expression<Func<Servico, bool>> Expressao => s => s.Nome == nome;
+        public override Expression<Func<Servico, bool>> Expressao => s => s.Nome == nome;
     }
 }
