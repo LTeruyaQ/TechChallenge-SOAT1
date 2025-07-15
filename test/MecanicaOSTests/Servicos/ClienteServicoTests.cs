@@ -1,4 +1,5 @@
-﻿using Aplicacao.DTOs.Requests.Cliente;
+﻿using System;
+using Aplicacao.DTOs.Requests.Cliente;
 using Aplicacao.DTOs.Responses.Cliente;
 using AutoMapper;
 using Dominio.Entidades;
@@ -66,10 +67,32 @@ namespace Aplicacao.Servicos.Tests
             Assert.Equal("Novo Nome", cliente.Nome);
             _clienteRepo.Verify(r => r.EditarAsync(cliente), Times.Once);
             _uotRepo.Verify(u => u.Commit(), Times.Once);
-
-
-
         }
 
+        [Fact]
+        public async Task Given_EnderecoIdNotEmpty_When_AtualizarAsync_Then_CallsUpdateEnderecoCliente()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var cliente = new Cliente { Id = id };
+            _clienteRepo.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
+            _clienteRepo.Setup(r => r.EditarAsync(cliente)).Returns(Task.CompletedTask);
+            _uotRepo.Setup(u => u.Commit()).ReturnsAsync(true);
+            _mapper.Setup(m => m.Map<ClienteResponse>(It.IsAny<Cliente>())).Returns(new ClienteResponse());
+
+            var enderecoId = Guid.NewGuid();
+            _enderecoRepo.Setup(r => r.ObterPorIdAsync(enderecoId)).ReturnsAsync(new Endereco());
+            _enderecoRepo.Setup(r => r.EditarAsync(It.IsAny<Endereco>())).Returns(Task.CompletedTask);
+            var service = CreateService();
+            var request = new AtualizarClienteRequest { EnderecoId = enderecoId };
+
+            // Act
+            
+
+            var result = await service.AtualizarAsync(id, request);
+
+            _enderecoRepo.Verify(r => r.ObterPorIdAsync(enderecoId), Times.Once);
+            _enderecoRepo.Verify(r => r.EditarAsync(It.IsAny<Endereco>()), Times.Once);
+        }
     }
 }
