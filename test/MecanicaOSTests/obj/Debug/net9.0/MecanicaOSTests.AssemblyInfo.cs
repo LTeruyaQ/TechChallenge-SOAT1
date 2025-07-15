@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MecanicaOSTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ebc87ff6f8bf2300abc9659316a2eddf0d81615")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+da8846646273d09f76a6485f1e5ee7a98c76ecc0")]
 [assembly: System.Reflection.AssemblyProductAttribute("MecanicaOSTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MecanicaOSTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
