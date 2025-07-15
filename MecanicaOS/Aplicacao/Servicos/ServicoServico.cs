@@ -104,7 +104,7 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, new { id, request });
 
-                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
+                var servico = await _repositorio.ObterPorIdAsync(id);
 
                 servico.Atualizar(request.Nome, request.Descricao, request.Valor, request.Disponivel);
 
@@ -131,7 +131,7 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo);
 
-                var servico = await _repositorio.ObterPorIdAsync(id);
+                var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
 
                 LogFim(metodo, servico);
 
