@@ -82,7 +82,7 @@ public class OrdemServicoController : BaseApiController
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AdicionarInsumos(Guid ordemServicoId, List<CadastrarInsumoOSRequest> request)
     {
-        await _insumoOSServico.CadastrarInsumosAsync(ordemServicoId, request);
-        return Ok();
+        var insumosOS = await _insumoOSServico.CadastrarInsumosAsync(ordemServicoId, request);
+        return Ok(insumosOS);
     }
 }

@@ -9,7 +9,7 @@ public class OrcamentoServico : IOrcamentoServico
     {
         decimal precoServico = ordemServico.Servico!.Valor;
         decimal precoInsumos = ordemServico.InsumosOS.Sum(i =>
-            i.Quantidade * (decimal)i.Estoque.Preco);
+            i.Quantidade * i.Estoque.Preco);
 
         return precoServico + precoInsumos;
     }

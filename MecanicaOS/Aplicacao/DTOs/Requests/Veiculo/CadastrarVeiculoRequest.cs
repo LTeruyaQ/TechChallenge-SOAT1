@@ -1,7 +1,6 @@
-using System;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Aplicacao.DTOs.Requests.Veiculo
 {
@@ -11,7 +10,7 @@ namespace Aplicacao.DTOs.Requests.Veiculo
     {
         [Required(ErrorMessage = "O campo Placa é obrigatório")]
         [StringLength(10, ErrorMessage = "A Placa deve ter no máximo {1} caracteres")]
-        [RegularExpression(@"^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$|^[A-Z]{3}[0-9]{4}$", 
+        [RegularExpression(@"^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$|^[A-Z]{3}[0-9]{4}$",
             ErrorMessage = "Formato de placa inválido. Use o formato: ABC1D23 ou ABC1234")]
         [DisplayName("Placa")]
         [SwaggerSchema(Description = "Placa do veículo (formato: ABC1D23 ou ABC1234)", Nullable = false)]

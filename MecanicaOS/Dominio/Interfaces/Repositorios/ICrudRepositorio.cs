@@ -11,6 +11,7 @@ public interface IRepositorio<T> where T : Entidade
     Task<T> CadastrarAsync(T entidade);
     Task<IEnumerable<T>> CadastrarVariosAsync(IEnumerable<T> entidades);
     Task EditarAsync(T novaEntidade);
+    Task EditarVariosAsync(IEnumerable<T> entidades);
     Task DeletarAsync(T entidade);
     Task<T?> ObterUmSemRastreamentoAsync(IEspecificacao<T> especificacao);
     Task<T?> ObterUmAsync(IEspecificacao<T> especificacao);

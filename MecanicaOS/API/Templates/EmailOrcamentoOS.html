@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f6f6f6;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: #004080;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        .total {
+            font-weight: bold;
+            color: #004080;
+            font-size: 1.1em;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Orçamento da sua Ordem de Serviço</h2>
+
+        <p>Olá <strong>{{NOME_CLIENTE}}</strong>,</p>
+
+        <p>Segue abaixo o orçamento gerado para a sua ordem de serviço:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Serviço: {{NOME_SERVICO}}</td>
+                    <td>R$ {{VALOR_SERVICO}}</td>
+                </tr>
+                {{#each INSUMOS}}
+                <tr>
+                    <td>{{DescricaoInsumo}} ({{Quantidade}} und)</td>
+                    <td>R$ {{PrecoTotal}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td class="total">Total do orçamento</td>
+                    <td class="total">R$ {{VALOR_TOTAL}}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <p>Caso aprove este orçamento, por favor, responda este e-mail ou entre em contato conosco para darmos sequência no serviço.</p>
+
+        <p>Obrigado por escolher a <strong>MecanicaOS</strong>.</p>
+
+        <div class="footer">
+            Este e-mail foi enviado automaticamente. Por favor, não responda.
+        </div>
+    </div>
+</body>
+</html>

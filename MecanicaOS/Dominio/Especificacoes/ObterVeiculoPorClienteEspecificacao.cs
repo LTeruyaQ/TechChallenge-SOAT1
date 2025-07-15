@@ -1,10 +1,11 @@
 ﻿using Dominio.Entidades;
-using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Base;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes
 {
-    public class ObterVeiculoPorClienteEspecificacao : IEspecificacao<Veiculo>
+    public class ObterVeiculoPorClienteEspecificacao : EspecificacaoBase<Veiculo>
     {
         private readonly Guid _clienteId;
 
@@ -13,7 +14,12 @@ namespace Dominio.Especificacoes
             _clienteId = clienteId;
         }
 
-        public Expression<Func<Veiculo, bool>> Expressao =>
+        public override Expression<Func<Veiculo, bool>> Expressao =>
             v => v.ClienteId == _clienteId;
+
+        public override List<Func<IQueryable<Veiculo>, IQueryable<Veiculo>>> Inclusoes =>
+        [
+            i => i.Include(i => i.Cliente)
+        ];
     }
 }

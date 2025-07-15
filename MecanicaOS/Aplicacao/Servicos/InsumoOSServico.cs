@@ -1,10 +1,13 @@
-﻿using Aplicacao.DTOs.Requests.OrdermServico.InsumoOrdemServico;
+﻿using Aplicacao.DTOs.Requests.Estoque;
+using Aplicacao.DTOs.Requests.OrdermServico;
+using Aplicacao.DTOs.Requests.OrdermServico.InsumoOrdemServico;
 using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
+using Dominio.Enumeradores;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
@@ -13,21 +16,21 @@ namespace Aplicacao.Servicos;
 
 public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsumoOSServico
 {
-    private readonly IOrdemServicoServico _ordemServicoServico;
-    private readonly IRepositorio<Estoque> _estoqueRepositorio;
+    private readonly IOrdemServicoServico _ordemServicoRepositorio;
+    private readonly IEstoqueServico _estoqueRepositorio;
 
     private readonly VerificarEstoqueJob _verificarEstoqueJob;
 
     public InsumoOSServico(
-        IOrdemServicoServico ordemServicoServico,
-        IRepositorio<Estoque> estoqueRepositorio,
+        IOrdemServicoServico ordemServicoRepositorio,
+        IEstoqueServico estoqueRepositorio,
         VerificarEstoqueJob verificarEstoqueJob,
         IRepositorio<InsumoOS> repositorio,
         ILogServico<InsumoOSServico> logServico,
         IUnidadeDeTrabalho uot, IMapper mapper) :
         base(repositorio, logServico, uot, mapper)
     {
-        _ordemServicoServico = ordemServicoServico;
+        _ordemServicoRepositorio = ordemServicoRepositorio;
         _estoqueRepositorio = estoqueRepositorio;
         _verificarEstoqueJob = verificarEstoqueJob;
     }
@@ -40,7 +43,7 @@ public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsu
         {
             LogInicio(metodo);
 
-            await VerificaOSCadastradaAsync(ordemServicoId);
+            OrdemServico os = await ObterOrdemServicoAsync(ordemServicoId);
 
             await ValidarEAtualizarEstoqueAsync(request);
 
@@ -56,6 +59,8 @@ public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsu
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao adicionar os insumos na ordem de serviço");
 
+            await AtualizarStatusOrdemServicoAsync(os);
+
             LogFim(metodo, entidades);
 
             return _mapper.Map<List<InsumoOSResponse>>(entidades);
@@ -68,9 +73,9 @@ public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsu
         }
     }
 
-    private async Task VerificaOSCadastradaAsync(Guid ordemServicoId)
+    private async Task<OrdemServico> ObterOrdemServicoAsync(Guid ordemServicoId)
     {
-        _ = await _ordemServicoServico.ObterPorIdAsync(ordemServicoId)
+       return _mapper.Map<OrdemServico>(await _ordemServicoRepositorio.ObterPorIdAsync(ordemServicoId))
                 ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
     }
 
@@ -101,7 +106,7 @@ public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsu
 
     private async Task<Estoque> ObterEstoqueOuLancarErroAsync(Guid estoqueId)
     {
-        return await _estoqueRepositorio.ObterPorIdAsync(estoqueId)
+        return _mapper.Map<Estoque>(await _estoqueRepositorio.ObterPorIdAsync(estoqueId))
             ?? throw new DadosNaoEncontradosException("Insumo não encontrado no estoque.");
     }
 
@@ -113,6 +118,18 @@ public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsu
     private async Task AtualizarEstoqueAsync(Estoque estoque, int quantidadeUtilizada)
     {
         estoque.QuantidadeDisponivel -= quantidadeUtilizada;
-        await _estoqueRepositorio.EditarAsync(estoque);
+
+        await _estoqueRepositorio.AtualizarAsync(
+            estoque.Id, 
+            _mapper.Map<AtualizarEstoqueRequest>(estoque));
+    }
+
+    private async Task AtualizarStatusOrdemServicoAsync(OrdemServico ordemServico)
+    {
+        ordemServico.Status = StatusOrdemServico.EmDiagnostico;
+
+        await _ordemServicoRepositorio.AtualizarAsync(
+            ordemServico.Id,
+            _mapper.Map<AtualizarOrdemServicoRequest>(ordemServico));
     }
 }

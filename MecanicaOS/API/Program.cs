@@ -2,7 +2,7 @@ using API.Middlewares;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
 using Aplicacao.Mapeamentos;
-using Aplicacao.Notificacoes.Orcamento;
+using Aplicacao.Notificacoes.OS;
 using Aplicacao.Servicos;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IO.Compression;
@@ -80,9 +79,6 @@ builder.Services.AddHangfire(config => config
 
 builder.Services.AddHangfireServer();
 
-// Repositórios
-builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
-
 // Configuração JWT
 var jwtConfig = builder.Configuration.GetSection("Jwt").Get<ConfiguracaoJwt>();
 builder.Services.Configure<ConfiguracaoJwt>(builder.Configuration.GetSection("Jwt"));
@@ -116,7 +112,6 @@ builder.Services.AddAuthorization(options =>
 // Serviços
 builder.Services.AddScoped<IServicoServico, ServicoServico>();
 builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
-builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
 builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
 builder.Services.AddScoped<IClienteServico, ClienteServico>();
 builder.Services.AddScoped<IOrdemServicoServico, OrdemServicoServico>();
@@ -152,15 +147,22 @@ builder.Services.AddAutoMapper(
     typeof(EstoqueProfile),
     typeof(VeiculoProfile),
     typeof(UsuarioProfile),
+    typeof(ClienteProfile),
     typeof(OrdemServicoProfile),
     typeof(InsumoOSProfile));
 
 // Infraestrutura
 builder.Services.AddScoped<IServicoEmail, ServicoEmail>();
+builder.Services.AddScoped<IServicoJwt, ServicoJwt>();
+builder.Services.AddScoped<IServicoSenha, ServicoSenha>();
 builder.Services.AddScoped<IIdCorrelacionalService, IdCorrelacionalService>();
 builder.Services.AddScoped<IdCorrelacionalLogMiddleware>();
+builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
+builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 
-// Configuração de compactação de resposta
+// Repositórios
+builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
+
 builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
     options.Level = CompressionLevel.Optimal;

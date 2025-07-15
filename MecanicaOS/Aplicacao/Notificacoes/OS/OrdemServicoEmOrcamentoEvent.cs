@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Aplicacao.Notificacoes.Orcamento;
+namespace Aplicacao.Notificacoes.OS;
 
 public class OrdemServicoEmOrcamentoEvent(Guid ordemServicoId) : INotification
 {

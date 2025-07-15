@@ -5,5 +5,7 @@ namespace Dominio.Especificacoes.Base.Interfaces
     public interface IEspecificacao<T>
     {
         Expression<Func<T, bool>> Expressao { get; }
+
+        List<Func<IQueryable<T>, IQueryable<T>>> Inclusoes { get; }
     }
 }

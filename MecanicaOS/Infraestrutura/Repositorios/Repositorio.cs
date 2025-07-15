@@ -1,8 +1,10 @@
 ﻿using Dominio.Entidades.Abstratos;
+using Dominio.Especificacoes.Base.Extensoes;
 using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infraestrutura.Repositorios
 {
@@ -46,13 +48,22 @@ namespace Infraestrutura.Repositorios
         {
             await Task.Run(() => _dbContext.Entry(entidade).State = EntityState.Modified);
         }
+        
+        public virtual async Task EditarVariosAsync(IEnumerable<T> entidades)
+        {
+            if (entidades == null || !entidades.Any())
+                return;
+
+            foreach (var entidade in entidades)
+            {
+                await Task.Run(() => _dbContext.Entry(entidade).State = EntityState.Modified);
+            }
+        }
 
         public virtual async Task<IEnumerable<T>> ObterPorFiltroAsync(IEspecificacao<T> especificacao)
         {
-            return await _dbSet
-                .AsNoTracking()
-                .Where(especificacao.Expressao)
-                .ToListAsync();
+            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
+            return await query.ToListAsync();
         }
 
         public virtual async Task<T?> ObterPorIdAsync(Guid id)
@@ -79,8 +90,14 @@ namespace Infraestrutura.Repositorios
 
         public virtual async Task<T?> ObterUmAsync(IEspecificacao<T> especificacao)
         {
-            return await _dbSet
-                .AsNoTracking()
+            IQueryable<T> query = _dbSet.AsNoTracking();
+
+            foreach (var includeFunc in especificacao.Inclusoes)
+            {
+                query = includeFunc(query);
+            }
+
+            return await query
                 .Where(especificacao.Expressao)
                 .SingleOrDefaultAsync();
         }

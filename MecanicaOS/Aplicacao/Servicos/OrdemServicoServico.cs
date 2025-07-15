@@ -1,7 +1,7 @@
 ﻿using Aplicacao.DTOs.Requests.OrdermServico;
 using Aplicacao.DTOs.Responses.OrdemServico;
 using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Notificacoes.Orcamento;
+using Aplicacao.Notificacoes.OS;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
@@ -21,7 +21,8 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
     public OrdemServicoServico(
         IRepositorio<OrdemServico> repositorio,
         ILogServico<OrdemServicoServico> logServico,
-        IUnidadeDeTrabalho uot, IMapper mapper, 
+        IUnidadeDeTrabalho uot,
+        IMapper mapper,
         IMediator mediator) :
         base(repositorio, logServico, uot, mapper)
     {
@@ -36,14 +37,14 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
         {
             LogInicio(metodo, new { id, request });
 
-            OrdemServico ordemServico = await _repositorio.ObterPorIdAsync(id) ?? 
+            OrdemServico ordemServico = await _repositorio.ObterPorIdAsync(id) ??
                 throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
 
             ordemServico.Atualizar(
-                request.ClienteId, 
-                request.VeiculoId, 
-                request.ServicoId, 
-                request.Descricao, 
+                request.ClienteId,
+                request.VeiculoId,
+                request.ServicoId,
+                request.Descricao,
                 request.Status);
 
             await _repositorio.EditarAsync(ordemServico);
@@ -53,9 +54,13 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
 
             LogFim(metodo, ordemServico);
 
-            if (ordemServico.Status == StatusOrdemServico.EmOrcamento)
+            if (ordemServico.Status == StatusOrdemServico.EmDiagnostico)
             {
                 await _mediator.Publish(new OrdemServicoEmOrcamentoEvent(ordemServico.Id));
+            }
+            else if (ordemServico.Status == StatusOrdemServico.Cancelada)
+            {
+                await _mediator.Publish(new OrdemServicoCanceladaEvent(ordemServico.Id));
             }
 
             return _mapper.Map<OrdemServicoResponse>(ordemServico);

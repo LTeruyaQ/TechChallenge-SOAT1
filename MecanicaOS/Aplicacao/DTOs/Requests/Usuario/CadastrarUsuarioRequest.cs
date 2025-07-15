@@ -1,7 +1,7 @@
 using Dominio.Enumeradores;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Aplicacao.DTOs.Requests.Usuario;
 
@@ -32,7 +32,7 @@ public class CadastrarUsuarioRequest
     [DisplayName("Recebe Alerta de Estoque")]
     [SwaggerSchema(Description = "Indica se o usuário receberá alertas de estoque baixo")]
     public bool? RecebeAlertaEstoque { get; set; }
-    
+
     [StringLength(20, ErrorMessage = "O Documento deve ter no máximo {1} caracteres")]
     [DisplayName("Documento")]
     [SwaggerSchema(Description = "Número do documento (CPF, RG, etc.)")]
