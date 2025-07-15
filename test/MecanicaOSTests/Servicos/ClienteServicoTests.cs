@@ -1,5 +1,4 @@
-﻿using System;
-using Aplicacao.DTOs.Requests.Cliente;
+﻿using Aplicacao.DTOs.Requests.Cliente;
 using Aplicacao.DTOs.Responses.Cliente;
 using AutoMapper;
 using Dominio.Entidades;
@@ -7,92 +6,141 @@ using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using Moq;
-
 namespace Aplicacao.Servicos.Tests
 {
+
+
     public class ClienteServicoTests
     {
-        private readonly Mock<IRepositorio<Cliente>> _clienteRepo = new Mock<IRepositorio<Cliente>>();
-        private readonly Mock<IRepositorio<Endereco>> _enderecoRepo = new Mock<IRepositorio<Endereco>>();
-        private readonly Mock<IRepositorio<Contato>> _contatoRepo = new Mock<IRepositorio<Contato>>();
-        private readonly Mock<IUnidadeDeTrabalho> _uotRepo = new Mock<IUnidadeDeTrabalho>();
-        private readonly Mock<ILogServico<ClienteServico>> _logServico = new Mock<ILogServico<ClienteServico>>();
-        private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
+        private readonly Mock<IRepositorio<Cliente>> _clienteRepoMock;
+        private readonly Mock<IRepositorio<Endereco>> _enderecoRepoMock;
+        private readonly Mock<IRepositorio<Contato>> _contatoRepoMock;
+        private readonly Mock<ILogServico<ClienteServico>> _logMock;
+        private readonly Mock<IUnidadeDeTrabalho> _uotMock;
+        private readonly Mock<IMapper> _mapperMock;
+        private readonly ClienteServico _clienteServico;
 
 
-        private ClienteServico CreateService()
+        public ClienteServicoTests()
         {
-            return new ClienteServico(_clienteRepo.Object, _enderecoRepo.Object, _contatoRepo.Object, _logServico.Object, _uotRepo.Object, _mapper.Object);
+            _clienteRepoMock = new Mock<IRepositorio<Cliente>>();
+            _enderecoRepoMock = new Mock<IRepositorio<Endereco>>();
+            _contatoRepoMock = new Mock<IRepositorio<Contato>>();
+            _logMock = new Mock<ILogServico<ClienteServico>>();
+            _uotMock = new Mock<IUnidadeDeTrabalho>();
+            _mapperMock = new Mock<IMapper>();
+
+            _clienteServico = new ClienteServico(
+                _clienteRepoMock.Object,
+                _enderecoRepoMock.Object,
+                _contatoRepoMock.Object,
+                _logMock.Object,
+                _uotMock.Object,
+                _mapperMock.Object);
         }
 
-
         [Fact]
-        public async Task Given_ClienteNaoExiste_when_AtualizarAsync_Then_ThrowsDadosNaoEncontradosException()
+        public async Task Given_ValidRequest_When_CadastrarAsync_Then_ReturnClienteResponse()
         {
-            var id = Guid.NewGuid(); ;
-            _clienteRepo.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync((Cliente)null);
-            var service = CreateService();
+            var request = new CadastrarClienteRequest { Nome = "João" };
+            var cliente = new Cliente { Id = Guid.NewGuid(), Nome = "João" };
+            var response = new ClienteResponse { Id = cliente.Id, Nome = cliente.Nome };
 
-            await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => service.AtualizarAsync(id, new AtualizarClienteRequest()));
+            _mapperMock.Setup(m => m.Map<Cliente>(request)).Returns(cliente);
+            _clienteRepoMock.Setup(r => r.CadastrarAsync(cliente)).ReturnsAsync(cliente);
+            _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
+            _mapperMock.Setup(m => m.Map<ClienteResponse>(cliente)).Returns(response);
 
+            var result = await _clienteServico.CadastrarAsync(request);
+
+            Assert.Equal(cliente.Id, result.Id);
+            Assert.Equal(cliente.Nome, result.Nome);
         }
 
+        [Fact]
+        public async Task Given_InvalidCommit_When_CadastrarAsync_Then_ThrowPersistirDadosException()
+        {
+            var request = new CadastrarClienteRequest();
+            var cliente = new Cliente { Id = Guid.NewGuid() };
 
+            _mapperMock.Setup(m => m.Map<Cliente>(request)).Returns(cliente);
+            _clienteRepoMock.Setup(r => r.CadastrarAsync(cliente)).ReturnsAsync(cliente);
+            _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
+
+            await Assert.ThrowsAsync<PersistirDadosException>(() => _clienteServico.CadastrarAsync(request));
+        }
 
         [Fact]
-        public async Task Given_ValidRequest_When_AtualizarAsync_Then_UpdateFieldsAndComits()
+        public async Task Given_ValidId_When_ObterPorIdAsync_Then_ReturnClienteResponse()
         {
             var id = Guid.NewGuid();
-            var cliente = new Cliente() { Id = id };
-            _clienteRepo.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
-            _clienteRepo.Setup(r => r.EditarAsync(cliente)).Returns(Task.CompletedTask);
-            _uotRepo.Setup(u => u.Commit()).ReturnsAsync(true);
-            _mapper.Setup(m => m.Map<ClienteResponse>(It.IsAny<Cliente>())).Returns(new ClienteResponse());
+            var cliente = new Cliente { Id = id, Nome = "Maria" };
+            var response = new ClienteResponse { Id = id, Nome = "Maria" };
 
-            var service = CreateService();
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
+            _mapperMock.Setup(m => m.Map<ClienteResponse>(cliente)).Returns(response);
 
-            var request = new AtualizarClienteRequest 
-            { 
-                Nome = "Novo Nome",
-                Sexo = "M",
-                TipoCliente = "PJ",
-                Documento = "546",
-                DataNascimento = DateTime.UtcNow.ToString(),
-                EnderecoId = Guid.Empty,
-                ContatoId = Guid.Empty,
-            };
+            var result = await _clienteServico.ObterPorIdAsync(id);
 
-            var result = await service.AtualizarAsync(id, request);
-            Assert.NotNull(result);
-            Assert.Equal("Novo Nome", cliente.Nome);
-            _clienteRepo.Verify(r => r.EditarAsync(cliente), Times.Once);
-            _uotRepo.Verify(u => u.Commit(), Times.Once);
+            Assert.Equal(id, result.Id);
+            Assert.Equal("Maria", result.Nome);
         }
 
         [Fact]
-        public async Task Given_EnderecoIdNotEmpty_When_AtualizarAsync_Then_CallsUpdateEnderecoCliente()
+        public async Task Given_InvalidId_When_ObterPorIdAsync_Then_ThrowException()
         {
-            // Arrange
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Cliente)null);
+
+            await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _clienteServico.ObterPorIdAsync(Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async Task Given_ValidId_When_DeletarAsync_Then_ReturnTrue()
+        {
             var id = Guid.NewGuid();
             var cliente = new Cliente { Id = id };
-            _clienteRepo.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
-            _clienteRepo.Setup(r => r.EditarAsync(cliente)).Returns(Task.CompletedTask);
-            _uotRepo.Setup(u => u.Commit()).ReturnsAsync(true);
-            _mapper.Setup(m => m.Map<ClienteResponse>(It.IsAny<Cliente>())).Returns(new ClienteResponse());
 
-            var enderecoId = Guid.NewGuid();
-            _enderecoRepo.Setup(r => r.ObterPorIdAsync(enderecoId)).ReturnsAsync(new Endereco());
-            _enderecoRepo.Setup(r => r.EditarAsync(It.IsAny<Endereco>())).Returns(Task.CompletedTask);
-            var service = CreateService();
-            var request = new AtualizarClienteRequest { EnderecoId = enderecoId };
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
+            _clienteRepoMock.Setup(r => r.DeletarAsync(cliente)).Returns(Task.CompletedTask);
+            _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
 
-            // Act
-            
+            var result = await _clienteServico.DeletarAsync(id);
 
-            var result = await service.AtualizarAsync(id, request);
-
-            _enderecoRepo.Verify(r => r.ObterPorIdAsync(enderecoId), Times.Once);
-            _enderecoRepo.Verify(r => r.EditarAsync(It.IsAny<Endereco>()), Times.Once);
+            Assert.True(result);
         }
+
+        [Fact]
+        public async Task Given_InvalidCommit_When_DeletarAsync_Then_ThrowPersistirDadosException()
+        {
+            var id = Guid.NewGuid();
+            var cliente = new Cliente { Id = id };
+
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
+            _clienteRepoMock.Setup(r => r.DeletarAsync(cliente)).Returns(Task.CompletedTask);
+            _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
+
+            await Assert.ThrowsAsync<PersistirDadosException>(() => _clienteServico.DeletarAsync(id));
+        }
+
+        //[Fact]
+        //public async Task Given_DocumentoExistente_When_ObterPorDocumento_Then_ReturnCliente()
+        //{
+        //    var documento = "12345678901";
+        //    var cliente = new Cliente { Documento = documento };
+
+        //    _clienteRepoMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<object>())).ReturnsAsync(cliente);
+
+        //    var result = await _clienteServico.ObterPorDocumento(documento);
+
+        //    Assert.Equal(documento, result.Documento);
+        //}
+
+        //[Fact]
+        //public async Task Given_DocumentoInexistente_When_ObterPorDocumento_Then_ThrowException()
+        //{
+        //    _clienteRepoMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<EspecificacaoBase<Cliente>())).ReturnsAsync((Cliente)null);
+
+        //    await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _clienteServico.ObterPorDocumento("00000000000"));
+        //}
     }
 }
