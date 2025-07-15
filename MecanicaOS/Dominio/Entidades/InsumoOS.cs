@@ -1,6 +1,8 @@
-﻿namespace Dominio.Entidades;
+﻿using Dominio.Entidades.Abstratos;
 
-public class InsumoOrdemServico
+namespace Dominio.Entidades;
+
+public class InsumoOS : Entidade
 {
     public Guid OrdemServicoId { get; set; }
     public OrdemServico OrdemServico { get; set; } = null!;

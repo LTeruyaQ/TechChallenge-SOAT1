@@ -1,6 +1,7 @@
 ﻿using Aplicacao.DTOs.Requests.OrdermServico;
 using Aplicacao.DTOs.Responses.OrdemServico;
 using Aplicacao.Interfaces.Servicos;
+using Aplicacao.Notificacoes.Orcamento;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
@@ -9,17 +10,22 @@ using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
+using MediatR;
 
 namespace Aplicacao.Servicos;
 
 public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemServico>, IOrdemServicoServico
 {
+    private readonly IMediator _mediator;
+
     public OrdemServicoServico(
         IRepositorio<OrdemServico> repositorio,
         ILogServico<OrdemServicoServico> logServico,
-        IUnidadeDeTrabalho uot, IMapper mapper) :
+        IUnidadeDeTrabalho uot, IMapper mapper, 
+        IMediator mediator) :
         base(repositorio, logServico, uot, mapper)
     {
+        _mediator = mediator;
     }
 
     public async Task<OrdemServicoResponse> AtualizarAsync(Guid id, AtualizarOrdemServicoRequest request)
@@ -37,7 +43,6 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
                 request.ClienteId, 
                 request.VeiculoId, 
                 request.ServicoId, 
-                request.Orcamento, 
                 request.Descricao, 
                 request.Status);
 
@@ -47,6 +52,11 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
                 throw new PersistirDadosException("Erro ao atualizar a ordem de serviço");
 
             LogFim(metodo, ordemServico);
+
+            if (ordemServico.Status == StatusOrdemServico.EmOrcamento)
+            {
+                await _mediator.Publish(new OrdemServicoEmOrcamentoEvent(ordemServico.Id));
+            }
 
             return _mapper.Map<OrdemServicoResponse>(ordemServico);
         }

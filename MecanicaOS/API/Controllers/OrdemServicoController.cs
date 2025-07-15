@@ -1,21 +1,25 @@
 using API.Models;
 using Aplicacao.DTOs.Requests.OrdermServico;
+using Aplicacao.DTOs.Requests.OrdermServico.InsumoOrdemServico;
 using Aplicacao.DTOs.Responses.OrdemServico;
 using Aplicacao.Interfaces.Servicos;
+using Aplicacao.Servicos;
 using Dominio.Enumeradores;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Authorize]
+//[Authorize]
 public class OrdemServicoController : BaseApiController
 {
     private readonly IOrdemServicoServico _ordemServico;
+    private readonly IInsumoOSServico _insumoOSServico;
 
-    public OrdemServicoController(IOrdemServicoServico ordemServico)
+    public OrdemServicoController(IOrdemServicoServico ordemServico, IInsumoOSServico insumoOSServico)
     {
         _ordemServico = ordemServico;
+        _insumoOSServico = insumoOSServico;
     }
 
     [HttpGet]
@@ -69,5 +73,16 @@ public class OrdemServicoController : BaseApiController
     {
         var ordemServicoAtualizado = await _ordemServico.AtualizarAsync(id, request);
         return Ok(ordemServicoAtualizado);
+    }
+
+    [HttpPost("{ordemServicoId}/insumos")]
+    [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AdicionarInsumos(Guid ordemServicoId, List<CadastrarInsumoOSRequest> request)
+    {
+        await _insumoOSServico.CadastrarInsumosAsync(ordemServicoId, request);
+        return Ok();
     }
 }
