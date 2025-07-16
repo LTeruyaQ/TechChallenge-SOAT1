@@ -1,4 +1,4 @@
-﻿using Aplicacao.DTOs.Requests.Servico;
+using Aplicacao.DTOs.Requests.Servico;
 using Aplicacao.DTOs.Responses.Servico;
 using Aplicacao.Servicos;
 using AutoMapper;
@@ -34,13 +34,77 @@ public class ServicoServicoTests
     [Fact]
     public async Task Given_NomeExistente_When_CadastrarServicoAsync_Then_ThrowDadosJaCadastradosException()
     {
-        var request = new CadastrarServicoRequest { Nome = "Serviço X", Descricao= "descricao", Valor=10, Disponivel = true  };
+        // Arrange
+        var request = new CadastrarServicoRequest 
+        { 
+            Nome = "Serviço X", 
+            Descricao = "Descrição detalhada do serviço", 
+            Valor = 150.50m, 
+            Disponivel = true  
+        };
 
-        var servico = new Servico { Descricao = "teste", Nome = "teste" };
+        var servicoExistente = new Servico 
+        { 
+            Id = Guid.NewGuid(),
+            Nome = request.Nome,
+            Descricao = "Serviço já existente",
+            Valor = 100.00m,
+            Disponivel = true
+        };
 
-        _servicoServicoTestSetupObterServicoPorNome(request.Nome, servico);
+        var servicoResponse = new ServicoResponse
+        {
+            Id = servicoExistente.Id,
+            Nome = servicoExistente.Nome,
+            Descricao = servicoExistente.Descricao,
+            Valor = servicoExistente.Valor,
+            Disponivel = servicoExistente.Disponivel
+        };
 
-        await Assert.ThrowsAsync<DadosJaCadastradosException>(() => _servicoServico.CadastrarServicoAsync(request));
+        _repositorioMock
+            .Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Servico>>()))
+            .ReturnsAsync(servicoExistente);
+            
+        _mapperMock
+            .Setup(m => m.Map<ServicoResponse>(servicoExistente))
+            .Returns(servicoResponse);
+
+        // Act
+        Exception? exception = null;
+        try
+        {
+            await _servicoServico.CadastrarServicoAsync(request);
+            Assert.True(false, "Deveria ter lançado DadosJaCadastradosException");
+        }
+        catch (DadosJaCadastradosException ex)
+        {
+            exception = ex;
+            Console.WriteLine($"Exceção capturada: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exceção inesperada: {ex}");
+            throw;
+        }
+
+        // Assert
+        Assert.NotNull(exception);
+        Assert.Equal("Serviço já cadastrado", exception.Message);
+        
+        _repositorioMock.Verify(
+            r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Servico>>()), 
+            Times.Once,
+            "ObterUmSemRastreamentoAsync deveria ter sido chamado uma vez");
+            
+        _repositorioMock.Verify(
+            r => r.CadastrarAsync(It.IsAny<Servico>()), 
+            Times.Never,
+            "CadastrarAsync não deveria ter sido chamado");
+            
+        _uotMock.Verify(
+            u => u.Commit(), 
+            Times.Never,
+            "Commit não deveria ter sido chamado");
     }
 
     [Fact]

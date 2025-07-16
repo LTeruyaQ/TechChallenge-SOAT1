@@ -1,4 +1,4 @@
-﻿using Aplicacao.DTOs.Requests.Usuario;
+using Aplicacao.DTOs.Requests.Usuario;
 using Aplicacao.DTOs.Responses.Usuario;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos;
@@ -85,18 +85,50 @@ public class UsuarioServicoTests
     {
         // Arrange
         var servico = CriarServico();
-        var request = new CadastrarUsuarioRequest { Email = "novo@email.com", Senha = "senha" };
-        var usuario = new Usuario();
+        var request = new CadastrarUsuarioRequest 
+        { 
+            Email = "novo@email.com", 
+            Senha = "senha",
+            TipoUsuario = TipoUsuario.Admin
+        };
+        
+        var usuario = new Usuario 
+        { 
+            Email = request.Email,
+            Senha = "senhaHash",
+            TipoUsuario = request.TipoUsuario
+        };
 
-        _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Usuario>>()))
+        _repositorioMock
+            .Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Usuario>>()))
             .ReturnsAsync((Usuario)null);
-        _mapperMock.Setup(m => m.Map<Usuario>(request)).Returns(usuario);
-        _servicoSenhaMock.Setup(s => s.CriptografarSenha(It.IsAny<string>())).Returns("senhaHash");
-        _repositorioMock.Setup(r => r.CadastrarAsync(usuario)).ReturnsAsync(usuario);
-        _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
+            
+        _mapperMock
+            .Setup(m => m.Map<Usuario>(request))
+            .Returns(usuario);
+            
+        _servicoSenhaMock
+            .Setup(s => s.CriptografarSenha(request.Senha))
+            .Returns("senhaHash");
+            
+        _repositorioMock
+            .Setup(r => r.CadastrarAsync(It.Is<Usuario>(u => 
+                u.Email == request.Email && 
+                u.Senha == "senhaHash" &&
+                u.TipoUsuario == request.TipoUsuario)))
+            .ReturnsAsync(usuario);
+            
+        _uotMock
+            .Setup(u => u.Commit())
+            .ReturnsAsync(false);
 
         // Act & Assert
-        await Assert.ThrowsAsync<PersistirDadosException>(() => servico.CadastrarAsync(request));
+        var exception = await Assert.ThrowsAsync<PersistirDadosException>(
+            () => servico.CadastrarAsync(request));
+            
+        Assert.Equal("Erro ao cadastrar usuário", exception.Message);
+        _repositorioMock.Verify(r => r.CadastrarAsync(It.IsAny<Usuario>()), Times.Once);
+        _uotMock.Verify(u => u.Commit(), Times.Once);
     }
     [Fact]
     public async Task Given_ValidUpdate_When_AtualizarAsync_Then_UsuarioUpdatedSuccessfully()
