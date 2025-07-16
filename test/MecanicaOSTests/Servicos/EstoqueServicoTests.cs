@@ -1,4 +1,4 @@
-﻿using Aplicacao.DTOs.Requests.Estoque;
+using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Servicos;
 using AutoMapper;
@@ -32,7 +32,7 @@ public class EstoqueServicoTests
     }
 
     [Fact]
-    public async Task Given_ValidRequest_When_CadastrarAsync_Then_ReturnsResponse()
+    public async Task Dado_RequestValido_Quando_CadastrarAsync_Entao_RetornaResponse()
     {
         var request = new CadastrarEstoqueRequest();
         var estoque = new Estoque();
@@ -48,7 +48,7 @@ public class EstoqueServicoTests
     }
 
     [Fact]
-    public async Task Given_CommitFails_When_CadastrarAsync_Then_ThrowsPersistirDadosException()
+    public async Task Dado_FalhaNoCommit_Quando_CadastrarAsync_Entao_LancaExcecaoPersistirDados()
     {
         var request = new CadastrarEstoqueRequest();
         var estoque = new Estoque();
@@ -60,7 +60,7 @@ public class EstoqueServicoTests
     }
 
     [Fact]
-    public async Task Given_IdValido_When_ObterPorIdAsync_Then_ReturnsResponse()
+    public async Task Dado_IdValido_Quando_ObterPorIdAsync_Entao_RetornaResponse()
     {
         var id = Guid.NewGuid();
         var estoque = new Estoque();
@@ -75,7 +75,7 @@ public class EstoqueServicoTests
     }
 
     [Fact]
-    public async Task Given_IdInvalido_When_ObterPorIdAsync_Then_ThrowsException()
+    public async Task Dado_IdInvalido_Quando_ObterPorIdAsync_Entao_LancaExcecao()
     {
         var id = Guid.NewGuid();
         _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync((Estoque)null);
@@ -84,7 +84,7 @@ public class EstoqueServicoTests
     }
 
     [Fact]
-    public async Task Given_IdValido_When_DeletarAsync_Then_ReturnsTrue()
+    public async Task Dado_IdValido_Quando_DeletarAsync_Entao_RetornaTrue()
     {
         var id = Guid.NewGuid();
         var estoque = new Estoque();
@@ -98,7 +98,7 @@ public class EstoqueServicoTests
     }
 
     [Fact]
-    public async Task Given_IdInvalido_When_DeletarAsync_Then_ThrowsException()
+    public async Task Dado_IdInvalido_Quando_DeletarAsync_Entao_LancaExcecao()
     {
         var id = Guid.NewGuid();
         _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync((Estoque)null);
@@ -107,7 +107,7 @@ public class EstoqueServicoTests
     }
 
     [Fact]
-    public async Task Given_EstoquesExistem_When_ObterTodosAsync_Then_ReturnsList()
+    public async Task Quando_ObterTodosAsync_Entao_RetornaLista()
     {
         var estoques = new List<Estoque> { new Estoque() };
         var responses = new List<EstoqueResponse> { new EstoqueResponse() };
@@ -121,7 +121,7 @@ public class EstoqueServicoTests
     }
 
     [Fact]
-    public async Task Given_ValidUpdateRequest_When_AtualizarAsync_Then_ReturnsUpdatedResponse()
+    public async Task Dado_IdValidoERequest_Quando_AtualizarAsync_Entao_RetornaResponse()
     {
         var id = Guid.NewGuid();
         var request = new AtualizarEstoqueRequest
@@ -145,7 +145,7 @@ public class EstoqueServicoTests
     }
 
     [Fact]
-    public async Task Given_InvalidId_When_AtualizarAsync_Then_ThrowsException()
+    public async Task Dado_IdInvalido_Quando_AtualizarAsync_Entao_LancaExcecao()
     {
         var id = Guid.NewGuid();
         var request = new AtualizarEstoqueRequest();
@@ -155,7 +155,7 @@ public class EstoqueServicoTests
     }
 
     [Fact]
-    public async Task Given_CommitFails_When_AtualizarAsync_Then_ThrowsException()
+    public async Task Dado_FalhaNoCommit_Quando_AtualizarAsync_Entao_LancaExcecaoPersistirDados()
     {
         var id = Guid.NewGuid();
         var request = new AtualizarEstoqueRequest();

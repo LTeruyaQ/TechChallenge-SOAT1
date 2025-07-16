@@ -1,4 +1,4 @@
-﻿using Aplicacao.DTOs.Requests.Autenticacao;
+using Aplicacao.DTOs.Requests.Autenticacao;
 using Aplicacao.DTOs.Requests.Usuario;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos;
@@ -29,7 +29,7 @@ public class AutenticacaoServicoTests
             _clienteServicoMock.Object);
     }
     [Fact]
-    public async Task Given_EmailInexistente_When_AutenticarAsync_Then_ThrowsCredenciaisInvalidasException()
+    public async Task Dado_EmailInexistente_Quando_AutenticarAsync_Entao_LancaExcecaoCredenciaisInvalidas()
     {
         // Arrange
         var request = new AutenticacaoRequest { Email = "naoexiste@email.com", Senha = "123456" };
@@ -41,7 +41,7 @@ public class AutenticacaoServicoTests
             _servico.AutenticarAsync(request));
     }
     [Fact]
-    public async Task Given_UsuarioInativo_When_AutenticarAsync_Then_ThrowsUsuarioInativoException()
+    public async Task Dado_UsuarioInativo_Quando_AutenticarAsync_Entao_LancaExcecaoUsuarioInativo()
     {
         var request = new AutenticacaoRequest { Email = "ativo@email.com", Senha = "123456" };
         var usuario = new Usuario { Email = request.Email, Ativo = false };
@@ -54,7 +54,7 @@ public class AutenticacaoServicoTests
             _servico.AutenticarAsync(request));
     }
     [Fact]
-    public async Task Given_SenhaIncorreta_When_AutenticarAsync_Then_ThrowsCredenciaisInvalidasException()
+    public async Task Dado_SenhaIncorreta_Quando_AutenticarAsync_Entao_LancaExcecaoCredenciaisInvalidas()
     {
         var request = new AutenticacaoRequest { Email = "teste@email.com", Senha = "errada" };
         var usuario = new Usuario { Email = request.Email, Ativo = true, Senha = "hash123" };
@@ -67,7 +67,7 @@ public class AutenticacaoServicoTests
             _servico.AutenticarAsync(request));
     }
     [Fact]
-    public async Task Given_UsuarioClienteSemClienteId_When_AutenticarAsync_Then_ThrowsDadosInvalidosException()
+    public async Task Dado_UsuarioClienteSemClienteId_Quando_AutenticarAsync_Entao_LancaExcecaoDadosInvalidos()
     {
         var request = new AutenticacaoRequest { Email = "cliente@email.com", Senha = "senha123" };
         var usuario = new Usuario
@@ -87,7 +87,7 @@ public class AutenticacaoServicoTests
             _servico.AutenticarAsync(request));
     }
     //[Fact]
-    //public async Task Given_UsuarioAdminComCredenciaisValidas_When_AutenticarAsync_Then_ReturnsToken()
+    //public async Task Dado_UsuarioAdminComCredenciaisValidas_Quando_AutenticarAsync_Entao_RetornaToken()
     //{
     //    var request = new AutenticacaoRequest { Email = "admin@email.com", Senha = "123456" };
     //    var usuario = new Usuario
@@ -117,7 +117,7 @@ public class AutenticacaoServicoTests
     //    Assert.Equal("token_admin", result.Token);
     //}
     //[Fact]
-    //public async Task Given_UsuarioClienteComCredenciaisValidas_When_AutenticarAsync_Then_ReturnsToken()
+    //public async Task Dado_UsuarioClienteComCredenciaisValidas_Quando_AutenticarAsync_Entao_RetornaToken()
     //{
     //    var request = new AutenticacaoRequest { Email = "cliente@email.com", Senha = "123456" };
     //    var usuario = new Usuario

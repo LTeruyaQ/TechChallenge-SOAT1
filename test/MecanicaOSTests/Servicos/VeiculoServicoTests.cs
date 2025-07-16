@@ -1,4 +1,4 @@
-﻿using Aplicacao.DTOs.Requests.Veiculo;
+using Aplicacao.DTOs.Requests.Veiculo;
 using Aplicacao.DTOs.Responses.Veiculo;
 using Aplicacao.Servicos;
 using AutoMapper;
@@ -73,7 +73,7 @@ public class VeiculoServicoTests
     //    await Assert.ThrowsAsync<PersistirDadosException>(() => _servico.CadastrarAsync(request));
     //}
     [Fact]
-    public async Task Given_ValidIdAndRequest_When_AtualizarAsync_Then_UpdateAndReturnResponse()
+    public async Task Dado_IdValidoERequest_Quando_AtualizarAsync_Entao_AtualizaERetornaResposta()
     {
         var id = Guid.NewGuid();
         var veiculo = CriarVeiculo();
@@ -91,7 +91,7 @@ public class VeiculoServicoTests
     }
 
     [Fact]
-    public async Task Given_NonexistentId_When_AtualizarAsync_Then_ThrowDadosNaoEncontradosException()
+    public async Task Dado_IdInexistente_Quando_AtualizarAsync_Entao_LancaExcecaoDadosNaoEncontrados()
     {
         _repositorioMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Veiculo)null!);
 
@@ -99,7 +99,7 @@ public class VeiculoServicoTests
     }
 
     [Fact]
-    public async Task Given_CommitFails_When_AtualizarAsync_Then_ThrowPersistirDadosException()
+    public async Task Dado_FalhaNoCommit_Quando_AtualizarAsync_Entao_LancaExcecaoPersistirDados()
     {
         var id = Guid.NewGuid();
         var veiculo = CriarVeiculo();
@@ -112,7 +112,7 @@ public class VeiculoServicoTests
         await Assert.ThrowsAsync<PersistirDadosException>(() => _servico.AtualizarAsync(id, request));
     }
     [Fact]
-    public async Task Given_ExistingId_When_ObterPorIdAsync_Then_ReturnVeiculoResponse()
+    public async Task Dado_IdExistente_Quando_ObterPorIdAsync_Entao_RetornaVeiculoResponse()
     {
         var veiculo = CriarVeiculo();
         _repositorioMock.Setup(r => r.ObterPorIdAsync(veiculo.Id)).ReturnsAsync(veiculo);
@@ -124,21 +124,22 @@ public class VeiculoServicoTests
     }
 
     [Fact]
-    public async Task Given_InvalidId_When_ObterPorIdAsync_Then_ThrowDadosNaoEncontradosException()
+    public async Task Dado_IdInvalido_Quando_ObterPorIdAsync_Entao_LancaExcecaoDadosNaoEncontrados()
     {
         _repositorioMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Veiculo)null!);
 
         await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _servico.ObterPorIdAsync(Guid.NewGuid()));
     }
     [Fact]
-    public async Task Given_ClienteComVeiculos_When_ObterPorClienteAsync_Then_ReturnLista()
+    public async Task Dado_ClienteComVeiculos_Quando_ObterPorClienteAsync_Entao_RetornaLista()
     {
         var clienteId = Guid.NewGuid();
         var veiculos = new List<Veiculo> { CriarVeiculo() };
 
         _repositorioMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<ObterVeiculoPorClienteEspecificacao>()))
             .ReturnsAsync(veiculos);
-        _mapperMock.Setup(m => m.Map<IEnumerable<VeiculoResponse>>(veiculos)).Returns(new List<VeiculoResponse>());
+        _mapperMock.Setup(m => m.Map<IEnumerable<VeiculoResponse>>(veiculos))
+            .Returns(new List<VeiculoResponse> { new VeiculoResponse() });
 
         var result = await _servico.ObterPorClienteAsync(clienteId);
 
@@ -147,7 +148,7 @@ public class VeiculoServicoTests
     }
 
     [Fact]
-    public async Task Given_ClienteSemVeiculos_When_ObterPorClienteAsync_Then_ThrowDadosNaoEncontradosException()
+    public async Task Dado_ClienteSemVeiculos_Quando_ObterPorClienteAsync_Entao_LancaExcecaoDadosNaoEncontrados()
     {
         _repositorioMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<ObterVeiculoPorClienteEspecificacao>()))
             .ReturnsAsync((IEnumerable<Veiculo>)null!);
@@ -155,7 +156,7 @@ public class VeiculoServicoTests
         await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _servico.ObterPorClienteAsync(Guid.NewGuid()));
     }
     [Fact]
-    public async Task Given_PlacaExistente_When_ObterPorPlacaAsync_Then_ReturnVeiculoResponse()
+    public async Task Dado_PlacaExistente_Quando_ObterPorPlacaAsync_Entao_RetornaVeiculoResponse()
     {
         var veiculo = CriarVeiculo();
         _repositorioMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<ObterVeiculoPorPlacaEspecificacao>()))
@@ -168,7 +169,7 @@ public class VeiculoServicoTests
     }
 
     [Fact]
-    public async Task Given_PlacaInexistente_When_ObterPorPlacaAsync_Then_ThrowDadosNaoEncontradosException()
+    public async Task Dado_PlacaInexistente_Quando_ObterPorPlacaAsync_Entao_LancaExcecaoDadosNaoEncontrados()
     {
         _repositorioMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<ObterVeiculoPorPlacaEspecificacao>()))
             .ReturnsAsync((IEnumerable<Veiculo>)null!);
@@ -176,12 +177,13 @@ public class VeiculoServicoTests
         await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _servico.ObterPorPlacaAsync("XXXX9999"));
     }
     [Fact]
-    public async Task When_ObterTodosAsync_Then_ReturnListaVeiculoResponse()
+    public async Task Quando_ObterTodosAsync_Entao_RetornaListaVeiculoResponse()
     {
         var veiculos = new List<Veiculo> { CriarVeiculo() };
 
         _repositorioMock.Setup(r => r.ObterTodosAsync()).ReturnsAsync(veiculos);
-        _mapperMock.Setup(m => m.Map<IEnumerable<VeiculoResponse>>(veiculos)).Returns(new List<VeiculoResponse>());
+        _mapperMock.Setup(m => m.Map<IEnumerable<VeiculoResponse>>(veiculos))
+            .Returns(new List<VeiculoResponse> { new VeiculoResponse() });
 
         var result = await _servico.ObterTodosAsync();
 
@@ -189,7 +191,7 @@ public class VeiculoServicoTests
         Assert.Single(result);
     }
     [Fact]
-    public async Task Given_IdExistente_When_DeletarAsync_Then_ReturnTrue()
+    public async Task Dado_IdExistente_Quando_DeletarAsync_Entao_RetornaTrue()
     {
         var veiculo = CriarVeiculo();
         _repositorioMock.Setup(r => r.ObterPorIdAsync(veiculo.Id)).ReturnsAsync(veiculo);
@@ -202,7 +204,7 @@ public class VeiculoServicoTests
     }
 
     [Fact]
-    public async Task Given_IdInexistente_When_DeletarAsync_Then_ThrowDadosNaoEncontradosException()
+    public async Task Dado_IdInexistente_Quando_DeletarAsync_Entao_LancaExcecaoDadosNaoEncontrados()
     {
         _repositorioMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Veiculo)null!);
 
@@ -210,7 +212,7 @@ public class VeiculoServicoTests
     }
 
     [Fact]
-    public async Task Given_CommitFails_When_DeletarAsync_Then_ThrowPersistirDadosException()
+    public async Task Dado_FalhaNoCommit_Quando_DeletarAsync_Entao_LancaExcecaoPersistirDados()
     {
         var veiculo = CriarVeiculo();
         _repositorioMock.Setup(r => r.ObterPorIdAsync(veiculo.Id)).ReturnsAsync(veiculo);

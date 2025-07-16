@@ -1,4 +1,4 @@
-﻿using Aplicacao.DTOs.Requests.Cliente;
+using Aplicacao.DTOs.Requests.Cliente;
 using Aplicacao.DTOs.Responses.Cliente;
 using AutoMapper;
 using Dominio.Entidades;
@@ -40,7 +40,7 @@ namespace Aplicacao.Servicos.Tests
         }
 
         [Fact]
-        public async Task Given_ValidRequest_When_CadastrarAsync_Then_ReturnClienteResponse()
+        public async Task Dado_RequestValido_Quando_CadastrarAsync_Entao_RetornaClienteResponse()
         {
             var request = new CadastrarClienteRequest { Nome = "João" };
             var cliente = new Cliente { Id = Guid.NewGuid(), Nome = "João" };
@@ -58,7 +58,7 @@ namespace Aplicacao.Servicos.Tests
         }
 
         [Fact]
-        public async Task Given_InvalidCommit_When_CadastrarAsync_Then_ThrowPersistirDadosException()
+        public async Task Dado_FalhaNoCommit_Quando_CadastrarAsync_Entao_LancaExcecaoPersistirDados()
         {
             var request = new CadastrarClienteRequest();
             var cliente = new Cliente { Id = Guid.NewGuid() };
@@ -71,7 +71,7 @@ namespace Aplicacao.Servicos.Tests
         }
 
         [Fact]
-        public async Task Given_ValidId_When_ObterPorIdAsync_Then_ReturnClienteResponse()
+        public async Task Dado_IdValido_Quando_AtualizarAsync_Entao_RetornaClienteResponse()
         {
             var id = Guid.NewGuid();
             var cliente = new Cliente { Id = id, Nome = "Maria" };
@@ -87,7 +87,7 @@ namespace Aplicacao.Servicos.Tests
         }
 
         [Fact]
-        public async Task Given_InvalidId_When_ObterPorIdAsync_Then_ThrowException()
+        public async Task Dado_IdInvalido_Quando_ObterPorIdAsync_Entao_LancaExcecao()
         {
             _clienteRepoMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Cliente)null);
 
@@ -95,7 +95,7 @@ namespace Aplicacao.Servicos.Tests
         }
 
         [Fact]
-        public async Task Given_ValidId_When_DeletarAsync_Then_ReturnTrue()
+        public async Task Dado_IdValido_Quando_DeletarAsync_Entao_RetornaTrue()
         {
             var id = Guid.NewGuid();
             var cliente = new Cliente { Id = id };
@@ -110,7 +110,7 @@ namespace Aplicacao.Servicos.Tests
         }
 
         [Fact]
-        public async Task Given_InvalidCommit_When_DeletarAsync_Then_ThrowPersistirDadosException()
+        public async Task Dado_IdInvalido_Quando_DeletarAsync_Entao_LancaExcecao()
         {
             var id = Guid.NewGuid();
             var cliente = new Cliente { Id = id };

@@ -32,7 +32,7 @@ public class ServicoServicoTests
     }
 
     [Fact]
-    public async Task Given_NomeExistente_When_CadastrarServicoAsync_Then_ThrowDadosJaCadastradosException()
+    public async Task Dado_NomeExistente_Quando_CadastrarServicoAsync_Entao_LancaExcecaoDadosJaCadastrados()
     {
         // Arrange
         var request = new CadastrarServicoRequest 
@@ -108,7 +108,7 @@ public class ServicoServicoTests
     }
 
     [Fact]
-    public async Task Given_DadosValidos_When_CadastrarServicoAsync_Then_RetornaServicoResponse()
+    public async Task Dado_RequestValido_Quando_CadastrarServicoAsync_Entao_RetornaServicoResponse()
     {
         var request = new CadastrarServicoRequest
         {
@@ -133,7 +133,7 @@ public class ServicoServicoTests
     }
 
     [Fact]
-    public async Task Given_ErroCommit_When_CadastrarServicoAsync_Then_ThrowPersistirDadosException()
+    public async Task Dado_FalhaNoCommit_Quando_CadastrarServicoAsync_Entao_LancaExcecaoPersistirDados()
     {
         var request = new CadastrarServicoRequest {Nome = "Novo", Descricao = "descricao", Valor = 20, Disponivel = true };
         var entidade = new Servico { Descricao = "teste", Nome = "teste" };
@@ -147,7 +147,7 @@ public class ServicoServicoTests
     }
 
     [Fact]
-    public async Task Given_ServicoInexistente_When_DeletarServicoAsync_Then_ThrowDadosNaoEncontradosException()
+    public async Task Dado_IdInvalido_Quando_DeletarServicoAsync_Entao_LancaExcecaoDadosNaoEncontrados()
     {
         var id = Guid.NewGuid();
         _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync((Servico?)null);
@@ -156,7 +156,7 @@ public class ServicoServicoTests
     }
 
     [Fact]
-    public async Task Given_ErroCommit_When_DeletarServicoAsync_Then_ThrowPersistirDadosException()
+    public async Task Dado_FalhaNoCommit_Quando_DeletarServicoAsync_Entao_LancaExcecaoPersistirDados()
     {
         var id = Guid.NewGuid();
         var servico = new Servico { Descricao = "teste", Nome = "teste" };
@@ -169,7 +169,7 @@ public class ServicoServicoTests
     }
 
     [Fact]
-    public async Task Given_DadosValidos_When_EditarServicoAsync_Then_RetornaServicoResponse()
+    public async Task Dado_IdValido_Quando_EditarServicoAsync_Entao_RetornaServicoResponse()
     {
         var id = Guid.NewGuid();
         var request = new EditarServicoRequest
@@ -194,7 +194,7 @@ public class ServicoServicoTests
     }
 
     [Fact]
-    public async Task Given_ErroCommit_When_EditarServicoAsync_Then_ThrowPersistirDadosException()
+    public async Task Dado_FalhaNoCommit_Quando_EditarServicoAsync_Entao_LancaExcecaoPersistirDados()
     {
         var id = Guid.NewGuid();
         var request = new EditarServicoRequest() { Descricao="descricao", Disponivel = true , Nome="Nome Servico", Valor = 30};
@@ -208,7 +208,7 @@ public class ServicoServicoTests
     }
 
     [Fact]
-    public async Task Given_IdInexistente_When_ObterServicoPorIdAsync_Then_ThrowDadosNaoEncontradosException()
+    public async Task Dado_IdInvalido_Quando_ObterServicoPorIdAsync_Entao_LancaExcecaoDadosNaoEncontrados()
     {
         _repositorioMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Servico?)null);
 
@@ -216,7 +216,7 @@ public class ServicoServicoTests
     }
 
     [Fact]
-    public async Task Given_IdExistente_When_ObterServicoPorIdAsync_Then_RetornaServicoResponse()
+    public async Task Dado_IdValido_Quando_ObterServicoPorIdAsync_Entao_RetornaServicoResponse()
     {
         var servico = new Servico { Descricao = "teste", Nome = "teste" };
         var response = new ServicoResponse();
