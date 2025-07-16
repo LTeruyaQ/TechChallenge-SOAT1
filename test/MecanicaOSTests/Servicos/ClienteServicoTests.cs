@@ -1,0 +1,146 @@
+﻿using Aplicacao.DTOs.Requests.Cliente;
+using Aplicacao.DTOs.Responses.Cliente;
+using AutoMapper;
+using Dominio.Entidades;
+using Dominio.Exceptions;
+using Dominio.Interfaces.Repositorios;
+using Dominio.Interfaces.Servicos;
+using Moq;
+namespace Aplicacao.Servicos.Tests
+{
+
+
+    public class ClienteServicoTests
+    {
+        private readonly Mock<IRepositorio<Cliente>> _clienteRepoMock;
+        private readonly Mock<IRepositorio<Endereco>> _enderecoRepoMock;
+        private readonly Mock<IRepositorio<Contato>> _contatoRepoMock;
+        private readonly Mock<ILogServico<ClienteServico>> _logMock;
+        private readonly Mock<IUnidadeDeTrabalho> _uotMock;
+        private readonly Mock<IMapper> _mapperMock;
+        private readonly ClienteServico _clienteServico;
+
+
+        public ClienteServicoTests()
+        {
+            _clienteRepoMock = new Mock<IRepositorio<Cliente>>();
+            _enderecoRepoMock = new Mock<IRepositorio<Endereco>>();
+            _contatoRepoMock = new Mock<IRepositorio<Contato>>();
+            _logMock = new Mock<ILogServico<ClienteServico>>();
+            _uotMock = new Mock<IUnidadeDeTrabalho>();
+            _mapperMock = new Mock<IMapper>();
+
+            _clienteServico = new ClienteServico(
+                _clienteRepoMock.Object,
+                _enderecoRepoMock.Object,
+                _contatoRepoMock.Object,
+                _logMock.Object,
+                _uotMock.Object,
+                _mapperMock.Object);
+        }
+
+        [Fact]
+        public async Task Given_ValidRequest_When_CadastrarAsync_Then_ReturnClienteResponse()
+        {
+            var request = new CadastrarClienteRequest { Nome = "João" };
+            var cliente = new Cliente { Id = Guid.NewGuid(), Nome = "João" };
+            var response = new ClienteResponse { Id = cliente.Id, Nome = cliente.Nome };
+
+            _mapperMock.Setup(m => m.Map<Cliente>(request)).Returns(cliente);
+            _clienteRepoMock.Setup(r => r.CadastrarAsync(cliente)).ReturnsAsync(cliente);
+            _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
+            _mapperMock.Setup(m => m.Map<ClienteResponse>(cliente)).Returns(response);
+
+            var result = await _clienteServico.CadastrarAsync(request);
+
+            Assert.Equal(cliente.Id, result.Id);
+            Assert.Equal(cliente.Nome, result.Nome);
+        }
+
+        [Fact]
+        public async Task Given_InvalidCommit_When_CadastrarAsync_Then_ThrowPersistirDadosException()
+        {
+            var request = new CadastrarClienteRequest();
+            var cliente = new Cliente { Id = Guid.NewGuid() };
+
+            _mapperMock.Setup(m => m.Map<Cliente>(request)).Returns(cliente);
+            _clienteRepoMock.Setup(r => r.CadastrarAsync(cliente)).ReturnsAsync(cliente);
+            _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
+
+            await Assert.ThrowsAsync<PersistirDadosException>(() => _clienteServico.CadastrarAsync(request));
+        }
+
+        [Fact]
+        public async Task Given_ValidId_When_ObterPorIdAsync_Then_ReturnClienteResponse()
+        {
+            var id = Guid.NewGuid();
+            var cliente = new Cliente { Id = id, Nome = "Maria" };
+            var response = new ClienteResponse { Id = id, Nome = "Maria" };
+
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
+            _mapperMock.Setup(m => m.Map<ClienteResponse>(cliente)).Returns(response);
+
+            var result = await _clienteServico.ObterPorIdAsync(id);
+
+            Assert.Equal(id, result.Id);
+            Assert.Equal("Maria", result.Nome);
+        }
+
+        [Fact]
+        public async Task Given_InvalidId_When_ObterPorIdAsync_Then_ThrowException()
+        {
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Cliente)null);
+
+            await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _clienteServico.ObterPorIdAsync(Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async Task Given_ValidId_When_DeletarAsync_Then_ReturnTrue()
+        {
+            var id = Guid.NewGuid();
+            var cliente = new Cliente { Id = id };
+
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
+            _clienteRepoMock.Setup(r => r.DeletarAsync(cliente)).Returns(Task.CompletedTask);
+            _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
+
+            var result = await _clienteServico.DeletarAsync(id);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task Given_InvalidCommit_When_DeletarAsync_Then_ThrowPersistirDadosException()
+        {
+            var id = Guid.NewGuid();
+            var cliente = new Cliente { Id = id };
+
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
+            _clienteRepoMock.Setup(r => r.DeletarAsync(cliente)).Returns(Task.CompletedTask);
+            _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
+
+            await Assert.ThrowsAsync<PersistirDadosException>(() => _clienteServico.DeletarAsync(id));
+        }
+
+        //[Fact]
+        //public async Task Given_DocumentoExistente_When_ObterPorDocumento_Then_ReturnCliente()
+        //{
+        //    var documento = "12345678901";
+        //    var cliente = new Cliente { Documento = documento };
+
+        //    _clienteRepoMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<object>())).ReturnsAsync(cliente);
+
+        //    var result = await _clienteServico.ObterPorDocumento(documento);
+
+        //    Assert.Equal(documento, result.Documento);
+        //}
+
+        //[Fact]
+        //public async Task Given_DocumentoInexistente_When_ObterPorDocumento_Then_ThrowException()
+        //{
+        //    _clienteRepoMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<EspecificacaoBase<Cliente>())).ReturnsAsync((Cliente)null);
+
+        //    await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _clienteServico.ObterPorDocumento("00000000000"));
+        //}
+    }
+}

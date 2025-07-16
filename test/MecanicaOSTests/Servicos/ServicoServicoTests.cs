@@ -1,0 +1,213 @@
+﻿using Aplicacao.DTOs.Requests.Servico;
+using Aplicacao.DTOs.Responses.Servico;
+using Aplicacao.Servicos;
+using AutoMapper;
+using Dominio.Entidades;
+using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Exceptions;
+using Dominio.Interfaces.Repositorios;
+using Dominio.Interfaces.Servicos;
+using Moq;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
+
+public class ServicoServicoTests
+{
+    private readonly Mock<IRepositorio<Servico>> _repositorioMock = new();
+    private readonly Mock<ILogServico<ServicoServico>> _logServicoMock = new();
+    private readonly Mock<IUnidadeDeTrabalho> _uotMock = new();
+    private readonly Mock<IMapper> _mapperMock = new();
+
+    private readonly ServicoServico _servicoServico;
+
+    public ServicoServicoTests()
+    {
+        _servicoServico = new ServicoServico(
+            _repositorioMock.Object,
+            _logServicoMock.Object,
+            _uotMock.Object,
+            _mapperMock.Object);
+    }
+
+    [Fact]
+    public async Task Given_NomeExistente_When_CadastrarServicoAsync_Then_ThrowDadosJaCadastradosException()
+    {
+        var request = new CadastrarServicoRequest { Nome = "Serviço X", Descricao= "descricao", Valor=10, Disponivel = true  };
+
+        var servico = new Servico { Descricao = "teste", Nome = "teste" };
+
+        _servicoServicoTestSetupObterServicoPorNome(request.Nome, servico);
+
+        await Assert.ThrowsAsync<DadosJaCadastradosException>(() => _servicoServico.CadastrarServicoAsync(request));
+    }
+
+    [Fact]
+    public async Task Given_DadosValidos_When_CadastrarServicoAsync_Then_RetornaServicoResponse()
+    {
+        var request = new CadastrarServicoRequest
+        {
+            Nome = "Novo Serviço",
+            Descricao = "Descrição",
+            Valor = 100,
+            Disponivel = true
+        };
+
+        var entidade = new Servico { Descricao = "teste", Nome = "teste" };
+        var response = new ServicoResponse();
+
+        _servicoServicoTestSetupObterServicoPorNome(request.Nome, null);
+        _mapperMock.Setup(m => m.Map<Servico>(request)).Returns(entidade);
+        _repositorioMock.Setup(r => r.CadastrarAsync(entidade)).ReturnsAsync(entidade);
+        _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
+        _mapperMock.Setup(m => m.Map<ServicoResponse>(entidade)).Returns(response);
+
+        var result = await _servicoServico.CadastrarServicoAsync(request);
+
+        Assert.Equal(response, result);
+    }
+
+    [Fact]
+    public async Task Given_ErroCommit_When_CadastrarServicoAsync_Then_ThrowPersistirDadosException()
+    {
+        var request = new CadastrarServicoRequest {Nome = "Novo", Descricao = "descricao", Valor = 20, Disponivel = true };
+        var entidade = new Servico { Descricao = "teste", Nome = "teste" };
+
+        _servicoServicoTestSetupObterServicoPorNome(request.Nome, null);
+        _mapperMock.Setup(m => m.Map<Servico>(request)).Returns(entidade);
+        _repositorioMock.Setup(r => r.CadastrarAsync(entidade)).ReturnsAsync(entidade);
+        _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<PersistirDadosException>(() => _servicoServico.CadastrarServicoAsync(request));
+    }
+
+    [Fact]
+    public async Task Given_ServicoInexistente_When_DeletarServicoAsync_Then_ThrowDadosNaoEncontradosException()
+    {
+        var id = Guid.NewGuid();
+        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync((Servico?)null);
+
+        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _servicoServico.DeletarServicoAsync(id));
+    }
+
+    [Fact]
+    public async Task Given_ErroCommit_When_DeletarServicoAsync_Then_ThrowPersistirDadosException()
+    {
+        var id = Guid.NewGuid();
+        var servico = new Servico { Descricao = "teste", Nome = "teste" };
+
+        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(servico);
+        _repositorioMock.Setup(r => r.DeletarAsync(servico)).Returns(Task.CompletedTask);
+        _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<PersistirDadosException>(() => _servicoServico.DeletarServicoAsync(id));
+    }
+
+    [Fact]
+    public async Task Given_DadosValidos_When_EditarServicoAsync_Then_RetornaServicoResponse()
+    {
+        var id = Guid.NewGuid();
+        var request = new EditarServicoRequest
+        {
+            Nome = "Atualizado",
+            Descricao = "Desc",
+            Valor = 150,
+            Disponivel = false
+        };
+
+        var servico = new Mock<Servico>();
+        var response = new ServicoResponse();
+
+        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(servico.Object);
+        _repositorioMock.Setup(r => r.EditarAsync(servico.Object)).Returns(Task.CompletedTask);
+        _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
+        _mapperMock.Setup(m => m.Map<ServicoResponse>(servico.Object)).Returns(response);
+
+        var result = await _servicoServico.EditarServicoAsync(id, request);
+
+        Assert.Equal(response, result);
+    }
+
+    [Fact]
+    public async Task Given_ErroCommit_When_EditarServicoAsync_Then_ThrowPersistirDadosException()
+    {
+        var id = Guid.NewGuid();
+        var request = new EditarServicoRequest() { Descricao="descricao", Disponivel = true , Nome="Nome Servico", Valor = 30};
+        var servico = new Servico{ Descricao = "teste", Nome = "teste" };
+
+        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(servico);
+        _repositorioMock.Setup(r => r.EditarAsync(servico)).Returns(Task.CompletedTask);
+        _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
+
+        await Assert.ThrowsAsync<PersistirDadosException>(() => _servicoServico.EditarServicoAsync(id, request));
+    }
+
+    [Fact]
+    public async Task Given_IdInexistente_When_ObterServicoPorIdAsync_Then_ThrowDadosNaoEncontradosException()
+    {
+        _repositorioMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Servico?)null);
+
+        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _servicoServico.ObterServicoPorIdAsync(Guid.NewGuid()));
+    }
+
+    [Fact]
+    public async Task Given_IdExistente_When_ObterServicoPorIdAsync_Then_RetornaServicoResponse()
+    {
+        var servico = new Servico { Descricao = "teste", Nome = "teste" };
+        var response = new ServicoResponse();
+
+        _repositorioMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync(servico);
+        _mapperMock.Setup(m => m.Map<ServicoResponse>(servico)).Returns(response);
+
+        var result = await _servicoServico.ObterServicoPorIdAsync(Guid.NewGuid());
+
+        Assert.Equal(response, result);
+    }
+
+    [Fact]
+    public async Task Given_RepositorioRetornaVazio_When_ObterTodosAsync_Then_RetornaListaVazia()
+    {
+        _repositorioMock.Setup(r => r.ObterTodosAsync()).ReturnsAsync(new List<Servico>());
+        _mapperMock.Setup(m => m.Map<IEnumerable<ServicoResponse>>(It.IsAny<IEnumerable<Servico>>()))
+                  .Returns(Array.Empty<ServicoResponse>());
+
+        var result = await _servicoServico.ObterTodosAsync();
+
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public async Task Given_ServicosDisponiveis_When_ObterServicosDisponiveisAsync_Then_RetornaServicos()
+    {
+        var lista = new List<Servico>();
+        var listaResponse = new List<ServicoResponse> { new ServicoResponse() };
+
+        _repositorioMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<IEspecificacao<Servico>>()))
+                        .ReturnsAsync(lista);
+        _mapperMock.Setup(m => m.Map<IEnumerable<ServicoResponse>>(lista))
+                   .Returns(listaResponse);
+
+        var result = await _servicoServico.ObterServicosDisponiveisAsync();
+
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public async Task Given_NomeInexistente_When_ObterServicoPorNomeAsync_Then_RetornaNull()
+    {
+        _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny< IEspecificacao<Servico>> ()))
+                        .ReturnsAsync((Servico?)null);
+
+        var result = await _servicoServico.ObterServicoPorNomeAsync("Inexistente");
+
+        Assert.Null(result);
+    }
+
+    private void _servicoServicoTestSetupObterServicoPorNome(string nome, Servico? servico)
+    {
+        _repositorioMock
+            .Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Servico>>()))
+            .ReturnsAsync(servico);
+    }
+}
