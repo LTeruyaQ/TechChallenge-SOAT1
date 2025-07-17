@@ -54,6 +54,7 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
 
             LogFim(metodo, ordemServico);
 
+            //TODO: refatorar isso
             if (ordemServico.Status == StatusOrdemServico.EmDiagnostico)
             {
                 await _mediator.Publish(new OrdemServicoEmOrcamentoEvent(ordemServico.Id));

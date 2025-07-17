@@ -39,6 +39,14 @@ namespace Infraestrutura.Repositorios
             await Task.Run(() => _dbSet.Remove(entidade));
         }
 
+        public virtual async Task DeletarVariosAsync(IEnumerable<T> entidades)
+        {
+            foreach (var entidade in entidades)
+            {
+                await Task.Run(() => _dbSet.Remove(entidade));
+            }
+        }
+
         public virtual async Task DeletarLogicamenteAsync(T entidade)
         {
             await Task.Run(() => entidade.Ativo = false);
@@ -48,7 +56,7 @@ namespace Infraestrutura.Repositorios
         {
             await Task.Run(() => _dbContext.Entry(entidade).State = EntityState.Modified);
         }
-        
+
         public virtual async Task EditarVariosAsync(IEnumerable<T> entidades)
         {
             if (entidades == null || !entidades.Any())
@@ -69,7 +77,6 @@ namespace Infraestrutura.Repositorios
         public virtual async Task<T?> ObterPorIdAsync(Guid id)
         {
             return await _dbSet
-                .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
 
@@ -82,8 +89,14 @@ namespace Infraestrutura.Repositorios
 
         public virtual async Task<T?> ObterUmSemRastreamentoAsync(IEspecificacao<T> especificacao)
         {
-            return await _dbSet
-                .AsNoTracking()
+            IQueryable<T> query = _dbSet.AsNoTracking();
+
+            foreach (var includeFunc in especificacao.Inclusoes)
+            {
+                query = includeFunc(query);
+            }
+
+            return await query
                 .Where(especificacao.Expressao)
                 .SingleOrDefaultAsync();
         }

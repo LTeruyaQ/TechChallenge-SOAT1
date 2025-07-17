@@ -5,14 +5,13 @@ using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes;
 
-public class ObterInsumosOSPorOSEspecificacao : EspecificacaoBase<InsumoOS>
+public class ObterInsumosPorIdsEOSEspecificacao(Guid ordemServidoId, List<Guid> ids) : EspecificacaoBase<InsumoOS>
 {
-    private readonly Guid _ordemServicoId;
-
-    public ObterInsumosOSPorOSEspecificacao(Guid ordemServicoId) => _ordemServicoId = ordemServicoId;
+    private readonly List<Guid> _ids = ids;
+    private readonly Guid _ordemServidoId = ordemServidoId;
 
     public override Expression<Func<InsumoOS, bool>> Expressao =>
-        i => i.OrdemServicoId == _ordemServicoId;
+            i => _ids.Contains(i.Id) && i.OrdemServicoId == _ordemServidoId;
 
     public override List<Func<IQueryable<InsumoOS>, IQueryable<InsumoOS>>> Inclusoes =>
     [

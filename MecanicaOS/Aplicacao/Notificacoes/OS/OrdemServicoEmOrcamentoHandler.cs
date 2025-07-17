@@ -13,7 +13,6 @@ namespace Aplicacao.Notificacoes.OS;
 public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoEmOrcamentoEvent>
 {
     private readonly IRepositorio<OrdemServico> _ordemServicoRepositorio;
-    private readonly IRepositorio<InsumoOS> _insumoOSRepositorio;
     private readonly IOrcamentoServico _orcamentoServico;
     private readonly IServicoEmail _emailServico;
     private readonly IUnidadeDeTrabalho _uot;
@@ -24,21 +23,19 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
         IOrcamentoServico orcamentoServico,
         IServicoEmail emailServico,
         ILogServico<OrdemServicoEmOrcamentoHandler> logServico,
-        IUnidadeDeTrabalho uot,
-        IRepositorio<InsumoOS> insumoOSRepositorio)
+        IUnidadeDeTrabalho uot)
     {
         _ordemServicoRepositorio = ordemServicoRepositorio;
         _orcamentoServico = orcamentoServico;
         _emailServico = emailServico;
         _logServico = logServico;
         _uot = uot;
-        _insumoOSRepositorio = insumoOSRepositorio;
     }
 
     public async Task Handle(OrdemServicoEmOrcamentoEvent notification, CancellationToken cancellationToken)
     {
         var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(notification.OrdemServicoId);
-        var os = await _ordemServicoRepositorio.ObterUmAsync(especificacao);
+        var os = await _ordemServicoRepositorio.ObterUmSemRastreamentoAsync(especificacao);
 
         if (os is null) return;
 

@@ -1,39 +1,38 @@
 ﻿using Aplicacao.DTOs.Requests.Estoque;
+using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
 using Aplicacao.DTOs.Requests.OrdermServico;
 using Aplicacao.DTOs.Requests.OrdermServico.InsumoOrdemServico;
 using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
+using Aplicacao.Notificacoes.OS;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Enumeradores;
+using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
+using MediatR;
 
 namespace Aplicacao.Servicos;
 
-public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsumoOSServico
+public class InsumoOSServico(
+    IOrdemServicoServico oSServico,
+    IEstoqueServico estoqueServico,
+    VerificarEstoqueJob verificarEstoqueJob,
+    IRepositorio<InsumoOS> repositorio,
+    ILogServico<InsumoOSServico> logServico,
+    IUnidadeDeTrabalho uot, 
+    IMapper mapper, 
+    IMediator mediator) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, uot, mapper), IInsumoOSServico
 {
-    private readonly IOrdemServicoServico _ordemServicoRepositorio;
-    private readonly IEstoqueServico _estoqueRepositorio;
+    private readonly IOrdemServicoServico _oSServico = oSServico;
+    private readonly IEstoqueServico _estoqueServico = estoqueServico;
+    private readonly IMediator _mediator;
 
-    private readonly VerificarEstoqueJob _verificarEstoqueJob;
-
-    public InsumoOSServico(
-        IOrdemServicoServico ordemServicoRepositorio,
-        IEstoqueServico estoqueRepositorio,
-        VerificarEstoqueJob verificarEstoqueJob,
-        IRepositorio<InsumoOS> repositorio,
-        ILogServico<InsumoOSServico> logServico,
-        IUnidadeDeTrabalho uot, IMapper mapper) :
-        base(repositorio, logServico, uot, mapper)
-    {
-        _ordemServicoRepositorio = ordemServicoRepositorio;
-        _estoqueRepositorio = estoqueRepositorio;
-        _verificarEstoqueJob = verificarEstoqueJob;
-    }
+    private readonly VerificarEstoqueJob _verificarEstoqueJob = verificarEstoqueJob;
 
     public async Task<List<InsumoOSResponse>> CadastrarInsumosAsync(Guid ordemServicoId, List<CadastrarInsumoOSRequest> request)
     {
@@ -43,16 +42,18 @@ public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsu
         {
             LogInicio(metodo);
 
-            OrdemServico os = await ObterOrdemServicoAsync(ordemServicoId);
+            var os = await ObterOrdemServicoAsync(ordemServicoId);
 
-            await ValidarEAtualizarEstoqueAsync(request);
+            var nvsInsumos = await RemoverInsumosJaCadastradosAsync(ordemServicoId, request);
 
-            List<InsumoOS> insumosOS = [.. request.Select(r =>
+            List<InsumoOS> insumosOS = [.. nvsInsumos.Select(r =>
             {
                 var insumo = _mapper.Map<InsumoOS>(r);
                 insumo.OrdemServicoId = ordemServicoId;
                 return insumo;
             })];
+
+            await ValidarEAtualizarEstoqueAsync(os.Id, insumosOS);
 
             var entidades = await _repositorio.CadastrarVariosAsync(insumosOS);
 
@@ -75,11 +76,11 @@ public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsu
 
     private async Task<OrdemServico> ObterOrdemServicoAsync(Guid ordemServicoId)
     {
-       return _mapper.Map<OrdemServico>(await _ordemServicoRepositorio.ObterPorIdAsync(ordemServicoId))
-                ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
+        return _mapper.Map<OrdemServico>(await _oSServico.ObterPorIdAsync(ordemServicoId))
+                 ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
     }
 
-    private async Task ValidarEAtualizarEstoqueAsync(List<CadastrarInsumoOSRequest> insumos)
+    private async Task ValidarEAtualizarEstoqueAsync(Guid ordemServicoId, List<InsumoOS> insumos)
     {
         var insumosIndisponiveis = new List<Estoque>();
 
@@ -93,7 +94,9 @@ public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsu
                 continue;
             }
 
-            await AtualizarEstoqueAsync(estoque, insumo.Quantidade);
+            estoque.QuantidadeDisponivel -= insumo.Quantidade;
+
+            await AtualizarEstoqueAsync(estoque);
         }
 
         if (insumosIndisponiveis.Count != 0)
@@ -104,9 +107,24 @@ public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsu
         }
     }
 
+    private async Task<List<CadastrarInsumoOSRequest>> RemoverInsumosJaCadastradosAsync(Guid ordemServicoId, List<CadastrarInsumoOSRequest> insumos)
+    {
+        var especificacao = new ObterInsumosOSPorOSEspecificacao(ordemServicoId);
+        var insumosOS = await _repositorio.ObterPorFiltroAsync(especificacao);
+
+        var estoqueIdsJaCadastrados = insumosOS.Select(x => x.EstoqueId).ToHashSet();
+
+        insumos.RemoveAll(i => estoqueIdsJaCadastrados.Contains(i.EstoqueId));
+
+        if (!insumos.Any())
+            throw new DadosJaCadastradosException("Os insumos informados já estão cadastrados na Ordem de Serviço");
+
+        return insumos;
+    }
+
     private async Task<Estoque> ObterEstoqueOuLancarErroAsync(Guid estoqueId)
     {
-        return _mapper.Map<Estoque>(await _estoqueRepositorio.ObterPorIdAsync(estoqueId))
+        return _mapper.Map<Estoque>(await _estoqueServico.ObterPorIdAsync(estoqueId))
             ?? throw new DadosNaoEncontradosException("Insumo não encontrado no estoque.");
     }
 
@@ -115,12 +133,10 @@ public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsu
         return estoque.QuantidadeDisponivel >= quantidadeSolicitada;
     }
 
-    private async Task AtualizarEstoqueAsync(Estoque estoque, int quantidadeUtilizada)
+    private async Task AtualizarEstoqueAsync(Estoque estoque)
     {
-        estoque.QuantidadeDisponivel -= quantidadeUtilizada;
-
-        await _estoqueRepositorio.AtualizarAsync(
-            estoque.Id, 
+        await _estoqueServico.AtualizarAsync(
+            estoque.Id,
             _mapper.Map<AtualizarEstoqueRequest>(estoque));
     }
 
@@ -128,8 +144,96 @@ public class InsumoOSServico : ServicoAbstrato<InsumoOSServico, InsumoOS>, IInsu
     {
         ordemServico.Status = StatusOrdemServico.EmDiagnostico;
 
-        await _ordemServicoRepositorio.AtualizarAsync(
+        await _oSServico.AtualizarAsync(
             ordemServico.Id,
             _mapper.Map<AtualizarOrdemServicoRequest>(ordemServico));
+    }
+
+    public async Task<List<InsumoOSResponse>> AtualizarInsumosAsync(Guid ordemServicoId, List<AtualizarInsumoOSRequest> request)
+    {
+        var metodo = nameof(AtualizarInsumosAsync);
+
+        try
+        {
+            LogInicio(metodo, request);
+
+            var entidades = new List<InsumoOS>();
+
+            foreach (var insumoResquet in request)
+            {
+                var insumo = await _repositorio.ObterPorIdAsync(insumoResquet.EstoqueId)
+                    ?? throw new DadosNaoEncontradosException("Insumo não encontrado");
+
+                insumo.Quantidade = insumoResquet.Quantidade;
+
+                entidades.Add(insumo);
+            }
+
+            await ValidarEAtualizarEstoqueAsync(ordemServicoId, entidades);
+
+            await _repositorio.EditarVariosAsync(entidades);
+
+            if (!await Commit())
+                throw new PersistirDadosException("Erro o insumo.");
+
+            return _mapper.Map<List<InsumoOSResponse>>(entidades);
+        }
+        catch (Exception e)
+        {
+            LogErro(metodo, e);
+
+            throw;
+        }
+    }
+
+    public async Task ApagarInsumosOS(Guid ordemServicoId, List<Guid> insumosId)
+    {
+        var metodo = nameof(ApagarInsumosOS);
+
+        try
+        {
+            LogInicio(metodo, insumosId);
+
+            var os = await _oSServico.ObterPorIdAsync(ordemServicoId)
+                ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
+
+            if (os.Status != StatusOrdemServico.AguardandoAprovação)
+                throw new InsumoApagadoException("Os insumos da ordem de serviço não podem ser excluídos.");
+
+            var especificacao = new ObterInsumosPorIdsEOSEspecificacao(os.Id, insumosId);
+            var insumosOS = (await _repositorio.ObterPorFiltroAsync(especificacao)).ToList();
+
+            await ReporQuantidadeNoEstoque(insumosOS);
+
+            await _repositorio.DeletarVariosAsync(insumosOS);
+
+            if (!await Commit())
+                throw new PersistirDadosException("Erro ao remover o insumo.");
+
+            await ReenviarOrcamentoOSAsync(os.Id);
+
+            LogFim(metodo, insumosOS);
+        }
+        catch (Exception e)
+        {
+            LogErro(metodo, e);
+
+            throw;
+        }
+    }
+
+    private async Task ReporQuantidadeNoEstoque(List<InsumoOS> insumos)
+    {
+        foreach (var insumo in insumos)
+        {
+            insumo.Estoque.QuantidadeDisponivel += insumo.Quantidade;
+
+            await AtualizarEstoqueAsync(insumo.Estoque);
+        }
+    }
+
+    private async Task ReenviarOrcamentoOSAsync(Guid ordemServicoId)
+    {
+        await _mediator.Publish(new OrdemServicoEmOrcamentoEvent(ordemServicoId, true));
     }
 }

@@ -1,16 +1,16 @@
 using API.Models;
+using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
 using Aplicacao.DTOs.Requests.OrdermServico;
 using Aplicacao.DTOs.Requests.OrdermServico.InsumoOrdemServico;
 using Aplicacao.DTOs.Responses.OrdemServico;
 using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Servicos;
 using Dominio.Enumeradores;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-//[Authorize]
+[Authorize]
 public class OrdemServicoController : BaseApiController
 {
     private readonly IOrdemServicoServico _ordemServico;
@@ -80,9 +80,30 @@ public class OrdemServicoController : BaseApiController
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> AdicionarInsumos(Guid ordemServicoId, List<CadastrarInsumoOSRequest> request)
+    public async Task<IActionResult> AdicionarInsumosOS(Guid ordemServicoId, List<CadastrarInsumoOSRequest> request)
     {
         var insumosOS = await _insumoOSServico.CadastrarInsumosAsync(ordemServicoId, request);
         return Ok(insumosOS);
+    }
+    
+    [HttpPut("{ordemServicoId}/insumos")]
+    [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AtualizarInsumosOS(Guid ordemServicoId, List<AtualizarInsumoOSRequest> request)
+    {
+        var insumosOS = await _insumoOSServico.AtualizarInsumosAsync(ordemServicoId, request);
+        return Ok(insumosOS);
+    }
+
+    [HttpDelete("{ordemServicoId}/insumos")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ApagarInsumosOS(Guid ordemServicoId, List<Guid> insumosId)
+    {
+        await _insumoOSServico.ApagarInsumosOS(ordemServicoId, insumosId);
+        return NoContent();
     }
 }

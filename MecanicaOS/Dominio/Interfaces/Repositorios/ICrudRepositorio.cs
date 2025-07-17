@@ -13,6 +13,7 @@ public interface IRepositorio<T> where T : Entidade
     Task EditarAsync(T novaEntidade);
     Task EditarVariosAsync(IEnumerable<T> entidades);
     Task DeletarAsync(T entidade);
+    Task DeletarVariosAsync(IEnumerable<T> entidades);
     Task<T?> ObterUmSemRastreamentoAsync(IEspecificacao<T> especificacao);
     Task<T?> ObterUmAsync(IEspecificacao<T> especificacao);
     Task DeletarLogicamenteAsync(T entidade);
