@@ -109,9 +109,6 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 
         try
         {
-            if (!string.IsNullOrEmpty(documento))
-                throw new DadosInvalidosException("Deve ser informado o documento do usuario do cliente");
-
             var cliente = await _clienteServico.ObterPorDocumento(documento);
 
             usuario.ClienteId = cliente.Id;
