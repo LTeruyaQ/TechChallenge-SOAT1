@@ -30,7 +30,7 @@ public class OrdemServicoController : BaseApiController
         var ordemServicos = await _ordemServico.ObterTodosAsync();
         return Ok(ordemServicos);
     }
-
+    //TODO: adicionar insumos da OS no retorno
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -106,4 +106,6 @@ public class OrdemServicoController : BaseApiController
         await _insumoOSServico.ApagarInsumosOS(ordemServicoId, insumosId);
         return NoContent();
     }
+
+    //TODO: implementar endpoint de aceite/recusa do orçamento 
 }

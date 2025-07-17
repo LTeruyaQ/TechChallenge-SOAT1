@@ -9,7 +9,6 @@ public class InsumoOSProfile : Profile
 {
     public InsumoOSProfile()
     {
-
         CreateMap<InsumoOS, InsumoOSResponse>();
 
         CreateMap<CadastrarInsumoOSRequest, InsumoOS>()
