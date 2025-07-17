@@ -83,6 +83,5 @@ namespace Infraestrutura.Logs
             else
                 _logger.LogInformation("{LogEntry}", payload);
         }
-
     }
 }

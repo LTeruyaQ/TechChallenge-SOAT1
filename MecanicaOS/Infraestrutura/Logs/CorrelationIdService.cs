@@ -1,4 +1,4 @@
-using Dominio.Interfaces.Servicos;
+﻿using Dominio.Interfaces.Servicos;
 
 namespace Infraestrutura.Logs
 {

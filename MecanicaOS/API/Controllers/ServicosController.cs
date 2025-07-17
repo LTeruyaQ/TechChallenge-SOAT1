@@ -41,8 +41,7 @@ public class ServicosController : BaseApiController
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterPorId(Guid id)
     {
-        var servico = await _servico.ObterServicoPorIdAsync(id)
-            ?? throw new KeyNotFoundException("Serviço não encontrado");
+        var servico = await _servico.ObterServicoPorIdAsync(id);
         return Ok(servico);
     }
 

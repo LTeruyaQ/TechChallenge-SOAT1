@@ -39,13 +39,13 @@ namespace Aplicacao.Servicos
             try
             {
                 var usuario = await _usuarioServico.ObterPorEmailAsync(request.Email) ??
-                    throw new CredenciaisInvalidasException("E-mail ou senha inválidos");
+                    throw new CredenciaisInvalidasException("Credenciais inválidas");
 
                 if (!usuario.Ativo)
                     throw new UsuarioInativoException("Usuário inativo. Entre em contato com o administrador.");
 
                 if (!_servicoSenha.VerificarSenha(request.Senha, usuario.Senha))
-                    throw new CredenciaisInvalidasException("E-mail ou senha inválidos");
+                    throw new CredenciaisInvalidasException("Credenciais inválidas");
 
 
                 var permissoes = ObterPermissoesDoUsuario(usuario);
