@@ -188,6 +188,7 @@ public class InsumoOSServico(
 
     public async Task ApagarInsumosOS(Guid ordemServicoId, List<Guid> insumosId)
     {
+        //TODO: definir regra para remoção de insumos ou se é melhor não ter deleção
         var metodo = nameof(ApagarInsumosOS);
 
         try
