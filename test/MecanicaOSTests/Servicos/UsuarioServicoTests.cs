@@ -9,8 +9,11 @@ using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using FluentAssertions;
+using MecanicaOSTests.Fixtures;
 using Moq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -44,35 +47,19 @@ namespace Aplicacao.Servicos.Tests
                 _servicoSenhaMock.Object);
         }
 
-        private Usuario CriarUsuario() => new Usuario
-        {
-            Id = Guid.NewGuid(),
-            Email = "usuario@teste.com",
-            Senha = "senha123",
-            TipoUsuario = TipoUsuario.Cliente,
-            ClienteId = Guid.NewGuid()
-        };
+        private Usuario CriarUsuario() => UsuarioBogusFixture.CriarUsuarioValido();
 
         [Fact]
         public async Task Dado_NovoUsuarioClienteValido_Quando_CadastrarAsync_Entao_UsuarioCriadoComSucesso()
         {
             // Arrange
-            var request = new CadastrarUsuarioRequest
-            {
-                Email = "cliente@email.com",
-                Senha = "senha123",
-                TipoUsuario = TipoUsuario.Cliente,
-                Documento = "12345678900"
-            };
+            var request = UsuarioBogusFixture.CriarCadastrarUsuarioRequestValido();
+            request.TipoUsuario = TipoUsuario.Cliente;
 
-            var usuario = new Usuario
-            {
-                Id = Guid.NewGuid(),
-                Email = request.Email,
-                Senha = "senha_criptografada",
-                TipoUsuario = request.TipoUsuario,
-                ClienteId = Guid.NewGuid()
-            };
+            var usuario = UsuarioBogusFixture.CriarUsuarioValido();
+            usuario.Email = request.Email;
+            usuario.TipoUsuario = request.TipoUsuario;
+            usuario.Senha = "senha_criptografada";
 
             var response = new UsuarioResponse
             {
@@ -128,15 +115,10 @@ namespace Aplicacao.Servicos.Tests
         public async Task Dado_EmailJaCadastrado_Quando_CadastrarAsync_Entao_LancaExcecaoDadosJaCadastrados()
         {
             // Arrange
-            var request = new CadastrarUsuarioRequest
-            {
-                Email = "existente@email.com",
-                Senha = "senha123",
-                TipoUsuario = TipoUsuario.Cliente,
-                Documento = "12345678900"
-            };
+            var request = UsuarioBogusFixture.CriarCadastrarUsuarioRequestValido();
+            request.TipoUsuario = TipoUsuario.Cliente;
 
-            var usuarioExistente = CriarUsuario();
+            var usuarioExistente = UsuarioBogusFixture.CriarUsuarioValido();
             usuarioExistente.Email = request.Email;
 
             _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<UsuarioPorEmailEspecificacao>()))
