@@ -5,242 +5,237 @@ using Aplicacao.Servicos;
 using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Enumeradores;
-using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
+using FluentAssertions;
 using Moq;
+using System;
+using System.Threading.Tasks;
+using Xunit;
 
-public class UsuarioServicoTests
+namespace Aplicacao.Servicos.Tests
 {
-    private readonly Mock<IRepositorio<Usuario>> _repositorioMock = new();
-    private readonly Mock<IUnidadeDeTrabalho> _uotMock = new();
-    private readonly Mock<ILogServico<UsuarioServico>> _logMock = new();
-    private readonly Mock<IMapper> _mapperMock = new();
-    private readonly Mock<IClienteServico> _clienteServicoMock = new();
-    private readonly Mock<IServicoSenha> _servicoSenhaMock = new();
-
-    private UsuarioServico CriarServico()
+    public class UsuarioServicoTests
     {
-        return new UsuarioServico(
-            _repositorioMock.Object,
-            _logMock.Object,
-            _uotMock.Object,
-            _mapperMock.Object,
-            _clienteServicoMock.Object,
-            _servicoSenhaMock.Object
-        );
-    }
-    [Fact]
-    public async Task Dado_NovoUsuarioClienteValido_Quando_CadastrarAsync_Entao_UsuarioCriadoComSucesso()
-    {
-        // Arrange
-        var servico = CriarServico();
+        private readonly Mock<IRepositorio<Usuario>> _repositorioMock;
+        private readonly Mock<IUnidadeDeTrabalho> _uotMock;
+        private readonly Mock<ILogServico<UsuarioServico>> _logMock;
+        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IClienteServico> _clienteServicoMock;
+        private readonly Mock<IServicoSenha> _servicoSenhaMock;
+        private readonly UsuarioServico _servico;
 
-        var request = new CadastrarUsuarioRequest
+        public UsuarioServicoTests()
         {
-            Email = "cliente@email.com",
+            _repositorioMock = new Mock<IRepositorio<Usuario>>();
+            _uotMock = new Mock<IUnidadeDeTrabalho>();
+            _logMock = new Mock<ILogServico<UsuarioServico>>();
+            _mapperMock = new Mock<IMapper>();
+            _clienteServicoMock = new Mock<IClienteServico>();
+            _servicoSenhaMock = new Mock<IServicoSenha>();
+
+            _servico = new UsuarioServico(
+                _repositorioMock.Object,
+                _logMock.Object,
+                _uotMock.Object,
+                _mapperMock.Object,
+                _clienteServicoMock.Object,
+                _servicoSenhaMock.Object);
+        }
+
+        private Usuario CriarUsuario() => new Usuario
+        {
+            Id = Guid.NewGuid(),
+            Email = "usuario@teste.com",
             Senha = "senha123",
             TipoUsuario = TipoUsuario.Cliente,
-            Documento = "12345678900"
+            ClienteId = Guid.NewGuid()
         };
 
-        var usuario = new Usuario();
-
-        _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Usuario>>()))
-            .ReturnsAsync((Usuario)null);
-
-        _mapperMock.Setup(m => m.Map<Usuario>(request)).Returns(usuario);
-        _servicoSenhaMock.Setup(s => s.CriptografarSenha(request.Senha)).Returns("senhaHash");
-
-        _clienteServicoMock.Setup(c => c.ObterPorDocumento(request.Documento)).ReturnsAsync(new Cliente { Id = Guid.NewGuid() });
-        _repositorioMock.Setup(r => r.CadastrarAsync(usuario)).ReturnsAsync(usuario);
-        _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
-        _mapperMock.Setup(m => m.Map<UsuarioResponse>(usuario)).Returns(new UsuarioResponse());
-
-        // Act
-        var result = await servico.CadastrarAsync(request);
-
-        // Assert
-        Assert.NotNull(result);
-        _repositorioMock.Verify(r => r.CadastrarAsync(It.IsAny<Usuario>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task Dado_EmailJaCadastrado_Quando_CadastrarAsync_Entao_LancaExcecao()
-    {
-        // Arrange
-        var servico = CriarServico();
-        var request = new CadastrarUsuarioRequest { Email = "duplicado@email.com", Senha = "senha" };
-
-        _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Usuario>>()))
-            .ReturnsAsync(new Usuario());
-
-        // Act & Assert
-        await Assert.ThrowsAsync<DadosJaCadastradosException>(() => servico.CadastrarAsync(request));
-    }
-
-    [Fact]
-    public async Task Dado_FalhaNoCommit_Quando_CadastrarAsync_Entao_LancaExcecaoPersistirDados()
-    {
-        // Arrange
-        var servico = CriarServico();
-        var request = new CadastrarUsuarioRequest 
-        { 
-            Email = "novo@email.com", 
-            Senha = "senha",
-            TipoUsuario = TipoUsuario.Admin
-        };
-        
-        var usuario = new Usuario 
-        { 
-            Email = request.Email,
-            Senha = "senhaHash",
-            TipoUsuario = request.TipoUsuario
-        };
-
-        _repositorioMock
-            .Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Usuario>>()))
-            .ReturnsAsync((Usuario)null);
-            
-        _mapperMock
-            .Setup(m => m.Map<Usuario>(request))
-            .Returns(usuario);
-            
-        _servicoSenhaMock
-            .Setup(s => s.CriptografarSenha(request.Senha))
-            .Returns("senhaHash");
-            
-        _repositorioMock
-            .Setup(r => r.CadastrarAsync(It.Is<Usuario>(u => 
-                u.Email == request.Email && 
-                u.Senha == "senhaHash" &&
-                u.TipoUsuario == request.TipoUsuario)))
-            .ReturnsAsync(usuario);
-            
-        _uotMock
-            .Setup(u => u.Commit())
-            .ReturnsAsync(false);
-
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<PersistirDadosException>(
-            () => servico.CadastrarAsync(request));
-            
-        Assert.Equal("Erro ao cadastrar usuário", exception.Message);
-        _repositorioMock.Verify(r => r.CadastrarAsync(It.IsAny<Usuario>()), Times.Once);
-        _uotMock.Verify(u => u.Commit(), Times.Once);
-    }
-    [Fact]
-    public async Task Dado_AtualizacaoValida_Quando_AtualizarAsync_Entao_UsuarioAtualizadoComSucesso()
-    {
-        // Arrange
-        var servico = CriarServico();
-        var id = Guid.NewGuid();
-        var usuario = new Usuario();
-        var request = new AtualizarUsuarioRequest
+        [Fact]
+        public async Task Dado_NovoUsuarioClienteValido_Quando_CadastrarAsync_Entao_UsuarioCriadoComSucesso()
         {
-            Email = "novo@email.com",
-            Senha = "novaSenha",
-            DataUltimoAcesso = DateTime.Now,
-            TipoUsuario = TipoUsuario.Admin,
-            RecebeAlertaEstoque = true,
-            Documento = "123456789"
-        };
+            // Arrange
+            var request = new CadastrarUsuarioRequest
+            {
+                Email = "cliente@email.com",
+                Senha = "senha123",
+                TipoUsuario = TipoUsuario.Cliente,
+                Documento = "12345678900"
+            };
 
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(usuario);
-        _servicoSenhaMock.Setup(s => s.CriptografarSenha(request.Senha)).Returns("senhaNova");
-        _clienteServicoMock.Setup(c => c.ObterPorDocumento(request.Documento)).ReturnsAsync(new Cliente { Id = Guid.NewGuid() });
-        _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
-        _mapperMock.Setup(m => m.Map<UsuarioResponse>(usuario)).Returns(new UsuarioResponse());
+            var usuario = new Usuario
+            {
+                Id = Guid.NewGuid(),
+                Email = request.Email,
+                Senha = "senha_criptografada",
+                TipoUsuario = request.TipoUsuario,
+                ClienteId = Guid.NewGuid()
+            };
 
-        // Act
-        var result = await servico.AtualizarAsync(id, request);
+            var response = new UsuarioResponse
+            {
+                Id = usuario.Id,
+                Email = usuario.Email,
+                TipoUsuario = usuario.TipoUsuario,
+                ClienteId = usuario.ClienteId
+            };
 
-        // Assert
-        Assert.NotNull(result);
-        _repositorioMock.Verify(r => r.EditarAsync(usuario), Times.Once);
-    }
+            _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<UsuarioPorEmailEspecificacao>()))
+                .ReturnsAsync((Usuario)null);
+                
+            _servicoSenhaMock.Setup(s => s.CriptografarSenha(request.Senha))
+                .Returns("senha_criptografada");
+                
+            _clienteServicoMock.Setup(c => c.ObterIdPorDocumentoAsync(request.Documento))
+                .ReturnsAsync(usuario.ClienteId);
+                
+            _repositorioMock.Setup(r => r.CadastrarAsync(It.IsAny<Usuario>()))
+                .ReturnsAsync(usuario);
+                
+            _uotMock.Setup(u => u.SalvarAlteracoesAsync())
+                .ReturnsAsync(true);
+                
+            _mapperMock.Setup(m => m.Map<UsuarioResponse>(usuario))
+                .Returns(response);
 
-    [Fact]
-    public async Task Dado_IdInvalido_Quando_AtualizarAsync_Entao_LancaExcecaoDadosNaoEncontrados()
-    {
-        var servico = CriarServico();
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Usuario)null);
+            // Act
+            var resultado = await _servico.CadastrarAsync(request);
 
-        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() =>
-            servico.AtualizarAsync(Guid.NewGuid(), new AtualizarUsuarioRequest()));
-    }
+            // Assert
+            resultado.Should().NotBeNull("porque o usuário foi cadastrado com sucesso");
+            resultado.Id.Should().Be(usuario.Id, "porque o ID deve ser o mesmo do usuário cadastrado");
+            resultado.Email.Should().Be(request.Email, "porque o email deve ser o mesmo da requisição");
+            resultado.TipoUsuario.Should().Be(request.TipoUsuario, "porque o tipo de usuário deve ser o mesmo da requisição");
+            resultado.ClienteId.Should().Be(usuario.ClienteId, "porque o ClienteId deve ser o mesmo do usuário cadastrado");
+            
+            _repositorioMock.Verify(
+                r => r.CadastrarAsync(It.Is<Usuario>(u => 
+                    u.Email == request.Email && 
+                    u.Senha == "senha_criptografada" &&
+                    u.TipoUsuario == request.TipoUsuario)),
+                Times.Once,
+                "porque deve cadastrar o usuário com os dados corretos");
+                
+            _uotMock.Verify(
+                u => u.SalvarAlteracoesAsync(),
+                Times.Once,
+                "porque deve salvar as alterações no banco de dados");
+        }
 
-    [Fact]
-    public async Task Dado_FalhaNoCommit_Quando_AtualizarAsync_Entao_LancaExcecaoPersistirDados()
-    {
-        var servico = CriarServico();
-        var id = Guid.NewGuid();
-        var usuario = new Usuario();
-        var request = new AtualizarUsuarioRequest();
+        [Fact]
+        public async Task Dado_EmailJaCadastrado_Quando_CadastrarAsync_Entao_LancaExcecaoDadosJaCadastrados()
+        {
+            // Arrange
+            var request = new CadastrarUsuarioRequest
+            {
+                Email = "existente@email.com",
+                Senha = "senha123",
+                TipoUsuario = TipoUsuario.Cliente,
+                Documento = "12345678900"
+            };
 
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(usuario);
-        _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
+            var usuarioExistente = CriarUsuario();
+            usuarioExistente.Email = request.Email;
 
-        var ex = await Assert.ThrowsAsync<PersistirDadosException>(() =>
-            servico.AtualizarAsync(id, request));
-    }
-    [Fact]
-    public async Task Dado_IdValido_Quando_DeletarAsync_Entao_UsuarioRemovido()
-    {
-        var servico = CriarServico();
-        var usuario = new Usuario();
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync(usuario);
-        _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
+            _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<UsuarioPorEmailEspecificacao>()))
+                .ReturnsAsync(usuarioExistente);
 
-        var result = await servico.DeletarAsync(Guid.NewGuid());
+            // Act
+            Func<Task> act = async () => await _servico.CadastrarAsync(request);
 
-        Assert.True(result);
-        _repositorioMock.Verify(r => r.DeletarAsync(usuario), Times.Once);
-    }
+            // Assert
+            await act.Should()
+                .ThrowAsync<DadosJaCadastradosException>()
+                .WithMessage("Já existe um usuário cadastrado com este e-mail");
+                
+            _logMock.Verify(
+                x => x.LogAviso("CadastrarAsync", It.IsAny<string>()),
+                Times.Once,
+                "porque deve registrar um aviso quando tentar cadastrar usuário com e-mail existente");
+        }
 
-    [Fact]
-    public async Task Dado_IdInvalido_Quando_DeletarAsync_Entao_LancaExcecao()
-    {
-        var servico = CriarServico();
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Usuario)null);
+        [Fact]
+        public async Task Dado_UsuarioExistente_Quando_ObterPorIdAsync_Entao_RetornaUsuario()
+        {
+            // Arrange
+            var usuarioId = Guid.NewGuid();
+            var usuario = CriarUsuario();
+            usuario.Id = usuarioId;
 
-        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => servico.DeletarAsync(Guid.NewGuid()));
-    }
-    [Fact]
-    public async Task Dado_IdValido_Quando_ObterPorIdAsync_Entao_RetornaUsuarioMapeado()
-    {
-        var servico = CriarServico();
-        var usuario = new Usuario();
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync(usuario);
-        _mapperMock.Setup(m => m.Map<UsuarioResponse>(usuario)).Returns(new UsuarioResponse());
+            var usuarioResponse = new UsuarioResponse
+            {
+                Id = usuario.Id,
+                Email = usuario.Email,
+                TipoUsuario = usuario.TipoUsuario,
+                ClienteId = usuario.ClienteId
+            };
 
-        var result = await servico.ObterPorIdAsync(Guid.NewGuid());
+            _repositorioMock.Setup(r => r.ObterPorIdAsync(usuarioId))
+                .ReturnsAsync(usuario);
+                
+            _mapperMock.Setup(m => m.Map<UsuarioResponse>(usuario))
+                .Returns(usuarioResponse);
 
-        Assert.NotNull(result);
-    }
+            // Act
+            var resultado = await _servico.ObterPorIdAsync(usuarioId);
 
-    [Fact]
-    public async Task Quando_ObterTodosAsync_Entao_RetornaUsuariosMapeados()
-    {
-        var servico = CriarServico();
-        var lista = new List<Usuario> { new Usuario() };
-        _repositorioMock.Setup(r => r.ObterTodosAsync()).ReturnsAsync(lista);
-        _mapperMock.Setup(m => m.Map<IEnumerable<UsuarioResponse>>(lista)).Returns(new List<UsuarioResponse>());
+            // Assert
+            resultado.Should().NotBeNull("porque o usuário existe no repositório");
+            resultado.Id.Should().Be(usuarioId, "porque deve retornar o usuário com o ID especificado");
+            resultado.Email.Should().Be(usuario.Email, "porque o email deve ser o mesmo do usuário cadastrado");
+        }
 
-        var result = await servico.ObterTodosAsync();
+        [Fact]
+        public async Task Dado_UsuarioInexistente_Quando_ObterPorIdAsync_Entao_LancaExcecao()
+        {
+            // Arrange
+            var usuarioId = Guid.NewGuid();
+            _repositorioMock.Setup(r => r.ObterPorIdAsync(usuarioId))
+                .ReturnsAsync((Usuario)null);
 
-        Assert.NotNull(result);
-    }
-    [Fact]
-    public async Task Dado_EmailValido_Quando_ObterPorEmailAsync_Entao_RetornaUsuario()
-    {
-        var servico = CriarServico();
-        _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Usuario>>()))
-            .ReturnsAsync(new Usuario());
+            // Act
+            Func<Task> act = async () => await _servico.ObterPorIdAsync(usuarioId);
 
-        var result = await servico.ObterPorEmailAsync("email@teste.com");
+            // Assert
+            await act.Should()
+                .ThrowAsync<EntidadeNaoEncontradaException>()
+                .WithMessage($"Usuário com ID {usuarioId} não encontrado");
+        }
 
-        Assert.NotNull(result);
+        [Fact]
+        public async Task Dado_EmailExistente_Quando_ObterPorEmailAsync_Entao_RetornaUsuario()
+        {
+            // Arrange
+            var email = "usuario@teste.com";
+            var usuario = CriarUsuario();
+            usuario.Email = email;
+
+            _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<UsuarioPorEmailEspecificacao>()))
+                .ReturnsAsync(usuario);
+
+            // Act
+            var resultado = await _servico.ObterPorEmailAsync(email);
+
+            // Assert
+            resultado.Should().NotBeNull("porque o usuário existe no repositório");
+            resultado.Email.Should().Be(email, "porque deve retornar o usuário com o e-mail especificado");
+        }
+
+        [Fact]
+        public async Task Dado_EmailInexistente_Quando_ObterPorEmailAsync_Entao_RetornaNulo()
+        {
+            // Arrange
+            var email = "inexistente@teste.com";
+            _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<UsuarioPorEmailEspecificacao>()))
+                .ReturnsAsync((Usuario)null);
+
+            // Act
+            var resultado = await _servico.ObterPorEmailAsync(email);
+
+            // Assert
+            resultado.Should().BeNull("porque não existe usuário com o e-mail especificado");
+        }
     }
 }
