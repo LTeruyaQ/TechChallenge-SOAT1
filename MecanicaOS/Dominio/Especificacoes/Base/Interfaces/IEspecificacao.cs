@@ -1,11 +1,10 @@
 ﻿using System.Linq.Expressions;
 
-namespace Dominio.Especificacoes.Base.Interfaces
-{
-    public interface IEspecificacao<T>
-    {
-        Expression<Func<T, bool>> Expressao { get; }
+namespace Dominio.Especificacoes.Base.Interfaces;
 
-        List<Func<IQueryable<T>, IQueryable<T>>> Inclusoes { get; }
-    }
+public interface IEspecificacao<T>
+{
+    Expression<Func<T, bool>> Expressao { get; }
+
+    List<Func<IQueryable<T>, IQueryable<T>>> Inclusoes { get; }
 }
