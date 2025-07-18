@@ -1,7 +1,6 @@
 ﻿using Aplicacao.DTOs.Requests.Estoque;
-using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
-using Aplicacao.DTOs.Requests.OrdermServico;
-using Aplicacao.DTOs.Requests.OrdermServico.InsumoOrdemServico;
+using Aplicacao.DTOs.Requests.OrdemServico;
+using Aplicacao.DTOs.Requests.OrdemServico.InsumoOrdemServico;
 using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
@@ -25,12 +24,10 @@ public class InsumoOSServico(
     IRepositorio<InsumoOS> repositorio,
     ILogServico<InsumoOSServico> logServico,
     IUnidadeDeTrabalho uot, 
-    IMapper mapper, 
-    IMediator mediator) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, uot, mapper), IInsumoOSServico
+    IMapper mapper) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, uot, mapper), IInsumoOSServico
 {
     private readonly IOrdemServicoServico _oSServico = oSServico;
     private readonly IEstoqueServico _estoqueServico = estoqueServico;
-    private readonly IMediator _mediator;
 
     private readonly VerificarEstoqueJob _verificarEstoqueJob = verificarEstoqueJob;
 
@@ -147,94 +144,5 @@ public class InsumoOSServico(
         await _oSServico.AtualizarAsync(
             ordemServico.Id,
             _mapper.Map<AtualizarOrdemServicoRequest>(ordemServico));
-    }
-
-    public async Task<List<InsumoOSResponse>> AtualizarInsumosAsync(Guid ordemServicoId, List<AtualizarInsumoOSRequest> request)
-    {
-        var metodo = nameof(AtualizarInsumosAsync);
-
-        try
-        {
-            LogInicio(metodo, request);
-
-            var entidades = new List<InsumoOS>();
-
-            foreach (var insumoResquet in request)
-            {
-                var insumo = await _repositorio.ObterPorIdAsync(insumoResquet.EstoqueId)
-                    ?? throw new DadosNaoEncontradosException("Insumo não encontrado");
-
-                insumo.Quantidade = insumoResquet.Quantidade;
-
-                entidades.Add(insumo);
-            }
-
-            await ValidarEAtualizarEstoqueAsync(ordemServicoId, entidades);
-
-            await _repositorio.EditarVariosAsync(entidades);
-
-            if (!await Commit())
-                throw new PersistirDadosException("Erro o insumo.");
-
-            return _mapper.Map<List<InsumoOSResponse>>(entidades);
-        }
-        catch (Exception e)
-        {
-            LogErro(metodo, e);
-
-            throw;
-        }
-    }
-
-    public async Task ApagarInsumosOS(Guid ordemServicoId, List<Guid> insumosId)
-    {
-        //TODO: definir regra para remoção de insumos ou se é melhor não ter deleção
-        var metodo = nameof(ApagarInsumosOS);
-
-        try
-        {
-            LogInicio(metodo, insumosId);
-
-            var os = await _oSServico.ObterPorIdAsync(ordemServicoId)
-                ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
-
-            if (os.Status != StatusOrdemServico.AguardandoAprovação)
-                throw new InsumoApagadoException("Os insumos da ordem de serviço não podem ser excluídos.");
-
-            var especificacao = new ObterInsumosPorIdsEOSEspecificacao(os.Id, insumosId);
-            var insumosOS = (await _repositorio.ObterPorFiltroAsync(especificacao)).ToList();
-
-            await ReporQuantidadeNoEstoque(insumosOS);
-
-            await _repositorio.DeletarVariosAsync(insumosOS);
-
-            if (!await Commit())
-                throw new PersistirDadosException("Erro ao remover o insumo.");
-
-            await ReenviarOrcamentoOSAsync(os.Id);
-
-            LogFim(metodo, insumosOS);
-        }
-        catch (Exception e)
-        {
-            LogErro(metodo, e);
-
-            throw;
-        }
-    }
-
-    private async Task ReporQuantidadeNoEstoque(List<InsumoOS> insumos)
-    {
-        foreach (var insumo in insumos)
-        {
-            insumo.Estoque.QuantidadeDisponivel += insumo.Quantidade;
-
-            await AtualizarEstoqueAsync(insumo.Estoque);
-        }
-    }
-
-    private async Task ReenviarOrcamentoOSAsync(Guid ordemServicoId)
-    {
-        await _mediator.Publish(new OrdemServicoEmOrcamentoEvent(ordemServicoId, true));
     }
 }

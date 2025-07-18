@@ -1,7 +1,6 @@
-﻿using Dominio.Entidades;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Aplicacao.DTOs.Requests.OrdermServico.InsumoOrdemServico;
+namespace Aplicacao.DTOs.Requests.OrdemServico.InsumoOrdemServico;
 
 public class CadastrarInsumoOSRequest
 {

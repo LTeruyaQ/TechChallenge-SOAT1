@@ -66,9 +66,6 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
 
         try
         {
-            //TODO: Implementar html de reenvio de orçamento
-            //TODO: Adicionar um link para o cliente aceitar/recusar o orçamento
-
             string templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", templateFileName);
             string template = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
 

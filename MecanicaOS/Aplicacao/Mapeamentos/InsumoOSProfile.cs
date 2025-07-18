@@ -1,4 +1,4 @@
-﻿using Aplicacao.DTOs.Requests.OrdermServico.InsumoOrdemServico;
+﻿using Aplicacao.DTOs.Requests.OrdemServico.InsumoOrdemServico;
 using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using AutoMapper;
 using Dominio.Entidades;

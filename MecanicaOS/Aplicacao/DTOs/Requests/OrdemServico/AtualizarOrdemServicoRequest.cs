@@ -1,7 +1,7 @@
 ﻿using Dominio.Enumeradores;
 using System.ComponentModel.DataAnnotations;
 
-namespace Aplicacao.DTOs.Requests.OrdermServico;
+namespace Aplicacao.DTOs.Requests.OrdemServico;
 
 public class AtualizarOrdemServicoRequest
 {

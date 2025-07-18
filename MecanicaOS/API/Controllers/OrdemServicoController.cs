@@ -1,7 +1,6 @@
 using API.Models;
-using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
-using Aplicacao.DTOs.Requests.OrdermServico;
-using Aplicacao.DTOs.Requests.OrdermServico.InsumoOrdemServico;
+using Aplicacao.DTOs.Requests.OrdemServico;
+using Aplicacao.DTOs.Requests.OrdemServico.InsumoOrdemServico;
 using Aplicacao.DTOs.Responses.OrdemServico;
 using Aplicacao.Interfaces.Servicos;
 using Dominio.Enumeradores;
@@ -30,6 +29,7 @@ public class OrdemServicoController : BaseApiController
         var ordemServicos = await _ordemServico.ObterTodosAsync();
         return Ok(ordemServicos);
     }
+
     //TODO: adicionar insumos da OS no retorno
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
@@ -85,27 +85,4 @@ public class OrdemServicoController : BaseApiController
         var insumosOS = await _insumoOSServico.CadastrarInsumosAsync(ordemServicoId, request);
         return Ok(insumosOS);
     }
-    
-    [HttpPut("{ordemServicoId}/insumos")]
-    [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> AtualizarInsumosOS(Guid ordemServicoId, List<AtualizarInsumoOSRequest> request)
-    {
-        var insumosOS = await _insumoOSServico.AtualizarInsumosAsync(ordemServicoId, request);
-        return Ok(insumosOS);
-    }
-
-    [HttpDelete("{ordemServicoId}/insumos")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ApagarInsumosOS(Guid ordemServicoId, List<Guid> insumosId)
-    {
-        await _insumoOSServico.ApagarInsumosOS(ordemServicoId, insumosId);
-        return NoContent();
-    }
-
-    //TODO: implementar endpoint de aceite/recusa do orçamento 
 }
