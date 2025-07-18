@@ -35,7 +35,7 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
     public async Task Handle(OrdemServicoEmOrcamentoEvent notification, CancellationToken cancellationToken)
     {
         var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(notification.OrdemServicoId);
-        var os = await _ordemServicoRepositorio.ObterUmSemRastreamentoAsync(especificacao);
+        var os = await _ordemServicoRepositorio.ObterUmAsync(especificacao);
 
         if (os is null) return;
 

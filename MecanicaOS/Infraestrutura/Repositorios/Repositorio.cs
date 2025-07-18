@@ -103,7 +103,7 @@ namespace Infraestrutura.Repositorios
 
         public virtual async Task<T?> ObterUmAsync(IEspecificacao<T> especificacao)
         {
-            IQueryable<T> query = _dbSet.AsNoTracking();
+            IQueryable<T> query = _dbSet;
 
             foreach (var includeFunc in especificacao.Inclusoes)
             {
