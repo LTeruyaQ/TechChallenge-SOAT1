@@ -32,5 +32,4 @@ namespace Dominio.Especificacoes.Base
             }
         }
     }
-
 }

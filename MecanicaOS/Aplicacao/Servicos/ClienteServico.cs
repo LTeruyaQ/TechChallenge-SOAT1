@@ -213,6 +213,7 @@ namespace Aplicacao.Servicos
                 throw;
             }
         }
+
         public async Task<bool> DeletarAsync(Guid id)
         {
             string metodo = nameof(DeletarAsync);
@@ -265,6 +266,5 @@ namespace Aplicacao.Servicos
                 throw;
             }
         }
-
     }
 }

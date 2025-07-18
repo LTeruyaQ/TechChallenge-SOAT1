@@ -9,7 +9,10 @@ namespace Aplicacao.Mapeamentos
     {
         public EstoqueProfile()
         {
-            CreateMap<Estoque, EstoqueResponse>();
+            CreateMap<Estoque, EstoqueResponse>()
+                .ReverseMap();
+
+            CreateMap<Estoque, AtualizarEstoqueRequest>();
 
             CreateMap<CadastrarEstoqueRequest, Estoque>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -18,5 +21,3 @@ namespace Aplicacao.Mapeamentos
         }
     }
 }
-
-

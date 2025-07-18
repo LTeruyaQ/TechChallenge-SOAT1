@@ -107,12 +107,14 @@ namespace Infraestrutura.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("IdCliente")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Telefone")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -191,8 +193,8 @@ namespace Infraestrutura.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<double>("Preco")
-                        .HasColumnType("double precision");
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("QuantidadeDisponivel")
                         .HasColumnType("integer");
@@ -203,6 +205,86 @@ namespace Infraestrutura.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Estoques");
+                });
+
+            modelBuilder.Entity("Dominio.Entidades.InsumoOS", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("DataAtualizacao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("EstoqueId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OrdemServicoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EstoqueId");
+
+                    b.HasIndex("OrdemServicoId");
+
+                    b.ToTable("InsumosOrdemServico");
+                });
+
+            modelBuilder.Entity("Dominio.Entidades.OrdemServico", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("ClienteId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DataAtualizacao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<decimal?>("Orcamento")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("ServicoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<Guid>("VeiculoId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("ServicoId");
+
+                    b.HasIndex("VeiculoId");
+
+                    b.ToTable("OrdensSevico");
                 });
 
             modelBuilder.Entity("Dominio.Entidades.Servico", b =>
@@ -371,6 +453,52 @@ namespace Infraestrutura.Migrations
                     b.Navigation("Cliente");
                 });
 
+            modelBuilder.Entity("Dominio.Entidades.InsumoOS", b =>
+                {
+                    b.HasOne("Dominio.Entidades.Estoque", "Estoque")
+                        .WithMany()
+                        .HasForeignKey("EstoqueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dominio.Entidades.OrdemServico", "OrdemServico")
+                        .WithMany("InsumosOS")
+                        .HasForeignKey("OrdemServicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estoque");
+
+                    b.Navigation("OrdemServico");
+                });
+
+            modelBuilder.Entity("Dominio.Entidades.OrdemServico", b =>
+                {
+                    b.HasOne("Dominio.Entidades.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dominio.Entidades.Servico", "Servico")
+                        .WithMany()
+                        .HasForeignKey("ServicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dominio.Entidades.Veiculo", "Veiculo")
+                        .WithMany()
+                        .HasForeignKey("VeiculoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Servico");
+
+                    b.Navigation("Veiculo");
+                });
+
             modelBuilder.Entity("Dominio.Entidades.Usuario", b =>
                 {
                     b.HasOne("Dominio.Entidades.Cliente", "Cliente")
@@ -392,11 +520,18 @@ namespace Infraestrutura.Migrations
 
             modelBuilder.Entity("Dominio.Entidades.Cliente", b =>
                 {
-                    b.Navigation("Contato");
+                    b.Navigation("Contato")
+                        .IsRequired();
 
-                    b.Navigation("Endereco");
+                    b.Navigation("Endereco")
+                        .IsRequired();
 
                     b.Navigation("Veiculos");
+                });
+
+            modelBuilder.Entity("Dominio.Entidades.OrdemServico", b =>
+                {
+                    b.Navigation("InsumosOS");
                 });
 #pragma warning restore 612, 618
         }

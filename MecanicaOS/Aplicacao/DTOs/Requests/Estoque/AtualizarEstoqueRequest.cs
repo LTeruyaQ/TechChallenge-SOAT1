@@ -11,7 +11,7 @@ namespace Aplicacao.DTOs.Requests.Estoque
         public string? Descricao { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "O valor deve ser no mínimo 1.")]
-        public double? Preco { get; set; }
+        public decimal? Preco { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "O valor deve ser no mínimo 1.")]
         public int? QuantidadeMinima { get; set; }

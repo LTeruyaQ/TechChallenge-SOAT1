@@ -8,7 +8,7 @@ namespace Aplicacao.DTOs.Requests.Estoque
         [MaxLength(100, ErrorMessage = "O campo deve ter no máximo 100 caracteres.")]
         public string Insumo { get; set; } = default!;
 
-        [MaxLength(500, ErrorMessage = "O campo deve ter no máximo 100 caracteres.")]
+        [MaxLength(500, ErrorMessage = "O campo deve ter no máximo 500 caracteres.")]
         public string? Descricao { get; set; }
 
         [Required]

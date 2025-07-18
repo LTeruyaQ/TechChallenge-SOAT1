@@ -23,7 +23,7 @@ namespace MecanicaOSTests.Fixtures
                 Insumo = "Óleo Motor Atualizado",
                 Descricao = "Óleo sintético 5W30 Premium",
                 QuantidadeDisponivel = 15,
-                Preco = 49.90
+                Preco = (decimal)49.90
             };
         }
 
@@ -35,7 +35,7 @@ namespace MecanicaOSTests.Fixtures
                 Insumo = "Óleo Motor",
                 Descricao = "Óleo sintético 5W30",
                 QuantidadeDisponivel = 10,
-                Preco = 45.90,
+                Preco = (decimal)45.90,
                 DataCadastro = DateTime.UtcNow,
                 DataAtualizacao = DateTime.UtcNow
             };
