@@ -17,16 +17,22 @@ namespace Aplicacao.Servicos;
 public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemServico>, IOrdemServicoServico
 {
     private readonly IMediator _mediator;
+    private readonly IRepositorio<Cliente> _clienteRepositorio;
+    private readonly IServicoServico _servicoServico;
 
     public OrdemServicoServico(
         IRepositorio<OrdemServico> repositorio,
         ILogServico<OrdemServicoServico> logServico,
         IUnidadeDeTrabalho uot,
         IMapper mapper,
-        IMediator mediator) :
+        IMediator mediator,
+        IRepositorio<Cliente> clienteRepositorio,
+        IServicoServico servicoServico) :
         base(repositorio, logServico, uot, mapper)
     {
         _mediator = mediator;
+        _clienteRepositorio = clienteRepositorio;
+        _servicoServico = servicoServico;
     }
 
     public async Task<OrdemServicoResponse> AtualizarAsync(Guid id, AtualizarOrdemServicoRequest request)
@@ -85,6 +91,8 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
         {
             LogInicio(metodo, request);
 
+            await VerificarEntidadesRelacionadasAsync(request);
+
             var ordemServico = _mapper.Map<OrdemServico>(request);
 
             var entidade = await _repositorio.CadastrarAsync(ordemServico);
@@ -101,6 +109,18 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
             LogErro(metodo, e);
             throw;
         }
+    }
+
+    private async Task VerificarEntidadesRelacionadasAsync(CadastrarOrdemServicoRequest request)
+    {
+        var especificacao = new ObterClienteComVeiculoPorIdEspecificacao(request.ClienteId);
+        var cliente = await _clienteRepositorio.ObterUmAsync(especificacao)
+            ?? throw new DadosNaoEncontradosException("O cliente não foi encontrado");
+
+        var veiculo = cliente.Veiculos.FirstOrDefault(v => v.Id == request.VeiculoId);
+        _ = veiculo ?? throw new DadosNaoEncontradosException("O veículo não foi encontrado");
+
+        _ = await _servicoServico.ObterServicoPorIdAsync(request.ServicoId);
     }
 
     public async Task<OrdemServicoResponse?> ObterPorIdAsync(Guid id)
