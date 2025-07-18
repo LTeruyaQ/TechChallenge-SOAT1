@@ -5,18 +5,11 @@ using MediatR;
 
 namespace Aplicacao.Notificacoes.OS;
 
-public class OrdemServicoCanceladaHandler : INotificationHandler<OrdemServicoCanceladaEvent>
+public class OrdemServicoCanceladaHandler(IRepositorio<InsumoOS> ordemServicoRepositorio, IRepositorio<Estoque> estoqueRepositorio, IUnidadeDeTrabalho uot) : INotificationHandler<OrdemServicoCanceladaEvent>
 {
-    private readonly IRepositorio<InsumoOS> _insumoOSRepositorio;
-    private readonly IRepositorio<Estoque> _estoqueRepositorio;
-    private readonly IUnidadeDeTrabalho _uot;
-
-    public OrdemServicoCanceladaHandler(IRepositorio<InsumoOS> ordemServicoRepositorio, IRepositorio<Estoque> estoqueRepositorio, IUnidadeDeTrabalho uot)
-    {
-        _insumoOSRepositorio = ordemServicoRepositorio;
-        _estoqueRepositorio = estoqueRepositorio;
-        _uot = uot;
-    }
+    private readonly IRepositorio<InsumoOS> _insumoOSRepositorio = ordemServicoRepositorio;
+    private readonly IRepositorio<Estoque> _estoqueRepositorio = estoqueRepositorio;
+    private readonly IUnidadeDeTrabalho _uot = uot;
 
     public async Task Handle(OrdemServicoCanceladaEvent notification, CancellationToken cancellationToken)
     {

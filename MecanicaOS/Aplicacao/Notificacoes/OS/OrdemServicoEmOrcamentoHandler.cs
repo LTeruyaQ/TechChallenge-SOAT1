@@ -16,7 +16,6 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
     private readonly IOrcamentoServico _orcamentoServico;
     private readonly IServicoEmail _emailServico;
     private readonly IUnidadeDeTrabalho _uot;
-    private readonly ILogServico<OrdemServicoEmOrcamentoHandler> _logServico;
 
     public OrdemServicoEmOrcamentoHandler(
         IRepositorio<OrdemServico> ordemServicoRepositorio,
@@ -28,7 +27,6 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
         _ordemServicoRepositorio = ordemServicoRepositorio;
         _orcamentoServico = orcamentoServico;
         _emailServico = emailServico;
-        _logServico = logServico;
         _uot = uot;
     }
 
@@ -61,8 +59,6 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
     private async Task<string> GerarConteudoEmailAsync(OrdemServico os)
     {
         const string templateFileName = "EmailOrcamentoOS.html";
-        var metodo = nameof(GerarConteudoEmailAsync);
-        _logServico.LogInicio(metodo, os);
 
         try
         {
@@ -78,12 +74,10 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
             string insumosHtml = GerarHtmlInsumos(os.InsumosOS);
             template = Regex.Replace(template, @"{{#each INSUMOS}}(.*?){{/each}}", insumosHtml, RegexOptions.Singleline);
 
-            _logServico.LogFim(metodo, template);
             return template;
         }
         catch (Exception e)
         {
-            _logServico.LogErro(metodo, e);
             throw;
         }
     }

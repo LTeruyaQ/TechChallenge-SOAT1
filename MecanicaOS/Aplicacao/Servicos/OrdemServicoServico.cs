@@ -63,6 +63,10 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
             {
                 await _mediator.Publish(new OrdemServicoCanceladaEvent(ordemServico.Id));
             }
+            else if (ordemServico.Status == StatusOrdemServico.Finalizada)
+            {
+                await _mediator.Publish(new OrdemServicoFinalizadaEvent(ordemServico.Id));
+            }
 
             return _mapper.Map<OrdemServicoResponse>(ordemServico);
         }
@@ -164,5 +168,63 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
             LogErro(metodo, e);
             throw;
         }
+    }
+
+    public async Task AceitarOrcamentoAsync(Guid id)
+    {
+        var metodo = nameof(AceitarOrcamentoAsync);
+
+        try
+        {
+            LogInicio(metodo, new { id });
+
+            await ProcessarRespostaOrcamentoAsync(id, true);
+
+            LogFim(metodo, new { id });
+        }
+        catch (Exception e)
+        {
+            LogErro(metodo, e);
+            throw;
+        }
+    }
+
+    public async Task RecusarOrcamentoAsync(Guid id)
+    {
+        var metodo = nameof(RecusarOrcamentoAsync);
+
+        try
+        {
+            LogInicio(metodo, new { id });
+
+            await ProcessarRespostaOrcamentoAsync(id, false);
+
+            LogFim(metodo, new { id });
+        }
+        catch (Exception e)
+        {
+            LogErro(metodo, e);
+
+            throw;
+        }
+    }
+
+    private async Task ProcessarRespostaOrcamentoAsync(Guid id, bool aceito)
+    {
+        OrdemServico ordemServico = await _repositorio.ObterPorIdAsync(id) ??
+            throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
+
+        if (aceito)
+            ordemServico.Status = StatusOrdemServico.EmExecucao;
+        else
+        {
+            ordemServico.Status = StatusOrdemServico.Cancelada;
+            await _mediator.Publish(new OrdemServicoCanceladaEvent(id));
+        }
+
+        await _repositorio.EditarAsync(ordemServico);
+
+        if (!await Commit())
+            throw new PersistirDadosException($"Erro ao {(aceito ? "aceitar" : "recusar")} o orçamento da ordem de serviço");
     }
 }

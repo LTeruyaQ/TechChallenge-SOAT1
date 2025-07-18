@@ -2,6 +2,7 @@ using API.Models;
 using Aplicacao.DTOs.Requests.OrdemServico;
 using Aplicacao.DTOs.Requests.OrdemServico.InsumoOrdemServico;
 using Aplicacao.DTOs.Responses.OrdemServico;
+using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Aplicacao.Interfaces.Servicos;
 using Dominio.Enumeradores;
 using Microsoft.AspNetCore.Authorization;
@@ -76,7 +77,7 @@ public class OrdemServicoController : BaseApiController
     }
 
     [HttpPost("{ordemServicoId}/insumos")]
-    [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(InsumoOSResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -84,5 +85,27 @@ public class OrdemServicoController : BaseApiController
     {
         var insumosOS = await _insumoOSServico.CadastrarInsumosAsync(ordemServicoId, request);
         return Ok(insumosOS);
+    }
+
+    [HttpPatch("{id}/aceitar-orcamento")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AceitarOrcamento(Guid id)
+    {
+        await _ordemServico.AceitarOrcamentoAsync(id);
+        return NoContent();
+    }
+
+    [HttpPatch("{id}/recusar-orcamento")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> RecusarOrcamento(Guid id)
+    {
+        await _ordemServico.RecusarOrcamentoAsync(id);
+        return NoContent();
     }
 }
