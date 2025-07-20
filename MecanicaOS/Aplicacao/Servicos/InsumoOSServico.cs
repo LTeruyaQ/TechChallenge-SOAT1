@@ -4,7 +4,6 @@ using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
 using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
-using Aplicacao.Notificacoes.OS;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
@@ -13,7 +12,6 @@ using Dominio.Especificacoes;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
-using MediatR;
 
 namespace Aplicacao.Servicos;
 
@@ -23,7 +21,7 @@ public class InsumoOSServico(
     VerificarEstoqueJob verificarEstoqueJob,
     IRepositorio<InsumoOS> repositorio,
     ILogServico<InsumoOSServico> logServico,
-    IUnidadeDeTrabalho uot, 
+    IUnidadeDeTrabalho uot,
     IMapper mapper) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, uot, mapper), IInsumoOSServico
 {
     private readonly IOrdemServicoServico _oSServico = oSServico;

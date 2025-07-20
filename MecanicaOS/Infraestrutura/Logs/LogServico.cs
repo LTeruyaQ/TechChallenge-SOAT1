@@ -62,7 +62,7 @@ namespace Infraestrutura.Logs
             string metodo,
             string etapa,
             object? dados,
-            JsonSerializerOptions _jsonOptions, 
+            JsonSerializerOptions _jsonOptions,
             Exception? exception = null)
         {
             var entry = new LogEntryDto

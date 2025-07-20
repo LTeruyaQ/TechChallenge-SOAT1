@@ -1,4 +1,4 @@
-﻿using Dominio.Entidades.Abstratos;
+using Dominio.Entidades.Abstratos;
 using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;
@@ -72,7 +72,7 @@ namespace Infraestrutura.Repositorios
             var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao);
             return await query.ToListAsync();
         }
-        
+
         public virtual async Task<IEnumerable<T>> ObterPorFiltroSemRastreamentoAsync(IEspecificacao<T> especificacao)
         {
             var query = AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet.AsNoTracking(), especificacao);
@@ -94,29 +94,13 @@ namespace Infraestrutura.Repositorios
 
         public virtual async Task<T?> ObterUmSemRastreamentoAsync(IEspecificacao<T> especificacao)
         {
-            IQueryable<T> query = _dbSet.AsNoTracking();
-
-            foreach (var includeFunc in especificacao.Inclusoes)
-            {
-                query = includeFunc(query);
-            }
-
-            return await query
-                .Where(especificacao.Expressao)
+            return await AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet.AsNoTracking(), especificacao)
                 .SingleOrDefaultAsync();
         }
 
         public virtual async Task<T?> ObterUmAsync(IEspecificacao<T> especificacao)
         {
-            IQueryable<T> query = _dbSet;
-
-            foreach (var includeFunc in especificacao.Inclusoes)
-            {
-                query = includeFunc(query);
-            }
-
-            return await query
-                .Where(especificacao.Expressao)
+            return await AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao)
                 .SingleOrDefaultAsync();
         }
     }

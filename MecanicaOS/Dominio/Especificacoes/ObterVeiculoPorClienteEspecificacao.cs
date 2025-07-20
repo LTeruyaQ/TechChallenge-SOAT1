@@ -1,6 +1,5 @@
 ﻿using Dominio.Entidades;
 using Dominio.Especificacoes.Base;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes
@@ -12,14 +11,10 @@ namespace Dominio.Especificacoes
         public ObterVeiculoPorClienteEspecificacao(Guid clienteId)
         {
             _clienteId = clienteId;
+            AdicionarInclusao(v => v.Cliente);
         }
 
         public override Expression<Func<Veiculo, bool>> Expressao =>
             v => v.ClienteId == _clienteId;
-
-        public override List<Func<IQueryable<Veiculo>, IQueryable<Veiculo>>> Inclusoes =>
-        [
-            i => i.Include(i => i.Cliente)
-        ];
     }
 }

@@ -8,10 +8,6 @@ using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 public class ServicoServicoTests
 {
@@ -35,16 +31,16 @@ public class ServicoServicoTests
     public async Task Dado_NomeExistente_Quando_CadastrarServicoAsync_Entao_LancaExcecaoDadosJaCadastrados()
     {
         // Arrange
-        var request = new CadastrarServicoRequest 
-        { 
-            Nome = "Serviço X", 
-            Descricao = "Descrição detalhada do serviço", 
-            Valor = 150.50m, 
-            Disponivel = true  
+        var request = new CadastrarServicoRequest
+        {
+            Nome = "Serviço X",
+            Descricao = "Descrição detalhada do serviço",
+            Valor = 150.50m,
+            Disponivel = true
         };
 
-        var servicoExistente = new Servico 
-        { 
+        var servicoExistente = new Servico
+        {
             Id = Guid.NewGuid(),
             Nome = request.Nome,
             Descricao = "Serviço já existente",
@@ -64,7 +60,7 @@ public class ServicoServicoTests
         _repositorioMock
             .Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Servico>>()))
             .ReturnsAsync(servicoExistente);
-            
+
         _mapperMock
             .Setup(m => m.Map<ServicoResponse>(servicoExistente))
             .Returns(servicoResponse);
@@ -90,19 +86,19 @@ public class ServicoServicoTests
         // Assert
         Assert.NotNull(exception);
         Assert.Equal("Serviço já cadastrado", exception.Message);
-        
+
         _repositorioMock.Verify(
-            r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Servico>>()), 
+            r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Servico>>()),
             Times.Once,
             "ObterUmSemRastreamentoAsync deveria ter sido chamado uma vez");
-            
+
         _repositorioMock.Verify(
-            r => r.CadastrarAsync(It.IsAny<Servico>()), 
+            r => r.CadastrarAsync(It.IsAny<Servico>()),
             Times.Never,
             "CadastrarAsync não deveria ter sido chamado");
-            
+
         _uotMock.Verify(
-            u => u.Commit(), 
+            u => u.Commit(),
             Times.Never,
             "Commit não deveria ter sido chamado");
     }
@@ -135,7 +131,7 @@ public class ServicoServicoTests
     [Fact]
     public async Task Dado_FalhaNoCommit_Quando_CadastrarServicoAsync_Entao_LancaExcecaoPersistirDados()
     {
-        var request = new CadastrarServicoRequest {Nome = "Novo", Descricao = "descricao", Valor = 20, Disponivel = true };
+        var request = new CadastrarServicoRequest { Nome = "Novo", Descricao = "descricao", Valor = 20, Disponivel = true };
         var entidade = new Servico { Descricao = "teste", Nome = "teste" };
 
         _servicoServicoTestSetupObterServicoPorNome(request.Nome, null);
@@ -197,8 +193,8 @@ public class ServicoServicoTests
     public async Task Dado_FalhaNoCommit_Quando_EditarServicoAsync_Entao_LancaExcecaoPersistirDados()
     {
         var id = Guid.NewGuid();
-        var request = new EditarServicoRequest() { Descricao="descricao", Disponivel = true , Nome="Nome Servico", Valor = 30};
-        var servico = new Servico{ Descricao = "teste", Nome = "teste" };
+        var request = new EditarServicoRequest() { Descricao = "descricao", Disponivel = true, Nome = "Nome Servico", Valor = 30 };
+        var servico = new Servico { Descricao = "teste", Nome = "teste" };
 
         _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(servico);
         _repositorioMock.Setup(r => r.EditarAsync(servico)).Returns(Task.CompletedTask);
@@ -260,7 +256,7 @@ public class ServicoServicoTests
     [Fact]
     public async Task Given_NomeInexistente_When_ObterServicoPorNomeAsync_Then_RetornaNull()
     {
-        _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny< IEspecificacao<Servico>> ()))
+        _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Servico>>()))
                         .ReturnsAsync((Servico?)null);
 
         var result = await _servicoServico.ObterServicoPorNomeAsync("Inexistente");

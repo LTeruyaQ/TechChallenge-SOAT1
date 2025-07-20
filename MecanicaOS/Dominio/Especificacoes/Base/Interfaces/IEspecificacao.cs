@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes.Base.Interfaces;
 
@@ -6,5 +6,5 @@ public interface IEspecificacao<T>
 {
     Expression<Func<T, bool>> Expressao { get; }
 
-    List<Func<IQueryable<T>, IQueryable<T>>> Inclusoes { get; }
+    List<string> Inclusoes { get; }
 }

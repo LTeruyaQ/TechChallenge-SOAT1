@@ -13,7 +13,7 @@ namespace MecanicaOSTests.Fixtures
         protected BaseTestFixture()
         {
             LoggerMock = new Mock<ILogger<T>>();
-            
+
             var configuration = new MapperConfiguration(cfg =>
             {
                 cfg.AddMaps(new[] {
@@ -24,7 +24,7 @@ namespace MecanicaOSTests.Fixtures
                     typeof(VeiculoProfile)
                 });
             });
-            
+
             Mapper = configuration.CreateMapper();
         }
 

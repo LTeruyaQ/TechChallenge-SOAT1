@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Aplicacao.DTOs.Requests.Autenticacao;
 using Aplicacao.DTOs.Requests.Usuario;
-using Aplicacao.DTOs.Responses.Autenticacao;
 using Aplicacao.DTOs.Responses.Cliente;
 using Aplicacao.DTOs.Responses.Usuario;
 using Aplicacao.Interfaces.Servicos;
@@ -13,9 +8,7 @@ using Dominio.Enumeradores;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Servicos;
 using MecanicaOSTests.Fixtures;
-using Microsoft.Extensions.Logging;
 using Moq;
-using Xunit;
 
 
 public class AutenticacaoServicoTests : BaseTestFixture<AutenticacaoServico>
@@ -52,7 +45,7 @@ public class AutenticacaoServicoTests : BaseTestFixture<AutenticacaoServico>
         // Act & Assert
         var ex = await Assert.ThrowsAsync<CredenciaisInvalidasException>(() =>
             _servico.AutenticarAsync(request));
-            
+
         Assert.Equal("Credenciais inválidas", ex.Message);
         _logServicoMock.Verify(
             x => x.LogErro("AutenticarAsync", It.IsAny<Exception>()),
@@ -88,7 +81,7 @@ public class AutenticacaoServicoTests : BaseTestFixture<AutenticacaoServico>
         // Act & Assert
         var ex = await Assert.ThrowsAsync<CredenciaisInvalidasException>(() =>
             _servico.AutenticarAsync(request));
-            
+
         Assert.Equal("Credenciais inválidas", ex.Message);
         _logServicoMock.Verify(
             x => x.LogErro("AutenticarAsync", It.IsAny<Exception>()),
@@ -110,7 +103,7 @@ public class AutenticacaoServicoTests : BaseTestFixture<AutenticacaoServico>
         // Act & Assert
         var ex = await Assert.ThrowsAsync<DadosInvalidosException>(() =>
             _servico.AutenticarAsync(request));
-            
+
         Assert.Contains("Erro ao detectar usuario", ex.Message);
         _logServicoMock.Verify(
             x => x.LogErro("AutenticarAsync", It.IsAny<Exception>()),
@@ -124,9 +117,9 @@ public class AutenticacaoServicoTests : BaseTestFixture<AutenticacaoServico>
         var admin = AutenticacaoFixture.CriarUsuarioAdmin();
         admin.Email = request.Email;
         admin.Senha = "hash_criptografada";
-        
+
         const string tokenEsperado = "token_gerado";
-        
+
         _usuarioServicoMock.Setup(s => s.ObterPorEmailAsync(request.Email)).ReturnsAsync(admin);
         _servicoSenhaMock.Setup(s => s.VerificarSenha(request.Senha, admin.Senha)).Returns(true);
         _servicoJwtMock.Setup(j => j.GerarToken(
@@ -162,14 +155,14 @@ public class AutenticacaoServicoTests : BaseTestFixture<AutenticacaoServico>
         var request = AutenticacaoFixture.CriarAutenticacaoRequestValida();
         var cliente = ClienteFixture.CriarClienteValido();
         var usuario = AutenticacaoFixture.CriarUsuarioAtivo();
-        
+
         usuario.Email = request.Email;
         usuario.Senha = "hash_criptografada";
         usuario.TipoUsuario = TipoUsuario.Cliente;
         usuario.ClienteId = cliente.Id;
-        
+
         const string tokenEsperado = "token_gerado_cliente";
-        
+
         _usuarioServicoMock.Setup(s => s.ObterPorEmailAsync(request.Email)).ReturnsAsync(usuario);
         _servicoSenhaMock.Setup(s => s.VerificarSenha(request.Senha, usuario.Senha)).Returns(true);
         _clienteServicoMock.Setup(c => c.ObterPorIdAsync(cliente.Id)).ReturnsAsync(new ClienteResponse
@@ -179,7 +172,7 @@ public class AutenticacaoServicoTests : BaseTestFixture<AutenticacaoServico>
             Documento = cliente.Documento,
             DataCadastro = DateTime.UtcNow.AddDays(-1).ToString()
         });
-        
+
         _servicoJwtMock.Setup(j => j.GerarToken(
             usuario.Id,
             usuario.Email,
@@ -205,7 +198,7 @@ public class AutenticacaoServicoTests : BaseTestFixture<AutenticacaoServico>
         // Assert
         Assert.NotNull(result);
         Assert.Equal(tokenEsperado, result.Token);
-        
+
         _clienteServicoMock.Verify(c => c.ObterPorIdAsync(cliente.Id), Times.Once);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infraestrutura.Dados.Especificacoes;
@@ -9,12 +9,12 @@ public static class AvaliadorDeEspecificacao<T> where T : class
     {
         var consulta = consultaInicial;
 
-        if (especificacao.Inclusoes != null)
+        if (especificacao.Inclusoes != null && especificacao.Inclusoes.Any())
         {
-            consulta = especificacao.Inclusoes.Aggregate(
-                consulta,
-                (atual, include) => include(atual)
-            );
+            foreach (var includeExpression in especificacao.Inclusoes)
+            {
+                consulta = consulta.Include(includeExpression);
+            }
         }
 
         if (especificacao.Expressao != null)
@@ -29,12 +29,12 @@ public static class AvaliadorDeEspecificacao<T> where T : class
     {
         var consulta = consultaInicial.AsNoTracking();
 
-        if (especificacao.Inclusoes != null)
+        if (especificacao.Inclusoes != null && especificacao.Inclusoes.Any())
         {
-            consulta = especificacao.Inclusoes.Aggregate(
-                consulta,
-                (atual, include) => include(atual)
-            );
+            foreach (var includeExpression in especificacao.Inclusoes)
+            {
+                consulta = consulta.Include(includeExpression);
+            }
         }
 
         if (especificacao.Expressao != null)

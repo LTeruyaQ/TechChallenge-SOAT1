@@ -1,11 +1,4 @@
-﻿using Xunit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MecanicaOSTests.Entidades
+﻿namespace MecanicaOSTests.Entidades
 {
     public class UsuarioTests
     {

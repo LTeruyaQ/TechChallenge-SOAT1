@@ -9,7 +9,7 @@ public class CadastrarOrdemServicoRequest
 
     [Required]
     public Guid VeiculoId { get; set; }
-    
+
     [Required]
     public Guid ServicoId { get; set; }
 

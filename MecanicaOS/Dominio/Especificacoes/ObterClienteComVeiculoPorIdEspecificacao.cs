@@ -1,19 +1,19 @@
-﻿using Dominio.Entidades;
+using Dominio.Entidades;
 using Dominio.Especificacoes.Base;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes;
 
-public class ObterClienteComVeiculoPorIdEspecificacao(Guid clienteId) : EspecificacaoBase<Cliente>
+public class ObterClienteComVeiculoPorIdEspecificacao : EspecificacaoBase<Cliente>
 {
-    private readonly Guid _clienteId = clienteId;
+    private readonly Guid _clienteId;
+
+    public ObterClienteComVeiculoPorIdEspecificacao(Guid clienteId)
+    {
+        _clienteId = clienteId;
+        AdicionarInclusao(c => c.Veiculos);
+    }
 
     public override Expression<Func<Cliente, bool>> Expressao =>
        i => i.Id == _clienteId;
-
-    public override List<Func<IQueryable<Cliente>, IQueryable<Cliente>>> Inclusoes =>
-    [
-        c => c.Include(c => c.Veiculos)
-    ];
 }
