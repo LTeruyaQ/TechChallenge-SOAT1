@@ -1,17 +1,15 @@
 using Dominio.Especificacoes.Base.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes.Base
 {
-    public abstract class EspecificacaoBase<T> : IEspecificacao<T>
+    public abstract class EspecificacaoBase<T> : IEspecificacao<T> where T : class
     {
         private readonly List<string> _inclusoes = new();
-        
+
+        public abstract Expression<Func<T, bool>> Expressao { get; }
+
         public List<string> Inclusoes => _inclusoes;
-        
-        public virtual Expression<Func<T, bool>>? Expressao { get; } = null;
 
         protected void AdicionarInclusao<TProp>(Expression<Func<T, TProp>> navegacao)
         {
@@ -25,10 +23,12 @@ namespace Dominio.Especificacoes.Base
         {
             if (colecao == null) throw new ArgumentNullException(nameof(colecao));
             if (navegacao == null) throw new ArgumentNullException(nameof(navegacao));
-            
+
             var caminhoColecao = AuxiliarExpressao.ObterCaminho(colecao);
             var caminhoNavegacao = AuxiliarExpressao.ObterCaminho(navegacao);
             _inclusoes.Add($"{caminhoColecao}.{caminhoNavegacao}");
         }
+
+        // Métodos de inclusão simplificados para atender aos casos de uso atuais
     }
 }

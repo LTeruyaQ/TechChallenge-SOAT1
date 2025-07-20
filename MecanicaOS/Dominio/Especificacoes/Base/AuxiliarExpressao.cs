@@ -1,6 +1,4 @@
-using System;
 using System.Linq.Expressions;
-using System.Collections.Generic;
 
 namespace Dominio.Especificacoes.Base
 {
@@ -45,9 +43,9 @@ namespace Dominio.Especificacoes.Base
         private static void VisitarExpressaoMembro(MemberExpression membro, Stack<string> pilha)
         {
             if (membro == null) return;
-            
+
             pilha.Push(membro.Member.Name);
-            
+
             if (membro.Expression is MemberExpression membroInterno)
             {
                 VisitarExpressaoMembro(membroInterno, pilha);

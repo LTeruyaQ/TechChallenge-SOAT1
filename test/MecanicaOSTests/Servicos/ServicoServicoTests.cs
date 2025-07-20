@@ -7,6 +7,7 @@ using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
+using FluentAssertions;
 using Moq;
 
 public class ServicoServicoTests
@@ -65,27 +66,11 @@ public class ServicoServicoTests
             .Setup(m => m.Map<ServicoResponse>(servicoExistente))
             .Returns(servicoResponse);
 
-        // Act
-        Exception? exception = null;
-        try
-        {
-            await _servicoServico.CadastrarServicoAsync(request);
-            Assert.True(false, "Deveria ter lançado DadosJaCadastradosException");
-        }
-        catch (DadosJaCadastradosException ex)
-        {
-            exception = ex;
-            Console.WriteLine($"Exceção capturada: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Exceção inesperada: {ex}");
-            throw;
-        }
+        // Act & Assert
+        var excecao = await Assert.ThrowsAsync<DadosJaCadastradosException>(
+            () => _servicoServico.CadastrarServicoAsync(request));
 
-        // Assert
-        Assert.NotNull(exception);
-        Assert.Equal("Serviço já cadastrado", exception.Message);
+        excecao.Message.Should().Be("Serviço já cadastrado");
 
         _repositorioMock.Verify(
             r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Servico>>()),
@@ -226,19 +211,19 @@ public class ServicoServicoTests
     }
 
     [Fact]
-    public async Task Given_RepositorioRetornaVazio_When_ObterTodosAsync_Then_RetornaListaVazia()
+    public async Task Dado_RepositorioVazio_Quando_ObterTodosAsync_Entao_RetornaListaVazia()
     {
         _repositorioMock.Setup(r => r.ObterTodosAsync()).ReturnsAsync(new List<Servico>());
         _mapperMock.Setup(m => m.Map<IEnumerable<ServicoResponse>>(It.IsAny<IEnumerable<Servico>>()))
                   .Returns(Array.Empty<ServicoResponse>());
 
-        var result = await _servicoServico.ObterTodosAsync();
+        var resultado = await _servicoServico.ObterTodosAsync();
 
-        Assert.Empty(result);
+        Assert.Empty(resultado);
     }
 
     [Fact]
-    public async Task Given_ServicosDisponiveis_When_ObterServicosDisponiveisAsync_Then_RetornaServicos()
+    public async Task Dado_ServicosDisponiveis_Quando_ObterServicosDisponiveisAsync_Entao_RetornaListaDeServicos()
     {
         var lista = new List<Servico>();
         var listaResponse = new List<ServicoResponse> { new ServicoResponse() };
@@ -248,20 +233,20 @@ public class ServicoServicoTests
         _mapperMock.Setup(m => m.Map<IEnumerable<ServicoResponse>>(lista))
                    .Returns(listaResponse);
 
-        var result = await _servicoServico.ObterServicosDisponiveisAsync();
+        var resultado = await _servicoServico.ObterServicosDisponiveisAsync();
 
-        Assert.Single(result);
+        Assert.Single(resultado);
     }
 
     [Fact]
-    public async Task Given_NomeInexistente_When_ObterServicoPorNomeAsync_Then_RetornaNull()
+    public async Task Dado_NomeInexistente_Quando_ObterServicoPorNomeAsync_Entao_RetornaNulo()
     {
         _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<IEspecificacao<Servico>>()))
                         .ReturnsAsync((Servico?)null);
 
-        var result = await _servicoServico.ObterServicoPorNomeAsync("Inexistente");
+        var resultado = await _servicoServico.ObterServicoPorNomeAsync("Inexistente");
 
-        Assert.Null(result);
+        Assert.Null(resultado);
     }
 
     private void _servicoServicoTestSetupObterServicoPorNome(string nome, Servico? servico)
