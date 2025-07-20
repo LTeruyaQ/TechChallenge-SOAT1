@@ -1,7 +1,7 @@
 ﻿using Dominio.Especificacoes.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dominio.Especificacoes.Base.Extensoes;
+namespace Infraestrutura.Dados.Especificacoes;
 
 public static class AvaliadorDeEspecificacao<T> where T : class
 {

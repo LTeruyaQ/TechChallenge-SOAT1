@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Aplicacao.DTOs.Requests.OrdemServico.InsumoOrdemServico;
+namespace Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
 
 public class CadastrarInsumoOSRequest
 {

@@ -1,8 +1,8 @@
 ﻿using Dominio.Entidades.Abstratos;
-using Dominio.Especificacoes.Base.Extensoes;
 using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;
+using Infraestrutura.Dados.Especificacoes;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infraestrutura.Repositorios

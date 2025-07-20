@@ -1,6 +1,6 @@
 ﻿using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Requests.OrdemServico;
-using Aplicacao.DTOs.Requests.OrdemServico.InsumoOrdemServico;
+using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
 using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;

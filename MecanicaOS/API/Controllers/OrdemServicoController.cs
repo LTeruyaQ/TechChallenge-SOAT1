@@ -1,6 +1,6 @@
 using API.Models;
 using Aplicacao.DTOs.Requests.OrdemServico;
-using Aplicacao.DTOs.Requests.OrdemServico.InsumoOrdemServico;
+using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
 using Aplicacao.DTOs.Responses.OrdemServico;
 using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Aplicacao.Interfaces.Servicos;
