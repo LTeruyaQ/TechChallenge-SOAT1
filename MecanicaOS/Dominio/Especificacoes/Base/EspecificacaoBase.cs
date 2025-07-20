@@ -28,7 +28,5 @@ namespace Dominio.Especificacoes.Base
             var caminhoNavegacao = AuxiliarExpressao.ObterCaminho(navegacao);
             _inclusoes.Add($"{caminhoColecao}.{caminhoNavegacao}");
         }
-
-        // Métodos de inclusão simplificados para atender aos casos de uso atuais
     }
 }
