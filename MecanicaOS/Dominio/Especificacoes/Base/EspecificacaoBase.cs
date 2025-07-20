@@ -1,17 +1,34 @@
-﻿using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Base.Interfaces;
 using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes.Base
 {
-    public abstract class EspecificacaoBase<T> : IEspecificacao<T>
+    public abstract class EspecificacaoBase<T> : IEspecificacao<T> where T : class
     {
-        public virtual Expression<Func<T, bool>> Expressao { get; }
+        private readonly List<string> _inclusoes = new();
 
-        public virtual List<Func<IQueryable<T>, IQueryable<T>>> Inclusoes { get; } = new();
+        public abstract Expression<Func<T, bool>> Expressao { get; }
 
-        protected void AdicionarInclusao(Func<IQueryable<T>, IQueryable<T>> includeExpression)
+        public List<string> Inclusoes => _inclusoes;
+
+        protected void AdicionarInclusao<TProp>(Expression<Func<T, TProp>> navegacao)
         {
-            Inclusoes.Add(includeExpression);
+            if (navegacao == null) throw new ArgumentNullException(nameof(navegacao));
+            _inclusoes.Add(AuxiliarExpressao.ObterCaminho(navegacao));
         }
+
+        protected void AdicionarInclusao<TColecao, TProp>(
+            Expression<Func<T, IEnumerable<TColecao>>> colecao,
+            Expression<Func<TColecao, TProp>> navegacao)
+        {
+            if (colecao == null) throw new ArgumentNullException(nameof(colecao));
+            if (navegacao == null) throw new ArgumentNullException(nameof(navegacao));
+
+            var caminhoColecao = AuxiliarExpressao.ObterCaminho(colecao);
+            var caminhoNavegacao = AuxiliarExpressao.ObterCaminho(navegacao);
+            _inclusoes.Add($"{caminhoColecao}.{caminhoNavegacao}");
+        }
+
+        // Métodos de inclusão simplificados para atender aos casos de uso atuais
     }
 }

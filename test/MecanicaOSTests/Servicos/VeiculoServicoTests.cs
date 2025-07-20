@@ -8,11 +8,6 @@ using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 public class VeiculoServicoTests
 {
@@ -41,37 +36,8 @@ public class VeiculoServicoTests
         Ano = "2020",
         ClienteId = Guid.NewGuid()
     };
-    //[Fact]
-    //public async Task Given_ValidRequest_When_CadastrarAsync_Then_ReturnVeiculoResponse()
-    //{
-    //    // Arrange
-    //    var request = new CadastrarVeiculoRequest { Placa = "XYZ1234" };
-    //    var veiculo = CriarVeiculo();
 
-    //    _mapperMock.Setup(m => m.Map<Veiculo>(request)).Returns(veiculo);
-    //    _repositorioMock.Setup(r => r.CadastrarAsync(veiculo)).Returns(Task.CompletedTask);
-    //    _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
-    //    _mapperMock.Setup(m => m.Map<VeiculoResponse>(veiculo)).Returns(new VeiculoResponse());
 
-    //    // Act
-    //    var result = await _servico.CadastrarAsync(request);
-
-    //    // Assert
-    //    Assert.NotNull(result);
-    //}
-
-    //[Fact]
-    //public async Task Given_CommitFails_When_CadastrarAsync_Then_ThrowPersistirDadosException()
-    //{
-    //    var request = new CadastrarVeiculoRequest { Placa = "XYZ1234" };
-    //    var veiculo = CriarVeiculo();
-
-    //    _mapperMock.Setup(m => m.Map<Veiculo>(request)).Returns(veiculo);
-    //    _repositorioMock.Setup(r => r.CadastrarAsync(It.IsAny<Veiculo>())).Returns(Task.CompletedTask);
-    //    _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
-
-    //    await Assert.ThrowsAsync<PersistirDadosException>(() => _servico.CadastrarAsync(request));
-    //}
     [Fact]
     public async Task Dado_IdValidoERequest_Quando_AtualizarAsync_Entao_AtualizaERetornaResposta()
     {
