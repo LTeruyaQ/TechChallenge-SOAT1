@@ -4,6 +4,7 @@ using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infraestrutura.Repositorios
 {
@@ -38,6 +39,14 @@ namespace Infraestrutura.Repositorios
             await Task.Run(() => _dbSet.Remove(entidade));
         }
 
+        public virtual async Task DeletarVariosAsync(IEnumerable<T> entidades)
+        {
+            foreach (var entidade in entidades)
+            {
+                await Task.Run(() => _dbSet.Remove(entidade));
+            }
+        }
+
         public virtual async Task DeletarLogicamenteAsync(T entidade)
         {
             await Task.Run(() => entidade.Ativo = false);
@@ -48,7 +57,24 @@ namespace Infraestrutura.Repositorios
             await Task.Run(() => _dbContext.Entry(entidade).State = EntityState.Modified);
         }
 
+        public virtual async Task EditarVariosAsync(IEnumerable<T> entidades)
+        {
+            if (entidades == null || !entidades.Any())
+                return;
+
+            foreach (var entidade in entidades)
+            {
+                await Task.Run(() => _dbContext.Entry(entidade).State = EntityState.Modified);
+            }
+        }
+
         public virtual async Task<IEnumerable<T>> ObterPorFiltroAsync(IEspecificacao<T> especificacao)
+        {
+            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao);
+            return await query.ToListAsync();
+        }
+        
+        public virtual async Task<IEnumerable<T>> ObterPorFiltroSemRatreamentoAsync(IEspecificacao<T> especificacao)
         {
             var query = AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet.AsNoTracking(), especificacao);
             return await query.ToListAsync();
@@ -57,7 +83,6 @@ namespace Infraestrutura.Repositorios
         public virtual async Task<T?> ObterPorIdAsync(Guid id)
         {
             return await _dbSet
-                .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
 
@@ -70,15 +95,29 @@ namespace Infraestrutura.Repositorios
 
         public virtual async Task<T?> ObterUmSemRastreamentoAsync(IEspecificacao<T> especificacao)
         {
-            var query = AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet, especificacao);
+            IQueryable<T> query = _dbSet.AsNoTracking();
+
+            foreach (var includeFunc in especificacao.Inclusoes)
+            {
+                query = includeFunc(query);
+            }
+
             return await query
+                .Where(especificacao.Expressao)
                 .SingleOrDefaultAsync();
         }
 
         public virtual async Task<T?> ObterUmAsync(IEspecificacao<T> especificacao)
         {
-            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
+            IQueryable<T> query = _dbSet;
+
+            foreach (var includeFunc in especificacao.Inclusoes)
+            {
+                query = includeFunc(query);
+            }
+
             return await query
+                .Where(especificacao.Expressao)
                 .SingleOrDefaultAsync();
         }
     }

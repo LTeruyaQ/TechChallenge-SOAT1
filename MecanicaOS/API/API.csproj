@@ -9,10 +9,14 @@
 
   <ItemGroup>
     <None Remove="Templates\EmailAlertaEstoque.html" />
+    <None Remove="Templates\EmailOrcamentoOS.html" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Templates\EmailAlertaEstoque.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\EmailOrcamentoOS.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

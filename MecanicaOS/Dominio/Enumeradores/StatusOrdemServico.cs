@@ -7,5 +7,6 @@ public enum StatusOrdemServico
     AguardandoAprovação,
     EmExecucao,
     Finalizada,
-    Entregue
+    Entregue,
+    Cancelada
 }

@@ -2,6 +2,7 @@ using API.Middlewares;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
 using Aplicacao.Mapeamentos;
+using Aplicacao.Notificacoes.OS;
 using Aplicacao.Servicos;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
@@ -108,20 +109,19 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
-// Aplicacao
-builder.Services.AddAutoMapper(
-    typeof(ServicoProfile),
-    typeof(EstoqueProfile),
-    typeof(VeiculoProfile),
-    typeof(UsuarioProfile),
-    typeof(ClienteProfile)
-    );
-
 // Serviços
 builder.Services.AddScoped<IServicoServico, ServicoServico>();
 builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
 builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
 builder.Services.AddScoped<IClienteServico, ClienteServico>();
+builder.Services.AddScoped<IOrdemServicoServico, OrdemServicoServico>();
+builder.Services.AddScoped<IInsumoOSServico, InsumoOSServico>();
+builder.Services.AddScoped<IOrcamentoServico, OrcamentoServico>();
+builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
+
+// Serviços de autenticação
+builder.Services.AddScoped<IServicoJwt, ServicoJwt>();
+builder.Services.AddScoped<IServicoSenha, ServicoSenha>();
 builder.Services.AddScoped<IAutenticacaoServico, AutenticacaoServico>();
 
 // Serviço de usuário logado
@@ -130,6 +130,26 @@ builder.Services.AddScoped<IUsuarioLogadoServico, UsuarioLogadoServico>();
 
 // Serviço de usuário deve ser registrado após os serviços de autenticação
 builder.Services.AddScoped<IUsuarioServico, UsuarioServico>();
+builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
+
+// Jobs Hangfire
+builder.Services.AddScoped<VerificarEstoqueJob>();
+
+// Notificações
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(OrdemServicoEmOrcamentoEvent).Assembly);
+});
+
+// Aplicacao
+builder.Services.AddAutoMapper(
+    typeof(ServicoProfile),
+    typeof(EstoqueProfile),
+    typeof(VeiculoProfile),
+    typeof(UsuarioProfile),
+    typeof(ClienteProfile),
+    typeof(OrdemServicoProfile),
+    typeof(InsumoOSProfile));
 
 // Infraestrutura
 builder.Services.AddScoped<IServicoEmail, ServicoEmail>();

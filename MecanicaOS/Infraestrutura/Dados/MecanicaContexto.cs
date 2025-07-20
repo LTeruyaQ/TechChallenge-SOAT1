@@ -16,6 +16,8 @@ public class MecanicaContexto : DbContext
     public DbSet<Contato> Contatos { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<AlertaEstoque> AlertasEstoque { get; set; }
+    public DbSet<OrdemServico> OrdensSevico { get; set; }
+    public DbSet<InsumoOS> InsumosOrdemServico { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -40,7 +42,9 @@ public class MecanicaContexto : DbContext
         modelBuilder.ApplyConfiguration(new EstoqueMapeamento());
         modelBuilder.ApplyConfiguration(new VeiculoMapeamento());
         modelBuilder.ApplyConfiguration(new ClienteMapeamento());
+        modelBuilder.ApplyConfiguration(new ContatoMapeamento());
         modelBuilder.ApplyConfiguration(new UsuarioMapeamento());
+        modelBuilder.ApplyConfiguration(new OrdemServicoMapeamento());
 
         base.OnModelCreating(modelBuilder);
     }

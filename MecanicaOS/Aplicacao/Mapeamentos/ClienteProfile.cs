@@ -1,4 +1,5 @@
 using Aplicacao.DTOs.Requests.Cliente;
+using Aplicacao.DTOs.Responses.Cliente;
 using AutoMapper;
 using Dominio.Entidades;
 
@@ -8,6 +9,8 @@ namespace Aplicacao.Mapeamentos
     {
         public ClienteProfile()
         {
+            CreateMap<Cliente, ClienteResponse>();
+
             CreateMap<CadastrarClienteRequest, Cliente>()
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome))
                 .ForMember(dest => dest.Sexo, opt => opt.MapFrom(src => src.Sexo))
