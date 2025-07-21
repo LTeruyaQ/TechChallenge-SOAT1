@@ -6,5 +6,5 @@ public interface IEspecificacao<T>
 {
     Expression<Func<T, bool>> Expressao { get; }
 
-    List<string> Inclusoes { get; }
+    HashSet<string> Inclusoes { get; }
 }

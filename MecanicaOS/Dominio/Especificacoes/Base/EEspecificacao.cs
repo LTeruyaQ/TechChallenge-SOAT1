@@ -16,10 +16,10 @@ namespace Dominio.Especificacoes.Base
 
             // Combina as inclusões das especificações filhas
             if (esquerda.Inclusoes != null)
-                Inclusoes.AddRange(esquerda.Inclusoes);
+                _ = esquerda.Inclusoes.Select(Inclusoes.Add);
 
             if (direita.Inclusoes != null)
-                Inclusoes.AddRange(direita.Inclusoes);
+                _ = direita.Inclusoes.Select(Inclusoes.Add);
         }
 
         public override Expression<Func<T, bool>> Expressao
