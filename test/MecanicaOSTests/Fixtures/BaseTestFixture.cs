@@ -13,7 +13,7 @@ namespace MecanicaOSTests.Fixtures
         protected BaseTestFixture()
         {
             LoggerMock = new Mock<ILogger<T>>();
-            
+
             var configuration = new MapperConfiguration(cfg =>
             {
                 cfg.AddMaps(new[] {
@@ -24,16 +24,16 @@ namespace MecanicaOSTests.Fixtures
                     typeof(VeiculoProfile)
                 });
             });
-            
+
             Mapper = configuration.CreateMapper();
         }
 
-        protected Mock<T> CreateServiceMock<T>() where T : class
+        protected Mock<TService> CreateServiceMock<TService>() where TService : class
         {
-            return new Mock<T>();
+            return new Mock<TService>();
         }
 
-        protected void SetupLogger<T>(Mock<ILogger<T>> loggerMock, LogLevel expectedLogLevel, string expectedMessage)
+        protected void SetupLogger<TLogger>(Mock<ILogger<TLogger>> loggerMock, LogLevel expectedLogLevel, string expectedMessage)
         {
             loggerMock.Verify(
                 x => x.Log(

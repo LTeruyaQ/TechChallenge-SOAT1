@@ -16,7 +16,15 @@ public class Usuario : Entidade
 
     public Usuario() { }
 
-    public void Atualizar(string? email, string? senha, DateTime? dataUltimoAcesso, TipoUsuario? tipoUsuario, bool? recebeAlertaEstoque, bool? ativo = null)
+    public Usuario(string email, string senha, TipoUsuario tipoUsuario, Guid clienteId)
+    {
+        Email = email;
+        Senha = senha;
+        TipoUsuario = tipoUsuario;
+        ClienteId = clienteId;
+    }
+
+    public void Atualizar(string? email = null, string? senha = null, DateTime? dataUltimoAcesso = null, TipoUsuario? tipoUsuario = null, bool? recebeAlertaEstoque = null, bool? ativo = null)
     {
         if (!string.IsNullOrEmpty(email)) Email = email;
         if (!string.IsNullOrEmpty(senha)) Senha = senha;
@@ -29,5 +37,10 @@ public class Usuario : Entidade
     public void AtualizarUltimoAcesso()
     {
         DataUltimoAcesso = DateTime.UtcNow;
+    }
+
+    public void AtualizarUltimoAcesso(DateTime dataAcesso)
+    {
+        DataUltimoAcesso = dataAcesso;
     }
 }

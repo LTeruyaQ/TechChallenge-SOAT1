@@ -1,12 +1,13 @@
 using Aplicacao.DTOs.Requests.Cliente;
 using Aplicacao.DTOs.Responses.Cliente;
+using Aplicacao.Servicos;
 using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using Moq;
-namespace Aplicacao.Servicos.Tests
+namespace MecanicaOSTests.Servicos
 {
 
 

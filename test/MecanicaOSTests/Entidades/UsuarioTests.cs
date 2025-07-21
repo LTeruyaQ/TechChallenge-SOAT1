@@ -1,31 +1,61 @@
-﻿using Xunit;
 using Dominio.Entidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Dominio.Enumeradores;
+using FluentAssertions;
 
-namespace Dominio.Entidades.Tests
+namespace MecanicaOSTests.Entidades
 {
     public class UsuarioTests
     {
-        [Fact()]
-        public void UsuarioTest()
+        [Fact]
+        public void Dado_DadosValidos_Quando_CriarUsuario_Entao_DeveCriarComSucesso()
         {
-            Xunit.Assert.Fail("This test needs an implementation");
+            // Arrange
+            var email = "usuario@teste.com";
+            var senha = "Senha@123";
+            var tipoUsuario = TipoUsuario.Admin;
+            var clienteId = Guid.NewGuid();
+
+            // Act
+            var usuario = new Usuario(email, senha, tipoUsuario, clienteId);
+
+            // Assert
+            usuario.Should().NotBeNull();
+            usuario.Email.Should().Be(email);
+            usuario.Senha.Should().Be(senha);
+            usuario.TipoUsuario.Should().Be(tipoUsuario);
+            usuario.ClienteId.Should().Be(clienteId);
+            usuario.Ativo.Should().BeTrue();
         }
 
-        [Fact()]
-        public void AtualizarTest()
+        [Fact]
+        public void Dado_DadosValidos_Quando_Atualizar_Entao_DeveAtualizarComSucesso()
         {
-            Xunit.Assert.Fail("This test needs an implementation");
+            // Arrange
+            var usuario = new Usuario("antigo@email.com", "SenhaAntiga@123", TipoUsuario.Cliente, Guid.NewGuid());
+            var novoEmail = "novo@email.com";
+            var novoTipoUsuario = TipoUsuario.Admin;
+            var novoClienteId = Guid.NewGuid();
+
+            // Act
+            usuario.Atualizar(novoEmail, null, null, novoTipoUsuario);
+
+            // Assert
+            usuario.Email.Should().Be(novoEmail);
+            usuario.TipoUsuario.Should().Be(novoTipoUsuario);
         }
 
-        [Fact()]
-        public void AtualizarUltimoAcessoTest()
+        [Fact]
+        public void Dado_DataValida_Quando_AtualizarUltimoAcesso_Entao_DeveAtualizarComSucesso()
         {
-            Xunit.Assert.Fail("This test needs an implementation");
+            // Arrange
+            var usuario = new Usuario("usuario@teste.com", "Senha@123", TipoUsuario.Cliente, Guid.NewGuid());
+            var dataAcesso = DateTime.UtcNow.AddHours(-1);
+
+            // Act
+            usuario.AtualizarUltimoAcesso(dataAcesso);
+
+            // Assert
+            usuario.DataUltimoAcesso.Should().Be(dataAcesso);
         }
     }
 }
