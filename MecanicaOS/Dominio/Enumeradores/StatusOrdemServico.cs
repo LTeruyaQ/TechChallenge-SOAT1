@@ -8,5 +8,6 @@ public enum StatusOrdemServico
     EmExecucao,
     Finalizada,
     Entregue,
-    Cancelada
+    Cancelada,
+    OrcamentoExpirado
 }

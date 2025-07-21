@@ -11,4 +11,5 @@ public class OrdemServicoResponse
     public double? Orcamento { get; set; }
     public string? Descricao { get; set; }
     public StatusOrdemServico Status { get; set; }
+    public DateTime? DataEnvioOrcamento { get; set; }
 }

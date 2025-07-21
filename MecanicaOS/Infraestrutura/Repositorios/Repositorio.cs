@@ -74,7 +74,7 @@ namespace Infraestrutura.Repositorios
             return await query.ToListAsync();
         }
         
-        public virtual async Task<IEnumerable<T>> ObterPorFiltroSemRatreamentoAsync(IEspecificacao<T> especificacao)
+        public virtual async Task<IEnumerable<T>> ObterPorFiltroSemRastreamentoAsync(IEspecificacao<T> especificacao)
         {
             var query = AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet.AsNoTracking(), especificacao);
             return await query.ToListAsync();

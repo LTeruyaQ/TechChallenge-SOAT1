@@ -145,4 +145,16 @@ public class InsumoOSServico(
             ordemServico.Id,
             _mapper.Map<AtualizarOrdemServicoRequest>(ordemServico));
     }
+
+    public async Task DevolverInsumosAoEstoqueAsync(IEnumerable<InsumoOS> insumosOS)
+    {
+        foreach (var insumo in insumosOS)
+        {
+            insumo.Estoque.QuantidadeDisponivel += insumo.Quantidade;
+
+            await _estoqueServico.AtualizarAsync(
+                insumo.EstoqueId,
+                _mapper.Map<AtualizarEstoqueRequest>(insumo.Estoque));
+        }
+    }
 }
