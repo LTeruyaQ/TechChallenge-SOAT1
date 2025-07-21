@@ -13,7 +13,7 @@ public class Usuario : Entidade
 
     public Guid? ClienteId { get; set; }
     public Cliente? Cliente { get; set; }
-    
+
     public Usuario() { }
 
     public Usuario(string email, string senha, TipoUsuario tipoUsuario, Guid clienteId)
