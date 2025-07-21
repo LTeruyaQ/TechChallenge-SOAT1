@@ -130,8 +130,9 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
         try
         {
             LogInicio(metodo);
-
-            var ordemServico = await _repositorio.ObterPorIdAsync(id);
+            
+            var especificacao = new ObterOrdemServicoPorIdComInsumosEspecificacao(id);
+            var ordemServico = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
 
             LogFim(metodo, ordemServico);
 
