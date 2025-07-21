@@ -15,17 +15,32 @@ public class OrdemServicoFinalizadaHandler(IRepositorio<OrdemServico> ordemServi
 
     public async Task Handle(OrdemServicoFinalizadaEvent notification, CancellationToken cancellationToken)
     {
-        var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(notification.OrdemServicoId);
-        var os = await _ordemServicoRepositorio.ObterUmSemRastreamentoAsync(especificacao);
+        var metodo = nameof(Handle);
 
-        if (os is null) return;
+        try
+        {
+            _logServico.LogInicio(metodo, notification.OrdemServicoId);
 
-        string conteudo = await GerarConteudoEmailAsync(os);
+            var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(notification.OrdemServicoId);
+            var os = await _ordemServicoRepositorio.ObterUmSemRastreamentoAsync(especificacao);
 
-        await _emailServico.EnviarAsync(
-            [os.Cliente.Contato.Email],
-            "Serviço Finalizado",
-            conteudo);
+            if (os is null) return;
+
+            string conteudo = await GerarConteudoEmailAsync(os);
+
+            await _emailServico.EnviarAsync(
+                [os.Cliente.Contato.Email],
+                "Serviço Finalizado",
+                conteudo);
+            
+            _logServico.LogFim(metodo);
+        }
+        catch (Exception e)
+        {
+            _logServico.LogErro(metodo, e);
+
+            throw;
+        }
     }
 
     private static async Task<string> GerarConteudoEmailAsync(OrdemServico os)

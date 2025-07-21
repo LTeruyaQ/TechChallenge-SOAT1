@@ -1,16 +1,35 @@
 ﻿using Aplicacao.Interfaces.Servicos;
 using Dominio.Entidades;
+using Dominio.Interfaces.Servicos;
+using MediatR;
 
 namespace Aplicacao.Servicos;
 
-public class OrcamentoServico : IOrcamentoServico
+public class OrcamentoServico(ILogServico<OrcamentoServico> logServico) :  IOrcamentoServico
 {
+    private readonly ILogServico<OrcamentoServico> _logServico = logServico;
+
     public decimal GerarOrcamento(OrdemServico ordemServico)
     {
-        decimal precoServico = ordemServico.Servico!.Valor;
-        decimal precoInsumos = ordemServico.InsumosOS.Sum(i =>
-            i.Quantidade * i.Estoque.Preco);
+        var metodo = nameof(GerarOrcamento);
 
-        return precoServico + precoInsumos;
+        try
+        {
+            _logServico.LogInicio(metodo, ordemServico);
+
+            decimal precoServico = ordemServico.Servico!.Valor;
+            decimal precoInsumos = ordemServico.InsumosOS.Sum(i =>
+                i.Quantidade * i.Estoque.Preco);
+
+            _logServico.LogFim(metodo);
+
+            return precoServico + precoInsumos;
+        }
+        catch (Exception e)
+        {
+            _logServico.LogErro(metodo, e);
+
+            throw;
+        }
     }
 }

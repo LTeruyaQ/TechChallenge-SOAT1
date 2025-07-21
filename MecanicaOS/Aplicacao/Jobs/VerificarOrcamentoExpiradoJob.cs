@@ -3,34 +3,51 @@ using Dominio.Entidades;
 using Dominio.Enumeradores;
 using Dominio.Especificacoes;
 using Dominio.Interfaces.Repositorios;
+using Dominio.Interfaces.Servicos;
 
 namespace Aplicacao.Jobs;
 
-public class VerificarOrcamentoExpiradoJob(IRepositorio<OrdemServico> ordemServicoRepositorio, IInsumoOSServico insumoOSServico, IUnidadeDeTrabalho uot)
+public class VerificarOrcamentoExpiradoJob(IRepositorio<OrdemServico> ordemServicoRepositorio, IInsumoOSServico insumoOSServico, IUnidadeDeTrabalho uot, ILogServico<VerificarOrcamentoExpiradoJob> logServico)
 {
     private readonly IRepositorio<OrdemServico> _ordemServicoRepositorio = ordemServicoRepositorio;
     private readonly IInsumoOSServico _insumoOSServico = insumoOSServico;
     private readonly IUnidadeDeTrabalho _uot = uot;
+    private readonly ILogServico<VerificarOrcamentoExpiradoJob> _logServico = logServico;
 
     public async Task ExecutarAsync()
     {
-        var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
-        var ordensServico = await _ordemServicoRepositorio.ObterPorFiltroAsync(especificacao);
+        var metodo = nameof(ExecutarAsync);
 
-        if (!ordensServico.Any())
+        try
         {
-            return;
+            _logServico.LogInicio(metodo);
+
+            var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
+            var ordensServico = await _ordemServicoRepositorio.ObterPorFiltroAsync(especificacao);
+
+            if (!ordensServico.Any())
+            {
+                return;
+            }
+
+            ordensServico.ToList().ForEach(o =>
+            {
+                o.Status = StatusOrdemServico.OrcamentoExpirado;
+            });
+
+            await _insumoOSServico.DevolverInsumosAoEstoqueAsync(ordensServico.SelectMany(os => os.InsumosOS));
+
+            await _ordemServicoRepositorio.EditarVariosAsync(ordensServico);
+
+            await _uot.Commit();
+
+            _logServico.LogFim(metodo);
         }
-
-        ordensServico.ToList().ForEach(o =>
+        catch (Exception e)
         {
-            o.Status = StatusOrdemServico.OrcamentoExpirado;
-        });
+            _logServico.LogErro(metodo, e);
 
-        await _insumoOSServico.DevolverInsumosAoEstoqueAsync(ordensServico.SelectMany(os => os.InsumosOS));
-
-        await _ordemServicoRepositorio.EditarVariosAsync(ordensServico);
-
-        await _uot.Commit();
+            throw;
+        }
     }
 }

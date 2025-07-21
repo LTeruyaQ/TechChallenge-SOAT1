@@ -35,7 +35,7 @@ public class InsumoOSServico(
 
         try
         {
-            LogInicio(metodo);
+            LogInicio(metodo, request);
 
             var os = await ObterOrdemServicoAsync(ordemServicoId);
 
@@ -48,7 +48,7 @@ public class InsumoOSServico(
                 return insumo;
             })];
 
-            await ValidarEAtualizarEstoqueAsync(os.Id, insumosOS);
+            await ValidarEAtualizarEstoqueAsync(insumosOS);
 
             var entidades = await _repositorio.CadastrarVariosAsync(insumosOS);
 
@@ -75,7 +75,7 @@ public class InsumoOSServico(
                  ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
     }
 
-    private async Task ValidarEAtualizarEstoqueAsync(Guid ordemServicoId, List<InsumoOS> insumos)
+    private async Task ValidarEAtualizarEstoqueAsync(List<InsumoOS> insumos)
     {
         var insumosIndisponiveis = new List<Estoque>();
 
@@ -146,13 +146,28 @@ public class InsumoOSServico(
 
     public async Task DevolverInsumosAoEstoqueAsync(IEnumerable<InsumoOS> insumosOS)
     {
-        foreach (var insumo in insumosOS)
-        {
-            insumo.Estoque.QuantidadeDisponivel += insumo.Quantidade;
+        var metodo = nameof(DevolverInsumosAoEstoqueAsync);
 
-            await _estoqueServico.AtualizarAsync(
-                insumo.EstoqueId,
-                _mapper.Map<AtualizarEstoqueRequest>(insumo.Estoque));
+        try
+        {
+            LogInicio(metodo, insumosOS);
+
+            foreach (var insumo in insumosOS)
+            {
+                insumo.Estoque.QuantidadeDisponivel += insumo.Quantidade;
+
+                await _estoqueServico.AtualizarAsync(
+                    insumo.EstoqueId,
+                    _mapper.Map<AtualizarEstoqueRequest>(insumo.Estoque));
+            }
+
+            LogFim(metodo);
+        }
+        catch (Exception e)
+        {
+            LogErro(metodo, e);
+
+            throw;
         }
     }
 }

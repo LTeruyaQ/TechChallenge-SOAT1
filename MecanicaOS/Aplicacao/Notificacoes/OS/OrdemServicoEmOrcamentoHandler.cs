@@ -10,41 +10,49 @@ using System.Text.RegularExpressions;
 
 namespace Aplicacao.Notificacoes.OS;
 
-public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoEmOrcamentoEvent>
+public class OrdemServicoEmOrcamentoHandler(
+    IRepositorio<OrdemServico> ordemServicoRepositorio,
+    IOrcamentoServico orcamentoServico,
+    IServicoEmail emailServico,
+    ILogServico<OrdemServicoEmOrcamentoHandler> logServico,
+    IUnidadeDeTrabalho uot) : INotificationHandler<OrdemServicoEmOrcamentoEvent>
 {
-    private readonly IRepositorio<OrdemServico> _ordemServicoRepositorio;
-    private readonly IOrcamentoServico _orcamentoServico;
-    private readonly IServicoEmail _emailServico;
-    private readonly IUnidadeDeTrabalho _uot;
-
-    public OrdemServicoEmOrcamentoHandler(
-        IRepositorio<OrdemServico> ordemServicoRepositorio,
-        IOrcamentoServico orcamentoServico,
-        IServicoEmail emailServico,
-        ILogServico<OrdemServicoEmOrcamentoHandler> logServico,
-        IUnidadeDeTrabalho uot)
-    {
-        _ordemServicoRepositorio = ordemServicoRepositorio;
-        _orcamentoServico = orcamentoServico;
-        _emailServico = emailServico;
-        _uot = uot;
-    }
+    private readonly IRepositorio<OrdemServico> _ordemServicoRepositorio = ordemServicoRepositorio;
+    private readonly IOrcamentoServico _orcamentoServico = orcamentoServico;
+    private readonly IServicoEmail _emailServico = emailServico;
+    private readonly IUnidadeDeTrabalho _uot = uot;
+    private readonly ILogServico<OrdemServicoEmOrcamentoHandler> _logServico = logServico;
 
     public async Task Handle(OrdemServicoEmOrcamentoEvent notification, CancellationToken cancellationToken)
     {
-        var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(notification.OrdemServicoId);
-        var os = await _ordemServicoRepositorio.ObterUmAsync(especificacao);
+        var metodo = nameof(Handle);
 
-        if (os is null) return;
+        try
+        {
+            _logServico.LogInicio(metodo, notification.OrdemServicoId);
 
-        os.Orcamento = _orcamentoServico.GerarOrcamento(os);
-        os.Status = StatusOrdemServico.AguardandoAprovação;
-        os.DataEnvioOrcamento = DateTime.UtcNow;
+            var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(notification.OrdemServicoId);
+            var os = await _ordemServicoRepositorio.ObterUmAsync(especificacao);
 
-        await EnviarOrcamentoAsync(os);
+            if (os is null) return;
 
-        await _ordemServicoRepositorio.EditarAsync(os);
-        await _uot.Commit();
+            os.Orcamento = _orcamentoServico.GerarOrcamento(os);
+            os.Status = StatusOrdemServico.AguardandoAprovação;
+            os.DataEnvioOrcamento = DateTime.UtcNow;
+
+            await EnviarOrcamentoAsync(os);
+
+            await _ordemServicoRepositorio.EditarAsync(os);
+            await _uot.Commit();
+
+            _logServico.LogFim(metodo);
+        }
+        catch (Exception e)
+        {
+            _logServico.LogErro(metodo, e);
+
+            throw;
+        }
     }
 
     private async Task EnviarOrcamentoAsync(OrdemServico os)
@@ -57,30 +65,23 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
             conteudo);
     }
 
-    private async Task<string> GerarConteudoEmailAsync(OrdemServico os)
+    private static async Task<string> GerarConteudoEmailAsync(OrdemServico os)
     {
         const string templateFileName = "EmailOrcamentoOS.html";
 
-        try
-        {
-            string templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", templateFileName);
-            string template = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
+        string templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", templateFileName);
+        string template = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
 
-            template = template
-                .Replace("{{NOME_CLIENTE}}", os.Cliente.Nome)
-                .Replace("{{NOME_SERVICO}}", os.Servico.Nome)
-                .Replace("{{VALOR_SERVICO}}", os.Servico.Valor.ToString("N2"))
-                .Replace("{{VALOR_TOTAL}}", os.Orcamento!.Value.ToString("N2"));
+        template = template
+            .Replace("{{NOME_CLIENTE}}", os.Cliente.Nome)
+            .Replace("{{NOME_SERVICO}}", os.Servico.Nome)
+            .Replace("{{VALOR_SERVICO}}", os.Servico.Valor.ToString("N2"))
+            .Replace("{{VALOR_TOTAL}}", os.Orcamento!.Value.ToString("N2"));
 
-            string insumosHtml = GerarHtmlInsumos(os.InsumosOS);
-            template = Regex.Replace(template, @"{{#each INSUMOS}}(.*?){{/each}}", insumosHtml, RegexOptions.Singleline);
+        string insumosHtml = GerarHtmlInsumos(os.InsumosOS);
+        template = Regex.Replace(template, @"{{#each INSUMOS}}(.*?){{/each}}", insumosHtml, RegexOptions.Singleline);
 
-            return template;
-        }
-        catch (Exception e)
-        {
-            throw;
-        }
+        return template;
     }
 
     private static string GerarHtmlInsumos(IEnumerable<InsumoOS> insumosOS)
