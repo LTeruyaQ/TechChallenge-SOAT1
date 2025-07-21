@@ -14,25 +14,17 @@ namespace Dominio.Especificacoes.Base
             Direita = direita ?? throw new ArgumentNullException(nameof(direita));
 
             if (esquerda.Inclusoes != null)
-            {
-                foreach (var inclusao in esquerda.Inclusoes)
-                {
-                    if (!Inclusoes.Contains(inclusao))
-                    {
-                        Inclusoes.Add(inclusao);
-                    }
-                }
-            }
+                AplicarInclusoes(esquerda);
 
             if (direita.Inclusoes != null)
+                AplicarInclusoes(direita);
+        }
+
+        private void AplicarInclusoes(IEspecificacao<T> esquerda)
+        {
+            foreach (var inclusao in esquerda.Inclusoes)
             {
-                foreach (var inclusao in direita.Inclusoes)
-                {
-                    if (!Inclusoes.Contains(inclusao))
-                    {
-                        Inclusoes.Add(inclusao);
-                    }
-                }
+                Inclusoes.Add(inclusao);
             }
         }
 
