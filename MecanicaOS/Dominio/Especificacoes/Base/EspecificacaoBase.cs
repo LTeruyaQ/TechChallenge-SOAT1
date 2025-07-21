@@ -5,11 +5,11 @@ namespace Dominio.Especificacoes.Base
 {
     public abstract class EspecificacaoBase<T> : IEspecificacao<T> where T : class
     {
-        private readonly List<string> _inclusoes = new();
+        private readonly HashSet<string> _inclusoes = new();
 
         public abstract Expression<Func<T, bool>> Expressao { get; }
 
-        public List<string> Inclusoes => _inclusoes;
+        public HashSet<string> Inclusoes => _inclusoes;
 
         protected void AdicionarInclusao<TProp>(Expression<Func<T, TProp>> navegacao)
         {
