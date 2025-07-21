@@ -259,19 +259,19 @@ public class ObterOrdemServicoComMultiplosNiveisEspecificacao : EspecificacaoBas
 
         // Inclui propriedades de primeiro nível
         AdicionarInclusao(os => os.Servico);
-        
+
         // Inclui Cliente com suas propriedades
         AdicionarInclusao(os => os.Cliente);
         AdicionarInclusao(os => os.Cliente.Contato);
         AdicionarInclusao(os => os.Cliente.Endereco);
-        
+
         // Inclui Veículo e suas propriedades
         AdicionarInclusao(os => os.Veiculo);
-        
+
         // Inclui o Cliente do Veículo
         AdicionarInclusao(os => os.Veiculo.Cliente);
         AdicionarInclusao(os => os.Veiculo.Cliente.Contato);
-        
+
         // Inclui coleção de InsumosOS com navegação para Estoque
         AdicionarInclusao(os => os.InsumosOS);
         AdicionarInclusao(os => os.InsumosOS, io => io.Estoque);

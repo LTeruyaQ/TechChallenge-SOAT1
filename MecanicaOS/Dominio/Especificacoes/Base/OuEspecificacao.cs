@@ -1,5 +1,4 @@
 using Dominio.Especificacoes.Base.Interfaces;
-using System;
 using System.Linq.Expressions;
 
 namespace Dominio.Especificacoes.Base
@@ -14,12 +13,27 @@ namespace Dominio.Especificacoes.Base
             Esquerda = esquerda ?? throw new ArgumentNullException(nameof(esquerda));
             Direita = direita ?? throw new ArgumentNullException(nameof(direita));
 
-            // Combina as inclusões das especificações filhas
             if (esquerda.Inclusoes != null)
-                _ = esquerda.Inclusoes.Select(Inclusoes.Add);
+            {
+                foreach (var inclusao in esquerda.Inclusoes)
+                {
+                    if (!Inclusoes.Contains(inclusao))
+                    {
+                        Inclusoes.Add(inclusao);
+                    }
+                }
+            }
 
             if (direita.Inclusoes != null)
-                _ = direita.Inclusoes.Select(Inclusoes.Add);
+            {
+                foreach (var inclusao in direita.Inclusoes)
+                {
+                    if (!Inclusoes.Contains(inclusao))
+                    {
+                        Inclusoes.Add(inclusao);
+                    }
+                }
+            }
         }
 
         public override Expression<Func<T, bool>> Expressao
