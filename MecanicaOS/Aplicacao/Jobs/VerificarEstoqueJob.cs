@@ -7,30 +7,20 @@ using System.Text;
 
 namespace Aplicacao.Jobs;
 
-public class VerificarEstoqueJob
+public class VerificarEstoqueJob(
+    IRepositorio<Estoque> estoqueRepositorio,
+    IRepositorio<Usuario> usuarioRepositorio,
+    IRepositorio<AlertaEstoque> alertaEstoqueRepositorio,
+    IServicoEmail notificacaoEmail,
+    ILogServico<VerificarEstoqueJob> logServico,
+    IUnidadeDeTrabalho uot)
 {
-    private readonly IRepositorio<Estoque> _estoqueRepositorio;
-    private readonly IRepositorio<Usuario> _usuarioRepositorio;
-    private readonly IRepositorio<AlertaEstoque> _alertaEstoqueRepositorio;
-    private readonly ILogServico<VerificarEstoqueJob> _logServico;
-    private readonly IServicoEmail _servicoEmail;
-    private readonly IUnidadeDeTrabalho _uot;
-
-    public VerificarEstoqueJob(
-        IRepositorio<Estoque> estoqueRepositorio,
-        IRepositorio<Usuario> usuarioRepositorio,
-        IRepositorio<AlertaEstoque> alertaEstoqueRepositorio,
-        IServicoEmail notificacaoEmail,
-        ILogServico<VerificarEstoqueJob> logServico,
-        IUnidadeDeTrabalho uot)
-    {
-        _estoqueRepositorio = estoqueRepositorio;
-        _usuarioRepositorio = usuarioRepositorio;
-        _alertaEstoqueRepositorio = alertaEstoqueRepositorio;
-        _servicoEmail = notificacaoEmail;
-        _logServico = logServico;
-        _uot = uot;
-    }
+    private readonly IRepositorio<Estoque> _estoqueRepositorio = estoqueRepositorio;
+    private readonly IRepositorio<Usuario> _usuarioRepositorio = usuarioRepositorio;
+    private readonly IRepositorio<AlertaEstoque> _alertaEstoqueRepositorio = alertaEstoqueRepositorio;
+    private readonly ILogServico<VerificarEstoqueJob> _logServico = logServico;
+    private readonly IServicoEmail _servicoEmail = notificacaoEmail;
+    private readonly IUnidadeDeTrabalho _uot = uot;
 
     public async Task ExecutarAsync()
     {

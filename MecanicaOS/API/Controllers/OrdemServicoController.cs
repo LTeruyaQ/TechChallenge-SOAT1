@@ -31,7 +31,6 @@ public class OrdemServicoController : BaseApiController
         return Ok(ordemServicos);
     }
 
-    //TODO: adicionar insumos da OS no retorno
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]

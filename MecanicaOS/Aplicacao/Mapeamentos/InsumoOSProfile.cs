@@ -9,7 +9,7 @@ public class InsumoOSProfile : Profile
 {
     public InsumoOSProfile()
     {
-        CreateMap<InsumoOS, InsumoOSResponse>();
+        CreateMap<InsumoOS, InsumoOSResponse>(); 
 
         CreateMap<CadastrarInsumoOSRequest, InsumoOS>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())

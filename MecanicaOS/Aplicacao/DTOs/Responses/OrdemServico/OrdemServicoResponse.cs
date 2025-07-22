@@ -1,4 +1,5 @@
-﻿using Dominio.Enumeradores;
+﻿using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
+using Dominio.Enumeradores;
 
 namespace Aplicacao.DTOs.Responses.OrdemServico;
 
@@ -11,4 +12,6 @@ public class OrdemServicoResponse
     public double? Orcamento { get; set; }
     public string? Descricao { get; set; }
     public StatusOrdemServico Status { get; set; }
+    public DateTime? DataEnvioOrcamento { get; set; }
+    public IEnumerable<InsumoOSResponse>? Insumos { get; set; }
 }

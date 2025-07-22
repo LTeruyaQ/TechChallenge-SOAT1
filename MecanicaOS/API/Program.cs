@@ -228,8 +228,19 @@ app.UseEndpoints(endpoints =>
 });
 
 app.UseHangfireDashboard("/hangfire");
+
 RecurringJob.AddOrUpdate<VerificarEstoqueJob>(
     recurringJobId: "verificar-estoque",
+    methodCall: job => job.ExecutarAsync(),
+    cronExpression: Cron.Hourly(),
+    options: new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.Local
+    }
+);
+
+RecurringJob.AddOrUpdate<VerificarOrcamentoExpiradoJob>(
+    recurringJobId: "verificar-orcamento-expirado",
     methodCall: job => job.ExecutarAsync(),
     cronExpression: Cron.Hourly(),
     options: new RecurringJobOptions

@@ -1,29 +1,40 @@
-﻿using Dominio.Entidades;
+﻿using Aplicacao.Interfaces.Servicos;
+using Dominio.Entidades;
 using Dominio.Especificacoes;
 using Dominio.Interfaces.Repositorios;
+using Dominio.Interfaces.Servicos;
 using MediatR;
 
 namespace Aplicacao.Notificacoes.OS;
 
-public class OrdemServicoCanceladaHandler(IRepositorio<InsumoOS> ordemServicoRepositorio, IRepositorio<Estoque> estoqueRepositorio, IUnidadeDeTrabalho uot) : INotificationHandler<OrdemServicoCanceladaEvent>
+public class OrdemServicoCanceladaHandler(IRepositorio<InsumoOS> ordemServicoRepositorio, IInsumoOSServico insumoOSServico, ILogServico<OrdemServicoCanceladaHandler> logServico) : INotificationHandler<OrdemServicoCanceladaEvent>
 {
     private readonly IRepositorio<InsumoOS> _insumoOSRepositorio = ordemServicoRepositorio;
-    private readonly IRepositorio<Estoque> _estoqueRepositorio = estoqueRepositorio;
-    private readonly IUnidadeDeTrabalho _uot = uot;
+    private readonly IInsumoOSServico _insumoOSServico = insumoOSServico;
+    private readonly ILogServico<OrdemServicoCanceladaHandler> _logServico = logServico;
 
     public async Task Handle(OrdemServicoCanceladaEvent notification, CancellationToken cancellationToken)
     {
-        var especificacao = new ObterInsumosOSPorOSEspecificacao(notification.OrdemServicoId);
-        var insumosOS = await _insumoOSRepositorio.ObterPorFiltroAsync(especificacao);
+        var metodo = nameof(Handle);
 
-        if (!insumosOS.Any()) return;
-
-        foreach (var insumo in insumosOS)
+        try
         {
-            insumo.Estoque.QuantidadeDisponivel += insumo.Quantidade;
-        }
+            _logServico.LogInicio(metodo, notification.OrdemServicoId);
 
-        await _estoqueRepositorio.EditarVariosAsync(insumosOS.Select(o => o.Estoque));
-        await _uot.Commit();
+            var especificacao = new ObterInsumosOSPorOSEspecificacao(notification.OrdemServicoId);
+            var insumosOS = await _insumoOSRepositorio.ObterPorFiltroAsync(especificacao);
+
+            if (!insumosOS.Any()) return;
+
+            await _insumoOSServico.DevolverInsumosAoEstoqueAsync(insumosOS);
+
+            _logServico.LogFim(metodo);
+        }
+        catch (Exception e)
+        {
+            _logServico.LogErro(metodo, e);
+
+            throw;
+        }
     }
 }

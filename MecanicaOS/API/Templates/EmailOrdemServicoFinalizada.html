@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Seu veículo está pronto!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f6f6;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2a9d8f;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #2a9d8f;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Olá, {{NOME_CLIENTE}}!</h1>
+        <p>O serviço no seu veículo foi <strong>finalizado com sucesso</strong>.</p>
+        <p>O seu automóvel já está disponível para retirada em nossa oficina.</p>
+
+        <p>
+            <strong>Serviço:</strong> {{NOME_SERVICO}}<br>
+            <strong>Veículo:</strong> {{MODELO_VEICULO}} - {{PLACA_VEICULO}}
+        </p>
+
+        <div class="footer">
+            <p>Se tiver qualquer dúvida, entre em contato conosco.</p>
+            <p>Atenciosamente,<br>Equipe MecnicaOS</p>
+        </div>
+    </div>
+</body>
+</html>

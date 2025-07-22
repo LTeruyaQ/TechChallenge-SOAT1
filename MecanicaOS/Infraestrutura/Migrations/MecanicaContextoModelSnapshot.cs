@@ -258,6 +258,9 @@ namespace Infraestrutura.Migrations
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("DataEnvioOrcamento")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Descricao")
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
