@@ -22,7 +22,7 @@ jobs:
     - name: Build
       run: dotnet build MecanicaOS.sln --no-restore
     - name: Test
-      run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj --logger "console;verbosity=detailed"
+      run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Threshold=80 /p:ThresholdType=line
 
   lint:
     runs-on: ubuntu-latest
