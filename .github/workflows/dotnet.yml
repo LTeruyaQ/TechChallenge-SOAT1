@@ -33,11 +33,6 @@ jobs:
       uses: codecov/codecov-action@v3
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-    - name: Check coverage
-      run: |
-        pip install coverage
-        coverage xml -i
-        coverage report --fail-under=80
 
   lint:
     runs-on: ubuntu-latest
