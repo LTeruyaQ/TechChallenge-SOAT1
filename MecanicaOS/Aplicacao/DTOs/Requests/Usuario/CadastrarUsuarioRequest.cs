@@ -1,4 +1,5 @@
 using Dominio.Enumeradores;
+using Dominio.Validacoes.AtributosValidacao;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -35,6 +36,7 @@ public class CadastrarUsuarioRequest
 
     [StringLength(20, ErrorMessage = "O Documento deve ter no máximo {1} caracteres")]
     [DisplayName("Documento")]
-    [SwaggerSchema(Description = "Número do documento (CPF, RG, etc.)")]
+    [CpfOuCnpj(ErrorMessage = "Documento inválido")]
+    [SwaggerSchema(Description = "Número do documento (CPF ou CNPJ)")]
     public string? Documento { get; set; }
 }
