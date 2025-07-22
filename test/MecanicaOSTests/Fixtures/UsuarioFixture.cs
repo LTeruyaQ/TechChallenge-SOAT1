@@ -24,7 +24,6 @@ namespace MecanicaOSTests.Fixtures
             {
                 Email = "usuario.atualizado@teste.com",
                 TipoUsuario = TipoUsuario.Cliente,
-                Documento = "12345678901",
                 RecebeAlertaEstoque = true
             };
         }
