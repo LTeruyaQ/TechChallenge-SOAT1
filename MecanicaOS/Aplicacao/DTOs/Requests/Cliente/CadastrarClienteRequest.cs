@@ -1,4 +1,5 @@
 using Dominio.Enumeradores;
+using Dominio.Validacoes.AtributosValidacao;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -25,6 +26,7 @@ namespace Aplicacao.DTOs.Requests.Cliente
         [Required(ErrorMessage = "O campo Documento é obrigatório")]
         [StringLength(20, ErrorMessage = "O Documento deve ter no máximo {1} caracteres")]
         [DisplayName("Documento")]
+        [CpfOuCnpj(ErrorMessage = "Documento inválido")]
         [SwaggerSchema(Description = "Número do documento (RG, CNH, etc.)")]
         public string Documento { get; set; } = null!;
 
@@ -83,7 +85,7 @@ namespace Aplicacao.DTOs.Requests.Cliente
 
         [Required(ErrorMessage = "O campo Telefone é obrigatório")]
         [StringLength(15, ErrorMessage = "O Telefone deve ter no máximo {1} caracteres")]
-        [RegularExpression(@"^\+?[0-9\s-()]*$", ErrorMessage = "Formato de telefone inválido")]
+        [RegularExpression(@"^\(?\d{2}\)?[\s-]?9?\d{4}[-\s]?\d{4}$", ErrorMessage = "Formato de telefone inválido")]
         [DisplayName("Telefone")]
         [SwaggerSchema(Description = "Número de telefone do cliente")]
         public string Telefone { get; set; } = null!;

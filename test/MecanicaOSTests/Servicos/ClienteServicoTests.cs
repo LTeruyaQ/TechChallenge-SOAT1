@@ -105,7 +105,7 @@ namespace MecanicaOSTests.Servicos
             _clienteRepoMock.Setup(r => r.DeletarAsync(cliente)).Returns(Task.CompletedTask);
             _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
 
-            var result = await _clienteServico.DeletarAsync(id);
+            var result = await _clienteServico.RemoverAsync(id);
 
             Assert.True(result);
         }
@@ -120,7 +120,7 @@ namespace MecanicaOSTests.Servicos
             _clienteRepoMock.Setup(r => r.DeletarAsync(cliente)).Returns(Task.CompletedTask);
             _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
 
-            await Assert.ThrowsAsync<PersistirDadosException>(() => _clienteServico.DeletarAsync(id));
+            await Assert.ThrowsAsync<PersistirDadosException>(() => _clienteServico.RemoverAsync(id));
         }
 
         //[Fact]

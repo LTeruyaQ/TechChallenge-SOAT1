@@ -209,9 +209,9 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<bool> DeletarAsync(Guid id)
+        public async Task<bool> RemoverAsync(Guid id)
         {
-            string metodo = nameof(DeletarAsync);
+            string metodo = nameof(RemoverAsync);
 
             try
             {
