@@ -47,5 +47,5 @@ jobs:
           commit-message: "feat: new feature"
           title: "PR for feature branch"
           body: "This PR was auto-generated."
-          branch: ${{ github.ref }}
+          branch: ${{ github.ref_name }}
           base: main
