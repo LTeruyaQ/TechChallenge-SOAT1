@@ -79,7 +79,8 @@ namespace Infraestrutura.Migrations
 
                     b.Property<string>("TipoCliente")
                         .IsRequired()
-                        .HasColumnType("varchar(20)");
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
 
                     b.HasKey("Id");
 

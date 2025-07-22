@@ -1,3 +1,4 @@
+using Dominio.Enumeradores;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -35,7 +36,7 @@ namespace Aplicacao.DTOs.Requests.Cliente
         [Required(ErrorMessage = "O campo Tipo de Cliente é obrigatório")]
         [DisplayName("Tipo de Cliente")]
         [SwaggerSchema(Description = "Tipo de cliente (Física/Jurídica)")]
-        public string TipoCliente { get; set; } = null!;
+        public TipoCliente TipoCliente { get; set; }
 
         [Required(ErrorMessage = "O campo Rua é obrigatório")]
         [StringLength(200, ErrorMessage = "A Rua deve ter no máximo {1} caracteres")]
