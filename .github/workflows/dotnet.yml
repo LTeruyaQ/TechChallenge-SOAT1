@@ -22,7 +22,13 @@ jobs:
     - name: Build
       run: dotnet build MecanicaOS.sln --no-restore
     - name: Test
-      run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj --logger "console;verbosity=detailed"
+      run: dotnet test --collect:"XPlat Code Coverage" --results-directory "TestResults"
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: TestResults/**/coverage.cobertura.xml
+        min-coverage: 80
 
   lint:
     runs-on: ubuntu-latest
