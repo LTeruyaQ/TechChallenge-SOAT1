@@ -8,11 +8,16 @@ namespace API.Filters;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public class PermissaoNecessariaAttribute : AuthorizeAttribute, IAuthorizationFilter
 {
-    private readonly string _permissao;
+    private readonly string[] _permissoes;
 
-    public PermissaoNecessariaAttribute(string permissao)
+    public PermissaoNecessariaAttribute(params string[] permissoes)
     {
-        _permissao = permissao;
+        _permissoes = permissoes ?? throw new ArgumentNullException(nameof(permissoes));
+        
+        if (permissoes.Length == 0)
+        {
+            throw new ArgumentException("Pelo menos uma permissão deve ser fornecida", nameof(permissoes));
+        }
     }
 
     public void OnAuthorization(AuthorizationFilterContext context)
@@ -25,9 +30,10 @@ public class PermissaoNecessariaAttribute : AuthorizeAttribute, IAuthorizationFi
             return;
         }
 
-        if (!usuarioLogadoServico.PossuiPermissao(_permissao))
+        if (!_permissoes.Any(permissao => usuarioLogadoServico.PossuiPermissao(permissao)))
         {
-            context.Result = new ForbidResult();
+            var permissoesFormatadas = string.Join(" ou ", _permissoes);
+            context.Result = new ForbidResult($"Você precisa ter pelo menos uma das seguintes permissões: {permissoesFormatadas}");
             return;
         }
     }

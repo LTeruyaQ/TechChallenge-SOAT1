@@ -1,3 +1,4 @@
+using API.Filters;
 using API.Models;
 using Aplicacao.DTOs.Requests.Usuario;
 using Aplicacao.DTOs.Responses.Usuario;
@@ -18,6 +19,7 @@ public class UsuarioController : BaseApiController
     }
 
     [HttpGet]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(typeof(IEnumerable<UsuarioResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterTodos()
@@ -27,6 +29,7 @@ public class UsuarioController : BaseApiController
     }
 
     [HttpGet("{id:guid}")]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(typeof(UsuarioResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -38,6 +41,7 @@ public class UsuarioController : BaseApiController
     }
 
     [HttpPost]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
@@ -52,6 +56,7 @@ public class UsuarioController : BaseApiController
     }
 
     [HttpPut("{id:guid}")]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(typeof(UsuarioResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -66,6 +71,7 @@ public class UsuarioController : BaseApiController
     }
 
     [HttpDelete("{id:guid}")]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]

@@ -1,3 +1,4 @@
+using API.Filters;
 using Aplicacao.DTOs.Requests.Veiculo;
 using Aplicacao.DTOs.Responses.Veiculo;
 using Aplicacao.Interfaces.Servicos;
@@ -19,6 +20,7 @@ public class VeiculoController : BaseApiController
     }
 
     [HttpPost]
+    [PermissaoNecessaria("cliente", "admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -34,6 +36,7 @@ public class VeiculoController : BaseApiController
     }
 
     [HttpDelete("{id:guid}")]
+    [PermissaoNecessaria("cliente", "admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -47,6 +50,7 @@ public class VeiculoController : BaseApiController
     }
 
     [HttpPut("{id:guid}")]
+    [PermissaoNecessaria("cliente", "admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -61,6 +65,7 @@ public class VeiculoController : BaseApiController
     }
 
     [HttpGet("cliente/{clienteId:guid}")]
+    [PermissaoNecessaria("cliente", "admin")]
     [ProducesResponseType(typeof(IEnumerable<VeiculoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -71,6 +76,7 @@ public class VeiculoController : BaseApiController
     }
 
     [HttpGet("{id:guid}")]
+    [PermissaoNecessaria("cliente", "admin")]
     [ProducesResponseType(typeof(VeiculoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -81,6 +87,7 @@ public class VeiculoController : BaseApiController
     }
 
     [HttpGet]
+    [PermissaoNecessaria("cliente", "admin")]
     [ProducesResponseType(typeof(IEnumerable<VeiculoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterTodos()

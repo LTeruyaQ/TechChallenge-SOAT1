@@ -1,3 +1,4 @@
+using API.Filters;
 using API.Models;
 using Aplicacao.DTOs.Requests.OrdemServico;
 using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
@@ -23,6 +24,7 @@ public class OrdemServicoController : BaseApiController
     }
 
     [HttpGet]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(typeof(IEnumerable<OrdemServicoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterTodos()
@@ -32,6 +34,7 @@ public class OrdemServicoController : BaseApiController
     }
 
     [HttpGet("{id:guid}")]
+    [PermissaoNecessaria("cliente", "admin")]
     [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -43,6 +46,7 @@ public class OrdemServicoController : BaseApiController
     }
 
     [HttpGet("{status}")]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(typeof(IEnumerable<OrdemServicoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -54,6 +58,7 @@ public class OrdemServicoController : BaseApiController
     }
 
     [HttpPost]
+    [PermissaoNecessaria("cliente", "admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
@@ -65,6 +70,7 @@ public class OrdemServicoController : BaseApiController
     }
 
     [HttpPut("{id:guid}")]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -76,6 +82,7 @@ public class OrdemServicoController : BaseApiController
     }
 
     [HttpPost("{ordemServicoId}/insumos")]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(typeof(InsumoOSResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -87,6 +94,7 @@ public class OrdemServicoController : BaseApiController
     }
 
     [HttpPatch("{id}/aceitar-orcamento")]
+    [PermissaoNecessaria("cliente", "admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -98,6 +106,7 @@ public class OrdemServicoController : BaseApiController
     }
 
     [HttpPatch("{id}/recusar-orcamento")]
+    [PermissaoNecessaria("cliente", "admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]

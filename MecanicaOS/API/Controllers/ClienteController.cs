@@ -1,3 +1,4 @@
+using API.Filters;
 using API.Models;
 using Aplicacao.DTOs.Requests.Cliente;
 using Aplicacao.DTOs.Responses.Cliente;
@@ -18,6 +19,7 @@ public class ClienteController : BaseApiController
     }
 
     [HttpGet]
+    [PermissaoNecessaria("cliente", "admin")]
     [ProducesResponseType(typeof(IEnumerable<ClienteResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAll()
@@ -27,6 +29,7 @@ public class ClienteController : BaseApiController
 
 
     [HttpPost]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
@@ -40,6 +43,7 @@ public class ClienteController : BaseApiController
     }
 
     [HttpPut("{id:guid}")]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(typeof(ClienteResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -53,6 +57,7 @@ public class ClienteController : BaseApiController
     }
 
     [HttpDelete("{id:guid}")]
+    [PermissaoNecessaria("admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
