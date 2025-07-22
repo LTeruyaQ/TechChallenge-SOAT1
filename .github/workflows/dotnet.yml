@@ -2,7 +2,7 @@ name: .NET
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "feature/*" ]
   pull_request:
     branches: [ "main" ]
 
@@ -22,7 +22,17 @@ jobs:
     - name: Build
       run: dotnet build MecanicaOS.sln --no-restore
     - name: Test
-      run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj --logger "console;verbosity=detailed"
+      run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj --collect:"XPlat Code Coverage" --logger "console;verbosity=detailed" --results-directory ./test-results
+    - name: "Publish Test Results"
+      uses: "dorny/test-reporter@v1"
+      with:
+        name: "Test Results"
+        path: "test-results/*.trx"
+        reporter: "dotnet-trx"
+        fail-on-error: "true"
+        fail-on-empty: "true"
+        fail-on-passed-with-warnings: "true"
+        fail-under: "80"
 
   lint:
     runs-on: ubuntu-latest
@@ -31,3 +41,19 @@ jobs:
       - uses: amannn/action-semantic-pull-request@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  create_pr:
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/feature/')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "feat: new feature"
+          title: "PR for feature branch"
+          body: "This PR was auto-generated."
+          branch: ${{ github.ref }}
+          base: main
