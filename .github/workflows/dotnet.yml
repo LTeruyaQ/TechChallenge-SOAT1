@@ -22,7 +22,7 @@ jobs:
     - name: Build
       run: dotnet build MecanicaOS.sln --no-restore
     - name: Test
-      run: dotnet test MecanicaOS.sln --no-build --verbosity normal
+      run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj --logger "console;verbosity=detailed"
 
   lint:
     runs-on: ubuntu-latest
