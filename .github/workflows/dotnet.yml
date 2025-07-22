@@ -24,6 +24,23 @@ jobs:
     - name: Test
       run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj --logger "console;verbosity=detailed"
 
+    run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj --collect:"XPlat Code Coverage" --logger "console;verbosity=detailed"
+    - name: Code Coverage Report
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.1.26
+      with:
+        reports: "**/coverage.cobertura.xml"
+        targetdir: "coveragereport"
+        reporttypes: "Html"
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    - name: Check coverage
+      run: |
+        pip install coverage
+        coverage xml -i
+        coverage report --fail-under=80
+
   lint:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
@@ -31,7 +48,7 @@ jobs:
       - uses: amannn/action-semantic-pull-request@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+
   create_pr:
     needs: [build]
     runs-on: ubuntu-latest
