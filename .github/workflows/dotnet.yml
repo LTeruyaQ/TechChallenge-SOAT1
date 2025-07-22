@@ -22,9 +22,7 @@ jobs:
     - name: Build
       run: dotnet build MecanicaOS.sln --no-restore
     - name: Test
-      run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj --logger "console;verbosity=detailed"
-
-    run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj --collect:"XPlat Code Coverage" --logger "console;verbosity=detailed"
+      run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj --collect:"XPlat Code Coverage" --logger "console;verbosity=detailed"
     - name: Code Coverage Report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.1.26
       with:
