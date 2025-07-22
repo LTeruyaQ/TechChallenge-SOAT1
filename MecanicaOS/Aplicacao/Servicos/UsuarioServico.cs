@@ -50,9 +50,6 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
                 request.TipoUsuario,
                 request.RecebeAlertaEstoque);
 
-            if (!string.IsNullOrEmpty(request.Documento))
-                await AssociarClienteAsync(request.Documento, usuario);
-
             await _repositorio.EditarAsync(usuario);
 
             if (!await Commit())
@@ -80,10 +77,11 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             await VerificarUsuarioCadastradoAsync(request.Email);
 
             var usuario = _mapper.Map<Usuario>(request);
+
             usuario.Senha = _servicoSenha.CriptografarSenha(request.Senha);
 
             if (request.TipoUsuario == TipoUsuario.Cliente)
-                await AssociarClienteAsync(request.Documento, usuario);
+                usuario.ClienteId = await GetClienteIdAsync(request.Documento);
 
             var entidade = await _repositorio.CadastrarAsync(usuario);
 
@@ -101,20 +99,21 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
         }
     }
 
-    private async Task AssociarClienteAsync(string documento, Usuario usuario)
+    private async Task<Guid> GetClienteIdAsync(string? documento)
     {
-        const string metodo = nameof(AssociarClienteAsync);
+        string metodo = nameof(GetClienteIdAsync);
 
-        LogInicio(metodo, new { documento, usuario });
+        LogInicio(metodo, new { documento });
 
         try
         {
+            _ = documento ?? throw new DadosInvalidosException("Usuários do tipo cliente devem informar o documento.");
+
             var cliente = await _clienteServico.ObterPorDocumento(documento);
 
-            usuario.ClienteId = cliente.Id;
-            usuario.Cliente = cliente;
+            LogFim(metodo);
 
-            LogFim(metodo, usuario);
+            return cliente.Id;
         }
         catch (Exception e)
         {
