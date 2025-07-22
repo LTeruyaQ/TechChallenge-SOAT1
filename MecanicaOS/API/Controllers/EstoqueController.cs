@@ -1,3 +1,4 @@
+using API.Filters;
 using API.Models;
 using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
@@ -18,6 +19,7 @@ public class EstoqueController : BaseApiController
     }
 
     [HttpGet]
+    [PermissaoNecessaria("administrador")]
     [ProducesResponseType(typeof(IEnumerable<EstoqueResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterTodos()
@@ -27,6 +29,7 @@ public class EstoqueController : BaseApiController
     }
 
     [HttpGet("{id:guid}")]
+    [PermissaoNecessaria("administrador")]
     [ProducesResponseType(typeof(EstoqueResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -37,6 +40,7 @@ public class EstoqueController : BaseApiController
     }
 
     [HttpPost]
+    [PermissaoNecessaria("administrador")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
@@ -51,6 +55,7 @@ public class EstoqueController : BaseApiController
     }
 
     [HttpPut("{id:guid}")]
+    [PermissaoNecessaria("administrador")]
     [ProducesResponseType(typeof(EstoqueResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -65,6 +70,7 @@ public class EstoqueController : BaseApiController
     }
 
     [HttpDelete("{id:guid}")]
+    [PermissaoNecessaria("administrador")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
