@@ -54,7 +54,8 @@
   </ItemGroup>
   
   <PropertyGroup>
-    <VSTestLogger>console;verbosity=detailed</VSTestLogger>
+    <VSTestLogger>console</VSTestLogger>
+    <VSTestVerbosity>detailed</VSTestVerbosity>
     <VSTestDiag>TestDiagnostics.txt</VSTestDiag>
     <VSTestDebug>true</VSTestDebug>
   </PropertyGroup>
