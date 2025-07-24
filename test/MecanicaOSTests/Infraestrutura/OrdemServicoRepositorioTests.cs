@@ -35,7 +35,7 @@ public class OrdemServicoRepositorioTests
                 Nome = "Cliente Teste",
                 Documento = "12345678901",
                 DataNascimento = "1990-01-01",
-                TipoCliente = "PessoaFisica",
+                TipoCliente = TipoCliente.PessoaFisica,
                 Contato = new Contato
                 {
                     Email = "cliente@teste.com",
@@ -150,7 +150,7 @@ public class OrdemServicoRepositorioTests
                 Nome = "Cliente Multinível",
                 Documento = "98765432100",
                 DataNascimento = "1985-05-15",
-                TipoCliente = "PessoaFisica",
+                TipoCliente = TipoCliente.PessoaFisica,
                 Contato = contato,
                 Endereco = endereco
             };

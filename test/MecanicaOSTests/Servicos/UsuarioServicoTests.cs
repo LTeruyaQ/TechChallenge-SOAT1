@@ -144,12 +144,10 @@ public class UsuarioServicoTests
             DataUltimoAcesso = DateTime.Now,
             TipoUsuario = TipoUsuario.Admin,
             RecebeAlertaEstoque = true,
-            Documento = "123456789"
         };
 
         _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(usuario);
         _servicoSenhaMock.Setup(s => s.CriptografarSenha(request.Senha)).Returns("senhaNova");
-        _clienteServicoMock.Setup(c => c.ObterPorDocumento(request.Documento)).ReturnsAsync(new Cliente { Id = Guid.NewGuid() });
         _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
         _mapperMock.Setup(m => m.Map<UsuarioResponse>(usuario)).Returns(new UsuarioResponse());
 
