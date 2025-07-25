@@ -68,8 +68,10 @@ builder.Services.AddOpenApi();
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+using System.Net.Sockets;
+
 builder.Services.AddDbContext<MecanicaContexto>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString, o => o.ProvideClientCertificatesCallback(callback => callback.AddressFamily = AddressFamily.InterNetwork)));
 
 builder.Services.AddHangfire(config => config
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
