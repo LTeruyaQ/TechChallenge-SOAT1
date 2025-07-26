@@ -19,7 +19,7 @@ namespace API.Controllers
             _usuarioServico = usuarioServico ?? throw new ArgumentNullException(nameof(usuarioServico));
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AutenticacaoResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -29,17 +29,14 @@ namespace API.Controllers
             return ValidarModelState() ?? Ok(await _autenticacaoServico.AutenticarAsync(request));
         }
 
-        [HttpPost("registrar")]
+        [HttpPost("Registrar")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Registrar([FromBody] CadastrarUsuarioRequest request)
+        public async Task<IActionResult> Registrar(CadastrarUsuarioRequest request)
         {
-            var resultadoValidacao = ValidarModelState();
-            if (resultadoValidacao != null) return resultadoValidacao;
-
             var usuario = await _usuarioServico.CadastrarAsync(request);
             return CreatedAtAction(nameof(Login), new AutenticacaoRequest { Email = usuario.Email, Senha = usuario.Senha }, usuario);
         }

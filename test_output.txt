@@ -1,0 +1,136 @@
+  Determining projects to restore...
+  Restored /app/test/MecanicaOSTests/MecanicaOSTests.csproj (in 2.34 sec).
+  4 of 5 projects are up-to-date for restore.
+/app/MecanicaOS/Dominio/Especificacoes/Base/AuxiliarExpressao.cs(27,48): warning CS8604: Possible null reference argument for parameter 'membro' in 'void AuxiliarExpressao.VisitarExpressaoMembro(MemberExpression membro, Stack<string> pilha)'. [/app/MecanicaOS/Dominio/Dominio.csproj]
+/app/MecanicaOS/Dominio/Especificacoes/Base/AuxiliarExpressao.cs(33,40): warning CS8604: Possible null reference argument for parameter 'membro' in 'void AuxiliarExpressao.VisitarExpressaoMembro(MemberExpression membro, Stack<string> pilha)'. [/app/MecanicaOS/Dominio/Dominio.csproj]
+  Dominio -> /app/MecanicaOS/Dominio/bin/Debug/net9.0/Dominio.dll
+/app/MecanicaOS/Infraestrutura/Autenticacao/UsuarioLogadoServico.cs(45,28): warning CS8766: Nullability of reference types in return type of 'string? UsuarioLogadoServico.Nome.get' doesn't match implicitly implemented member 'string IUsuarioLogadoServico.Nome.get' (possibly because of nullability attributes). [/app/MecanicaOS/Infraestrutura/Infraestrutura.csproj]
+/app/MecanicaOS/Infraestrutura/Logs/LogServico.cs(75,25): warning CS8601: Possible null reference assignment. [/app/MecanicaOS/Infraestrutura/Infraestrutura.csproj]
+/app/MecanicaOS/Infraestrutura/Logs/DTOs/LogEntryDto.cs(8,23): warning CS8618: Non-nullable property 'Classe' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/app/MecanicaOS/Infraestrutura/Infraestrutura.csproj]
+/app/MecanicaOS/Infraestrutura/Logs/DTOs/LogEntryDto.cs(9,23): warning CS8618: Non-nullable property 'Metodo' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/app/MecanicaOS/Infraestrutura/Infraestrutura.csproj]
+/app/MecanicaOS/Infraestrutura/Logs/DTOs/LogEntryDto.cs(10,23): warning CS8618: Non-nullable property 'Etapa' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/app/MecanicaOS/Infraestrutura/Infraestrutura.csproj]
+/app/MecanicaOS/Infraestrutura/Logs/DTOs/LogEntryDto.cs(11,23): warning CS8618: Non-nullable property 'CorrelationId' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/app/MecanicaOS/Infraestrutura/Infraestrutura.csproj]
+/app/MecanicaOS/Infraestrutura/Logs/DTOs/LogEntryDto.cs(12,23): warning CS8618: Non-nullable property 'Dados' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/app/MecanicaOS/Infraestrutura/Infraestrutura.csproj]
+/app/MecanicaOS/Infraestrutura/Logs/DTOs/LogEntryDto.cs(14,23): warning CS8618: Non-nullable property 'Usuario' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/app/MecanicaOS/Infraestrutura/Infraestrutura.csproj]
+/app/MecanicaOS/Aplicacao/DTOs/Responses/Autenticacao/AutenticacaoResponse.cs(5,23): warning CS8618: Non-nullable property 'Token' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/app/MecanicaOS/Aplicacao/Aplicacao.csproj]
+/app/MecanicaOS/Aplicacao/DTOs/Requests/Autenticacao/AutenticacaoRequest.cs(5,23): warning CS8618: Non-nullable property 'Email' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/app/MecanicaOS/Aplicacao/Aplicacao.csproj]
+/app/MecanicaOS/Aplicacao/DTOs/Requests/Autenticacao/AutenticacaoRequest.cs(6,23): warning CS8618: Non-nullable property 'Senha' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/app/MecanicaOS/Aplicacao/Aplicacao.csproj]
+/app/MecanicaOS/Aplicacao/Servicos/ClienteServico.cs(101,36): warning CS8601: Possible null reference assignment. [/app/MecanicaOS/Aplicacao/Aplicacao.csproj]
+/app/MecanicaOS/Aplicacao/Servicos/ClienteServico.cs(102,37): warning CS8629: Nullable value type may be null. [/app/MecanicaOS/Aplicacao/Aplicacao.csproj]
+/app/MecanicaOS/Aplicacao/Servicos/ClienteServico.cs(103,33): warning CS8601: Possible null reference assignment. [/app/MecanicaOS/Aplicacao/Aplicacao.csproj]
+/app/MecanicaOS/Aplicacao/Servicos/UsuarioServico.cs(86,44): warning CS8604: Possible null reference argument for parameter 'documento' in 'Task UsuarioServico.AssociarClienteAsync(string documento, Usuario usuario)'. [/app/MecanicaOS/Aplicacao/Aplicacao.csproj]
+/app/MecanicaOS/Aplicacao/Servicos/ServicoServico.cs(109,17): warning CS8602: Dereference of a possibly null reference. [/app/MecanicaOS/Aplicacao/Aplicacao.csproj]
+  Infraestrutura -> /app/MecanicaOS/Infraestrutura/bin/Debug/net9.0/Infraestrutura.dll
+  Aplicacao -> /app/MecanicaOS/Aplicacao/bin/Debug/net9.0/Aplicacao.dll
+/app/MecanicaOS/API/Controllers/UsuarioLogadoController.cs(29,13): warning CS8602: Dereference of a possibly null reference. [/app/MecanicaOS/API/API.csproj]
+/app/MecanicaOS/API/Controllers/BaseApiController.cs(32,16): warning CS8603: Possible null reference return. [/app/MecanicaOS/API/API.csproj]
+/app/MecanicaOS/API/Program.cs(96,27): warning CS8602: Dereference of a possibly null reference. [/app/MecanicaOS/API/API.csproj]
+  API -> /app/MecanicaOS/API/bin/Debug/net9.0/API.dll
+/app/test/MecanicaOSTests/Fixtures/BaseTestFixture.cs(42,51): warning CS8602: Dereference of a possibly null reference. [/app/test/MecanicaOSTests/MecanicaOSTests.csproj]
+/app/test/MecanicaOSTests/Fixtures/BaseTestFixture.cs(44,21): warning CS8620: Argument of type 'Func<It.IsAnyType, Exception, string>' cannot be used for parameter 'formatter' of type 'Func<It.IsAnyType, Exception?, string>' in 'void ILogger.Log<IsAnyType>(LogLevel logLevel, EventId eventId, IsAnyType state, Exception? exception, Func<IsAnyType, Exception?, string> formatter)' due to differences in the nullability of reference types. [/app/test/MecanicaOSTests/MecanicaOSTests.csproj]
+/app/test/MecanicaOSTests/Servicos/UsuarioServicoTests.cs(51,27): warning CS8600: Converting null literal or possible null value to non-nullable type. [/app/test/MecanicaOSTests/MecanicaOSTests.csproj]
+/app/test/MecanicaOSTests/Servicos/ClienteServicoTests.cs(93,91): warning CS8600: Converting null literal or possible null value to non-nullable type. [/app/test/MecanicaOSTests/MecanicaOSTests.csproj]
+/app/test/MecanicaOSTests/Servicos/EstoqueServicoTests.cs(81,73): warning CS8600: Converting null literal or possible null value to non-nullable type. [/app/test/MecanicaOSTests/MecanicaOSTests.csproj]
+/app/test/MecanicaOSTests/Servicos/EstoqueServicoTests.cs(104,73): warning CS8600: Converting null literal or possible null value to non-nullable type. [/app/test/MecanicaOSTests/MecanicaOSTests.csproj]
+/app/test/MecanicaOSTests/Servicos/UsuarioServicoTests.cs(104,27): warning CS8600: Converting null literal or possible null value to non-nullable type. [/app/test/MecanicaOSTests/MecanicaOSTests.csproj]
+/app/test/MecanicaOSTests/Servicos/EstoqueServicoTests.cs(152,73): warning CS8600: Converting null literal or possible null value to non-nullable type. [/app/test/MecanicaOSTests/MecanicaOSTests.csproj]
+/app/test/MecanicaOSTests/Servicos/UsuarioServicoTests.cs(168,87): warning CS8600: Converting null literal or possible null value to non-nullable type. [/app/test/MecanicaOSTests/MecanicaOSTests.csproj]
+/app/test/MecanicaOSTests/Servicos/UsuarioServicoTests.cs(206,87): warning CS8600: Converting null literal or possible null value to non-nullable type. [/app/test/MecanicaOSTests/MecanicaOSTests.csproj]
+  MecanicaOSTests -> /app/test/MecanicaOSTests/bin/Debug/net9.0/MecanicaOSTests.dll
+Test run for /app/test/MecanicaOSTests/bin/Debug/net9.0/MecanicaOSTests.dll (.NETCoreApp,Version=v9.0)
+VSTest version 17.14.1-release-25302-01 (x64)
+
+Starting test execution, please wait...
+Logging Vstest Diagnostics in file: /app/test/MecanicaOSTests/TestDiagnostics.txt
+A total of 1 test files matched the specified pattern.
+/app/test/MecanicaOSTests/bin/Debug/net9.0/MecanicaOSTests.dll
+Logging TestHost Diagnostics in file: /app/test/MecanicaOSTests/TestDiagnostics.host.25-07-22_19-10-28_94506_5.txt
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 9.0.7)
+[xUnit.net 00:00:00.20]   Discovering: MecanicaOSTests
+[xUnit.net 00:00:00.30]   Discovered:  MecanicaOSTests
+[xUnit.net 00:00:00.30]   Starting:    MecanicaOSTests
+     Warning:
+     The component "Fluent Assertions" is governed by the rules defined in the Xceed License Agreement and
+     the Xceed Fluent Assertions Community License. You may use Fluent Assertions free of charge for
+     non-commercial use only. An active subscription is required to use Fluent Assertions for commercial use.
+     Please contact Xceed Sales mailto:sales@xceed.com to acquire a subscription at a very low cost.
+     A paid commercial license supports the development and continued increasing support of
+     Fluent Assertions users under both commercial and community licenses. Help us
+     keep Fluent Assertions at the forefront of unit testing.
+     For more information, visit https://xceed.com/products/unit-testing/fluent-assertions/
+  Passed UsuarioServicoTests.Dado_FalhaNoCommit_Quando_AtualizarAsync_Entao_LancaExcecaoPersistirDados [279 ms]
+  Passed MecanicaOSTests.Servicos.ClienteServicoTests.Dado_RequestValido_Quando_CadastrarAsync_Entao_RetornaClienteResponse [299 ms]
+  Passed MecanicaOSTests.Servicos.ClienteServicoTests.Dado_IdValido_Quando_DeletarAsync_Entao_RetornaTrue [11 ms]
+  Passed MecanicaOSTests.Servicos.ClienteServicoTests.Dado_FalhaNoCommit_Quando_CadastrarAsync_Entao_LancaExcecaoPersistirDados [10 ms]
+  Passed MecanicaOSTests.Servicos.ClienteServicoTests.Dado_IdInvalido_Quando_ObterPorIdAsync_Entao_LancaExcecao [12 ms]
+  Passed MecanicaOSTests.Servicos.ClienteServicoTests.Dado_IdValido_Quando_AtualizarAsync_Entao_RetornaClienteResponse [5 ms]
+  Passed MecanicaOSTests.Servicos.ClienteServicoTests.Dado_IdInvalido_Quando_DeletarAsync_Entao_LancaExcecao [5 ms]
+  Passed UsuarioServicoTests.Dado_NovoUsuarioClienteValido_Quando_CadastrarAsync_Entao_UsuarioCriadoComSucesso [56 ms]
+  Passed UsuarioServicoTests.Dado_IdValido_Quando_ObterPorIdAsync_Entao_RetornaUsuarioMapeado [7 ms]
+  Passed UsuarioServicoTests.Dado_EmailJaCadastrado_Quando_CadastrarAsync_Entao_LancaExcecao [10 ms]
+  Passed UsuarioServicoTests.Dado_IdInvalido_Quando_AtualizarAsync_Entao_LancaExcecaoDadosNaoEncontrados [5 ms]
+  Passed UsuarioServicoTests.Dado_AtualizacaoValida_Quando_AtualizarAsync_Entao_UsuarioAtualizadoComSucesso [14 ms]
+  Passed UsuarioServicoTests.Dado_IdValido_Quando_DeletarAsync_Entao_UsuarioRemovido [8 ms]
+  Passed UsuarioServicoTests.Dado_FalhaNoCommit_Quando_CadastrarAsync_Entao_LancaExcecaoPersistirDados [17 ms]
+  Passed UsuarioServicoTests.Quando_ObterTodosAsync_Entao_RetornaUsuariosMapeados [20 ms]
+  Passed UsuarioServicoTests.Dado_EmailValido_Quando_ObterPorEmailAsync_Entao_RetornaUsuario [3 ms]
+  Passed UsuarioServicoTests.Dado_IdInvalido_Quando_DeletarAsync_Entao_LancaExcecao [3 ms]
+  Passed MecanicaOSTests.Entidades.UsuarioTests.Dado_DadosValidos_Quando_Atualizar_Entao_DeveAtualizarComSucesso [102 ms]
+  Passed MecanicaOSTests.Entidades.UsuarioTests.Dado_DadosValidos_Quando_CriarUsuario_Entao_DeveCriarComSucesso [6 ms]
+  Passed MecanicaOSTests.Entidades.UsuarioTests.Dado_DataValida_Quando_AtualizarUltimoAcesso_Entao_DeveAtualizarComSucesso [2 ms]
+  Passed EstoqueServicoTests.Dado_IdValido_Quando_ObterPorIdAsync_Entao_RetornaResponse [34 ms]
+  Passed EstoqueServicoTests.Dado_RequestValido_Quando_CadastrarAsync_Entao_RetornaResponse [16 ms]
+  Passed EstoqueServicoTests.Dado_IdValido_Quando_DeletarAsync_Entao_RetornaTrue [18 ms]
+  Passed ServicoServicoTests.Dado_FalhaNoCommit_Quando_CadastrarServicoAsync_Entao_LancaExcecaoPersistirDados [57 ms]
+  Passed ServicoServicoTests.Dado_FalhaNoCommit_Quando_EditarServicoAsync_Entao_LancaExcecaoPersistirDados [21 ms]
+  Passed ServicoServicoTests.Dado_IdInvalido_Quando_DeletarServicoAsync_Entao_LancaExcecaoDadosNaoEncontrados [7 ms]
+  Passed ServicoServicoTests.Dado_IdValido_Quando_ObterServicoPorIdAsync_Entao_RetornaServicoResponse [6 ms]
+  Passed EstoqueServicoTests.Quando_ObterTodosAsync_Entao_RetornaLista [55 ms]
+  Passed EstoqueServicoTests.Dado_FalhaNoCommit_Quando_CadastrarAsync_Entao_LancaExcecaoPersistirDados [5 ms]
+  Passed ServicoServicoTests.Dado_RepositorioVazio_Quando_ObterTodosAsync_Entao_RetornaListaVazia [13 ms]
+  Passed EstoqueServicoTests.Dado_IdValidoERequest_Quando_AtualizarAsync_Entao_RetornaResponse [10 ms]
+  Passed ServicoServicoTests.Dado_RequestValido_Quando_CadastrarServicoAsync_Entao_RetornaServicoResponse [11 ms]
+  Passed EstoqueServicoTests.Dado_IdInvalido_Quando_ObterPorIdAsync_Entao_LancaExcecao [9 ms]
+  Passed EstoqueServicoTests.Dado_IdInvalido_Quando_DeletarAsync_Entao_LancaExcecao [5 ms]
+  Passed EstoqueServicoTests.Dado_FalhaNoCommit_Quando_AtualizarAsync_Entao_LancaExcecaoPersistirDados [9 ms]
+  Passed EstoqueServicoTests.Dado_IdInvalido_Quando_AtualizarAsync_Entao_LancaExcecao [3 ms]
+  Passed ServicoServicoTests.Dado_ServicosDisponiveis_Quando_ObterServicosDisponiveisAsync_Entao_RetornaListaDeServicos [29 ms]
+  Passed AutenticacaoServicoTests.Dado_EmailInexistente_Quando_AutenticarAsync_Entao_LancaExcecaoCredenciaisInvalidas [632 ms]
+  Passed VeiculoServicoTests.Dado_ClienteSemVeiculos_Quando_ObterPorClienteAsync_Entao_LancaExcecaoDadosNaoEncontrados [23 ms]
+  Passed VeiculoServicoTests.Dado_IdExistente_Quando_DeletarAsync_Entao_RetornaTrue [27 ms]
+  Passed VeiculoServicoTests.Dado_PlacaInexistente_Quando_ObterPorPlacaAsync_Entao_LancaExcecaoDadosNaoEncontrados [8 ms]
+  Passed ServicoServicoTests.Dado_IdValido_Quando_EditarServicoAsync_Entao_RetornaServicoResponse [56 ms]
+  Passed ServicoServicoTests.Dado_IdInvalido_Quando_ObterServicoPorIdAsync_Entao_LancaExcecaoDadosNaoEncontrados [4 ms]
+  Passed VeiculoServicoTests.Dado_FalhaNoCommit_Quando_DeletarAsync_Entao_LancaExcecaoPersistirDados [6 ms]
+  Passed ServicoServicoTests.Dado_NomeInexistente_Quando_ObterServicoPorNomeAsync_Entao_RetornaNulo [5 ms]
+  Passed VeiculoServicoTests.Dado_IdInexistente_Quando_DeletarAsync_Entao_LancaExcecaoDadosNaoEncontrados [2 ms]
+  Passed ServicoServicoTests.Dado_FalhaNoCommit_Quando_DeletarServicoAsync_Entao_LancaExcecaoPersistirDados [5 ms]
+  Passed VeiculoServicoTests.Dado_PlacaExistente_Quando_ObterPorPlacaAsync_Entao_RetornaVeiculoResponse [6 ms]
+  Passed VeiculoServicoTests.Dado_IdExistente_Quando_ObterPorIdAsync_Entao_RetornaVeiculoResponse [10 ms]
+  Passed ServicoServicoTests.Dado_NomeExistente_Quando_CadastrarServicoAsync_Entao_LancaExcecaoDadosJaCadastrados [16 ms]
+  Passed VeiculoServicoTests.Dado_IdInexistente_Quando_AtualizarAsync_Entao_LancaExcecaoDadosNaoEncontrados [8 ms]
+  Passed AutenticacaoServicoTests.Dado_SenhaIncorreta_Quando_AutenticarAsync_Entao_LancaExcecaoCredenciaisInvalidas [89 ms]
+  Passed VeiculoServicoTests.Dado_ClienteComVeiculos_Quando_ObterPorClienteAsync_Entao_RetornaLista [7 ms]
+  Passed VeiculoServicoTests.Dado_FalhaNoCommit_Quando_AtualizarAsync_Entao_LancaExcecaoPersistirDados [6 ms]
+  Passed VeiculoServicoTests.Dado_IdInvalido_Quando_ObterPorIdAsync_Entao_LancaExcecaoDadosNaoEncontrados [4 ms]
+  Passed VeiculoServicoTests.Quando_ObterTodosAsync_Entao_RetornaListaVeiculoResponse [12 ms]
+  Passed VeiculoServicoTests.Dado_IdValidoERequest_Quando_AtualizarAsync_Entao_AtualizaERetornaResposta [8 ms]
+  Passed AutenticacaoServicoTests.Dado_UsuarioInativo_Quando_AutenticarAsync_Entao_LancaExcecaoUsuarioInativo [71 ms]
+  Passed AutenticacaoServicoTests.Dado_UsuarioClienteSemClienteId_Quando_AutenticarAsync_Entao_LancaExcecaoDadosInvalidos [69 ms]
+  Passed AutenticacaoServicoTests.Dado_UsuarioClienteComCredenciaisValidas_Quando_AutenticarAsync_Entao_RetornaToken [123 ms]
+  Passed AutenticacaoServicoTests.Dado_UsuarioAdminComCredenciaisValidas_Quando_AutenticarAsync_Entao_RetornaToken [26 ms]
+[xUnit.net 00:00:03.76]   Finished:    MecanicaOSTests
+  Passed MecanicaOSTests.Dominio.Especificacoes.Base.EEspecificacaoTests.Dado_EspecificacaoComInclusaoDeColecao_Quando_CombinadaComEEspecificacao_Entao_DeveCarregarAColecao [934 ms]
+  Passed MecanicaOSTests.Infraestrutura.OrdemServicoRepositorioTests.Dado_OrdemServicoComMultiplosNiveis_Quando_ObterUmAsync_Entao_DeveIncluirTodasNavegacoes [2 s]
+  Passed MecanicaOSTests.Dominio.Especificacoes.Base.EEspecificacaoTests.Dado_EspecificacoesComInclusoes_Quando_CombinadasComEEspecificacao_Entao_DeveCombinarTodasAsInclusoes [58 ms]
+  Passed MecanicaOSTests.Dominio.Especificacoes.Base.EEspecificacaoTests.Dado_EspecificacaoCombinadaComTresCondicoes_Quando_UsadaComRepositorio_Entao_DeveAplicarTodasAsCondicoes [47 ms]
+  Passed MecanicaOSTests.Infraestrutura.OrdemServicoRepositorioTests.Dado_OrdemServicoComNavegacoes_Quando_ObterUmAsync_Entao_DeveIncluirTodasNavegacoes [174 ms]
+  Passed MecanicaOSTests.Dominio.Especificacoes.Base.EEspecificacaoTests.Dado_EspecificacaoCombinada_Quando_UsadaComRepositorio_Entao_DeveAplicarTodasAsCondicoes [82 ms]
+  Passed MecanicaOSTests.Dominio.Especificacoes.Base.EEspecificacaoTests.Dado_DuasEspecificacoes_Quando_CombinadasComEEspecificacao_Entao_DeveRetornarApenasRegistrosQueAtendemAmbas [31 ms]
+  Passed MecanicaOSTests.Dominio.Especificacoes.Base.EEspecificacaoTests.Dado_EspecificacaoComInclusoes_Quando_CombinadaComEEspecificacao_Entao_DeveManterTodasAsInclusoes [78 ms]
+  Passed MecanicaOSTests.Dominio.Especificacoes.Base.EEspecificacaoTests.Dado_EspecificacaoComInclusoesENula_Quando_CombinadaComEEspecificacao_Entao_DeveManterInclusoesExistentes [54 ms]
+
+Test Run Successful.
+Total tests: 70
+     Passed: 70
+ Total time: 4.8178 Seconds

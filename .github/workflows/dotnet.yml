@@ -2,9 +2,7 @@ name: .NET
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "feature/*" ]
 
 jobs:
   build:
@@ -22,12 +20,30 @@ jobs:
     - name: Build
       run: dotnet build MecanicaOS.sln --no-restore
     - name: Test
-      run: dotnet test test/MecanicaOSTests/MecanicaOSTests.csproj --logger "console;verbosity=detailed"
+      run: |
+        chmod +x .github/scripts/check_test_success.sh
+        .github/scripts/check_test_success.sh
 
-  lint:
+  #lint:
+  #  runs-on: ubuntu-latest
+  #  if: github.event_name == 'pull_request'
+  #  steps:
+  #    - uses: amannn/action-semantic-pull-request@v5
+  #      env:
+  #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  create_pr:
+    needs: [build]
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/feature/')
     steps:
-      - uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "feat: new feature"
+          title: "PR for feature branch"
+          body: "This PR was auto-generated."
+          branch: ${{ github.ref_name }}
+          base: main

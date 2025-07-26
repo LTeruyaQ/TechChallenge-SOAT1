@@ -34,7 +34,7 @@ public class EEspecificacaoTests : IDisposable
             Nome = "Cliente Teste",
             Documento = "12345678901",
             DataNascimento = "1990-01-01",
-            TipoCliente = "PessoaFisica",
+            TipoCliente =TipoCliente.PessoaFisica,
             Contato = new Contato { Email = "cliente@teste.com", Telefone = "11999999999" },
             Endereco = new Endereco { Rua = "Rua Teste", Numero = "123", Bairro = "Centro", Cidade = "São Paulo" }
         };

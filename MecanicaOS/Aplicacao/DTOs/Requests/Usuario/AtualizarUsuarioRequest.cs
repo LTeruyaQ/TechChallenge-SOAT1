@@ -32,8 +32,4 @@ public class AtualizarUsuarioRequest
     [DisplayName("Recebe Alerta de Estoque")]
     [SwaggerSchema(Description = "Indica se o usuário recebe alertas de estoque baixo")]
     public bool? RecebeAlertaEstoque { get; set; }
-
-    [DisplayName("Documento")]
-    [SwaggerSchema(Description = "Documento do cliente")]
-    public string? Documento { get; set; }
 }

@@ -1,3 +1,4 @@
+using Dominio.Enumeradores;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -33,7 +34,7 @@ namespace Aplicacao.DTOs.Requests.Cliente
 
         [DisplayName("Tipo de Cliente")]
         [SwaggerSchema(Description = "Tipo de cliente (Física/Jurídica)")]
-        public string? TipoCliente { get; set; }
+        public TipoCliente? TipoCliente { get; set; }
 
         [Required(ErrorMessage = "O ID do endereço é obrigatório")]
         [DisplayName("ID do Endereço")]

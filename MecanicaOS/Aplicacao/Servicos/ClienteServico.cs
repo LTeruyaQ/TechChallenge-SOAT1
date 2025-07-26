@@ -40,12 +40,7 @@ namespace Aplicacao.Servicos
                 var cliente = await _repositorio.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("cliente não encontrado");
 
-                if (request.Nome != null) cliente.Nome = request.Nome;
-                if (request.Sexo != null) cliente.Sexo = request.Sexo;
-                if (request.TipoCliente != null) cliente.TipoCliente = request.TipoCliente;
-                if (request.Documento != null) cliente.Documento = request.Documento;
-                if (request.DataNascimento != null) cliente.DataNascimento = request.DataNascimento;
-                cliente.DataAtualizacao = DateTime.UtcNow;
+                cliente.Atualizar(request.Nome, request.Sexo, request.TipoCliente, request.DataNascimento);
 
                 await _repositorio.EditarAsync(cliente);
 
@@ -214,9 +209,9 @@ namespace Aplicacao.Servicos
             }
         }
 
-        public async Task<bool> DeletarAsync(Guid id)
+        public async Task<bool> RemoverAsync(Guid id)
         {
-            string metodo = nameof(DeletarAsync);
+            string metodo = nameof(RemoverAsync);
 
             try
             {

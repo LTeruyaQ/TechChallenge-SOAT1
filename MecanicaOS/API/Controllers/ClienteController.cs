@@ -11,22 +11,29 @@ namespace API.Controllers;
 [Authorize]
 public class ClienteController : BaseApiController
 {
-    private readonly IClienteServico service;
+    private readonly IClienteServico _clienteService;
 
     public ClienteController(IClienteServico service)
     {
-        this.service = service;
+        _clienteService = service;
     }
 
     [HttpGet]
     [PermissaoNecessaria("cliente", "administrador")]
     [ProducesResponseType(typeof(IEnumerable<ClienteResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> ObterTodos()
     {
-        return Ok(await service.ObterTodosAsync());
+        return Ok(await _clienteService.ObterTodosAsync());
     }
-
+    
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(IEnumerable<ClienteResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ObterPorId(Guid id)
+    {
+        return Ok(await _clienteService.ObterPorIdAsync(id));
+    }
 
     [HttpPost]
     [PermissaoNecessaria("administrador")]
@@ -34,12 +41,11 @@ public class ClienteController : BaseApiController
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Post([FromBody] CadastrarClienteRequest request)
+    public async Task<IActionResult> Criar([FromBody] CadastrarClienteRequest request)
     {
-        var resultadoValidacao = ValidarModelState();
-        if (resultadoValidacao != null) return resultadoValidacao;
+        var cliente = await _clienteService.CadastrarAsync(request);
 
-        return Ok(await service.CadastrarAsync(request));
+        return CreatedAtAction(nameof(ObterPorId), new { id = cliente.Id }, cliente);
     }
 
     [HttpPut("{id:guid}")]
@@ -48,12 +54,12 @@ public class ClienteController : BaseApiController
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Put(Guid id, [FromBody] AtualizarClienteRequest request)
+    public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarClienteRequest request)
     {
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
 
-        return Ok(await service.AtualizarAsync(id, request));
+        return Ok(await _clienteService.AtualizarAsync(id, request));
     }
 
     [HttpDelete("{id:guid}")]
@@ -61,9 +67,9 @@ public class ClienteController : BaseApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Remover(Guid id)
     {
-        await service.DeletarAsync(id);
+        await _clienteService.RemoverAsync(id);
         return NoContent();
     }
 }
