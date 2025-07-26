@@ -24,7 +24,7 @@ public class ClienteController : BaseApiController
     {
         return Ok(await _clienteService.ObterTodosAsync());
     }
-    
+
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(IEnumerable<ClienteResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]

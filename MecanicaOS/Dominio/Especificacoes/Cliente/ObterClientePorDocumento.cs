@@ -1,10 +1,9 @@
-using Dominio.Entidades;
 using Dominio.Especificacoes.Base;
 using System.Linq.Expressions;
 
-namespace Dominio.Especificacoes
+namespace Dominio.Especificacoes.Cliente
 {
-    public class ObterClientePorDocumento : EspecificacaoBase<Cliente>
+    public class ObterClientePorDocumento : EspecificacaoBase<Entidades.Cliente>
     {
         private string documento;
 
@@ -13,6 +12,6 @@ namespace Dominio.Especificacoes
             this.documento = documento;
         }
 
-        public override Expression<Func<Cliente, bool>> Expressao => c => c.Documento == documento;
+        public override Expression<Func<Entidades.Cliente, bool>> Expressao => c => c.Documento == documento;
     }
 }

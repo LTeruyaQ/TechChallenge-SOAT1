@@ -1,5 +1,5 @@
 ﻿using Dominio.Entidades;
-using Dominio.Especificacoes;
+using Dominio.Especificacoes.OrdemServico;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using MediatR;
@@ -32,7 +32,7 @@ public class OrdemServicoFinalizadaHandler(IRepositorio<OrdemServico> ordemServi
                 [os.Cliente.Contato.Email],
                 "Serviço Finalizado",
                 conteudo);
-            
+
             _logServico.LogFim(metodo);
         }
         catch (Exception e)

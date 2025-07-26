@@ -6,7 +6,8 @@ using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Enumeradores;
-using Dominio.Especificacoes;
+using Dominio.Especificacoes.Cliente;
+using Dominio.Especificacoes.OrdemServico;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
@@ -130,7 +131,7 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
         try
         {
             LogInicio(metodo);
-            
+
             var especificacao = new ObterOrdemServicoPorIdComInsumosEspecificacao(id);
             var ordemServico = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
 

@@ -1,47 +1,64 @@
-using Dominio.Especificacoes.Base.Interfaces;
+﻿using Dominio.Especificacoes.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Infraestrutura.Dados.Especificacoes;
-
-public static class AvaliadorDeEspecificacao<T> where T : class
+namespace Infraestrutura.Dados.Especificacoes
 {
-    public static IQueryable<T> ObterConsulta(IQueryable<T> consultaInicial, IEspecificacao<T> especificacao)
+    public static class AvaliadorDeEspecificacao<T> where T : class
     {
-        var consulta = consultaInicial;
-
-        if (especificacao.Inclusoes != null && especificacao.Inclusoes.Any())
+        public static IQueryable<T> ObterConsulta(
+            IQueryable<T> consultaInicial,
+            IEspecificacao<T> especificacao)
         {
-            foreach (var includeExpression in especificacao.Inclusoes)
+            var consulta = consultaInicial;
+
+            if (especificacao.Expressao != null)
             {
-                consulta = consulta.Include(includeExpression);
+                consulta = consulta.Where(especificacao.Expressao);
             }
-        }
 
-        if (especificacao.Expressao != null)
-        {
-            consulta = consulta.Where(especificacao.Expressao);
-        }
-
-        return consulta;
-    }
-
-    public static IQueryable<T> ObterConsultaSemRastreanemento(IQueryable<T> consultaInicial, IEspecificacao<T> especificacao)
-    {
-        var consulta = consultaInicial.AsNoTracking();
-
-        if (especificacao.Inclusoes != null && especificacao.Inclusoes.Any())
-        {
-            foreach (var includeExpression in especificacao.Inclusoes)
+            if (especificacao.Inclusoes != null && especificacao.Inclusoes.Any())
             {
-                consulta = consulta.Include(includeExpression);
+                consulta = especificacao.Inclusoes
+                    .Aggregate(consulta, (current, include) => current.Include(include));
             }
+
+            return consulta;
         }
 
-        if (especificacao.Expressao != null)
+        public static IQueryable<TProjecao> AplicarProjecao<TProjecao>(
+            IQueryable<T> consulta,
+            IEspecificacao<T> especificacao)
         {
-            consulta = consulta.Where(especificacao.Expressao);
+            if (!especificacao.UsarProjecao)
+            {
+                throw new InvalidOperationException("A especificaÃ§Ã£o nÃ£o contÃ©m uma projeÃ§Ã£o definida.");
+            }
+
+            var projecao = especificacao.ObterProjecao() as Expression<Func<T, TProjecao>>;
+            if (projecao == null)
+            {
+                var projecaoObj = especificacao.ObterProjecao() as Expression<Func<T, object>>;
+                if (projecaoObj == null)
+                {
+                    throw new InvalidOperationException("Tipo de projeÃ§Ã£o incompatÃ­vel.");
+                }
+
+                var parametro = Expression.Parameter(typeof(T), "x");
+                var corpo = Expression.Convert(
+                    Expression.Invoke(projecaoObj, parametro),
+                    typeof(TProjecao)
+                );
+                projecao = Expression.Lambda<Func<T, TProjecao>>(corpo, parametro);
+            }
+
+            return consulta.Select(projecao);
         }
 
-        return consulta;
+        public static IQueryable<T> AplicarPaginacao(IQueryable<T> consulta,
+            IEspecificacao<T> especificacao)
+        {
+            return consulta.Skip(especificacao.Tamanho * especificacao.Pagina).Take(especificacao.Tamanho);
+        }
     }
 }

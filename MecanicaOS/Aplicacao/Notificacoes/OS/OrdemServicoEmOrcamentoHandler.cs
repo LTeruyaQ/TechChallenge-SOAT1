@@ -1,7 +1,7 @@
 ﻿using Aplicacao.Interfaces.Servicos;
 using Dominio.Entidades;
 using Dominio.Enumeradores;
-using Dominio.Especificacoes;
+using Dominio.Especificacoes.OrdemServico;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using MediatR;

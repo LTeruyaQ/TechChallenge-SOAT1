@@ -1,10 +1,9 @@
-﻿using Dominio.Entidades;
-using Dominio.Especificacoes.Base;
+﻿using Dominio.Especificacoes.Base;
 using System.Linq.Expressions;
 
-namespace Dominio.Especificacoes
+namespace Dominio.Especificacoes.Veiculo
 {
-    public class ObterVeiculoPorClienteEspecificacao : EspecificacaoBase<Veiculo>
+    public class ObterVeiculoPorClienteEspecificacao : EspecificacaoBase<Entidades.Veiculo>
     {
         private readonly Guid _clienteId;
 
@@ -14,7 +13,7 @@ namespace Dominio.Especificacoes
             AdicionarInclusao(v => v.Cliente);
         }
 
-        public override Expression<Func<Veiculo, bool>> Expressao =>
+        public override Expression<Func<Entidades.Veiculo, bool>> Expressao =>
             v => v.ClienteId == _clienteId;
     }
 }

@@ -8,7 +8,7 @@ using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Enumeradores;
-using Dominio.Especificacoes;
+using Dominio.Especificacoes.Insumo;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;

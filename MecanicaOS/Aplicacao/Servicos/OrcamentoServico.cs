@@ -1,11 +1,10 @@
 ﻿using Aplicacao.Interfaces.Servicos;
 using Dominio.Entidades;
 using Dominio.Interfaces.Servicos;
-using MediatR;
 
 namespace Aplicacao.Servicos;
 
-public class OrcamentoServico(ILogServico<OrcamentoServico> logServico) :  IOrcamentoServico
+public class OrcamentoServico(ILogServico<OrcamentoServico> logServico) : IOrcamentoServico
 {
     private readonly ILogServico<OrcamentoServico> _logServico = logServico;
 

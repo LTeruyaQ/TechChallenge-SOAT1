@@ -1,6 +1,6 @@
 ﻿using Aplicacao.Interfaces.Servicos;
 using Dominio.Entidades;
-using Dominio.Especificacoes;
+using Dominio.Especificacoes.Insumo;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using MediatR;

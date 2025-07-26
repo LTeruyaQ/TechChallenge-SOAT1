@@ -1,5 +1,6 @@
 ﻿using Dominio.Entidades;
-using Dominio.Especificacoes;
+using Dominio.Especificacoes.Estoque;
+using Dominio.Especificacoes.Usuario;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
