@@ -107,9 +107,10 @@ namespace Infraestrutura.Repositorios
         public virtual async Task<IEnumerable<T>> ObterPorFiltroPaginadoSemRastreamentoAsync(IEspecificacao<T> especificacao)
         {
             var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
-                query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
+            query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
 
-            return await query.ToListAsync();
+            var resultado = await query.ToListAsync();
+            return resultado;
         }
 
         public async Task<IEnumerable<T>> ObterPorFiltroPaginadoAsync(IEspecificacao<T> especificacao)
@@ -135,9 +136,11 @@ namespace Infraestrutura.Repositorios
             CancellationToken cancellationToken = default)
         {
             var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
-            return await AvaliadorDeEspecificacao<T>
+            var resultado = await AvaliadorDeEspecificacao<T>
                 .AplicarProjecao<TProjecao>(query, especificacao)
                 .FirstOrDefaultAsync(cancellationToken);
+                
+            return resultado;
         }
 
         public virtual async Task<IEnumerable<TProjecao>> ListarProjetadoAsync<TProjecao>(
@@ -153,7 +156,11 @@ namespace Infraestrutura.Repositorios
             CancellationToken cancellationToken = default)
         {
             var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
-            return await AvaliadorDeEspecificacao<T>.AplicarProjecao<TProjecao>(query, especificacao).ToListAsync(cancellationToken);
+            var resultado = await AvaliadorDeEspecificacao<T>
+                .AplicarProjecao<TProjecao>(query, especificacao)
+                .ToListAsync(cancellationToken);
+                
+            return resultado;
         }
         
         public virtual async Task<IEnumerable<TProjecao>> ListarProjetadoComPaginacaoAsync<TProjecao>(
@@ -173,7 +180,11 @@ namespace Infraestrutura.Repositorios
             var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
             query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
             
-            return await AvaliadorDeEspecificacao<T>.AplicarProjecao<TProjecao>(query, especificacao).ToListAsync(cancellationToken);
+            var resultado = await AvaliadorDeEspecificacao<T>
+                .AplicarProjecao<TProjecao>(query, especificacao)
+                .ToListAsync(cancellationToken);
+                
+            return resultado;
         }
     }
 }
