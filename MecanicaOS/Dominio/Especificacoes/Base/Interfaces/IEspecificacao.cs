@@ -8,5 +8,7 @@ public interface IEspecificacao<T>
 
     HashSet<string> Inclusoes { get; }
     bool UsarProjecao { get; }
+    int Pagina { get; }
+    int Tamanho { get; }
     object? ObterProjecao();
 }

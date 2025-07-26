@@ -54,5 +54,11 @@ namespace Infraestrutura.Dados.Especificacoes
 
             return consulta.Select(projecao);
         }
+
+        public static IQueryable<T> AplicarPaginacao(IQueryable<T> consulta,
+            IEspecificacao<T> especificacao)
+        {
+            return consulta.Skip(especificacao.Tamanho * especificacao.Pagina).Take(especificacao.Tamanho);
+        }
     }
 }

@@ -5,6 +5,14 @@ namespace Dominio.Especificacoes.Base
 {
     public abstract class EspecificacaoBase<T> : IEspecificacao<T> where T : class
     {
+        private int _pagina = 0;
+        public int Pagina => _pagina;
+
+
+        private int _tamanho = 0;
+        public int Tamanho => _tamanho;
+
+
         private readonly HashSet<string> _inclusoes = new();
 
         public abstract Expression<Func<T, bool>> Expressao { get; }
@@ -37,6 +45,12 @@ namespace Dominio.Especificacoes.Base
             var caminhoColecao = AuxiliarExpressao.ObterCaminho(colecao);
             var caminhoNavegacao = AuxiliarExpressao.ObterCaminho(navegacao);
             _inclusoes.Add($"{caminhoColecao}.{caminhoNavegacao}");
+        }
+
+        protected void AdicionarPaginacao(int pagina, int tamanho)
+        {
+            _pagina = pagina;
+            _tamanho = tamanho;
         }
     }
 }
