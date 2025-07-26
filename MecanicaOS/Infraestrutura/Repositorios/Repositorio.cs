@@ -75,7 +75,7 @@ namespace Infraestrutura.Repositorios
 
         public virtual async Task<IEnumerable<T>> ObterPorFiltroSemRastreamentoAsync(IEspecificacao<T> especificacao)
         {
-            var query = AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet.AsNoTracking(), especificacao);
+            var query = AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet, especificacao);
             return await query.ToListAsync();
         }
 
@@ -94,14 +94,30 @@ namespace Infraestrutura.Repositorios
 
         public virtual async Task<T?> ObterUmSemRastreamentoAsync(IEspecificacao<T> especificacao)
         {
-            return await AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet.AsNoTracking(), especificacao)
+            return await AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet, especificacao)
                 .SingleOrDefaultAsync();
         }
 
         public virtual async Task<T?> ObterUmAsync(IEspecificacao<T> especificacao)
         {
-            return await AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao)
+            return await AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao)
                 .SingleOrDefaultAsync();
+        }
+
+        public virtual async Task<IEnumerable<T>> ObterPorFiltroPaginadoSemRastreamentoAsync(IEspecificacao<T> especificacao, int pagina = 0, int tamanho = 20)
+        {
+            return await AvaliadorDeEspecificacao<T>.ObterConsultaSemRastreanemento(_dbSet, especificacao)
+                .Skip(pagina * tamanho)
+                .Take(tamanho)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> ObterPorFiltroPaginadoAsync(IEspecificacao<T> especificacao, int pagina = 0, int tamanho = 20)
+        {
+            return await AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao)
+                .Skip(pagina * tamanho)
+                .Take(tamanho)
+                .ToListAsync();
         }
     }
 }
