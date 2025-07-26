@@ -30,11 +30,11 @@ public interface IRepositorio<T> where T : Entidade
         IEspecificacao<T> especificacao,
         CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<TProjecao>> ListarProjetadoAsync<TProjecao>(
+    Task<IEnumerable<TProjecao>> ListarProjetadoComPaginacaoAsync<TProjecao>(
         IEspecificacao<T> especificacao,
         CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<TProjecao>> ListarProjetadoSemRastreamentoAsync<TProjecao>(
+    Task<IEnumerable<TProjecao>> ListarProjetadoComPaginacaoSemRastreamentoAsync<TProjecao>(
         IEspecificacao<T> especificacao,
         CancellationToken cancellationToken = default);
 }

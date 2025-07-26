@@ -145,12 +145,28 @@ namespace Infraestrutura.Repositorios
             CancellationToken cancellationToken = default)
         {
             var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao);
+            return await AvaliadorDeEspecificacao<T>.AplicarProjecao<TProjecao>(query, especificacao).ToListAsync(cancellationToken);
+        }
+
+        public virtual async Task<IEnumerable<TProjecao>> ListarProjetadoSemRastreamentoAsync<TProjecao>(
+            IEspecificacao<T> especificacao,
+            CancellationToken cancellationToken = default)
+        {
+            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
+            return await AvaliadorDeEspecificacao<T>.AplicarProjecao<TProjecao>(query, especificacao).ToListAsync(cancellationToken);
+        }
+        
+        public virtual async Task<IEnumerable<TProjecao>> ListarProjetadoComPaginacaoAsync<TProjecao>(
+            IEspecificacao<T> especificacao,
+            CancellationToken cancellationToken = default)
+        {
+            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao);
             query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
 
             return await AvaliadorDeEspecificacao<T>.AplicarProjecao<TProjecao>(query, especificacao).ToListAsync(cancellationToken);
         }
 
-        public virtual async Task<IEnumerable<TProjecao>> ListarProjetadoSemRastreamentoAsync<TProjecao>(
+        public virtual async Task<IEnumerable<TProjecao>> ListarProjetadoComPaginacaoSemRastreamentoAsync<TProjecao>(
             IEspecificacao<T> especificacao,
             CancellationToken cancellationToken = default)
         {
