@@ -11,6 +11,16 @@ namespace Dominio.Especificacoes.Base
 
         public HashSet<string> Inclusoes => _inclusoes;
 
+        private Expression<Func<T, object>>? _projecao;
+        public bool UsarProjecao => _projecao != null;
+
+        public object? ObterProjecao() => _projecao;
+
+        protected void DefinirProjecao(Expression<Func<T, object>> projecao)
+        {
+            _projecao = projecao ?? throw new ArgumentNullException(nameof(projecao));
+        }
+
         protected void AdicionarInclusao<TProp>(Expression<Func<T, TProp>> navegacao)
         {
             if (navegacao == null) throw new ArgumentNullException(nameof(navegacao));

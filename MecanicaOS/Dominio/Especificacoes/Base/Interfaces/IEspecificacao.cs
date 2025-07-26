@@ -7,4 +7,6 @@ public interface IEspecificacao<T>
     Expression<Func<T, bool>> Expressao { get; }
 
     HashSet<string> Inclusoes { get; }
+    bool UsarProjecao { get; }
+    object? ObterProjecao();
 }

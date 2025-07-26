@@ -2,7 +2,7 @@
 using Dominio.Especificacoes.Base;
 using System.Linq.Expressions;
 
-namespace Dominio.Especificacoes;
+namespace Dominio.Especificacoes.Insumo;
 
 public class ObterInsumosOSPorOSEspecificacao : EspecificacaoBase<InsumoOS>
 {

@@ -3,7 +3,7 @@ using Aplicacao.DTOs.Responses.Veiculo;
 using Aplicacao.Servicos;
 using AutoMapper;
 using Dominio.Entidades;
-using Dominio.Especificacoes;
+using Dominio.Especificacoes.Veiculo;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;

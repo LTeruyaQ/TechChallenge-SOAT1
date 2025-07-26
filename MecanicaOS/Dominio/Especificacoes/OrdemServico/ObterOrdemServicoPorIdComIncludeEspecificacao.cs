@@ -1,10 +1,9 @@
-using Dominio.Entidades;
 using Dominio.Especificacoes.Base;
 using System.Linq.Expressions;
 
-namespace Dominio.Especificacoes;
+namespace Dominio.Especificacoes.OrdemServico;
 
-public class ObterOrdemServicoPorIdComIncludeEspecificacao : EspecificacaoBase<OrdemServico>
+public class ObterOrdemServicoPorIdComIncludeEspecificacao : EspecificacaoBase<Entidades.OrdemServico>
 {
     private readonly Guid _id;
 
@@ -17,5 +16,5 @@ public class ObterOrdemServicoPorIdComIncludeEspecificacao : EspecificacaoBase<O
         AdicionarInclusao(os => os.InsumosOS, io => io.Estoque);
     }
 
-    public override Expression<Func<OrdemServico, bool>> Expressao => os => os.Id == _id;
+    public override Expression<Func<Entidades.OrdemServico, bool>> Expressao => os => os.Id == _id;
 }

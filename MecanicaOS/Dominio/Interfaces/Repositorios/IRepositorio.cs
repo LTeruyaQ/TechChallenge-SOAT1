@@ -1,4 +1,4 @@
-﻿using Dominio.Entidades.Abstratos;
+using Dominio.Entidades.Abstratos;
 using Dominio.Especificacoes.Base.Interfaces;
 
 namespace Dominio.Interfaces.Repositorios;
@@ -20,4 +20,25 @@ public interface IRepositorio<T> where T : Entidade
     Task<T?> ObterUmSemRastreamentoAsync(IEspecificacao<T> especificacao);
     Task<T?> ObterUmAsync(IEspecificacao<T> especificacao);
     Task DeletarLogicamenteAsync(T entidade);
+
+    // Novos métodos para projeção
+    Task<TProjecao?> ObterProjetadoAsync<TProjecao>(
+        IEspecificacao<T> especificacao,
+        CancellationToken cancellationToken = default);
+
+    Task<TProjecao?> ObterProjetadoSemRastreamentoAsync<TProjecao>(
+        IEspecificacao<T> especificacao,
+        CancellationToken cancellationToken = default);
+
+    Task<IEnumerable<TProjecao>> ListarProjetadoAsync<TProjecao>(
+        IEspecificacao<T> especificacao,
+        int pagina = 0,
+        int tamanho = 20,
+        CancellationToken cancellationToken = default);
+
+    Task<IEnumerable<TProjecao>> ListarProjetadoSemRastreamentoAsync<TProjecao>(
+        IEspecificacao<T> especificacao,
+        int pagina = 0,
+        int tamanho = 20,
+        CancellationToken cancellationToken = default);
 }
