@@ -40,14 +40,5 @@ namespace API.Controllers
             var usuario = await _usuarioServico.CadastrarAsync(request);
             return CreatedAtAction(nameof(Login), new AutenticacaoRequest { Email = usuario.Email, Senha = usuario.Senha }, usuario);
         }
-
-        [HttpGet("Validar-Token")]
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult ValidarToken()
-        {
-            return Ok(new { mensagem = "Token válido" });
-        }
     }
 }

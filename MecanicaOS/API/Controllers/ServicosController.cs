@@ -1,3 +1,4 @@
+using API.Filters;
 using API.Models;
 using Aplicacao.DTOs.Requests.Servico;
 using Aplicacao.DTOs.Responses.Servico;
@@ -18,6 +19,7 @@ public class ServicosController : BaseApiController
     }
 
     [HttpGet]
+    [PermissaoNecessaria("cliente", "administrador")]
     [ProducesResponseType(typeof(IEnumerable<ServicoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterTodos()
@@ -27,6 +29,7 @@ public class ServicosController : BaseApiController
     }
 
     [HttpGet("disponiveis")]
+    [PermissaoNecessaria("cliente", "administrador")]
     [ProducesResponseType(typeof(IEnumerable<ServicoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterServicosDisponiveis()
@@ -36,6 +39,7 @@ public class ServicosController : BaseApiController
     }
 
     [HttpGet("{id:guid}")]
+    [PermissaoNecessaria("cliente", "administrador")]
     [ProducesResponseType(typeof(ServicoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -46,6 +50,7 @@ public class ServicosController : BaseApiController
     }
 
     [HttpPost]
+    [PermissaoNecessaria("administrador")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
@@ -60,6 +65,7 @@ public class ServicosController : BaseApiController
     }
 
     [HttpPut("{id:guid}")]
+    [PermissaoNecessaria("administrador")]
     [ProducesResponseType(typeof(ServicoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -74,6 +80,7 @@ public class ServicosController : BaseApiController
     }
 
     [HttpDelete("{id:guid}")]
+    [PermissaoNecessaria("administrador")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
