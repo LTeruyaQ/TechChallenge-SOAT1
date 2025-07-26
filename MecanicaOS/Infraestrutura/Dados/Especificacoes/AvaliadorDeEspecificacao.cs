@@ -54,12 +54,5 @@ namespace Infraestrutura.Dados.Especificacoes
 
             return consulta.Select(projecao);
         }
-
-        public static IQueryable<T> ObterConsultaSemRastreamento(
-            IQueryable<T> consultaInicial,
-            IEspecificacao<T> especificacao)
-        {
-            return ObterConsulta(consultaInicial, especificacao).AsNoTracking();
-        }
     }
 }
