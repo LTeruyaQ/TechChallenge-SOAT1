@@ -129,7 +129,7 @@ namespace MecanicaOSTests.Servicos
         }
 
         [Fact]
-        public async Task Given_DocumentoExistente_When_ObterPorDocumento_Then_ReturnCliente()
+        public async Task Dado_DocumentoExistente_Quando_ObterPorDocumento_Then_ReturnCliente()
         {
             var documento = "12345678901";
             var cliente = new Cliente { Documento = documento };
@@ -144,7 +144,7 @@ namespace MecanicaOSTests.Servicos
         }
 
         [Fact]
-        public async Task Given_DocumentoInexistente_When_ObterPorDocumento_Then_ThrowException()
+        public async Task Dado_DocumentoInexistente_Quando_ObterPorDocumento_Then_ThrowException()
         {
             await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _clienteServico.ObterPorDocumento("00000000000"));
         }
