@@ -3,14 +3,16 @@ using Aplicacao.DTOs.Responses.Cliente;
 using Aplicacao.Servicos;
 using AutoMapper;
 using Dominio.Entidades;
+using Dominio.Especificacoes.Base;
+using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Cliente;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using Moq;
+
 namespace MecanicaOSTests.Servicos
 {
-
-
     public class ClienteServicoTests
     {
         private readonly Mock<IRepositorio<Cliente>> _clienteRepoMock;
@@ -19,6 +21,8 @@ namespace MecanicaOSTests.Servicos
         private readonly Mock<ILogServico<ClienteServico>> _logMock;
         private readonly Mock<IUnidadeDeTrabalho> _uotMock;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IUsuarioLogadoServico> _usuarioLogadoServico = new();
+
         private readonly ClienteServico _clienteServico;
 
 
@@ -37,7 +41,8 @@ namespace MecanicaOSTests.Servicos
                 _contatoRepoMock.Object,
                 _logMock.Object,
                 _uotMock.Object,
-                _mapperMock.Object);
+                _mapperMock.Object,
+                _usuarioLogadoServico.Object);
         }
 
         [Fact]
@@ -123,25 +128,25 @@ namespace MecanicaOSTests.Servicos
             await Assert.ThrowsAsync<PersistirDadosException>(() => _clienteServico.RemoverAsync(id));
         }
 
-        //[Fact]
-        //public async Task Given_DocumentoExistente_When_ObterPorDocumento_Then_ReturnCliente()
-        //{
-        //    var documento = "12345678901";
-        //    var cliente = new Cliente { Documento = documento };
+        [Fact]
+        public async Task Given_DocumentoExistente_When_ObterPorDocumento_Then_ReturnCliente()
+        {
+            var documento = "12345678901";
+            var cliente = new Cliente { Documento = documento };
 
-        //    _clienteRepoMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<object>())).ReturnsAsync(cliente);
+            _clienteRepoMock
+                .Setup(r => r.ObterUmPorFiltroAsync(It.IsAny<ObterClientePorDocumento>()))
+                .ReturnsAsync(cliente);
 
-        //    var result = await _clienteServico.ObterPorDocumento(documento);
+            var result = await _clienteServico.ObterPorDocumento(documento);
 
-        //    Assert.Equal(documento, result.Documento);
-        //}
+            Assert.Equal(documento, result.Documento);
+        }
 
-        //[Fact]
-        //public async Task Given_DocumentoInexistente_When_ObterPorDocumento_Then_ThrowException()
-        //{
-        //    _clienteRepoMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<EspecificacaoBase<Cliente>())).ReturnsAsync((Cliente)null);
-
-        //    await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _clienteServico.ObterPorDocumento("00000000000"));
-        //}
+        [Fact]
+        public async Task Given_DocumentoInexistente_When_ObterPorDocumento_Then_ThrowException()
+        {
+            await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _clienteServico.ObterPorDocumento("00000000000"));
+        }
     }
 }

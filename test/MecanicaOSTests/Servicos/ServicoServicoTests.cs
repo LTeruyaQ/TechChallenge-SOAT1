@@ -16,6 +16,7 @@ public class ServicoServicoTests
     private readonly Mock<ILogServico<ServicoServico>> _logServicoMock = new();
     private readonly Mock<IUnidadeDeTrabalho> _uotMock = new();
     private readonly Mock<IMapper> _mapperMock = new();
+    private readonly Mock<IUsuarioLogadoServico> _usuarioLogadoServico = new();
 
     private readonly ServicoServico _servicoServico;
 
@@ -25,7 +26,8 @@ public class ServicoServicoTests
             _repositorioMock.Object,
             _logServicoMock.Object,
             _uotMock.Object,
-            _mapperMock.Object);
+            _mapperMock.Object,
+            _usuarioLogadoServico.Object);
     }
 
     [Fact]

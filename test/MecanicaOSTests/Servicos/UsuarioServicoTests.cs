@@ -19,7 +19,7 @@ public class UsuarioServicoTests
     private readonly Mock<IMapper> _mapperMock = new();
     private readonly Mock<IClienteServico> _clienteServicoMock = new();
     private readonly Mock<IServicoSenha> _servicoSenhaMock = new();
-
+    private readonly Mock<IUsuarioLogadoServico> _usuarioLogadoServico = new();
     private UsuarioServico CriarServico()
     {
         return new UsuarioServico(
@@ -28,7 +28,8 @@ public class UsuarioServicoTests
             _uotMock.Object,
             _mapperMock.Object,
             _clienteServicoMock.Object,
-            _servicoSenhaMock.Object
+            _servicoSenhaMock.Object,
+            _usuarioLogadoServico.Object
         );
     }
     [Fact]

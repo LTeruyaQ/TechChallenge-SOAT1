@@ -22,7 +22,8 @@ public class InsumoOSServico(
     IRepositorio<InsumoOS> repositorio,
     ILogServico<InsumoOSServico> logServico,
     IUnidadeDeTrabalho uot,
-    IMapper mapper) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, uot, mapper), IInsumoOSServico
+    IMapper mapper, 
+    IUsuarioLogadoServico usuarioLogadoServico) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, uot, mapper, usuarioLogadoServico), IInsumoOSServico
 {
     private readonly IOrdemServicoServico _oSServico = oSServico;
     private readonly IEstoqueServico _estoqueServico = estoqueServico;

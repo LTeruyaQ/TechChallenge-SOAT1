@@ -1,5 +1,7 @@
+using Dominio.Entidades;
 using Dominio.Entidades.Abstratos;
 using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Cliente;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.Especificacoes;
@@ -71,6 +73,12 @@ namespace Infraestrutura.Repositorios
         {
             var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao);
             return await query.ToListAsync();
+        }
+
+        public async Task<T> ObterUmPorFiltroAsync(IEspecificacao<T> especificacao)
+        {
+            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao);
+            return await query.FirstOrDefaultAsync();
         }
 
         public virtual async Task<IEnumerable<T>> ObterPorFiltroSemRastreamentoAsync(IEspecificacao<T> especificacao)

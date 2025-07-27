@@ -1,5 +1,7 @@
+using Dominio.Entidades;
 using Dominio.Entidades.Abstratos;
 using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Cliente;
 
 namespace Dominio.Interfaces.Repositorios;
 
@@ -7,6 +9,7 @@ public interface IRepositorio<T> where T : Entidade
 {
     Task<T?> ObterPorIdAsync(Guid id);
     Task<IEnumerable<T>> ObterTodosAsync();
+    Task<T?> ObterUmPorFiltroAsync(IEspecificacao<T> especificacao);
     Task<IEnumerable<T>> ObterPorFiltroAsync(IEspecificacao<T> filtro);
     Task<IEnumerable<T>> ObterPorFiltroSemRastreamentoAsync(IEspecificacao<T> especificacao);
     Task<IEnumerable<T>> ObterPorFiltroPaginadoSemRastreamentoAsync(IEspecificacao<T> especificacao);
