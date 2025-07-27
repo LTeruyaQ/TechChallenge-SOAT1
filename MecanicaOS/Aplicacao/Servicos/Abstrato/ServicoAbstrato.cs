@@ -11,13 +11,15 @@ namespace Aplicacao.Servicos.Abstrato
         private readonly IUnidadeDeTrabalho _uot;
         protected readonly IRepositorio<R> _repositorio;
         protected readonly IMapper _mapper;
+        protected readonly IUsuarioLogadoServico _usuarioLogadoServico;
 
-        protected ServicoAbstrato(IRepositorio<R> repositorio, ILogServico<T> logServico, IUnidadeDeTrabalho uot, IMapper mapper)
+        protected ServicoAbstrato(IRepositorio<R> repositorio, ILogServico<T> logServico, IUnidadeDeTrabalho uot, IMapper mapper, IUsuarioLogadoServico usuarioLogadoServico)
         {
             _logServico = logServico ?? throw new ArgumentNullException(nameof(logServico));
             _uot = uot ?? throw new ArgumentNullException(nameof(uot));
             _repositorio = repositorio ?? throw new ArgumentNullException(nameof(repositorio));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _usuarioLogadoServico = usuarioLogadoServico ?? throw new ArgumentNullException(nameof(usuarioLogadoServico));
         }
 
         protected async Task<bool> Commit()

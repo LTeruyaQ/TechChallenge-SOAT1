@@ -17,8 +17,9 @@ namespace Aplicacao.Servicos
             IRepositorio<Veiculo> repositorio,
             ILogServico<VeiculoServico> logServico,
             IUnidadeDeTrabalho uot,
-            IMapper mapper)
-            : base(repositorio, logServico, uot, mapper)
+            IMapper mapper,
+            IUsuarioLogadoServico usuarioLogadoServico)
+            : base(repositorio, logServico, uot, mapper, usuarioLogadoServico)
         {
         }
 

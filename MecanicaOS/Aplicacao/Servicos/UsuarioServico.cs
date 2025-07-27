@@ -23,7 +23,8 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
         IUnidadeDeTrabalho uot,
         IMapper mapper,
         IClienteServico clienteServico,
-        IServicoSenha servicoSenha) : base(repositorio, logServico, uot, mapper)
+        IServicoSenha servicoSenha, 
+        IUsuarioLogadoServico usuarioLogadoServico) : base(repositorio, logServico, uot, mapper, usuarioLogadoServico)
     {
         _clienteServico = clienteServico ?? throw new ArgumentNullException(nameof(clienteServico));
         _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));

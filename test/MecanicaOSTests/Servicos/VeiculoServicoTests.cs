@@ -7,6 +7,7 @@ using Dominio.Especificacoes.Veiculo;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
+using Infraestrutura.Autenticacao;
 using Moq;
 
 public class VeiculoServicoTests
@@ -16,6 +17,7 @@ public class VeiculoServicoTests
     private readonly Mock<IUnidadeDeTrabalho> _uotMock;
     private readonly Mock<IMapper> _mapperMock;
     private readonly VeiculoServico _servico;
+    private readonly Mock<IUsuarioLogadoServico> _usuarioLogadoServico;
 
     public VeiculoServicoTests()
     {
@@ -23,7 +25,8 @@ public class VeiculoServicoTests
         _logMock = new Mock<ILogServico<VeiculoServico>>();
         _uotMock = new Mock<IUnidadeDeTrabalho>();
         _mapperMock = new Mock<IMapper>();
-        _servico = new VeiculoServico(_repositorioMock.Object, _logMock.Object, _uotMock.Object, _mapperMock.Object);
+        _usuarioLogadoServico = new Mock<IUsuarioLogadoServico>();
+        _servico = new VeiculoServico(_repositorioMock.Object, _logMock.Object, _uotMock.Object, _mapperMock.Object, _usuarioLogadoServico.Object);
     }
 
     private Veiculo CriarVeiculo() => new Veiculo

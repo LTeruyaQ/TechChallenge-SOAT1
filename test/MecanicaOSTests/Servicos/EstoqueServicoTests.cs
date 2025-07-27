@@ -14,6 +14,7 @@ public class EstoqueServicoTests
     private readonly Mock<ILogServico<EstoqueServico>> _logServicoMock;
     private readonly Mock<IUnidadeDeTrabalho> _uotMock;
     private readonly Mock<IMapper> _mapperMock;
+    private readonly Mock<IUsuarioLogadoServico> _usuarioLogadoServico = new();
     private readonly EstoqueServico _estoqueServico;
 
     public EstoqueServicoTests()
@@ -27,7 +28,8 @@ public class EstoqueServicoTests
             _repositorioMock.Object,
             _logServicoMock.Object,
             _uotMock.Object,
-            _mapperMock.Object
+            _mapperMock.Object,
+            _usuarioLogadoServico.Object
         );
     }
 
