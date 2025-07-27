@@ -1,8 +1,10 @@
 ﻿using Dominio.Interfaces.Servicos;
 using Infraestrutura.Logs.DTOs;
 using Microsoft.Extensions.Logging;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Unicode;
 
 namespace Infraestrutura.Logs
 {
@@ -26,7 +28,7 @@ namespace Infraestrutura.Logs
                 },
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
                 WriteIndented = false
             };
         }
@@ -67,7 +69,7 @@ namespace Infraestrutura.Logs
         {
             var entry = new LogEntryDto
             {
-                Nivel = nivel,
+                Nivel = nivel.ToString(),
                 Classe = typeof(T).Name,
                 Metodo = metodo,
                 Etapa = etapa,
