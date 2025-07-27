@@ -4,7 +4,7 @@ using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
-using Dominio.Especificacoes;
+using Dominio.Especificacoes.Cliente;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;

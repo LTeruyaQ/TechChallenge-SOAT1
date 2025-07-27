@@ -1,10 +1,9 @@
-using Dominio.Entidades;
 using Dominio.Especificacoes.Base;
 using System.Linq.Expressions;
 
-namespace Dominio.Especificacoes;
+namespace Dominio.Especificacoes.Cliente;
 
-public class ObterClienteComVeiculoPorIdEspecificacao : EspecificacaoBase<Cliente>
+public class ObterClienteComVeiculoPorIdEspecificacao : EspecificacaoBase<Entidades.Cliente>
 {
     private readonly Guid _clienteId;
 
@@ -14,6 +13,6 @@ public class ObterClienteComVeiculoPorIdEspecificacao : EspecificacaoBase<Client
         AdicionarInclusao(c => c.Veiculos);
     }
 
-    public override Expression<Func<Cliente, bool>> Expressao =>
+    public override Expression<Func<Entidades.Cliente, bool>> Expressao =>
        i => i.Id == _clienteId;
 }
