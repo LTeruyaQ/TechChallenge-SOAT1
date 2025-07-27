@@ -42,29 +42,20 @@ namespace Infraestrutura.Logs
                 ex.StackTrace
             };
 
-            LogGeneric(LogLevel.Error, metodo, "Erro", dados, Get_jsonOptions(), ex);
+            LogGeneric(LogLevel.Error, metodo, "Erro", dados, ex);
         }
 
         public void LogFim(string metodo, object? retorno = null)
-            => LogGeneric(LogLevel.Information, metodo, "Fim", retorno, Get_jsonOptions());
+            => LogGeneric(LogLevel.Information, metodo, "Fim", retorno);
 
         public void LogInicio(string metodo, object? props = null)
-            => LogGeneric(LogLevel.Information, metodo, "Inicio", props, Get_jsonOptions());
-
-        private JsonSerializerOptions Get_jsonOptions()
-        {
-            return new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles,
-            };
-        }
+            => LogGeneric(LogLevel.Information, metodo, "Inicio", props);
 
         private void LogGeneric(
             LogLevel nivel,
             string metodo,
             string etapa,
             object? dados,
-            JsonSerializerOptions _jsonOptions,
             Exception? exception = null)
         {
             var entry = new LogEntryDto
