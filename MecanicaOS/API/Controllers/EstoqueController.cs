@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class EstoqueController : BaseApiController
 {
     private readonly IEstoqueServico _estoqueService;

@@ -76,6 +76,7 @@ public class OrdemServicoController : BaseApiController
     }
 
     [HttpPost("{ordemServicoId}/insumos")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(InsumoOSResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]

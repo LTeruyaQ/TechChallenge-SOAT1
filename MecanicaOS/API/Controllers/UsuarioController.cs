@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class UsuarioController : BaseApiController
 {
     private readonly IUsuarioServico _usuarioServico;
