@@ -4,7 +4,7 @@ namespace Infraestrutura.Logs.DTOs
 {
     public class LogEntryDto
     {
-        public LogLevel Nivel { get; set; }
+        public string Nivel { get; set; }
         public string Classe { get; set; }
         public string Metodo { get; set; }
         public string Etapa { get; set; }
