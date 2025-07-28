@@ -18,10 +18,10 @@ namespace Aplicacao.Servicos
         public ServicoServico(
             IRepositorio<Servico> repositorio,
             ILogServico<ServicoServico> logServico,
-            IUnidadeDeTrabalho uot,
-            IMapper mapper, 
+            IUnidadeDeTrabalho udt,
+            IMapper mapper,
             IUsuarioLogadoServico usuarioLogadoServico)
-            : base(repositorio, logServico, uot, mapper, usuarioLogadoServico)
+            : base(repositorio, logServico, udt, mapper, usuarioLogadoServico)
         { }
 
         public async Task<ServicoResponse> CadastrarServicoAsync(CadastrarServicoRequest request)
@@ -154,7 +154,7 @@ namespace Aplicacao.Servicos
 
                 IEspecificacao<Servico> filtro = new ObterServicoDisponivelEspecificacao();
 
-                var servicos = await _repositorio.ObterPorFiltroAsync(filtro);
+                var servicos = await _repositorio.ListarAsync(filtro);
 
                 LogFim(metodo, servicos);
 

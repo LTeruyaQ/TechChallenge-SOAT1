@@ -14,14 +14,14 @@ public class VerificarEstoqueJob(
     IRepositorio<AlertaEstoque> alertaEstoqueRepositorio,
     IServicoEmail notificacaoEmail,
     ILogServico<VerificarEstoqueJob> logServico,
-    IUnidadeDeTrabalho uot)
+    IUnidadeDeTrabalho udt)
 {
     private readonly IRepositorio<Estoque> _estoqueRepositorio = estoqueRepositorio;
     private readonly IRepositorio<Usuario> _usuarioRepositorio = usuarioRepositorio;
     private readonly IRepositorio<AlertaEstoque> _alertaEstoqueRepositorio = alertaEstoqueRepositorio;
     private readonly ILogServico<VerificarEstoqueJob> _logServico = logServico;
     private readonly IServicoEmail _servicoEmail = notificacaoEmail;
-    private readonly IUnidadeDeTrabalho _uot = uot;
+    private readonly IUnidadeDeTrabalho _uot = udt;
 
     public async Task ExecutarAsync()
     {
@@ -59,7 +59,7 @@ public class VerificarEstoqueJob(
 
         foreach (var insumo in insumosCriticos)
         {
-            var alertaEnviadoHoje = await _alertaEstoqueRepositorio.ObterPorFiltroAsync(
+            var alertaEnviadoHoje = await _alertaEstoqueRepositorio.ListarAsync(
                 new ObterAlertaDoDiaPorEstoqueEspecificacao(
                     insumo.Id,
                     dataAtual));
@@ -80,7 +80,7 @@ public class VerificarEstoqueJob(
         try
         {
             var filtroInsumosCriticos = new ObterEstoqueCriticoEspecificacao();
-            var insumosCriticos = await _estoqueRepositorio.ObterPorFiltroAsync(filtroInsumosCriticos);
+            var insumosCriticos = await _estoqueRepositorio.ListarAsync(filtroInsumosCriticos);
 
             _logServico.LogFim(metodo, insumosCriticos);
             return insumosCriticos;
@@ -100,7 +100,7 @@ public class VerificarEstoqueJob(
         try
         {
             var especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
-            var usuariosAlerta = await _usuarioRepositorio.ObterPorFiltroAsync(especificacao);
+            var usuariosAlerta = await _usuarioRepositorio.ListarAsync(especificacao);
 
             var conteudo = await GerarConteudoEmailAsync(insumosCriticos);
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace Infraestrutura.Logs.DTOs
+﻿namespace Infraestrutura.Logs.DTOs
 {
     public class LogEntryDto
     {

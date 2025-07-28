@@ -124,7 +124,7 @@ public class EEspecificacaoTests : IDisposable
         var especCombinada = new EEspecificacaoTeste<OrdemServico>(especAprovado, especOrcamentoAlto);
 
         // Act
-        var resultados = await repositorio.ObterPorFiltroAsync(especCombinada);
+        var resultados = await repositorio.ListarAsync(especCombinada);
 
         // Assert
         Assert.Single(resultados);
@@ -152,7 +152,7 @@ public class EEspecificacaoTests : IDisposable
         var especCombinada = new EEspecificacaoTeste<OrdemServico>(especComServico, especComCliente);
 
         // Act
-        var resultados = await repositorio.ObterPorFiltroAsync(especCombinada);
+        var resultados = await repositorio.ListarAsync(especCombinada);
 
         // Assert
         Assert.NotEmpty(resultados);
@@ -182,7 +182,7 @@ public class EEspecificacaoTests : IDisposable
         var especCombinada = new EEspecificacaoTeste<OrdemServico>(especComInsumos, especAprovado);
 
         // Act
-        var resultados = await repositorio.ObterPorFiltroAsync(especCombinada);
+        var resultados = await repositorio.ListarAsync(especCombinada);
 
         // Assert
         Assert.NotEmpty(resultados);
@@ -216,7 +216,7 @@ public class EEspecificacaoTests : IDisposable
         especCombinada.AdicionarInclusao(os => os.Cliente);
 
         // Act
-        var resultados = await repositorio.ObterPorFiltroAsync(especCombinada);
+        var resultados = await repositorio.ListarAsync(especCombinada);
 
         // Assert
         Assert.Equal(2, resultados.Count());
@@ -299,7 +299,7 @@ public class EEspecificacaoTests : IDisposable
         var especCombinadaFinal = new EEspecificacaoTeste<OrdemServico>(especCombinada1e2, espec3);
 
         // Act
-        var resultados = await repositorio.ObterPorFiltroAsync(especCombinadaFinal);
+        var resultados = await repositorio.ListarAsync(especCombinadaFinal);
 
         // Assert
         Assert.NotEmpty(resultados);

@@ -7,7 +7,6 @@ using Dominio.Especificacoes.Veiculo;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
-using Infraestrutura.Autenticacao;
 using Moq;
 
 public class VeiculoServicoTests
@@ -105,7 +104,7 @@ public class VeiculoServicoTests
         var clienteId = Guid.NewGuid();
         var veiculos = new List<Veiculo> { CriarVeiculo() };
 
-        _repositorioMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<ObterVeiculoPorClienteEspecificacao>()))
+        _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<ObterVeiculoPorClienteEspecificacao>()))
             .ReturnsAsync(veiculos);
         _mapperMock.Setup(m => m.Map<IEnumerable<VeiculoResponse>>(veiculos))
             .Returns(new List<VeiculoResponse> { new VeiculoResponse() });
@@ -119,7 +118,7 @@ public class VeiculoServicoTests
     [Fact]
     public async Task Dado_ClienteSemVeiculos_Quando_ObterPorClienteAsync_Entao_LancaExcecaoDadosNaoEncontrados()
     {
-        _repositorioMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<ObterVeiculoPorClienteEspecificacao>()))
+        _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<ObterVeiculoPorClienteEspecificacao>()))
             .ReturnsAsync((IEnumerable<Veiculo>)null!);
 
         await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _servico.ObterPorClienteAsync(Guid.NewGuid()));
@@ -128,7 +127,7 @@ public class VeiculoServicoTests
     public async Task Dado_PlacaExistente_Quando_ObterPorPlacaAsync_Entao_RetornaVeiculoResponse()
     {
         var veiculo = CriarVeiculo();
-        _repositorioMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<ObterVeiculoPorPlacaEspecificacao>()))
+        _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<ObterVeiculoPorPlacaEspecificacao>()))
             .ReturnsAsync(new List<Veiculo> { veiculo });
         _mapperMock.Setup(m => m.Map<VeiculoResponse>(veiculo)).Returns(new VeiculoResponse());
 
@@ -140,7 +139,7 @@ public class VeiculoServicoTests
     [Fact]
     public async Task Dado_PlacaInexistente_Quando_ObterPorPlacaAsync_Entao_LancaExcecaoDadosNaoEncontrados()
     {
-        _repositorioMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<ObterVeiculoPorPlacaEspecificacao>()))
+        _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<ObterVeiculoPorPlacaEspecificacao>()))
             .ReturnsAsync((IEnumerable<Veiculo>)null!);
 
         await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _servico.ObterPorPlacaAsync("XXXX9999"));

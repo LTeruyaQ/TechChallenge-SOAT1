@@ -24,13 +24,13 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
     public OrdemServicoServico(
         IRepositorio<OrdemServico> repositorio,
         ILogServico<OrdemServicoServico> logServico,
-        IUnidadeDeTrabalho uot,
+        IUnidadeDeTrabalho udt,
         IMapper mapper,
         IMediator mediator,
         IRepositorio<Cliente> clienteRepositorio,
-        IServicoServico servicoServico, 
+        IServicoServico servicoServico,
         IUsuarioLogadoServico usuarioLogadoServico) :
-        base(repositorio, logServico, uot, mapper, usuarioLogadoServico)
+        base(repositorio, logServico, udt, mapper, usuarioLogadoServico)
     {
         _mediator = mediator;
         _clienteRepositorio = clienteRepositorio;
@@ -158,7 +158,7 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
 
             var filtroOSStatus = new ObterOrdemServicoPorStatusEspecificacao(status);
 
-            var ordemServico = await _repositorio.ObterPorFiltroAsync(filtroOSStatus);
+            var ordemServico = await _repositorio.ListarAsync(filtroOSStatus);
 
             LogFim(metodo, ordemServico);
 

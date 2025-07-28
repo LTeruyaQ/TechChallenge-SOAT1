@@ -1,12 +1,12 @@
-﻿using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Infraestrutura.Dados.Especificacoes
 {
-    public static class AvaliadorDeEspecificacao<T> where T : class
+    public class AvaliadorDeEspecificacao<T> where T : class
     {
-        public static IQueryable<T> ObterConsulta(
+        public IQueryable<T> ObterConsulta(
             IQueryable<T> consultaInicial,
             IEspecificacao<T> especificacao)
         {
@@ -19,14 +19,16 @@ namespace Infraestrutura.Dados.Especificacoes
 
             if (especificacao.Inclusoes != null && especificacao.Inclusoes.Any())
             {
-                consulta = especificacao.Inclusoes
-                    .Aggregate(consulta, (current, include) => current.Include(include));
+                foreach (var include in especificacao.Inclusoes)
+                {
+                    consulta = consulta.Include(include);
+                }
             }
 
             return consulta;
         }
 
-        public static IQueryable<TProjecao> AplicarProjecao<TProjecao>(
+        public IQueryable<TProjecao> AplicarProjecao<TProjecao>(
             IQueryable<T> consulta,
             IEspecificacao<T> especificacao)
         {
@@ -55,10 +57,15 @@ namespace Infraestrutura.Dados.Especificacoes
             return consulta.Select(projecao);
         }
 
-        public static IQueryable<T> AplicarPaginacao(IQueryable<T> consulta,
+        public IQueryable<T> AplicarPaginacao(IQueryable<T> consulta,
             IEspecificacao<T> especificacao)
         {
-            return consulta.Skip(especificacao.Tamanho * especificacao.Pagina).Take(especificacao.Tamanho);
+            if (especificacao.Tamanho > 0)
+            {
+                return consulta.Skip(especificacao.Tamanho * especificacao.Pagina).Take(especificacao.Tamanho);
+            }
+
+            return consulta;
         }
     }
 }

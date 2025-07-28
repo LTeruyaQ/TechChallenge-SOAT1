@@ -21,9 +21,9 @@ public class InsumoOSServico(
     VerificarEstoqueJob verificarEstoqueJob,
     IRepositorio<InsumoOS> repositorio,
     ILogServico<InsumoOSServico> logServico,
-    IUnidadeDeTrabalho uot,
-    IMapper mapper, 
-    IUsuarioLogadoServico usuarioLogadoServico) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, uot, mapper, usuarioLogadoServico), IInsumoOSServico
+    IUnidadeDeTrabalho udt,
+    IMapper mapper,
+    IUsuarioLogadoServico usuarioLogadoServico) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, udt, mapper, usuarioLogadoServico), IInsumoOSServico
 {
     private readonly IOrdemServicoServico _oSServico = oSServico;
     private readonly IEstoqueServico _estoqueServico = estoqueServico;
@@ -106,7 +106,7 @@ public class InsumoOSServico(
     private async Task<List<CadastrarInsumoOSRequest>> RemoverInsumosJaCadastradosAsync(Guid ordemServicoId, List<CadastrarInsumoOSRequest> insumos)
     {
         var especificacao = new ObterInsumosOSPorOSEspecificacao(ordemServicoId);
-        var insumosOS = await _repositorio.ObterPorFiltroAsync(especificacao);
+        var insumosOS = await _repositorio.ListarAsync(especificacao);
 
         var estoqueIdsJaCadastrados = insumosOS.Select(x => x.EstoqueId).ToHashSet();
 

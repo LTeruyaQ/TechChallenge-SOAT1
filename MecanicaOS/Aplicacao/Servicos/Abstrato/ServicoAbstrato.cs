@@ -8,15 +8,15 @@ namespace Aplicacao.Servicos.Abstrato
     public abstract class ServicoAbstrato<T, R> where T : class where R : Entidade
     {
         private readonly ILogServico<T> _logServico;
-        private readonly IUnidadeDeTrabalho _uot;
+        private readonly IUnidadeDeTrabalho _udt;
         protected readonly IRepositorio<R> _repositorio;
         protected readonly IMapper _mapper;
         protected readonly IUsuarioLogadoServico _usuarioLogadoServico;
 
-        protected ServicoAbstrato(IRepositorio<R> repositorio, ILogServico<T> logServico, IUnidadeDeTrabalho uot, IMapper mapper, IUsuarioLogadoServico usuarioLogadoServico)
+        protected ServicoAbstrato(IRepositorio<R> repositorio, ILogServico<T> logServico, IUnidadeDeTrabalho udt, IMapper mapper, IUsuarioLogadoServico usuarioLogadoServico)
         {
             _logServico = logServico ?? throw new ArgumentNullException(nameof(logServico));
-            _uot = uot ?? throw new ArgumentNullException(nameof(uot));
+            _udt = udt ?? throw new ArgumentNullException(nameof(udt));
             _repositorio = repositorio ?? throw new ArgumentNullException(nameof(repositorio));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _usuarioLogadoServico = usuarioLogadoServico ?? throw new ArgumentNullException(nameof(usuarioLogadoServico));
@@ -24,7 +24,7 @@ namespace Aplicacao.Servicos.Abstrato
 
         protected async Task<bool> Commit()
         {
-            return await _uot.Commit();
+            return await _udt.Commit();
         }
 
         #region Logs
