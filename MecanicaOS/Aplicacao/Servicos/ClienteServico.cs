@@ -21,10 +21,10 @@ namespace Aplicacao.Servicos
             IRepositorio<Endereco> repositoryEndereco,
             IRepositorio<Contato> repositoryContato,
             ILogServico<ClienteServico> logServico,
-            IUnidadeDeTrabalho uot,
+            IUnidadeDeTrabalho udt,
             IMapper mapper,
             IUsuarioLogadoServico usuarioLogadoServico)
-            : base(repositorio, logServico, uot, mapper, usuarioLogadoServico)
+            : base(repositorio, logServico, udt, mapper, usuarioLogadoServico)
         {
             _repositoryContato = repositoryContato ?? throw new ArgumentNullException(nameof(repositoryContato));
             _repositoryEndereco = repositoryEndereco ?? throw new ArgumentNullException(nameof(repositoryEndereco));

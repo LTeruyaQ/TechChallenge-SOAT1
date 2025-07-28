@@ -7,11 +7,11 @@ using Dominio.Interfaces.Servicos;
 
 namespace Aplicacao.Jobs;
 
-public class VerificarOrcamentoExpiradoJob(IRepositorio<OrdemServico> ordemServicoRepositorio, IInsumoOSServico insumoOSServico, IUnidadeDeTrabalho uot, ILogServico<VerificarOrcamentoExpiradoJob> logServico)
+public class VerificarOrcamentoExpiradoJob(IRepositorio<OrdemServico> ordemServicoRepositorio, IInsumoOSServico insumoOSServico, IUnidadeDeTrabalho udt, ILogServico<VerificarOrcamentoExpiradoJob> logServico)
 {
     private readonly IRepositorio<OrdemServico> _ordemServicoRepositorio = ordemServicoRepositorio;
     private readonly IInsumoOSServico _insumoOSServico = insumoOSServico;
-    private readonly IUnidadeDeTrabalho _uot = uot;
+    private readonly IUnidadeDeTrabalho _uot = udt;
     private readonly ILogServico<VerificarOrcamentoExpiradoJob> _logServico = logServico;
 
     public async Task ExecutarAsync()

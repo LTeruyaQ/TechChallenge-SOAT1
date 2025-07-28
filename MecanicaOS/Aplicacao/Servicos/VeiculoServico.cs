@@ -16,10 +16,10 @@ namespace Aplicacao.Servicos
         public VeiculoServico(
             IRepositorio<Veiculo> repositorio,
             ILogServico<VeiculoServico> logServico,
-            IUnidadeDeTrabalho uot,
+            IUnidadeDeTrabalho udt,
             IMapper mapper,
             IUsuarioLogadoServico usuarioLogadoServico)
-            : base(repositorio, logServico, uot, mapper, usuarioLogadoServico)
+            : base(repositorio, logServico, udt, mapper, usuarioLogadoServico)
         {
         }
 

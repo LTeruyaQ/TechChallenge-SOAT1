@@ -21,9 +21,9 @@ public class InsumoOSServico(
     VerificarEstoqueJob verificarEstoqueJob,
     IRepositorio<InsumoOS> repositorio,
     ILogServico<InsumoOSServico> logServico,
-    IUnidadeDeTrabalho uot,
+    IUnidadeDeTrabalho udt,
     IMapper mapper,
-    IUsuarioLogadoServico usuarioLogadoServico) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, uot, mapper, usuarioLogadoServico), IInsumoOSServico
+    IUsuarioLogadoServico usuarioLogadoServico) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, udt, mapper, usuarioLogadoServico), IInsumoOSServico
 {
     private readonly IOrdemServicoServico _oSServico = oSServico;
     private readonly IEstoqueServico _estoqueServico = estoqueServico;

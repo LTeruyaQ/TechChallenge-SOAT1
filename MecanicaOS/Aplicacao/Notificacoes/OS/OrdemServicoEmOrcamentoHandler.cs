@@ -15,12 +15,12 @@ public class OrdemServicoEmOrcamentoHandler(
     IOrcamentoServico orcamentoServico,
     IServicoEmail emailServico,
     ILogServico<OrdemServicoEmOrcamentoHandler> logServico,
-    IUnidadeDeTrabalho uot) : INotificationHandler<OrdemServicoEmOrcamentoEvent>
+    IUnidadeDeTrabalho udt) : INotificationHandler<OrdemServicoEmOrcamentoEvent>
 {
     private readonly IRepositorio<OrdemServico> _ordemServicoRepositorio = ordemServicoRepositorio;
     private readonly IOrcamentoServico _orcamentoServico = orcamentoServico;
     private readonly IServicoEmail _emailServico = emailServico;
-    private readonly IUnidadeDeTrabalho _uot = uot;
+    private readonly IUnidadeDeTrabalho _uot = udt;
     private readonly ILogServico<OrdemServicoEmOrcamentoHandler> _logServico = logServico;
 
     public async Task Handle(OrdemServicoEmOrcamentoEvent notification, CancellationToken cancellationToken)

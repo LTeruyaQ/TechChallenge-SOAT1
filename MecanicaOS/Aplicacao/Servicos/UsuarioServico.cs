@@ -20,11 +20,11 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
     public UsuarioServico(
         IRepositorio<Usuario> repositorio,
         ILogServico<UsuarioServico> logServico,
-        IUnidadeDeTrabalho uot,
+        IUnidadeDeTrabalho udt,
         IMapper mapper,
         IClienteServico clienteServico,
         IServicoSenha servicoSenha,
-        IUsuarioLogadoServico usuarioLogadoServico) : base(repositorio, logServico, uot, mapper, usuarioLogadoServico)
+        IUsuarioLogadoServico usuarioLogadoServico) : base(repositorio, logServico, udt, mapper, usuarioLogadoServico)
     {
         _clienteServico = clienteServico ?? throw new ArgumentNullException(nameof(clienteServico));
         _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));

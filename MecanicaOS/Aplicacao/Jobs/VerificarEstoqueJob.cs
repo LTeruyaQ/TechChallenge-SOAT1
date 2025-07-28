@@ -14,14 +14,14 @@ public class VerificarEstoqueJob(
     IRepositorio<AlertaEstoque> alertaEstoqueRepositorio,
     IServicoEmail notificacaoEmail,
     ILogServico<VerificarEstoqueJob> logServico,
-    IUnidadeDeTrabalho uot)
+    IUnidadeDeTrabalho udt)
 {
     private readonly IRepositorio<Estoque> _estoqueRepositorio = estoqueRepositorio;
     private readonly IRepositorio<Usuario> _usuarioRepositorio = usuarioRepositorio;
     private readonly IRepositorio<AlertaEstoque> _alertaEstoqueRepositorio = alertaEstoqueRepositorio;
     private readonly ILogServico<VerificarEstoqueJob> _logServico = logServico;
     private readonly IServicoEmail _servicoEmail = notificacaoEmail;
-    private readonly IUnidadeDeTrabalho _uot = uot;
+    private readonly IUnidadeDeTrabalho _uot = udt;
 
     public async Task ExecutarAsync()
     {

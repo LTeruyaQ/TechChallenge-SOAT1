@@ -15,10 +15,10 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
     public EstoqueServico(
         IRepositorio<Estoque> repositorio,
         ILogServico<EstoqueServico> logServico,
-        IUnidadeDeTrabalho uot,
+        IUnidadeDeTrabalho udt,
         IMapper mapper,
         IUsuarioLogadoServico usuarioLogadoServico)
-        : base(repositorio, logServico, uot, mapper, usuarioLogadoServico)
+        : base(repositorio, logServico, udt, mapper, usuarioLogadoServico)
     {
     }
 

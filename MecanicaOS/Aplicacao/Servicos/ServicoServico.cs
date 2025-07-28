@@ -18,10 +18,10 @@ namespace Aplicacao.Servicos
         public ServicoServico(
             IRepositorio<Servico> repositorio,
             ILogServico<ServicoServico> logServico,
-            IUnidadeDeTrabalho uot,
+            IUnidadeDeTrabalho udt,
             IMapper mapper,
             IUsuarioLogadoServico usuarioLogadoServico)
-            : base(repositorio, logServico, uot, mapper, usuarioLogadoServico)
+            : base(repositorio, logServico, udt, mapper, usuarioLogadoServico)
         { }
 
         public async Task<ServicoResponse> CadastrarServicoAsync(CadastrarServicoRequest request)
