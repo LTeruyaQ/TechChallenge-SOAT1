@@ -66,6 +66,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddOpenApi();
 
+builder.Configuration.AddEnvironmentVariables();
+
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<MecanicaContexto>(options =>
@@ -233,7 +235,9 @@ app.UseEndpoints(endpoints =>
     _ = endpoints.MapControllers();
 });
 
+#if DEBUG
 app.UseHangfireDashboard("/hangfire");
+#endif
 
 RecurringJob.AddOrUpdate<VerificarEstoqueJob>(
     recurringJobId: "verificar-estoque",
