@@ -64,7 +64,7 @@ namespace Infraestrutura.Dados.Especificacoes
             {
                 return consulta.Skip(especificacao.Tamanho * especificacao.Pagina).Take(especificacao.Tamanho);
             }
-            
+
             return consulta;
         }
     }

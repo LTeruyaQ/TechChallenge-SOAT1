@@ -1,7 +1,5 @@
-using Dominio.Entidades;
 using Dominio.Entidades.Abstratos;
 using Dominio.Especificacoes.Base.Interfaces;
-using Dominio.Especificacoes.Cliente;
 using Dominio.Interfaces.Repositorios;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.Especificacoes;
@@ -121,7 +119,7 @@ namespace Infraestrutura.Repositorios
                 .AplicarProjecao<TProjecao>(query, especificacao)
                 .SingleOrDefaultAsync();
         }
-        
+
         public virtual async Task<IEnumerable<T>> ListarAsync(IEspecificacao<T> especificacao)
         {
             var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao);

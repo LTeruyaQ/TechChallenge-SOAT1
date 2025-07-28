@@ -20,7 +20,7 @@ public interface IRepositorio<T> where T : Entidade
     Task<TProjecao?> ObterUmProjetadoSemRastreamentoAsync<TProjecao>(IEspecificacao<T> especificacao);
     Task<IEnumerable<TProjecao>> ListarProjetadoAsync<TProjecao>(IEspecificacao<T> filtro);
     Task<IEnumerable<TProjecao>> ListarProjetadoSemRastreamentoAsync<TProjecao>(IEspecificacao<T> especificacao);
-    
+
     Task<T?> ObterUmAsync(IEspecificacao<T> especificacao);
     Task<T?> ObterUmSemRastreamentoAsync(IEspecificacao<T> especificacao);
     Task<IEnumerable<T>> ListarAsync(IEspecificacao<T> filtro);

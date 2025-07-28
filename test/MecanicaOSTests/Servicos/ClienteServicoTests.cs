@@ -3,8 +3,6 @@ using Aplicacao.DTOs.Responses.Cliente;
 using Aplicacao.Servicos;
 using AutoMapper;
 using Dominio.Entidades;
-using Dominio.Especificacoes.Base;
-using Dominio.Especificacoes.Base.Interfaces;
 using Dominio.Especificacoes.Cliente;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;

@@ -1,12 +1,11 @@
 using Dominio.Entidades;
 using Dominio.Enumeradores;
 using Dominio.Especificacoes.Base;
-using Dominio.Especificacoes.OrdemServico;
 using Infraestrutura.Dados;
 using Infraestrutura.Repositorios;
+using MecanicaOSTests.Infraestrutura.Projecoes;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using MecanicaOSTests.Infraestrutura.Projecoes;
 using System.Linq.Expressions;
 
 namespace MecanicaOSTests.Infraestrutura;
@@ -95,7 +94,7 @@ public class RepositorioTests : IDisposable
     public async Task Dado_OrdemServico_Quando_ObterPorFiltroPaginadoSemRastreamento_Entao_RetornaSemRastreamento()
     {
         var id = await CriarDadosTeste();
-        
+
         var especificacao = new OrdemServicoPaginadaEspecificacao(id, pagina: 0, tamanho: 10);
 
         var resultado = await _repositorio.ListarSemRastreamentoAsync(especificacao);
@@ -109,7 +108,7 @@ public class RepositorioTests : IDisposable
     public async Task Dado_OrdemServico_Quando_ObterPorFiltroPaginado_Entao_RetornaComRastreamento()
     {
         var id = await CriarDadosTeste();
-        
+
         var especificacao = new OrdemServicoPaginadaEspecificacao(id, pagina: 0, tamanho: 10);
 
         var resultado = await _repositorio.ListarAsync(especificacao);
@@ -130,7 +129,7 @@ public class RepositorioTests : IDisposable
             AdicionarInclusao(os => os.Cliente);
             AdicionarInclusao(os => os.Veiculo);
             AdicionarInclusao(os => os.Servico);
-            
+
             DefinirProjecao(os => new OrdemServicoProjecao
             {
                 Id = os.Id,
@@ -142,7 +141,7 @@ public class RepositorioTests : IDisposable
             });
         }
 
-        public override Expression<Func<OrdemServico, bool>> Expressao => 
+        public override Expression<Func<OrdemServico, bool>> Expressao =>
             os => os.Id == _id;
     }
 
@@ -150,7 +149,7 @@ public class RepositorioTests : IDisposable
     public async Task Dado_OrdemServico_Quando_ObterProjetado_Entao_RetornaProjecao()
     {
         var id = await CriarDadosTeste();
-        
+
         var especificacao = new OrdemServicoProjetadaEspecificacao(id);
         var resultado = await _repositorio.ObterUmProjetadoAsync<OrdemServicoProjecao>(especificacao);
 
@@ -165,7 +164,7 @@ public class RepositorioTests : IDisposable
     public async Task Dado_OrdemServico_Quando_ObterProjetadoSemRastreamento_Entao_RetornaProjecaoSemRastreamento()
     {
         var id = await CriarDadosTeste();
-        
+
         var especificacao = new OrdemServicoProjetadaEspecificacao(id);
         var resultado = await _repositorio.ObterUmProjetadoSemRastreamentoAsync<OrdemServicoProjecao>(especificacao);
 
@@ -182,7 +181,7 @@ public class RepositorioTests : IDisposable
         {
             _id = id;
             AdicionarInclusao(os => os.Cliente);
-            
+
             DefinirProjecao(os => new OrdemServicoProjecao
             {
                 Id = os.Id,
@@ -191,7 +190,7 @@ public class RepositorioTests : IDisposable
             });
         }
 
-        public override Expression<Func<OrdemServico, bool>> Expressao => 
+        public override Expression<Func<OrdemServico, bool>> Expressao =>
             os => os.Id == _id;
     }
 
@@ -199,7 +198,7 @@ public class RepositorioTests : IDisposable
     public async Task Dado_OrdemServico_Quando_ListarProjetado_Entao_RetornaListaProjecao()
     {
         var id = await CriarDadosTeste();
-        
+
         var especificacao = new ListarOrdensServicoProjetadasEspecificacao(id);
         var resultado = await _repositorio.ListarProjetadoAsync<OrdemServicoProjecao>(especificacao);
 
@@ -213,7 +212,7 @@ public class RepositorioTests : IDisposable
     public async Task Dado_OrdemServico_Quando_ListarProjetadoSemRastreamento_Entao_RetornaListaProjecaoSemRastreamento()
     {
         var id = await CriarDadosTeste();
-        
+
         var especificacao = new ListarOrdensServicoProjetadasEspecificacao(id);
         var resultado = await _repositorio.ListarProjetadoSemRastreamentoAsync<OrdemServicoProjecao>(especificacao);
 
@@ -232,7 +231,7 @@ public class RepositorioTests : IDisposable
             _id = id;
             AdicionarPaginacao(pagina, tamanho);
             AdicionarInclusao(os => os.Cliente);
-            
+
             DefinirProjecao(os => new OrdemServicoProjecao
             {
                 Id = os.Id,
@@ -241,7 +240,7 @@ public class RepositorioTests : IDisposable
             });
         }
 
-        public override Expression<Func<OrdemServico, bool>> Expressao => 
+        public override Expression<Func<OrdemServico, bool>> Expressao =>
             os => os.Id == _id;
     }
 
@@ -255,7 +254,7 @@ public class RepositorioTests : IDisposable
             AdicionarPaginacao(pagina, tamanho);
         }
 
-        public override Expression<Func<OrdemServico, bool>> Expressao => 
+        public override Expression<Func<OrdemServico, bool>> Expressao =>
             os => _id == null || os.Id == _id;
     }
 
@@ -263,7 +262,7 @@ public class RepositorioTests : IDisposable
     public async Task Dado_OrdemServico_Quando_ListarProjetadoComPaginacao_Entao_RetornaListaPaginada()
     {
         var id = await CriarDadosTeste();
-        
+
         var especificacao = new ListarOrdensServicoPaginadasEspecificacao(id);
         var resultado = await _repositorio.ListarProjetadoAsync<OrdemServicoProjecao>(especificacao);
 
@@ -277,7 +276,7 @@ public class RepositorioTests : IDisposable
     public async Task Dado_OrdemServico_Quando_ListarProjetadoComPaginacaoSemRastreamento_Entao_RetornaListaPaginadaSemRastreamento()
     {
         var id = await CriarDadosTeste();
-        
+
         var especificacao = new ListarOrdensServicoPaginadasEspecificacao(id);
         var resultado = await _repositorio.ListarProjetadoSemRastreamentoAsync<OrdemServicoProjecao>(especificacao);
 

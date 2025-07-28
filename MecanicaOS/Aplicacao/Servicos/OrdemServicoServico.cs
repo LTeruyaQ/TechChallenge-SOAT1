@@ -28,7 +28,7 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
         IMapper mapper,
         IMediator mediator,
         IRepositorio<Cliente> clienteRepositorio,
-        IServicoServico servicoServico, 
+        IServicoServico servicoServico,
         IUsuarioLogadoServico usuarioLogadoServico) :
         base(repositorio, logServico, uot, mapper, usuarioLogadoServico)
     {

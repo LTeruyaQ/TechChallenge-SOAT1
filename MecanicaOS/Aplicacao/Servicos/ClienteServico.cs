@@ -22,7 +22,7 @@ namespace Aplicacao.Servicos
             IRepositorio<Contato> repositoryContato,
             ILogServico<ClienteServico> logServico,
             IUnidadeDeTrabalho uot,
-            IMapper mapper, 
+            IMapper mapper,
             IUsuarioLogadoServico usuarioLogadoServico)
             : base(repositorio, logServico, uot, mapper, usuarioLogadoServico)
         {

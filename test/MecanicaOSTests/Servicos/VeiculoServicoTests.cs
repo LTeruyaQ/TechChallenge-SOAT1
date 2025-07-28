@@ -7,7 +7,6 @@ using Dominio.Especificacoes.Veiculo;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
-using Infraestrutura.Autenticacao;
 using Moq;
 
 public class VeiculoServicoTests
