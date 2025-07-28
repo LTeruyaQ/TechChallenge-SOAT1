@@ -11,6 +11,7 @@ namespace Infraestrutura.Repositorios
     {
         protected readonly MecanicaContexto _dbContext;
         protected readonly DbSet<T> _dbSet;
+        protected readonly AvaliadorDeEspecificacao<T> _avaliadorDeEspecificacao = new AvaliadorDeEspecificacao<T>();
 
         public Repositorio(MecanicaContexto dbContext)
         {
@@ -82,72 +83,72 @@ namespace Infraestrutura.Repositorios
 
         public virtual async Task<IEnumerable<TProjecao>> ListarProjetadoAsync<TProjecao>(IEspecificacao<T> especificacao)
         {
-            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao);
-            query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
+            var query = _avaliadorDeEspecificacao.ObterConsulta(_dbSet, especificacao);
+            query = _avaliadorDeEspecificacao.AplicarPaginacao(query, especificacao);
 
-            return await AvaliadorDeEspecificacao<T>
+            return await _avaliadorDeEspecificacao
                 .AplicarProjecao<TProjecao>(query, especificacao)
                 .ToListAsync();
         }
 
         public virtual async Task<IEnumerable<TProjecao>> ListarProjetadoSemRastreamentoAsync<TProjecao>(IEspecificacao<T> especificacao)
         {
-            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
-            query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
+            var query = _avaliadorDeEspecificacao.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
+            query = _avaliadorDeEspecificacao.AplicarPaginacao(query, especificacao);
 
-            return await AvaliadorDeEspecificacao<T>
+            return await _avaliadorDeEspecificacao
                 .AplicarProjecao<TProjecao>(query, especificacao)
                 .ToListAsync();
         }
 
         public virtual async Task<TProjecao?> ObterUmProjetadoAsync<TProjecao>(IEspecificacao<T> especificacao)
         {
-            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao);
-            query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
+            var query = _avaliadorDeEspecificacao.ObterConsulta(_dbSet, especificacao);
+            query = _avaliadorDeEspecificacao.AplicarPaginacao(query, especificacao);
 
-            return await AvaliadorDeEspecificacao<T>
+            return await _avaliadorDeEspecificacao
                 .AplicarProjecao<TProjecao>(query, especificacao)
                 .SingleOrDefaultAsync();
         }
 
         public virtual async Task<TProjecao?> ObterUmProjetadoSemRastreamentoAsync<TProjecao>(IEspecificacao<T> especificacao)
         {
-            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
-            query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
+            var query = _avaliadorDeEspecificacao.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
+            query = _avaliadorDeEspecificacao.AplicarPaginacao(query, especificacao);
 
-            return await AvaliadorDeEspecificacao<T>
+            return await _avaliadorDeEspecificacao
                 .AplicarProjecao<TProjecao>(query, especificacao)
                 .SingleOrDefaultAsync();
         }
 
         public virtual async Task<IEnumerable<T>> ListarAsync(IEspecificacao<T> especificacao)
         {
-            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao);
-            query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
+            var query = _avaliadorDeEspecificacao.ObterConsulta(_dbSet, especificacao);
+            query = _avaliadorDeEspecificacao.AplicarPaginacao(query, especificacao);
 
             return await query.ToListAsync();
         }
 
         public virtual async Task<IEnumerable<T>> ListarSemRastreamentoAsync(IEspecificacao<T> especificacao)
         {
-            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
-            query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
+            var query = _avaliadorDeEspecificacao.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
+            query = _avaliadorDeEspecificacao.AplicarPaginacao(query, especificacao);
 
             return await query.ToListAsync();
         }
 
         public virtual async Task<T?> ObterUmAsync(IEspecificacao<T> especificacao)
         {
-            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet, especificacao);
-            query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
+            var query = _avaliadorDeEspecificacao.ObterConsulta(_dbSet, especificacao);
+            query = _avaliadorDeEspecificacao.AplicarPaginacao(query, especificacao);
 
             return await query.SingleOrDefaultAsync();
         }
 
         public virtual async Task<T?> ObterUmSemRastreamentoAsync(IEspecificacao<T> especificacao)
         {
-            var query = AvaliadorDeEspecificacao<T>.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
-            query = AvaliadorDeEspecificacao<T>.AplicarPaginacao(query, especificacao);
+            var query = _avaliadorDeEspecificacao.ObterConsulta(_dbSet.AsNoTracking(), especificacao);
+            query = _avaliadorDeEspecificacao.AplicarPaginacao(query, especificacao);
 
             return await query
                 .SingleOrDefaultAsync();

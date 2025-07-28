@@ -4,9 +4,9 @@ using System.Linq.Expressions;
 
 namespace Infraestrutura.Dados.Especificacoes
 {
-    public static class AvaliadorDeEspecificacao<T> where T : class
+    public class AvaliadorDeEspecificacao<T> where T : class
     {
-        public static IQueryable<T> ObterConsulta(
+        public IQueryable<T> ObterConsulta(
             IQueryable<T> consultaInicial,
             IEspecificacao<T> especificacao)
         {
@@ -28,7 +28,7 @@ namespace Infraestrutura.Dados.Especificacoes
             return consulta;
         }
 
-        public static IQueryable<TProjecao> AplicarProjecao<TProjecao>(
+        public IQueryable<TProjecao> AplicarProjecao<TProjecao>(
             IQueryable<T> consulta,
             IEspecificacao<T> especificacao)
         {
@@ -57,7 +57,7 @@ namespace Infraestrutura.Dados.Especificacoes
             return consulta.Select(projecao);
         }
 
-        public static IQueryable<T> AplicarPaginacao(IQueryable<T> consulta,
+        public IQueryable<T> AplicarPaginacao(IQueryable<T> consulta,
             IEspecificacao<T> especificacao)
         {
             if (especificacao.Tamanho > 0)
