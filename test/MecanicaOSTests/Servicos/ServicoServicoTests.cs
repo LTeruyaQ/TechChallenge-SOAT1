@@ -230,7 +230,7 @@ public class ServicoServicoTests
         var lista = new List<Servico>();
         var listaResponse = new List<ServicoResponse> { new ServicoResponse() };
 
-        _repositorioMock.Setup(r => r.ObterPorFiltroAsync(It.IsAny<IEspecificacao<Servico>>()))
+        _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<IEspecificacao<Servico>>()))
                         .ReturnsAsync(lista);
         _mapperMock.Setup(m => m.Map<IEnumerable<ServicoResponse>>(lista))
                    .Returns(listaResponse);

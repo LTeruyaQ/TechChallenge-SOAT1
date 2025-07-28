@@ -23,7 +23,7 @@ public class VerificarOrcamentoExpiradoJob(IRepositorio<OrdemServico> ordemServi
             _logServico.LogInicio(metodo);
 
             var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
-            var ordensServico = await _ordemServicoRepositorio.ObterPorFiltroAsync(especificacao);
+            var ordensServico = await _ordemServicoRepositorio.ListarAsync(especificacao);
 
             if (!ordensServico.Any())
             {

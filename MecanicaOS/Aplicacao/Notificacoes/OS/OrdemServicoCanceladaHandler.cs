@@ -22,7 +22,7 @@ public class OrdemServicoCanceladaHandler(IRepositorio<InsumoOS> ordemServicoRep
             _logServico.LogInicio(metodo, notification.OrdemServicoId);
 
             var especificacao = new ObterInsumosOSPorOSEspecificacao(notification.OrdemServicoId);
-            var insumosOS = await _insumoOSRepositorio.ObterPorFiltroAsync(especificacao);
+            var insumosOS = await _insumoOSRepositorio.ListarAsync(especificacao);
 
             if (!insumosOS.Any()) return;
 

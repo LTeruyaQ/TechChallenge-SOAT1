@@ -119,7 +119,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, clienteId);
 
                 var filtro = new ObterVeiculoPorClienteEspecificacao(clienteId);
-                var veiculos = await _repositorio.ObterPorFiltroAsync(filtro)
+                var veiculos = await _repositorio.ListarAsync(filtro)
                     ?? throw new DadosNaoEncontradosException("Cliente não possui nenhum veículo.");
 
                 var response = _mapper.Map<IEnumerable<VeiculoResponse>>(veiculos);
@@ -143,7 +143,7 @@ namespace Aplicacao.Servicos
                 LogInicio(metodo, placa);
 
                 var filtro = new ObterVeiculoPorPlacaEspecificacao(placa);
-                var veiculos = await _repositorio.ObterPorFiltroAsync(filtro)
+                var veiculos = await _repositorio.ListarAsync(filtro)
                     ?? throw new DadosNaoEncontradosException($"Veículo com placa {placa} não encontrado.");
 
                 var veiculo = veiculos.FirstOrDefault();

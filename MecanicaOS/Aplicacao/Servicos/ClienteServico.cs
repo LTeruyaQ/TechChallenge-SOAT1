@@ -248,7 +248,7 @@ namespace Aplicacao.Servicos
                 if (string.IsNullOrEmpty(documento))
                     throw new DadosInvalidosException("Deve ser informado o documento do usuario do cliente");
 
-                if (await _repositorio.ObterUmPorFiltroAsync(new ObterClientePorDocumento(documento)) is Cliente cliente)
+                if (await _repositorio.ObterUmAsync(new ObterClientePorDocumento(documento)) is Cliente cliente)
                 {
                     LogFim(metodo, cliente);
                     return cliente;

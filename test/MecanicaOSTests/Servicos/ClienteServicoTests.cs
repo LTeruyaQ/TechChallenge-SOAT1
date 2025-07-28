@@ -135,7 +135,7 @@ namespace MecanicaOSTests.Servicos
             var cliente = new Cliente { Documento = documento };
 
             _clienteRepoMock
-                .Setup(r => r.ObterUmPorFiltroAsync(It.IsAny<ObterClientePorDocumento>()))
+                .Setup(r => r.ObterUmAsync(It.IsAny<ObterClientePorDocumento>()))
                 .ReturnsAsync(cliente);
 
             var result = await _clienteServico.ObterPorDocumento(documento);

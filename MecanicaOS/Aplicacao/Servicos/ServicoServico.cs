@@ -154,7 +154,7 @@ namespace Aplicacao.Servicos
 
                 IEspecificacao<Servico> filtro = new ObterServicoDisponivelEspecificacao();
 
-                var servicos = await _repositorio.ObterPorFiltroAsync(filtro);
+                var servicos = await _repositorio.ListarAsync(filtro);
 
                 LogFim(metodo, servicos);
 

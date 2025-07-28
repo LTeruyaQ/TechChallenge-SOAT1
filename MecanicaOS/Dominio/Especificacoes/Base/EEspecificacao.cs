@@ -32,14 +32,17 @@ namespace Dominio.Especificacoes.Base
         {
             get
             {
-                var param = Expression.Parameter(typeof(T), "x");
-
-                var esquerdaBody = Expression.Invoke(Esquerda.Expressao, param);
-                var direitaBody = Expression.Invoke(Direita.Expressao, param);
-
+                var parameter = Expression.Parameter(typeof(T), "x");
+                
+                var esquerdaExpr = Esquerda.Expressao;
+                var direitaExpr = Direita.Expressao;
+                
+                var esquerdaBody = Expression.Invoke(esquerdaExpr, parameter);
+                var direitaBody = Expression.Invoke(direitaExpr, parameter);
+                
                 var body = Expression.AndAlso(esquerdaBody, direitaBody);
-
-                return Expression.Lambda<Func<T, bool>>(body, param);
+                
+                return Expression.Lambda<Func<T, bool>>(body, parameter);
             }
         }
     }

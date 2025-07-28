@@ -9522,7 +9522,7 @@
             <line number="68" hits="0" branch="False" />
           </lines>
         </class>
-        <class name="Infraestrutura.Repositorios.Repositorio`1/&lt;ObterPorFiltroAsync&gt;d__10" filename="Infraestrutura/Repositorios/Repositorio.cs" line-rate="1" branch-rate="1" complexity="1">
+        <class name="Infraestrutura.Repositorios.Repositorio`1/&lt;ListarPorFiltroAsync&gt;d__10" filename="Infraestrutura/Repositorios/Repositorio.cs" line-rate="1" branch-rate="1" complexity="1">
           <methods>
             <method name="MoveNext" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
@@ -9540,7 +9540,7 @@
             <line number="74" hits="5" branch="False" />
           </lines>
         </class>
-        <class name="Infraestrutura.Repositorios.Repositorio`1/&lt;ObterPorFiltroSemRastreamentoAsync&gt;d__11" filename="Infraestrutura/Repositorios/Repositorio.cs" line-rate="0" branch-rate="1" complexity="1">
+        <class name="Infraestrutura.Repositorios.Repositorio`1/&lt;ListarPorFiltroSemRastreamentoAsync&gt;d__11" filename="Infraestrutura/Repositorios/Repositorio.cs" line-rate="0" branch-rate="1" complexity="1">
           <methods>
             <method name="MoveNext" signature="()" line-rate="0" branch-rate="1" complexity="1">
               <lines>

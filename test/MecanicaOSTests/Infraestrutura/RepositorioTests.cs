@@ -98,7 +98,7 @@ public class RepositorioTests : IDisposable
         
         var especificacao = new OrdemServicoPaginadaEspecificacao(id, pagina: 0, tamanho: 10);
 
-        var resultado = await _repositorio.ObterPorFiltroPaginadoSemRastreamentoAsync(especificacao);
+        var resultado = await _repositorio.ListarSemRastreamentoAsync(especificacao);
 
         Assert.Single(resultado);
         var ordemServico = resultado.First();
@@ -112,7 +112,7 @@ public class RepositorioTests : IDisposable
         
         var especificacao = new OrdemServicoPaginadaEspecificacao(id, pagina: 0, tamanho: 10);
 
-        var resultado = await _repositorio.ObterPorFiltroPaginadoAsync(especificacao);
+        var resultado = await _repositorio.ListarAsync(especificacao);
 
         Assert.Single(resultado);
         var ordemServico = resultado.First();
@@ -152,7 +152,7 @@ public class RepositorioTests : IDisposable
         var id = await CriarDadosTeste();
         
         var especificacao = new OrdemServicoProjetadaEspecificacao(id);
-        var resultado = await _repositorio.ObterProjetadoAsync<OrdemServicoProjecao>(especificacao);
+        var resultado = await _repositorio.ObterUmProjetadoAsync<OrdemServicoProjecao>(especificacao);
 
         Assert.NotNull(resultado);
         Assert.Equal(id, resultado.Id);
@@ -167,7 +167,7 @@ public class RepositorioTests : IDisposable
         var id = await CriarDadosTeste();
         
         var especificacao = new OrdemServicoProjetadaEspecificacao(id);
-        var resultado = await _repositorio.ObterProjetadoSemRastreamentoAsync<OrdemServicoProjecao>(especificacao);
+        var resultado = await _repositorio.ObterUmProjetadoSemRastreamentoAsync<OrdemServicoProjecao>(especificacao);
 
         Assert.NotNull(resultado);
         Assert.Equal(id, resultado.Id);
@@ -265,7 +265,7 @@ public class RepositorioTests : IDisposable
         var id = await CriarDadosTeste();
         
         var especificacao = new ListarOrdensServicoPaginadasEspecificacao(id);
-        var resultado = await _repositorio.ListarProjetadoComPaginacaoAsync<OrdemServicoProjecao>(especificacao);
+        var resultado = await _repositorio.ListarProjetadoAsync<OrdemServicoProjecao>(especificacao);
 
         Assert.Single(resultado);
         var projecao = resultado.First();
@@ -279,7 +279,7 @@ public class RepositorioTests : IDisposable
         var id = await CriarDadosTeste();
         
         var especificacao = new ListarOrdensServicoPaginadasEspecificacao(id);
-        var resultado = await _repositorio.ListarProjetadoComPaginacaoSemRastreamentoAsync<OrdemServicoProjecao>(especificacao);
+        var resultado = await _repositorio.ListarProjetadoSemRastreamentoAsync<OrdemServicoProjecao>(especificacao);
 
         Assert.Single(resultado);
         var projecao = resultado.First();
