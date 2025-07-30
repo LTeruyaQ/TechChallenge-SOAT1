@@ -83,14 +83,16 @@ namespace Aplicacao.Servicos
 
                 await _repositoryEndereco.EditarAsync(endereco);
             }
-
-            throw new DadosNaoEncontradosException("Endereço inexistente");
+            else
+            {
+                throw new DadosNaoEncontradosException("Endereço inexistente");
+            }
         }
 
         private async Task AtualizarContatoCliente(AtualizarClienteRequest contatoCliente)
         {
-            if (!contatoCliente.ContatoId.Equals(Guid.Empty))
-                throw new Exception("Endereço inexistente");
+            if (contatoCliente.ContatoId.Equals(Guid.Empty))
+                throw new Exception("Contato inexistente");
 
             if (await _repositoryContato.ObterPorIdAsync(contatoCliente.ContatoId) is Contato contato)
             {
