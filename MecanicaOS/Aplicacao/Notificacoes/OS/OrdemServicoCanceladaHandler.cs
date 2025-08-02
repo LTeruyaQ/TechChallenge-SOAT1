@@ -1,4 +1,4 @@
-﻿using Aplicacao.Interfaces.Servicos;
+using Aplicacao.Interfaces.Servicos;
 using Dominio.Entidades;
 using Dominio.Especificacoes.Insumo;
 using Dominio.Interfaces.Repositorios;
@@ -28,7 +28,7 @@ public class OrdemServicoCanceladaHandler(IRepositorio<InsumoOS> ordemServicoRep
 
             await _insumoOSServico.DevolverInsumosAoEstoqueAsync(insumosOS);
 
-            _logServico.LogFim(metodo);
+            _logServico.LogFim(metodo, null);
         }
         catch (Exception e)
         {
