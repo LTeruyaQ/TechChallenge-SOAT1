@@ -3,11 +3,13 @@ using Aplicacao.DTOs.Responses.Cliente;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
+using Dominio.Especificacoes.Contato;
 using Dominio.Entidades;
 using Dominio.Especificacoes.Cliente;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
+using System.ComponentModel.DataAnnotations;
 
 namespace Aplicacao.Servicos
 {
@@ -41,7 +43,34 @@ namespace Aplicacao.Servicos
                 var cliente = await _repositorio.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("cliente não encontrado");
 
+                // Verifica se o documento já está em uso por outro cliente
+                if (!string.Equals(cliente.Documento, request.Documento, StringComparison.OrdinalIgnoreCase))
+                {
+                    var clienteComMesmoDocumento = await _repositorio.ObterUmAsync(new ObterClientePorDocumento(request.Documento));
+                    if (clienteComMesmoDocumento != null && clienteComMesmoDocumento.Id != id)
+                    {
+                        throw new DadosJaCadastradosException("Já existe um cliente cadastrado com este documento");
+                    }
+                }
+
+                // Verifica se o contato existe antes de tentar atualizar
+                if (request.ContatoId.Equals(Guid.Empty))
+                    throw new DadosInvalidosException("Deve ser informado o id do contato a ser editado");
+
+                // Verifica se o e-mail já está em uso por outro cliente
+                if (!string.IsNullOrEmpty(request.Email) && !request.ContatoId.Equals(Guid.Empty))
+                {
+                    var contatoComEmail = await _repositoryContato.ObterUmAsync(
+                        new ObterContatoPorEmailEspecificacao(request.Email, id));
+                    
+                    if (contatoComEmail != null && contatoComEmail.IdCliente != id)
+                    {
+                        throw new DadosJaCadastradosException("Já existe um cliente cadastrado com este e-mail");
+                    }
+                }
+
                 cliente.Atualizar(request.Nome, request.Sexo, request.TipoCliente, request.DataNascimento);
+                cliente.Documento = request.Documento;
 
                 await _repositorio.EditarAsync(cliente);
 
@@ -91,18 +120,23 @@ namespace Aplicacao.Servicos
 
         private async Task AtualizarContatoCliente(AtualizarClienteRequest contatoCliente)
         {
-            if (contatoCliente.ContatoId.Equals(Guid.Empty))
-                throw new Exception("Contato inexistente");
+            // Obtém o contato pelo ID (já validamos que o ID não é vazio no método chamador)
+            var contato = await _repositoryContato.ObterPorIdAsync(contatoCliente.ContatoId);
+            
+            if (contato == null)
+                throw new DadosNaoEncontradosException("Contato não encontrado");
 
-            if (await _repositoryContato.ObterPorIdAsync(contatoCliente.ContatoId) is Contato contato)
-            {
+            // Atualiza os dados do contato
+            if (!string.IsNullOrEmpty(contatoCliente.Telefone))
                 contato.Telefone = contatoCliente.Telefone;
-                contato.IdCliente = contatoCliente.Id.Value;
-                contato.Email = contatoCliente.Email;
-                contato.DataAtualizacao = DateTime.UtcNow;
 
-                await _repositoryContato.EditarAsync(contato);
-            }
+            if (!string.IsNullOrEmpty(contatoCliente.Email))
+                contato.Email = contatoCliente.Email;
+
+            contato.IdCliente = contatoCliente.Id.Value;
+            contato.DataAtualizacao = DateTime.UtcNow;
+
+            await _repositoryContato.EditarAsync(contato);
         }
 
         private async Task CadastrarEnderecoCliente(Guid clienteId, CadastrarClienteRequest enderecoCliente)
@@ -142,6 +176,17 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo, request);
 
+                // Verifica se já existe cliente com o mesmo documento
+                var clienteExistente = await _repositorio.ObterUmAsync(new ObterClientePorDocumento(request.Documento));
+                if (clienteExistente != null)
+                    throw new DadosJaCadastradosException("Já existe um cliente cadastrado com este documento");
+
+                // Verifica se já existe contato com o mesmo e-mail
+                // Passa null para clienteId já que estamos verificando se o e-mail já existe para qualquer cliente
+                var contatoExistente = await _repositoryContato.ObterUmAsync(new ObterContatoPorEmailEspecificacao(request.Email, null));
+                if (contatoExistente != null)
+                    throw new DadosJaCadastradosException("Já existe um cliente cadastrado com este e-mail");
+
                 var cliente = _mapper.Map<Cliente>(request);
 
                 var entityCliente = await _repositorio.CadastrarAsync(cliente);
@@ -159,6 +204,64 @@ namespace Aplicacao.Servicos
                 LogFim(metodo, response);
 
                 return response;
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+
+        public async Task AtualizarContatoAsync(Guid clienteId, AtualizarContatoRequest request)
+        {
+            string metodo = nameof(AtualizarContatoAsync);
+
+            try
+            {
+                LogInicio(metodo, new { clienteId, request });
+
+                // Validação dos dados de entrada
+                var validationContext = new ValidationContext(request);
+                Validator.ValidateObject(request, validationContext, true);
+
+                var cliente = await _repositorio.ObterPorIdAsync(clienteId)
+                    ?? throw new DadosNaoEncontradosException("Cliente não encontrado");
+
+                if (cliente.Contato == null)
+                    throw new DadosNaoEncontradosException("Contato do cliente não encontrado");
+
+                // Verifica se o email já está em uso por outro cliente
+                if (!string.IsNullOrEmpty(request.Email) && 
+                    !string.Equals(cliente.Contato.Email, request.Email, StringComparison.OrdinalIgnoreCase))
+                {
+                    var contatoComEmail = await _repositoryContato.ObterUmAsync(
+                        new ObterContatoPorEmailEspecificacao(request.Email, clienteId));
+                    
+                    if (contatoComEmail != null)
+                    {
+                        // Se o contato com o e-mail pertence a outro cliente, lança exceção
+                        if (contatoComEmail.IdCliente != clienteId)
+                        {
+                            throw new DadosJaCadastradosException("Já existe um cliente cadastrado com este e-mail");
+                        }
+                    }
+                }
+
+                // Atualiza os dados do contato
+                if (!string.IsNullOrEmpty(request.Email))
+                    cliente.Contato.Email = request.Email;
+
+                if (!string.IsNullOrEmpty(request.Telefone))
+                    cliente.Contato.Telefone = request.Telefone;
+
+                cliente.Contato.DataAtualizacao = DateTime.UtcNow;
+
+                await _repositoryContato.EditarAsync(cliente.Contato);
+
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao atualizar contato do cliente");
+
+                LogFim(metodo);
             }
             catch (Exception e)
             {

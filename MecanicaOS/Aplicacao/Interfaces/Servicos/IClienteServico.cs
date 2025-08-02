@@ -8,6 +8,7 @@ namespace Aplicacao.Interfaces.Servicos
     {
         Task<ClienteResponse> CadastrarAsync(CadastrarClienteRequest request);
         Task<ClienteResponse> AtualizarAsync(Guid id, AtualizarClienteRequest request);
+        Task AtualizarContatoAsync(Guid clienteId, AtualizarContatoRequest request);
         Task<bool> RemoverAsync(Guid id);
         Task<ClienteResponse> ObterPorIdAsync(Guid id);
         Task<IEnumerable<ClienteResponse>> ObterTodosAsync();
