@@ -12,7 +12,7 @@ public class ObterOSOrcamentoExpiradoEspecificacao : EspecificacaoBase<Entidades
     }
 
     public override Expression<Func<Entidades.OrdemServico, bool>> Expressao =>
-        o => o.Status == StatusOrdemServico.AguardandoAprovação &&
+        o => o.Status == StatusOrdemServico.AguardandoAprovacao &&
              o.DataEnvioOrcamento.HasValue &&
              o.DataEnvioOrcamento.Value.AddDays(3) <= DateTime.UtcNow;
 }

@@ -81,7 +81,7 @@ public class OrdemServicoRepositorioTests
                 Cliente = cliente,
                 Servico = servico,
                 Veiculo = veiculo,
-                Status = StatusOrdemServico.AguardandoAprovação,
+                Status = StatusOrdemServico.AguardandoAprovacao,
             };
 
             ordemServico.InsumosOS.Add(new InsumoOS
@@ -196,7 +196,7 @@ public class OrdemServicoRepositorioTests
                 Cliente = cliente,
                 Veiculo = veiculo,
                 Servico = servico,
-                Status = StatusOrdemServico.AguardandoAprovação,
+                Status = StatusOrdemServico.AguardandoAprovacao,
                 DataCadastro = DateTime.UtcNow
             };
 

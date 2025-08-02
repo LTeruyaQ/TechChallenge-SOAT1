@@ -71,7 +71,7 @@ public class EEspecificacaoTests : IDisposable
             Cliente = cliente,
             Veiculo = veiculo,
             Servico = servico1,
-            Status = StatusOrdemServico.AguardandoAprovação,
+            Status = StatusOrdemServico.AguardandoAprovacao,
             DataCadastro = DateTime.UtcNow.AddDays(-2),
             Orcamento = 150m
         };
@@ -202,7 +202,7 @@ public class EEspecificacaoTests : IDisposable
 
         // Criar especificações
         var especStatus = new EspecificacaoSimples<OrdemServico>(
-            os => os.Status == StatusOrdemServico.AguardandoAprovação ||
+            os => os.Status == StatusOrdemServico.AguardandoAprovacao ||
                   os.Status == StatusOrdemServico.EmExecucao);
 
         var especData = new EspecificacaoSimples<OrdemServico>(
@@ -220,7 +220,7 @@ public class EEspecificacaoTests : IDisposable
 
         // Assert
         Assert.Equal(2, resultados.Count());
-        Assert.Contains(resultados, os => os.Status == StatusOrdemServico.AguardandoAprovação);
+        Assert.Contains(resultados, os => os.Status == StatusOrdemServico.AguardandoAprovacao);
         Assert.Contains(resultados, os => os.Status == StatusOrdemServico.EmExecucao);
         Assert.All(resultados, os =>
         {

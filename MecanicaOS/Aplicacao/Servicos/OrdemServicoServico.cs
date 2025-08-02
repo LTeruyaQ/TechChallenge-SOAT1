@@ -258,7 +258,7 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
         if (ordemServico.Status == StatusOrdemServico.OrcamentoExpirado)
             throw new OrcamentoExpiradoException("Orçamento expirado");
 
-        bool deveExpirar = ordemServico.Status == StatusOrdemServico.AguardandoAprovação
+        bool deveExpirar = ordemServico.Status == StatusOrdemServico.AguardandoAprovacao
             && ordemServico.DataEnvioOrcamento.HasValue
             && ordemServico.DataEnvioOrcamento.Value.AddDays(3) <= DateTime.UtcNow;
 

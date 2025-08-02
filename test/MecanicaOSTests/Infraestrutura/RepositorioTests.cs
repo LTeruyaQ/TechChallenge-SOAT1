@@ -78,7 +78,7 @@ public class RepositorioTests : IDisposable
             Cliente = cliente,
             Servico = servico,
             Veiculo = veiculo,
-            Status = StatusOrdemServico.AguardandoAprovação,
+            Status = StatusOrdemServico.AguardandoAprovacao,
             DataCadastro = DateTime.UtcNow
         };
 

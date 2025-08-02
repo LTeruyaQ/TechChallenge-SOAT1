@@ -37,7 +37,7 @@ public class OrdemServicoEmOrcamentoHandler(
             if (os is null) return;
 
             os.Orcamento = _orcamentoServico.GerarOrcamento(os);
-            os.Status = StatusOrdemServico.AguardandoAprovação;
+            os.Status = StatusOrdemServico.AguardandoAprovacao;
             os.DataEnvioOrcamento = DateTime.UtcNow;
 
             await EnviarOrcamentoAsync(os);
