@@ -2,6 +2,9 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+TestDia*
+coveragereport/*
+
 # Arquivos de build do Visual Studio
 .vs/
 *.suo

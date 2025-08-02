@@ -1,4 +1,4 @@
-﻿using Aplicacao.Interfaces.Servicos;
+using Aplicacao.Interfaces.Servicos;
 using Dominio.Entidades;
 using Dominio.Enumeradores;
 using Dominio.Especificacoes.OrdemServico;
@@ -25,29 +25,26 @@ public class VerificarOrcamentoExpiradoJob(IRepositorio<OrdemServico> ordemServi
             var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
             var ordensServico = await _ordemServicoRepositorio.ListarAsync(especificacao);
 
-            if (!ordensServico.Any())
+            if (ordensServico.Any())
             {
-                return;
+                ordensServico.ToList().ForEach(o =>
+                {
+                    o.Status = StatusOrdemServico.OrcamentoExpirado;
+                });
+
+                await _insumoOSServico.DevolverInsumosAoEstoqueAsync(ordensServico.SelectMany(os => os.InsumosOS));
+                await _ordemServicoRepositorio.EditarVariosAsync(ordensServico);
+                await _uot.Commit();
             }
-
-            ordensServico.ToList().ForEach(o =>
-            {
-                o.Status = StatusOrdemServico.OrcamentoExpirado;
-            });
-
-            await _insumoOSServico.DevolverInsumosAoEstoqueAsync(ordensServico.SelectMany(os => os.InsumosOS));
-
-            await _ordemServicoRepositorio.EditarVariosAsync(ordensServico);
-
-            await _uot.Commit();
-
-            _logServico.LogFim(metodo);
         }
         catch (Exception e)
         {
             _logServico.LogErro(metodo, e);
-
             throw;
+        }
+        finally
+        {
+            _logServico.LogFim(metodo);
         }
     }
 }
