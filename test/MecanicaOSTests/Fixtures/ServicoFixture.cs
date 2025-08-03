@@ -34,11 +34,18 @@ namespace MecanicaOSTests.Fixtures
                 Id = Guid.NewGuid(),
                 Nome = "Troca de Óleo",
                 Descricao = "Troca de óleo e filtro",
-                Valor = 150.50m,
+                Valor = 100m,
                 Disponivel = true,
                 DataCadastro = DateTime.UtcNow,
                 DataAtualizacao = DateTime.UtcNow
             };
+        }
+
+        public static Servico CriarServico(decimal valor)
+        {
+            var servico = CriarServicoValido();
+            servico.Valor = valor;
+            return servico;
         }
     }
 }
