@@ -122,6 +122,14 @@ Esta é a forma mais simples e rápida de executar a aplicação, pois todo o am
         *   Senha: `postgres`
         *   Database: `mecanicaos`
 
+6. **Configuração de secrets:**
+   Para rodar o projeto localmente, é necessário configurar a variável secreta que o projeto utiliza.
+   ### Passos para configurar user-secrets
+   1. Abra o terminal na pasta do projeto onde está o arquivo `.csproj`.
+   2. Inicialize o user-secrets (caso ainda não tenha feito): `dotnet user-secrets init`
+   3. Adicione a secret necessária: `dotnet user-secrets set "SendGrid:ApiKey" "<SUA_CHAVE_SENDGRID_AQUI>"`
+   4. Confirme que a secret foi configurada: `dotnet user-secrets list`
+
 ### Opção 2: Executando Localmente (Sem Docker)
 
 Para executar o projeto diretamente na sua máquina, siga os passos abaixo.
@@ -160,6 +168,14 @@ Para executar o projeto diretamente na sua máquina, siga os passos abaixo.
     dotnet run
     ```
     A API estará disponível em `https://localhost:7199` ou `http://localhost:5246` (verifique o output do terminal).
+    
+7. **Configuração de secrets:**
+   Para rodar o projeto localmente, é necessário configurar a variável secreta que o projeto utiliza.
+   ### Passos para configurar user-secrets
+   1. Abra o terminal na pasta do projeto onde está o arquivo `.csproj`.
+   2. Inicialize o user-secrets (caso ainda não tenha feito): `dotnet user-secrets init`
+   3. Adicione a secret necessária: `dotnet user-secrets set "SendGrid:ApiKey" "<SUA_CHAVE_SENDGRID_AQUI>"`
+   4. Confirme que a secret foi configurada: `dotnet user-secrets list`
 
 ## Executando os Testes
 
