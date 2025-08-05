@@ -56,9 +56,11 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao atualizar usuario");
 
-            LogFim(metodo, usuario);
+            var response = _mapper.Map<UsuarioResponse>(usuario);
 
-            return _mapper.Map<UsuarioResponse>(usuario);
+            LogFim(metodo, response);
+
+            return response;
         }
         catch (Exception e)
         {
@@ -89,9 +91,11 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao cadastrar usuário");
 
-            LogFim(metodo, entidade);
+            var response = _mapper.Map<UsuarioResponse>(usuario);
 
-            return _mapper.Map<UsuarioResponse>(entidade);
+            LogFim(metodo, response);
+
+            return response;
         }
         catch (Exception e)
         {
@@ -133,12 +137,10 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 
             var usuario = await ObterPorEmailAsync(email);
 
-            LogFim(metodo, usuario);
+            LogFim(metodo);
 
             if (usuario is not null)
-            {
                 throw new DadosJaCadastradosException("Usuário já cadastrado");
-            }
         }
         catch (Exception e)
         {
@@ -185,9 +187,11 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 
             var usuario = await _repositorio.ObterPorIdAsync(id);
 
-            LogFim(metodo, usuario);
+            var response = _mapper.Map<UsuarioResponse>(usuario);
 
-            return _mapper.Map<UsuarioResponse>(usuario);
+            LogFim(metodo, response);
+
+            return response;
         }
         catch (Exception e)
         {
@@ -206,10 +210,11 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             LogInicio(metodo);
 
             var usuarios = await _repositorio.ObterTodosAsync();
+            var response = _mapper.Map<IEnumerable<UsuarioResponse>>(usuarios);
+            
+            LogFim(metodo, response);
 
-            LogFim(metodo, usuarios);
-
-            return _mapper.Map<IEnumerable<UsuarioResponse>>(usuarios);
+            return response;
         }
         catch (Exception e)
         {

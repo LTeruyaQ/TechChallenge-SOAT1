@@ -4,6 +4,7 @@ using Dominio.Especificacoes.Usuario;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
+using Hangfire;
 using System.Text;
 
 namespace Aplicacao.Jobs;
@@ -23,6 +24,7 @@ public class VerificarEstoqueJob(
     private readonly IServicoEmail _servicoEmail = notificacaoEmail;
     private readonly IUnidadeDeTrabalho _uot = udt;
 
+    [DisableConcurrentExecution(timeoutInSeconds: 3600)]
     public async Task ExecutarAsync()
     {
         var metodo = nameof(ExecutarAsync);
