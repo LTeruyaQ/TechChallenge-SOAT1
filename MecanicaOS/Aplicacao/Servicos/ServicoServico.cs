@@ -41,9 +41,9 @@ namespace Aplicacao.Servicos
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao cadastrar serviço");
 
-                LogFim(metodo, entidade);
-
-                return _mapper.Map<ServicoResponse>(entidade);
+                var response = _mapper.Map<ServicoResponse>(entidade);
+                LogFim(metodo, response);
+                return response;
             }
             catch (Exception e)
             {
@@ -64,9 +64,11 @@ namespace Aplicacao.Servicos
 
                 var servico = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
 
-                LogFim(metodo, servico);
+                var response = _mapper.Map<ServicoResponse>(servico);
 
-                return _mapper.Map<ServicoResponse>(servico);
+                LogFim(metodo, response);
+
+                return response;
             }
             catch (Exception e)
             {
@@ -114,9 +116,11 @@ namespace Aplicacao.Servicos
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao atualizar serviço");
 
-                LogFim(metodo, servico);
+                var response = _mapper.Map<ServicoResponse>(servico);
 
-                return _mapper.Map<ServicoResponse>(servico);
+                LogFim(metodo, response);
+
+                return response;
             }
             catch (Exception e)
             {
@@ -134,9 +138,11 @@ namespace Aplicacao.Servicos
 
                 var servico = await _repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
 
-                LogFim(metodo, servico);
+                var response = _mapper.Map<ServicoResponse>(servico);
+                
+                LogFim(metodo, response);
 
-                return _mapper.Map<ServicoResponse>(servico);
+                return response;
             }
             catch (Exception e)
             {
@@ -156,9 +162,11 @@ namespace Aplicacao.Servicos
 
                 var servicos = await _repositorio.ListarAsync(filtro);
 
+                var response = _mapper.Map<IEnumerable<ServicoResponse>>(servicos);
+                
                 LogFim(metodo, servicos);
 
-                return _mapper.Map<IEnumerable<ServicoResponse>>(servicos);
+                return response;
             }
             catch (Exception e)
             {
@@ -176,9 +184,11 @@ namespace Aplicacao.Servicos
 
                 var servicos = await _repositorio.ObterTodosAsync();
 
-                LogFim(metodo, servicos);
+                var response = _mapper.Map<IEnumerable<ServicoResponse>>(servicos);
+                
+                LogFim(metodo, response);
 
-                return _mapper.Map<IEnumerable<ServicoResponse>>(servicos);
+                return response;
             }
             catch (Exception e)
             {
