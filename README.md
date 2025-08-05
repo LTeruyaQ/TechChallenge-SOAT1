@@ -124,11 +124,11 @@ Esta é a forma mais simples e rápida de executar a aplicação, pois todo o am
 
 6. **Configuração de secrets:**
    Para rodar o projeto localmente, é necessário configurar a variável secreta que o projeto utiliza.
-   Passos para configurar user-secrets:
-   *   Abra o terminal na pasta do projeto onde está o arquivo `.csproj`.
-   *   Inicialize o user-secrets (caso ainda não tenha feito): `dotnet user-secrets init`
-   *   Adicione a secret necessária: `dotnet user-secrets set "SendGrid:ApiKey" "<SUA_CHAVE_SENDGRID_AQUI>"`
-   *   Confirme que a secret foi configurada: `dotnet user-secrets list`
+    *   Passos para configurar user-secrets:
+        *   Abra o terminal na pasta do projeto onde está o arquivo `.csproj`.
+        *   Inicialize o user-secrets (caso ainda não tenha feito): `dotnet user-secrets init`
+        *   Adicione a secret necessária: `dotnet user-secrets set "SendGrid:ApiKey" "<SUA_CHAVE_SENDGRID_AQUI>"`
+        *   Confirme que a secret foi configurada: `dotnet user-secrets list`
 
 ### Opção 2: Executando Localmente (Sem Docker)
 
@@ -171,11 +171,11 @@ Para executar o projeto diretamente na sua máquina, siga os passos abaixo.
     
 6. **Configuração de secrets:**
    Para rodar o projeto localmente, é necessário configurar a variável secreta que o projeto utiliza.
-   Passos para configurar user-secrets:
-   *   Abra o terminal na pasta do projeto onde está o arquivo `.csproj`.
-   *   Inicialize o user-secrets (caso ainda não tenha feito): `dotnet user-secrets init`
-   *   Adicione a secret necessária: `dotnet user-secrets set "SendGrid:ApiKey" "<SUA_CHAVE_SENDGRID_AQUI>"`
-   *   Confirme que a secret foi configurada: `dotnet user-secrets list`
+    *   Passos para configurar user-secrets:
+        *   Abra o terminal na pasta do projeto onde está o arquivo `.csproj`.
+        *   Inicialize o user-secrets (caso ainda não tenha feito): `dotnet user-secrets init`
+        *   Adicione a secret necessária: `dotnet user-secrets set "SendGrid:ApiKey" "<SUA_CHAVE_SENDGRID_AQUI>"`
+        *   Confirme que a secret foi configurada: `dotnet user-secrets list`
 
 ## Executando os Testes
 
