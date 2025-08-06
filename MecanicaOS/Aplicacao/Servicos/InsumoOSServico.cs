@@ -58,9 +58,11 @@ public class InsumoOSServico(
 
             await AtualizarStatusOrdemServicoAsync(os);
 
-            LogFim(metodo, entidades);
+            var response = _mapper.Map<List<InsumoOSResponse>>(entidades);
+            
+            LogFim(metodo, response);
 
-            return _mapper.Map<List<InsumoOSResponse>>(entidades);
+            return response;
         }
         catch (Exception e)
         {

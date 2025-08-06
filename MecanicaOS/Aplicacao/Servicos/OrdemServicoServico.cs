@@ -60,8 +60,6 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao atualizar a ordem de serviço");
 
-            LogFim(metodo, ordemServico);
-
             //TODO: refatorar isso
             if (ordemServico.Status == StatusOrdemServico.EmDiagnostico)
             {
@@ -76,7 +74,11 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
                 await _mediator.Publish(new OrdemServicoFinalizadaEvent(ordemServico.Id));
             }
 
-            return _mapper.Map<OrdemServicoResponse>(ordemServico);
+            var response = _mapper.Map<OrdemServicoResponse>(ordemServico);
+
+            LogFim(metodo, response);
+
+            return response;
         }
         catch (Exception e)
         {
@@ -102,9 +104,11 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao cadastrar a ordem de serviço");
 
-            LogFim(metodo, entidade);
+            var response = _mapper.Map<OrdemServicoResponse>(entidade);
+            
+            LogFim(metodo, response);
 
-            return _mapper.Map<OrdemServicoResponse>(entidade);
+            return response;
         }
         catch (Exception e)
         {
@@ -122,7 +126,9 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
         var veiculo = cliente.Veiculos.FirstOrDefault(v => v.Id == request.VeiculoId);
         _ = veiculo ?? throw new DadosNaoEncontradosException("O veículo não foi encontrado");
 
-        _ = await _servicoServico.ObterServicoPorIdAsync(request.ServicoId);
+        var servico = await _servicoServico.ObterServicoPorIdAsync(request.ServicoId);
+        if (!servico.Disponivel)
+            throw new ServicoIndisponivelException("Serviço indisponível");
     }
 
     public async Task<OrdemServicoResponse?> ObterPorIdAsync(Guid id)
@@ -135,10 +141,10 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
 
             var especificacao = new ObterOrdemServicoPorIdComInsumosEspecificacao(id);
             var ordemServico = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
+            var response = _mapper.Map<OrdemServicoResponse>(ordemServico);
 
-            LogFim(metodo, ordemServico);
-
-            return _mapper.Map<OrdemServicoResponse>(ordemServico);
+            LogFim(metodo, response);
+            return response;
         }
         catch (Exception e)
         {
@@ -160,9 +166,11 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
 
             var ordemServico = await _repositorio.ListarAsync(filtroOSStatus);
 
-            LogFim(metodo, ordemServico);
+            var response = _mapper.Map<IEnumerable<OrdemServicoResponse>>(ordemServico);
 
-            return _mapper.Map<IEnumerable<OrdemServicoResponse>>(ordemServico);
+            LogFim(metodo, response);
+
+            return response;
         }
         catch (Exception e)
         {
@@ -182,9 +190,11 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
 
             var ordensServico = await _repositorio.ObterTodosAsync();
 
-            LogFim(metodo, ordensServico);
+            var response = _mapper.Map<IEnumerable<OrdemServicoResponse>>(ordensServico);
 
-            return _mapper.Map<IEnumerable<OrdemServicoResponse>>(ordensServico);
+            LogFim(metodo, response);
+            
+            return response;
         }
         catch (Exception e)
         {
