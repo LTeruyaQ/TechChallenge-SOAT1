@@ -18,6 +18,7 @@ public class AutenticacaoServicoTests : BaseTestFixture<AutenticacaoServico>
     private readonly Mock<IServicoJwt> _servicoJwtMock;
     private readonly Mock<IClienteServico> _clienteServicoMock;
     private readonly Mock<ILogServico<AutenticacaoServico>> _logServicoMock;
+    private readonly ClienteFixture _clienteFixture;
     private readonly AutenticacaoServico _servico;
     public AutenticacaoServicoTests() : base()
     {
@@ -26,6 +27,7 @@ public class AutenticacaoServicoTests : BaseTestFixture<AutenticacaoServico>
         _servicoJwtMock = CreateServiceMock<IServicoJwt>();
         _clienteServicoMock = CreateServiceMock<IClienteServico>();
         _logServicoMock = CreateServiceMock<ILogServico<AutenticacaoServico>>();
+        _clienteFixture = new ClienteFixture();
 
         _servico = new AutenticacaoServico(
             _usuarioServicoMock.Object,
@@ -153,7 +155,7 @@ public class AutenticacaoServicoTests : BaseTestFixture<AutenticacaoServico>
     {
         // Arrange
         var request = AutenticacaoFixture.CriarAutenticacaoRequestValida();
-        var cliente = ClienteFixture.CriarClienteValido();
+        var cliente = _clienteFixture.CriarClienteValido();
         var usuario = AutenticacaoFixture.CriarUsuarioAtivo();
 
         usuario.Email = request.Email;

@@ -3,9 +3,9 @@ using Dominio.Entidades;
 
 namespace MecanicaOSTests.Fixtures
 {
-    public static class ServicoFixture
+    public class ServicoFixture
     {
-        public static CadastrarServicoRequest CriarCadastrarServicoRequestValido()
+        public CadastrarServicoRequest CriarCadastrarServicoRequestValido()
         {
             return new CadastrarServicoRequest
             {
@@ -16,7 +16,7 @@ namespace MecanicaOSTests.Fixtures
             };
         }
 
-        public static EditarServicoRequest CriarEditarServicoRequestValido()
+        public EditarServicoRequest CriarEditarServicoRequestValido()
         {
             return new EditarServicoRequest
             {
@@ -27,7 +27,7 @@ namespace MecanicaOSTests.Fixtures
             };
         }
 
-        public static Servico CriarServicoValido()
+        public Servico CriarServicoValido()
         {
             return new Servico
             {

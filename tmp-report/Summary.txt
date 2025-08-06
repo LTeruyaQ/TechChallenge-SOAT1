@@ -1,0 +1,159 @@
+Summary
+  Generated on: 08/06/2025 - 00:20:39
+  Coverage date: 08/06/2025 - 00:16:34
+  Parser: Cobertura
+  Assemblies: 4
+  Classes: 131
+  Files: 131
+  Line coverage: 26.4%
+  Covered lines: 1114
+  Uncovered lines: 3090
+  Coverable lines: 4204
+  Total lines: 7385
+  Branch coverage: 31% (166 of 534)
+  Covered branches: 166
+  Total branches: 534
+  Method coverage: 44.2% (244 of 552)
+  Full method coverage: 41.4% (229 of 552)
+  Covered methods: 244
+  Fully covered methods: 229
+  Total methods: 552
+
+API                                                                                      0%
+  API.Controllers.AutenticacaoController                                                 0%
+  API.Controllers.BaseApiController                                                      0%
+  API.Controllers.ClienteController                                                      0%
+  API.Controllers.EstoqueController                                                      0%
+  API.Controllers.OrdemServicoController                                                 0%
+  API.Controllers.ServicosController                                                     0%
+  API.Controllers.UsuarioController                                                      0%
+  API.Controllers.UsuarioLogadoController                                                0%
+  API.Controllers.VeiculoController                                                      0%
+  API.Filters.PermissaoNecessariaAttribute                                               0%
+  API.Middlewares.GlobalExceptionHandlerMiddleware                                       0%
+  API.Middlewares.IdCorrelacionalLogMiddleware                                           0%
+  API.Models.ErrorResponse                                                               0%
+  Program                                                                                0%
+
+Aplicacao                                                                             49.6%
+  Aplicacao.DTOs.Requests.Autenticacao.AutenticacaoRequest                             100%
+  Aplicacao.DTOs.Requests.Cliente.AtualizarClienteRequest                                0%
+  Aplicacao.DTOs.Requests.Cliente.CadastrarClienteRequest                             92.3%
+  Aplicacao.DTOs.Requests.Estoque.AtualizarEstoqueRequest                              100%
+  Aplicacao.DTOs.Requests.Estoque.CadastrarEstoqueRequest                               20%
+  Aplicacao.DTOs.Requests.OrdemServico.AtualizarOrdemServicoRequest                      0%
+  Aplicacao.DTOs.Requests.OrdemServico.CadastrarOrdemServicoRequest                      0%
+  Aplicacao.DTOs.Requests.OrdemServico.InsumoOS.CadastrarInsumoOSRequest                 0%
+  Aplicacao.DTOs.Requests.Servico.CadastrarServicoRequest                              100%
+  Aplicacao.DTOs.Requests.Servico.EditarServicoRequest                                 100%
+  Aplicacao.DTOs.Requests.Usuario.AtualizarUsuarioRequest                              100%
+  Aplicacao.DTOs.Requests.Usuario.CadastrarUsuarioRequest                               80%
+  Aplicacao.DTOs.Requests.Veiculo.AtualizarVeiculoRequest                              100%
+  Aplicacao.DTOs.Requests.Veiculo.CadastrarVeiculoRequest                                0%
+  Aplicacao.DTOs.Responses.Autenticacao.AutenticacaoResponse                           100%
+  Aplicacao.DTOs.Responses.Cliente.ClienteResponse                                    36.3%
+  Aplicacao.DTOs.Responses.Estoque.EstoqueResponse                                    12.5%
+  Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico.InsumoOSResponse              0%
+  Aplicacao.DTOs.Responses.OrdemServico.OrdemServicoResponse                             0%
+  Aplicacao.DTOs.Responses.Servico.ServicoResponse                                    71.4%
+  Aplicacao.DTOs.Responses.Usuario.UsuarioResponse                                    77.7%
+  Aplicacao.DTOs.Responses.Veiculo.VeiculoResponse                                    54.5%
+  Aplicacao.Jobs.VerificarEstoqueJob                                                     0%
+  Aplicacao.Jobs.VerificarOrcamentoExpiradoJob                                           0%
+  Aplicacao.Mapeamentos.ClienteProfile                                                 100%
+  Aplicacao.Mapeamentos.EstoqueProfile                                                 100%
+  Aplicacao.Mapeamentos.InsumoOSProfile                                                100%
+  Aplicacao.Mapeamentos.OrdemServicoProfile                                            100%
+  Aplicacao.Mapeamentos.ServicoProfile                                                 100%
+  Aplicacao.Mapeamentos.UsuarioProfile                                                 100%
+  Aplicacao.Mapeamentos.VeiculoProfile                                                 100%
+  Aplicacao.Notificacoes.OS.OrdemServicoCanceladaEvent                                   0%
+  Aplicacao.Notificacoes.OS.OrdemServicoCanceladaHandler                                 0%
+  Aplicacao.Notificacoes.OS.OrdemServicoEmOrcamentoEvent                                 0%
+  Aplicacao.Notificacoes.OS.OrdemServicoEmOrcamentoHandler                               0%
+  Aplicacao.Notificacoes.OS.OrdemServicoFinalizadaEvent                                  0%
+  Aplicacao.Notificacoes.OS.OrdemServicoFinalizadaHandler                                0%
+  Aplicacao.Servicos.Abstrato.ServicoAbstrato<T1, T2>                                  100%
+  Aplicacao.Servicos.AutenticacaoServico                                               100%
+  Aplicacao.Servicos.ClienteServico                                                   59.1%
+  Aplicacao.Servicos.EstoqueServico                                                   95.2%
+  Aplicacao.Servicos.InsumoOSServico                                                     0%
+  Aplicacao.Servicos.OrcamentoServico                                                    0%
+  Aplicacao.Servicos.OrdemServicoServico                                                 0%
+  Aplicacao.Servicos.ServicoServico                                                   85.9%
+  Aplicacao.Servicos.UsuarioServico                                                   87.1%
+  Aplicacao.Servicos.VeiculoServico                                                   83.1%
+
+Dominio                                                                               46.7%
+  Dominio.Entidades.Abstratos.Entidade                                                30.7%
+  Dominio.Entidades.AlertaEstoque                                                        0%
+  Dominio.Entidades.Cliente                                                             50%
+  Dominio.Entidades.Contato                                                            100%
+  Dominio.Entidades.Endereco                                                           100%
+  Dominio.Entidades.Estoque                                                            100%
+  Dominio.Entidades.InsumoOS                                                            60%
+  Dominio.Entidades.OrdemServico                                                      36.8%
+  Dominio.Entidades.Servico                                                            100%
+  Dominio.Entidades.Usuario                                                           86.2%
+  Dominio.Entidades.Veiculo                                                           87.5%
+  Dominio.Especificacoes.Base.AuxiliarExpressao                                         50%
+  Dominio.Especificacoes.Base.EEspecificacao<T>                                        100%
+  Dominio.Especificacoes.Base.EspecificacaoBase<T>                                     100%
+  Dominio.Especificacoes.Base.Extensoes.EExtensao                                      100%
+  Dominio.Especificacoes.Base.Extensoes.OuExtensao                                       0%
+  Dominio.Especificacoes.Base.OuEspecificacao<T>                                         0%
+  Dominio.Especificacoes.Cliente.ObterClienteComVeiculoPorIdEspecificacao                0%
+  Dominio.Especificacoes.Cliente.ObterClientePorDocumento                               80%
+  Dominio.Especificacoes.Estoque.ObterAlertaDoDiaPorEstoqueEspecificacao                 0%
+  Dominio.Especificacoes.Estoque.ObterEstoqueCriticoEspecificacao                        0%
+  Dominio.Especificacoes.Insumo.ObterInsumosOSPorOSEspecificacao                         0%
+  Dominio.Especificacoes.Insumo.ObterInsumosPorIdsEOSEspecificacao                       0%
+  Dominio.Especificacoes.OrdemServico.ObterOrdemServicoPorIdComIncludeEspecificacao    100%
+  Dominio.Especificacoes.OrdemServico.ObterOrdemServicoPorIdComInsumosEspecificacao      0%
+  Dominio.Especificacoes.OrdemServico.ObterOrdemServicoPorStatusEspecificacao            0%
+  Dominio.Especificacoes.OrdemServico.ObterOSOrcamentoExpiradoEspecificacao              0%
+  Dominio.Especificacoes.Servico.ObterServicoDisponivelEspecificacao                     0%
+  Dominio.Especificacoes.Servico.ObterServicoPorNomeEspecificacao                       80%
+  Dominio.Especificacoes.Usuario.ObterUsuarioParaAlertaEstoqueEspecificacao              0%
+  Dominio.Especificacoes.Usuario.ObterUsuarioPorEmailEspecificacao                      80%
+  Dominio.Especificacoes.Veiculo.ObterVeiculoPorClienteEspecificacao                  83.3%
+  Dominio.Especificacoes.Veiculo.ObterVeiculoPorPlacaEspecificacao                      80%
+  Dominio.Especificacoes.Veiculo.ObterVeiculosResumidosEspecificacao                     0%
+  Dominio.Especificacoes.Veiculo.VeiculoResumidoDto                                      0%
+  Dominio.Exceptions.CredenciaisInvalidasException                                      50%
+  Dominio.Exceptions.DadosInvalidosException                                           100%
+  Dominio.Exceptions.DadosJaCadastradosException                                      33.3%
+  Dominio.Exceptions.DadosNaoEncontradosException                                      100%
+  Dominio.Exceptions.InsumoApagadoException                                              0%
+  Dominio.Exceptions.InsumosIndisponiveisException                                       0%
+  Dominio.Exceptions.OrcamentoExpiradoException                                          0%
+  Dominio.Exceptions.PersistirDadosException                                           100%
+  Dominio.Exceptions.ServicoIndisponivelException                                        0%
+  Dominio.Exceptions.UsuarioInativoException                                            50%
+  Dominio.Validacoes.AtributosValidacao.CpfOuCnpjAttribute                               0%
+  Dominio.Validacoes.ValidadorCnpj                                                       0%
+  Dominio.Validacoes.ValidadorCpf                                                        0%
+
+Infraestrutura                                                                        10.8%
+  Infraestrutura.Autenticacao.ConfiguracaoJwt                                            0%
+  Infraestrutura.Autenticacao.ServicoJwt                                                 0%
+  Infraestrutura.Autenticacao.ServicoSenha                                               0%
+  Infraestrutura.Autenticacao.UsuarioLogadoServico                                       0%
+  Infraestrutura.Dados.Especificacoes.AvaliadorDeEspecificacao<T>                     90.2%
+  Infraestrutura.Dados.Extensions.DatabaseExtensions                                     0%
+  Infraestrutura.Dados.Mapeamentos.ClienteMapeamento                                   100%
+  Infraestrutura.Dados.Mapeamentos.ContatoMapeamento                                   100%
+  Infraestrutura.Dados.Mapeamentos.EnderecoMapeamento                                    0%
+  Infraestrutura.Dados.Mapeamentos.EstoqueMapeamento                                   100%
+  Infraestrutura.Dados.Mapeamentos.OrdemServicoMapeamento                              100%
+  Infraestrutura.Dados.Mapeamentos.UsuarioMapeamento                                   100%
+  Infraestrutura.Dados.Mapeamentos.VeiculoMapeamento                                   100%
+  Infraestrutura.Dados.MecanicaContexto                                               91.1%
+  Infraestrutura.Dados.UoT.UnidadeDeTrabalho                                             0%
+  Infraestrutura.Logs.DTOs.LogEntryDto                                                   0%
+  Infraestrutura.Logs.IdCorrelacionalService                                             0%
+  Infraestrutura.Logs.LogServico<T>                                                      0%
+  Infraestrutura.Migrations.inicial                                                      0%
+  Infraestrutura.Migrations.MecanicaContextoModelSnapshot                                0%
+  Infraestrutura.Repositorios.Repositorio<T>                                          50.5%
+  Infraestrutura.Servicos.ServicoEmail                                                   0%
