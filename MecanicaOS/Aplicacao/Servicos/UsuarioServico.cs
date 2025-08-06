@@ -184,6 +184,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             LogInicio(metodo);
 
             var usuario = await _repositorio.ObterPorIdAsync(id);
+            IsNotGetSenha(usuario);
 
             LogFim(metodo, usuario);
 
@@ -197,6 +198,11 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
         }
     }
 
+    private static void IsNotGetSenha(Usuario? usuario)
+    {
+        usuario.Senha = null;
+    }
+
     public async Task<IEnumerable<UsuarioResponse>> ObterTodosAsync()
     {
         var metodo = nameof(ObterTodosAsync);
@@ -206,7 +212,10 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
             LogInicio(metodo);
 
             var usuarios = await _repositorio.ObterTodosAsync();
-
+            foreach (var usuario in usuarios)
+            {
+                IsNotGetSenha(usuario);
+            }
             LogFim(metodo, usuarios);
 
             return _mapper.Map<IEnumerable<UsuarioResponse>>(usuarios);
