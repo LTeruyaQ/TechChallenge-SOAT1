@@ -21,8 +21,6 @@ O projeto foi estruturado seguindo os princípios da **Clean Architecture**, pro
 
 A arquitetura é dividida em quatro camadas principais:
 
-![Clean Architecture Diagram](https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg)
-
 ### 1. Domínio (Domain)
 
 O coração do sistema. Esta camada contém as entidades de negócio, os objetos de valor, as exceções de domínio e as interfaces dos repositórios. É a camada mais interna e não depende de nenhuma outra.
