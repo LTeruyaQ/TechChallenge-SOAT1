@@ -55,7 +55,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao atualizar usuario");
-
+            IsNotGetSenha(usuario);
             var response = _mapper.Map<UsuarioResponse>(usuario);
 
             LogFim(metodo, response);
@@ -90,7 +90,7 @@ public class UsuarioServico : ServicoAbstrato<UsuarioServico, Usuario>, IUsuario
 
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao cadastrar usuário");
-
+            IsNotGetSenha(usuario);
             var response = _mapper.Map<UsuarioResponse>(usuario);
 
             LogFim(metodo, response);
