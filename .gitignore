@@ -72,3 +72,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Coverage reports
+coverage-report/
