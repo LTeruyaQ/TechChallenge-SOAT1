@@ -20,7 +20,7 @@ namespace MecanicaOSTests.Entidades
             var orcamento = 250.00m;
             var dataEnvioOrcamento = DateTime.UtcNow;
             var descricao = "Troca de óleo";
-            var status = StatusOrdemServico.Iniciada;
+            var status = StatusOrdemServico.Recebida;
 
             // Act
             var ordemServico = new OrdemServico
@@ -61,7 +61,7 @@ namespace MecanicaOSTests.Entidades
                 VeiculoId = Guid.NewGuid(),
                 ServicoId = Guid.NewGuid(),
                 Descricao = "Descrição Antiga",
-                Status = StatusOrdemServico.Iniciada
+                Status = StatusOrdemServico.Recebida
             };
             var novoClienteId = Guid.NewGuid();
             var novoVeiculoId = Guid.NewGuid();
