@@ -58,7 +58,7 @@ namespace MecanicaOSTests.Entidades
             };
             var novoNome = "Novo Nome";
             var novoSexo = "Masculino";
-            var novoTipoCliente = TipoCliente.PessoaJuridica;
+            var novoTipoCliente = TipoCliente.PessoaJuridico;
             var novaDataNascimento = "02/02/1992";
 
             // Act
