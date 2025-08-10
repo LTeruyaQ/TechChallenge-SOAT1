@@ -168,4 +168,24 @@ public class EstoqueServicoTests
 
         await Assert.ThrowsAsync<PersistirDadosException>(() => _estoqueServico.AtualizarAsync(id, request));
     }
+
+        [Fact]
+        public async Task AtualizarAsync_ComRequestParcial_DeveAtualizarApenasCamposFornecidos()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var request = new AtualizarEstoqueRequest { Preco = 20 };
+            var estoque = new Estoque { Preco = 10 };
+            var response = new EstoqueResponse();
+
+            _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(estoque);
+            _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
+            _mapperMock.Setup(m => m.Map<EstoqueResponse>(estoque)).Returns(response);
+
+            // Act
+            await _estoqueServico.AtualizarAsync(id, request);
+
+            // Assert
+            Assert.Equal(20, estoque.Preco);
+        }
 }

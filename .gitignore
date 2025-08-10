@@ -76,3 +76,5 @@ FodyWeavers.xsd
 # dotnet install
 dotnet/
 *.tar.gz
+coverage-report/
+coverage/

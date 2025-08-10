@@ -109,5 +109,23 @@ namespace MecanicaOSTests.Entidades
             usuario.RecebeAlertaEstoque.Should().Be(novoRecebeAlerta);
             usuario.Ativo.Should().Be(novoAtivo);
         }
+
+        [Fact]
+        public void Dado_UsuarioComCliente_Quando_AcessarCliente_Entao_DeveRetornarCliente()
+        {
+            //Arrange
+            var cliente = new Cliente();
+            var usuario = new Usuario("teste@teste.com", "senha", TipoUsuario.Cliente, cliente.Id)
+            {
+                Cliente = cliente
+            };
+
+            //Act
+            var clienteDoUsuario = usuario.Cliente;
+
+            //Assert
+            Assert.NotNull(clienteDoUsuario);
+            Assert.Equal(cliente, clienteDoUsuario);
+        }
     }
 }
