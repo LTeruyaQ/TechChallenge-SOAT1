@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="API\Controllers\AutenticacaoControllerTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="C:\Users\João Paulo\.nuget\packages\microsoft.testplatform.testhost\17.8.0\build\netcoreapp3.1\x64\testhost.dll" />
     <Content Remove="C:\Users\João Paulo\.nuget\packages\microsoft.testplatform.testhost\17.8.0\build\netcoreapp3.1\x64\testhost.exe" />
   </ItemGroup>
@@ -21,7 +25,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="API\Controllers\AutenticacaoControllerTests.cs">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AutenticacaoControllerTests.Context.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoFixture.AutoMoq" Version="4.18.1" />
+    <PackageReference Include="EntityFramework" Version="6.2.0" />
     <PackageReference Include="FluentAssertions" Version="8.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.7" />
@@ -39,6 +51,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 
@@ -51,6 +64,14 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="API\Controllers\AutenticacaoControllerTests.Context.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AutenticacaoControllerTests.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   
   <PropertyGroup>

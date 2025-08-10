@@ -22,12 +22,12 @@ namespace MecanicaOSTests.Entidades
                 Cliente = clienteMock.Object,
                 Email = email,
                 Telefone = telefone
-            };
+            };          
 
             // Assert
             contato.Should().NotBeNull();
             contato.IdCliente.Should().Be(idCliente);
-            contato.Cliente.Should().Be(clienteMock.Object);
+            contato.Cliente.Should().BeEquivalentTo(clienteMock.Object);
             contato.Email.Should().Be(email);
             contato.Telefone.Should().Be(telefone);
         }

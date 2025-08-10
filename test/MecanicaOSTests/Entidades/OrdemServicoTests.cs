@@ -40,11 +40,11 @@ namespace MecanicaOSTests.Entidades
             // Assert
             ordemServico.Should().NotBeNull();
             ordemServico.ClienteId.Should().Be(clienteId);
-            ordemServico.Cliente.Should().Be(clienteMock.Object);
+            ordemServico.Cliente.Should().BeEquivalentTo(clienteMock.Object);
             ordemServico.VeiculoId.Should().Be(veiculoId);
-            ordemServico.Veiculo.Should().Be(veiculoMock.Object);
+            ordemServico.Veiculo.Should().BeEquivalentTo(veiculoMock.Object);
             ordemServico.ServicoId.Should().Be(servicoId);
-            ordemServico.Servico.Should().Be(servicoMock.Object);
+            ordemServico.Servico.Should().BeEquivalentTo(servicoMock.Object);
             ordemServico.Orcamento.Should().Be(orcamento);
             ordemServico.DataEnvioOrcamento.Should().Be(dataEnvioOrcamento);
             ordemServico.Descricao.Should().Be(descricao);
