@@ -146,5 +146,88 @@ namespace MecanicaOSTests.Servicos
         {
             await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _clienteServico.ObterPorDocumento("00000000000"));
         }
+
+        [Fact]
+        public async Task AtualizarAsync_ComDadosValidos_DeveRetornarClienteResponse()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var request = new AtualizarClienteRequest { Nome = "João Atualizado" };
+            var cliente = new Cliente { Id = id, Nome = "João" };
+            var response = new ClienteResponse { Id = id, Nome = "João Atualizado" };
+
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
+            _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
+            _mapperMock.Setup(m => m.Map<ClienteResponse>(It.IsAny<Cliente>())).Returns(response);
+
+            // Act
+            var result = await _clienteServico.AtualizarAsync(id, request);
+
+            // Assert
+            Assert.Equal(id, result.Id);
+            Assert.Equal("João Atualizado", result.Nome);
+        }
+
+        [Fact]
+        public async Task AtualizarAsync_ComEnderecoEContato_DeveChamarRepositoriosCorrespondentes()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var enderecoId = Guid.NewGuid();
+            var contatoId = Guid.NewGuid();
+            var request = new AtualizarClienteRequest { Id = id, EnderecoId = enderecoId, ContatoId = contatoId };
+            var cliente = new Cliente { Id = id };
+            var endereco = new Endereco { Id = enderecoId };
+            var contato = new Contato { Id = contatoId };
+
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
+            _enderecoRepoMock.Setup(r => r.ObterPorIdAsync(enderecoId)).ReturnsAsync(endereco);
+            _contatoRepoMock.Setup(r => r.ObterPorIdAsync(contatoId)).ReturnsAsync(contato);
+            _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
+            _mapperMock.Setup(m => m.Map<ClienteResponse>(It.IsAny<Cliente>())).Returns(new ClienteResponse());
+
+            // Act
+            await _clienteServico.AtualizarAsync(id, request);
+
+            // Assert
+            _enderecoRepoMock.Verify(r => r.EditarAsync(It.IsAny<Endereco>()), Times.Once);
+            _contatoRepoMock.Verify(r => r.EditarAsync(It.IsAny<Contato>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task AtualizarAsync_QuandoClienteNaoEncontrado_DeveLancarExcecao()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var request = new AtualizarClienteRequest();
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync((Cliente)null);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _clienteServico.AtualizarAsync(id, request));
+        }
+
+        [Fact]
+        public async Task AtualizarAsync_ComEnderecoNaoEncontrado_DeveLancarExcecao()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var enderecoId = Guid.NewGuid();
+            var request = new AtualizarClienteRequest { EnderecoId = enderecoId };
+            var cliente = new Cliente { Id = id };
+
+            _clienteRepoMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(cliente);
+            _enderecoRepoMock.Setup(r => r.ObterPorIdAsync(enderecoId)).ReturnsAsync((Endereco)null);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _clienteServico.AtualizarAsync(id, request));
+        }
+
+        [Fact]
+        public async Task ObterPorDocumento_ComDocumentoNuloOuVazio_DeveLancarExcecao()
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<DadosInvalidosException>(() => _clienteServico.ObterPorDocumento(null));
+            await Assert.ThrowsAsync<DadosInvalidosException>(() => _clienteServico.ObterPorDocumento(""));
+        }
     }
 }

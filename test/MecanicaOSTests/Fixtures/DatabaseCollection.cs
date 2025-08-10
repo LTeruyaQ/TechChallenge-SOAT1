@@ -32,10 +32,10 @@ public class DatabaseFixture : IDisposable
         Context.Database.EnsureCreated();
 
         // Inicializa os dados de teste
-        InicializarDadosDeTeste();
+        ResetDatabase();
     }
 
-    private void InicializarDadosDeTeste()
+    public void ResetDatabase()
     {
         // Limpa os dados existentes
         Context.Database.EnsureDeleted();
