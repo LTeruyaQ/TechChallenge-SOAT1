@@ -19,6 +19,7 @@ public class ServicoJwt : IServicoJwt
     public string GerarToken(Guid usuarioId, string email, string tipoUsuario, string? nome = null, IEnumerable<string>? permissoes = null)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
+        tokenHandler.OutboundClaimTypeMap.Clear();
         var key = Encoding.ASCII.GetBytes(_configuracaoJwt.SecretKey);
 
         var claims = new List<Claim>

@@ -41,7 +41,7 @@ namespace MecanicaOSTests.Entidades
             veiculo.Ano.Should().Be(ano);
             veiculo.Anotacoes.Should().Be(anotacoes);
             veiculo.ClienteId.Should().Be(clienteId);
-            veiculo.Cliente.Should().Be(clienteMock.Object);
+            veiculo.Cliente.Should().BeEquivalentTo(clienteMock.Object);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace MecanicaOSTests.Entidades
             endereco.CEP.Should().Be(cep);
             endereco.Complemento.Should().Be(complemento);
             endereco.IdCliente.Should().Be(idCliente);
-            endereco.Cliente.Should().Be(clienteMock.Object);
+            endereco.Cliente.Should().BeEquivalentTo(clienteMock.Object);
         }
     }
 }

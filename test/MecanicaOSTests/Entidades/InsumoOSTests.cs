@@ -29,9 +29,9 @@ namespace MecanicaOSTests.Entidades
             // Assert
             insumoOS.Should().NotBeNull();
             insumoOS.OrdemServicoId.Should().Be(ordemServicoId);
-            insumoOS.OrdemServico.Should().Be(ordemServicoMock.Object);
+            insumoOS.OrdemServico.Should().BeEquivalentTo(ordemServicoMock.Object);
             insumoOS.EstoqueId.Should().Be(estoqueId);
-            insumoOS.Estoque.Should().Be(estoqueMock.Object);
+            insumoOS.Estoque.Should().BeEquivalentTo(estoqueMock.Object);
             insumoOS.Quantidade.Should().Be(quantidade);
         }
     }

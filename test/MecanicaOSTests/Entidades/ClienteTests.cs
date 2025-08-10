@@ -38,8 +38,8 @@ namespace MecanicaOSTests.Entidades
             cliente.Documento.Should().Be(documento);
             cliente.DataNascimento.Should().Be(dataNascimento);
             cliente.TipoCliente.Should().Be(tipoCliente);
-            cliente.Endereco.Should().Be(enderecoMock.Object);
-            cliente.Contato.Should().Be(contatoMock.Object);
+            cliente.Endereco.Should().BeEquivalentTo(enderecoMock.Object);
+            cliente.Contato.Should().BeEquivalentTo(contatoMock.Object);
         }
 
         [Fact]
@@ -69,6 +69,64 @@ namespace MecanicaOSTests.Entidades
             cliente.Sexo.Should().Be(novoSexo);
             cliente.TipoCliente.Should().Be(novoTipoCliente);
             cliente.DataNascimento.Should().Be(novaDataNascimento);
+        }
+
+        [Fact]
+        public void DuasEntidadesComMesmoId_DevemSerConsideradasIguais()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var cliente1 = new Cliente { Id = id };
+            var cliente2 = new Cliente { Id = id };
+
+            // Assert
+            (cliente1 == cliente2).Should().BeTrue();
+            cliente1.Equals(cliente2).Should().BeTrue();
+        }
+
+        [Fact]
+        public void DuasEntidadesComIdsDiferentes_NaoDevemSerConsideradasIguais()
+        {
+            // Arrange
+            var cliente1 = new Cliente { Id = Guid.NewGuid() };
+            var cliente2 = new Cliente { Id = Guid.NewGuid() };
+
+            // Assert
+            (cliente1 != cliente2).Should().BeTrue();
+            cliente1.Equals(cliente2).Should().BeFalse();
+        }
+
+        [Fact]
+        public void GetHashCode_DeveRetornarMesmoValorParaMesmoId()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var cliente1 = new Cliente { Id = id };
+            var cliente2 = new Cliente { Id = id };
+
+            // Assert
+            cliente1.GetHashCode().Should().Be(cliente2.GetHashCode());
+        }
+
+        [Fact]
+        public void Equals_DeveRetornarFalse_ParaObjetoNulo()
+        {
+            // Arrange
+            var cliente = new Cliente();
+
+            // Assert
+            cliente.Equals(null).Should().BeFalse();
+        }
+
+        [Fact]
+        public void Equals_DeveRetornarFalse_ParaTipoDiferente()
+        {
+            // Arrange
+            var cliente = new Cliente();
+            var outroObjeto = new object();
+
+            // Assert
+            cliente.Equals(outroObjeto).Should().BeFalse();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace MecanicaOSTests.Entidades
             // Assert
             alertaEstoque.Should().NotBeNull();
             alertaEstoque.EstoqueId.Should().Be(estoqueId);
-            alertaEstoque.Estoque.Should().Be(estoqueMock.Object);
+            alertaEstoque.Estoque.Should().BeEquivalentTo(estoqueMock.Object);
         }
     }
 }

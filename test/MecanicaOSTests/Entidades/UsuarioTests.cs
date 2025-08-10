@@ -57,5 +57,57 @@ namespace MecanicaOSTests.Entidades
             // Assert
             usuario.DataUltimoAcesso.Should().Be(dataAcesso);
         }
+
+        [Fact]
+        public void Dado_ConstrutorSemParametros_Quando_CriarUsuario_Entao_DeveCriarComSucesso()
+        {
+            // Act
+            var usuario = new Usuario();
+
+            // Assert
+            usuario.Should().NotBeNull();
+            usuario.Id.Should().NotBeEmpty();
+            usuario.Ativo.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Quando_AtualizarUltimoAcessoSemParametros_Entao_DeveAtualizarParaDataAtual()
+        {
+            // Arrange
+            var usuario = new Usuario();
+            usuario.AtualizarUltimoAcesso(DateTime.UtcNow.AddMinutes(-1));
+            var dataAntiga = usuario.DataUltimoAcesso;
+
+            // Act
+            usuario.AtualizarUltimoAcesso();
+
+            // Assert
+            usuario.DataUltimoAcesso.Should().NotBeNull();
+            usuario.DataUltimoAcesso.Should().BeAfter(dataAntiga.Value);
+        }
+
+        [Fact]
+        public void Dado_TodosDadosValidos_Quando_Atualizar_Entao_DeveAtualizarTodosCampos()
+        {
+            // Arrange
+            var usuario = new Usuario("antigo@email.com", "SenhaAntiga@123", TipoUsuario.Cliente, Guid.NewGuid());
+            var novoEmail = "novo@email.com";
+            var novaSenha = "NovaSenha@123";
+            var novaDataUltimoAcesso = DateTime.UtcNow;
+            var novoTipoUsuario = TipoUsuario.Admin;
+            var novoRecebeAlerta = true;
+            var novoAtivo = false;
+
+            // Act
+            usuario.Atualizar(novoEmail, novaSenha, novaDataUltimoAcesso, novoTipoUsuario, novoRecebeAlerta, novoAtivo);
+
+            // Assert
+            usuario.Email.Should().Be(novoEmail);
+            usuario.Senha.Should().Be(novaSenha);
+            usuario.DataUltimoAcesso.Should().Be(novaDataUltimoAcesso);
+            usuario.TipoUsuario.Should().Be(novoTipoUsuario);
+            usuario.RecebeAlertaEstoque.Should().Be(novoRecebeAlerta);
+            usuario.Ativo.Should().Be(novoAtivo);
+        }
     }
 }
