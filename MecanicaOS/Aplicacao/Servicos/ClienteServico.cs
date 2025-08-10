@@ -198,7 +198,8 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo);
 
-                var veiculos = await _repositorio.ObterTodosAsync();
+                var espeficicacao = new ObterTodosClienteComVeiculoEspecificacao();
+                var veiculos = await _repositorio.ListarAsync(espeficicacao);
                 var response = _mapper.Map<IEnumerable<ClienteResponse>>(veiculos);
 
                 LogFim(metodo, response);

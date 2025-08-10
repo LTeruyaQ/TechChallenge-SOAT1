@@ -1,3 +1,5 @@
+using Aplicacao.DTOs.Responses.Veiculo;
+
 namespace Aplicacao.DTOs.Responses.Cliente
 {
     public class ClienteResponse
@@ -13,5 +15,6 @@ namespace Aplicacao.DTOs.Responses.Cliente
         public Guid? UsuarioId { get; set; }
         public string? DataCadastro { get; set; }
         public string? DataAtualizacao { get; set; }
+        public IEnumerable<VeiculoResponse>? Veiculos { get; set; }
     }
 }
