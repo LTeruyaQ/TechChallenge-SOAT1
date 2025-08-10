@@ -46,16 +46,16 @@ namespace MecanicaOSTests.Notificacoes
             var os = new OrdemServico
             {
                 Cliente = new Cliente { Nome = "Teste", Contato = new Contato { Email = "test@test.com" } },
-                Servico = new Servico(),
-                Veiculo = new Veiculo()
+                Servico = new Servico { Nome = "Teste", Descricao = "Teste" },
+                Veiculo = new Veiculo { Modelo = "Teste", Placa = "ABC-1234" }
             };
-            _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<OrdemServico>>())).ReturnsAsync(os);
+            _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<OrdemServico>>())).ReturnsAsync(os);
 
             // Act
             await _handler.Handle(notification, CancellationToken.None);
 
             // Assert
-            _emailServicoMock.Verify(s => s.EnviarAsync(It.IsAny<string[]>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            _emailServicoMock.Verify(s => s.EnviarAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
@@ -63,7 +63,7 @@ namespace MecanicaOSTests.Notificacoes
         {
             // Arrange
             var notification = new OrdemServicoFinalizadaEvent(System.Guid.NewGuid());
-            _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<OrdemServico>>())).ReturnsAsync((OrdemServico)null);
+            _repositorioMock.Setup(r => r.ObterUmSemRastreamentoAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<OrdemServico>>())).ReturnsAsync((OrdemServico)null);
 
             // Act
             await _handler.Handle(notification, CancellationToken.None);

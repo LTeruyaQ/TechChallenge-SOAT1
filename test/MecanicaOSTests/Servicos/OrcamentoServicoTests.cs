@@ -21,7 +21,7 @@ namespace MecanicaOSTests.Servicos
             // Arrange
             var ordemServico = new OrdemServico
             {
-                Servico = new Servico { Valor = 100.00m },
+                Servico = new Servico { Nome = "Teste", Descricao = "Teste", Valor = 100.00m },
                 InsumosOS = new List<InsumoOS>
                 {
                     new InsumoOS { Quantidade = 2, Estoque = new Estoque { Preco = 25.00m } },

@@ -7,11 +7,11 @@ namespace MecanicaOSTests.Dominio.Validacoes
     public class ValidadorTests
     {
         [Theory]
-        [InlineData("75149366030", true)]
+        [InlineData("11144477735", true)]
         [InlineData("12345678901", false)]
         [InlineData("11111111111", false)]
         [InlineData("123.456.789-01", false)]
-        [InlineData("751.493.660-30", true)]
+        [InlineData("111.444.777-35", true)]
         [InlineData("", false)]
         [InlineData(null, false)]
         public void ValidadorCpf_DeveValidarCorretamente(string cpf, bool esperado)
@@ -24,10 +24,10 @@ namespace MecanicaOSTests.Dominio.Validacoes
         }
 
         [Theory]
-        [InlineData("81287131000170", true)]
+        [InlineData("33041260065290", true)]
         [InlineData("11111111111111", false)]
         [InlineData("12345678901234", false)]
-        [InlineData("81.287.131/0001-70", true)]
+        [InlineData("33.041.260/0652-90", true)]
         [InlineData("", false)]
         [InlineData(null, false)]
         public void ValidadorCnpj_DeveValidarCorretamente(string cnpj, bool esperado)

@@ -64,11 +64,12 @@ namespace MecanicaOSTests.Servicos
             var servico = new ServicoResponse { Disponivel = true };
             var os = new OrdemServico();
 
-            _clienteRepositorioMock.Setup(r => r.ObterUmAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<Cliente>>())).ReturnsAsync(cliente);
+            _clienteRepositorioMock.Setup(r => r.ObterUmAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<Cliente>>())).ReturnsAsync(cliente);
             _servicoServicoMock.Setup(s => s.ObterServicoPorIdAsync(request.ServicoId)).ReturnsAsync(servico);
             _mapperMock.Setup(m => m.Map<OrdemServico>(request)).Returns(os);
             _repositorioMock.Setup(r => r.CadastrarAsync(os)).ReturnsAsync(os);
             _udtMock.Setup(u => u.Commit()).ReturnsAsync(true);
+            _mapperMock.Setup(m => m.Map<Aplicacao.DTOs.Responses.OrdemServico.OrdemServicoResponse>(It.IsAny<OrdemServico>())).Returns(new Aplicacao.DTOs.Responses.OrdemServico.OrdemServicoResponse());
 
             // Act
             var result = await _ordemServicoServico.CadastrarAsync(request);

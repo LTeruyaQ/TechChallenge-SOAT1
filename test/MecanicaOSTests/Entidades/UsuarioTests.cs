@@ -75,6 +75,7 @@ namespace MecanicaOSTests.Entidades
         {
             // Arrange
             var usuario = new Usuario();
+            usuario.AtualizarUltimoAcesso(DateTime.UtcNow.AddMinutes(-1));
             var dataAntiga = usuario.DataUltimoAcesso;
 
             // Act

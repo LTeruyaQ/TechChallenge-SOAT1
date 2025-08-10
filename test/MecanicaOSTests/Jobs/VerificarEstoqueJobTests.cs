@@ -53,9 +53,9 @@ namespace MecanicaOSTests.Jobs
         {
             // Arrange
             var insumosCriticos = new List<Estoque> { new Estoque { Id = System.Guid.NewGuid(), Insumo = "Parafuso", QuantidadeDisponivel = 1, QuantidadeMinima = 5 } };
-            _estoqueRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<Estoque>>())).ReturnsAsync(insumosCriticos);
-            _alertaEstoqueRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<AlertaEstoque>>())).ReturnsAsync(new List<AlertaEstoque>());
-            _usuarioRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<Usuario>>())).ReturnsAsync(new List<Usuario> { new Usuario() });
+            _estoqueRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<Estoque>>())).ReturnsAsync(insumosCriticos);
+            _alertaEstoqueRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<AlertaEstoque>>())).ReturnsAsync(new List<AlertaEstoque>());
+            _usuarioRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<Usuario>>())).ReturnsAsync(new List<Usuario> { new Usuario() });
             _udtMock.Setup(u => u.Commit()).ReturnsAsync(true);
 
             // Act
@@ -70,7 +70,7 @@ namespace MecanicaOSTests.Jobs
         public async Task ExecutarAsync_NaoDeveFazerNada_QuandoNaoHaInsumosCriticos()
         {
             // Arrange
-            _estoqueRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<Estoque>>())).ReturnsAsync(new List<Estoque>());
+            _estoqueRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<Estoque>>())).ReturnsAsync(new List<Estoque>());
 
             // Act
             await _verificarEstoqueJob.ExecutarAsync();

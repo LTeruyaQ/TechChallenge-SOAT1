@@ -74,10 +74,4 @@
     </Compile>
   </ItemGroup>
   
-  <PropertyGroup>
-    <VSTestLogger>console;verbosity=detailed</VSTestLogger>
-    <VSTestDiag>TestDiagnostics.txt</VSTestDiag>
-    <VSTestDebug>true</VSTestDebug>
-  </PropertyGroup>
-
 </Project>

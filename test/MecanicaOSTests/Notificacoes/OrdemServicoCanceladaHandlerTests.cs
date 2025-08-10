@@ -36,7 +36,7 @@ namespace MecanicaOSTests.Notificacoes
             // Arrange
             var notification = new OrdemServicoCanceladaEvent(System.Guid.NewGuid());
             var insumos = new List<InsumoOS> { new InsumoOS() };
-            _repositorioMock.Setup(r => r.ListarSemRastreamentoAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<InsumoOS>>())).ReturnsAsync(insumos);
+            _repositorioMock.Setup(r => r.ListarSemRastreamentoAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<InsumoOS>>())).ReturnsAsync(insumos);
 
             // Act
             await _handler.Handle(notification, CancellationToken.None);
@@ -50,7 +50,7 @@ namespace MecanicaOSTests.Notificacoes
         {
             // Arrange
             var notification = new OrdemServicoCanceladaEvent(System.Guid.NewGuid());
-            _repositorioMock.Setup(r => r.ListarSemRastreamentoAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<InsumoOS>>())).ReturnsAsync(new List<InsumoOS>());
+            _repositorioMock.Setup(r => r.ListarSemRastreamentoAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<InsumoOS>>())).ReturnsAsync(new List<InsumoOS>());
 
             // Act
             await _handler.Handle(notification, CancellationToken.None);

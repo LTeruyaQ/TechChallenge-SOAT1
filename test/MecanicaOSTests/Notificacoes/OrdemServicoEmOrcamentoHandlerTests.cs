@@ -52,17 +52,18 @@ namespace MecanicaOSTests.Notificacoes
             var notification = new OrdemServicoEmOrcamentoEvent(System.Guid.NewGuid());
             var os = new OrdemServico
             {
-                Cliente = new Cliente { Contato = new Contato { Email = "test@test.com" } },
-                Servico = new Servico()
+                Cliente = new Cliente { Nome = "Teste", Contato = new Contato { Email = "test@test.com" } },
+                Servico = new Servico { Nome = "Teste", Descricao = "Teste", Valor = 100 },
+                Orcamento = 100
             };
-            _repositorioMock.Setup(r => r.ObterUmAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<OrdemServico>>())).ReturnsAsync(os);
+            _repositorioMock.Setup(r => r.ObterUmAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<OrdemServico>>())).ReturnsAsync(os);
 
             // Act
             await _handler.Handle(notification, CancellationToken.None);
 
             // Assert
             _orcamentoServicoMock.Verify(s => s.GerarOrcamento(os), Times.Once);
-            _emailServicoMock.Verify(s => s.EnviarAsync(It.IsAny<string[]>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            _emailServicoMock.Verify(s => s.EnviarAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             _repositorioMock.Verify(r => r.EditarAsync(os), Times.Once);
             _udtMock.Verify(u => u.Commit(), Times.Once);
         }

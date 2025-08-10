@@ -44,7 +44,7 @@ namespace MecanicaOSTests.Jobs
             {
                 new OrdemServico { Status = StatusOrdemServico.AguardandoAprovação, InsumosOS = new List<InsumoOS>() }
             };
-            _ordemServicoRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<OrdemServico>>())).ReturnsAsync(ordens);
+            _ordemServicoRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<OrdemServico>>())).ReturnsAsync(ordens);
 
             // Act
             await _job.ExecutarAsync();
@@ -60,7 +60,7 @@ namespace MecanicaOSTests.Jobs
         public async Task ExecutarAsync_NaoDeveFazerNada_QuandoNaoHaOrcamentosExpirados()
         {
             // Arrange
-            _ordemServicoRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<Dominio.Especificacoes.Base.Interfaces.IEspecificacao<OrdemServico>>())).ReturnsAsync(new List<OrdemServico>());
+            _ordemServicoRepositorioMock.Setup(r => r.ListarAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<OrdemServico>>())).ReturnsAsync(new List<OrdemServico>());
 
             // Act
             await _job.ExecutarAsync();
