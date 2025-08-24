@@ -1,7 +1,6 @@
 ﻿using Aplicacao.DTOs.Requests.OrdemServico;
 using Aplicacao.DTOs.Responses.OrdemServico;
 using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Notificacoes.OS;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
 using Dominio.Entidades;
@@ -11,7 +10,6 @@ using Dominio.Especificacoes.OrdemServico;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
-using MediatR;
 
 namespace Aplicacao.Servicos;
 

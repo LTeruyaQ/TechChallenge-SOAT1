@@ -24,14 +24,18 @@ public class OrdemServico : Entidade
 
     public void Atualizar(Guid? clienteId, Guid? veiculoId, Guid? servicoId, string? descricao, StatusOrdemServico? status)
     {
-        if (clienteId != null) ClienteId = clienteId.Value;
-        if (veiculoId != null) VeiculoId = veiculoId.Value;
-        if (servicoId != null) ServicoId = servicoId.Value;
-        if (!string.IsNullOrEmpty(descricao)) Descricao = descricao;
-        if (status != null) Status = status.Value;
-
         DataAtualizacao = DateTime.UtcNow;
+        if (clienteId.HasValue) ClienteId = clienteId.Value;
+        if (veiculoId.HasValue) VeiculoId = veiculoId.Value;
+        if (servicoId.HasValue) ServicoId = servicoId.Value;
+        if (!string.IsNullOrEmpty(descricao)) Descricao = descricao;
+        if (status.HasValue)
+            AlterarStatus(status.Value);
+    }
 
+    private void AlterarStatus(StatusOrdemServico status)
+    {
+        Status = status;
         AtribuirEventos();
     }
 
