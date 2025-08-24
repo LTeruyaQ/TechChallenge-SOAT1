@@ -13,6 +13,7 @@ namespace MecanicaOSTests.Notificacoes
     public class OrdemServicoEmOrcamentoHandlerTests
     {
         private readonly Mock<IRepositorio<OrdemServico>> _repositorioMock;
+        private readonly Mock<IRepositorio<Orcamento>> _orcamentoRepositorioMock;
         private readonly Mock<IServicoEmail> _emailServicoMock;
         private readonly Mock<ILogServico<OrdemServicoEmOrcamentoHandler>> _logServicoMock;
         private readonly Mock<IUnidadeDeTrabalho> _udtMock;
@@ -21,6 +22,7 @@ namespace MecanicaOSTests.Notificacoes
         public OrdemServicoEmOrcamentoHandlerTests()
         {
             _repositorioMock = new Mock<IRepositorio<OrdemServico>>();
+            _orcamentoRepositorioMock = new Mock<IRepositorio<Orcamento>>();
             _emailServicoMock = new Mock<IServicoEmail>();
             _logServicoMock = new Mock<ILogServico<OrdemServicoEmOrcamentoHandler>>();
             _udtMock = new Mock<IUnidadeDeTrabalho>();
@@ -35,6 +37,7 @@ namespace MecanicaOSTests.Notificacoes
 
             _handler = new OrdemServicoEmOrcamentoHandler(
                 _repositorioMock.Object,
+                _orcamentoRepositorioMock.Object,
                 _emailServicoMock.Object,
                 _logServicoMock.Object,
                 _udtMock.Object
@@ -63,7 +66,7 @@ namespace MecanicaOSTests.Notificacoes
             // Assert
             _emailServicoMock.Verify(s => s.EnviarAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             _repositorioMock.Verify(r => r.EditarAsync(os), Times.Once);
-            _udtMock.Verify(u => u.Commit(), Times.Once);
+            _udtMock.Verify(u => u.Commit(), Times.Exactly(2));
         }
     }
 }

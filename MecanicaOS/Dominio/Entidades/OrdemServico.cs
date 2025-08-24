@@ -78,6 +78,7 @@ public class OrdemServico : Entidade
             i.Quantidade * i.Estoque.Preco);
 
         Orcamento = new Orcamento(Id, precoServico + precoInsumos);
+        OrcamentoId = Orcamento.Id;
     }
 
     public void PrepararOrcamentoParaEnvio()

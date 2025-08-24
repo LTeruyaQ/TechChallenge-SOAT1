@@ -1,6 +1,7 @@
 ﻿using Dominio.Entidades;
 using Dominio.Enumeradores;
 using Dominio.Especificacoes.OrdemServico;
+using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using MediatR;
@@ -11,10 +12,12 @@ namespace Aplicacao.Notificacoes.OS;
 
 public class OrdemServicoEmOrcamentoHandler(
     IRepositorio<OrdemServico> ordemServicoRepositorio,
+    IRepositorio<Orcamento> orcamentoRepositorio,
     IServicoEmail emailServico,
     ILogServico<OrdemServicoEmOrcamentoHandler> logServico,
     IUnidadeDeTrabalho udt) : INotificationHandler<OrdemServicoEmOrcamentoEvent>
 {
+    private readonly IRepositorio<Orcamento> _orcamentoRepositorio = orcamentoRepositorio;
     private readonly IRepositorio<OrdemServico> _ordemServicoRepositorio = ordemServicoRepositorio;
     private readonly IServicoEmail _emailServico = emailServico;
     private readonly IUnidadeDeTrabalho _uot = udt;
@@ -33,14 +36,10 @@ public class OrdemServicoEmOrcamentoHandler(
 
             if (os is null) return;
 
-            os.GerarOrcamento();
-            os.PrepararOrcamentoParaEnvio();
-
-            await EnviarOrcamentoAsync(os);
-
-            await _ordemServicoRepositorio.EditarAsync(os);
-            await _uot.Commit();
-
+            await CadastrarOrcamento(os);
+            
+            await EnviarOrcamento(os);
+            
             _logServico.LogFim(metodo);
         }
         catch (Exception e)
@@ -49,6 +48,28 @@ public class OrdemServicoEmOrcamentoHandler(
 
             throw;
         }
+    }
+
+    private async Task CadastrarOrcamento(OrdemServico os)
+    {
+        os.GerarOrcamento();
+
+        await _orcamentoRepositorio.CadastrarAsync(os.Orcamento!);
+
+        if (await _uot.Commit())
+            throw new PersistirDadosException("Erro ao cadastrar o orçamento na base de dados");
+    }
+
+    private async Task EnviarOrcamento(OrdemServico os)
+    {
+        os.PrepararOrcamentoParaEnvio();
+
+        await EnviarOrcamentoAsync(os);
+
+        await _ordemServicoRepositorio.EditarAsync(os);
+
+        if (await _uot.Commit())
+            throw new PersistirDadosException("Erro ao salvar o envio do orçamento na base de dados");
     }
 
     private async Task EnviarOrcamentoAsync(OrdemServico os)
