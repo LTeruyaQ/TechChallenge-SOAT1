@@ -29,6 +29,8 @@ public class MecanicaContexto : DbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+
+        List<INotification> eventos = [];
         foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("DataCadastro") != null))
         {
             if (entry.State == EntityState.Added)
@@ -40,20 +42,17 @@ public class MecanicaContexto : DbContext
             {
                 entry.Property("DataCadastro").IsModified = false;
             }
+
+            if (entry.Entity is Entidade entidade && entidade.Eventos.Any())
+                eventos.AddRange(entidade.Eventos);
         }
 
         var quantidadeDeItensSalvos = await base.SaveChangesAsync(cancellationToken);
 
-        if (quantidadeDeItensSalvos > 1)
-            foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("DataCadastro") != null))
-                if (entry.Entity is Entidade entidade && entidade.Eventos.Any())
-                {
-                    foreach (var evento in entidade.Eventos)
-                    {
-                        await _mediator.Publish(evento, cancellationToken);
-                    }
-                }
-
+        if (quantidadeDeItensSalvos > 1 && eventos.Count > 0)
+            foreach (var evento in eventos)
+                await _mediator.Publish(evento, cancellationToken);
+            
         return quantidadeDeItensSalvos;
     }
 
