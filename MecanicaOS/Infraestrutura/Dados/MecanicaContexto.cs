@@ -40,17 +40,21 @@ public class MecanicaContexto : DbContext
             {
                 entry.Property("DataCadastro").IsModified = false;
             }
-
-            if (entry.Entity is Entidade entidade && entidade.Eventos.Any())
-            {
-                foreach (var evento in entidade.Eventos)
-                {
-                    await _mediator.Publish(evento, cancellationToken);
-                }
-            }
         }
 
-        return await base.SaveChangesAsync(cancellationToken);
+        var quantidadeDeItensSalvos = await base.SaveChangesAsync(cancellationToken);
+
+        if (quantidadeDeItensSalvos > 1)
+            foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("DataCadastro") != null))
+                if (entry.Entity is Entidade entidade && entidade.Eventos.Any())
+                {
+                    foreach (var evento in entidade.Eventos)
+                    {
+                        await _mediator.Publish(evento, cancellationToken);
+                    }
+                }
+
+        return quantidadeDeItensSalvos;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
