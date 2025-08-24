@@ -1,11 +1,12 @@
 ﻿using Dominio.Entidades.Abstratos;
 using Dominio.Enumeradores;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dominio.Entidades;
 
 public class Orcamento : Entidade
 {
-    public int DIAS_PARA_EXPIRACAO => 3;
+    public static int DIAS_PARA_EXPIRACAO => 3;
 
     public Guid OrdemServicoId { get; set; }
     public OrdemServico OrdemServico { get; set; } = null!;

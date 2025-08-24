@@ -1,6 +1,8 @@
 using Infraestrutura.Dados;
+using MediatR;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace MecanicaOSTests.Fixtures;
 
@@ -15,9 +17,12 @@ public class DatabaseFixture : IDisposable
 {
     public MecanicaContexto Context { get; private set; }
     private readonly SqliteConnection _connection;
+    private readonly Mock<IMediator> _mediatR;
 
     public DatabaseFixture()
     {
+        _mediatR = new Mock<IMediator>();
+
         // Configuração do banco de dados em memória
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
@@ -26,7 +31,7 @@ public class DatabaseFixture : IDisposable
             .UseSqlite(_connection)
             .Options;
 
-        Context = new MecanicaContexto(options);
+        Context = new MecanicaContexto(options, _mediatR.Object);
 
         // Garante que o banco de dados seja criado
         Context.Database.EnsureCreated();

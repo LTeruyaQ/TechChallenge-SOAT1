@@ -17,7 +17,6 @@ namespace Aplicacao.Servicos;
 
 public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemServico>, IOrdemServicoServico
 {
-    private readonly IMediator _mediator;
     private readonly IRepositorio<Cliente> _clienteRepositorio;
     private readonly IServicoServico _servicoServico;
 
@@ -26,13 +25,11 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
         ILogServico<OrdemServicoServico> logServico,
         IUnidadeDeTrabalho udt,
         IMapper mapper,
-        IMediator mediator,
         IRepositorio<Cliente> clienteRepositorio,
         IServicoServico servicoServico,
         IUsuarioLogadoServico usuarioLogadoServico) :
         base(repositorio, logServico, udt, mapper, usuarioLogadoServico)
     {
-        _mediator = mediator;
         _clienteRepositorio = clienteRepositorio;
         _servicoServico = servicoServico;
     }
@@ -59,21 +56,7 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
 
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao atualizar a ordem de serviço");
-
-            //TODO: refatorar isso
-            if (ordemServico.Status == StatusOrdemServico.EmDiagnostico)
-            {
-                await _mediator.Publish(new OrdemServicoEmOrcamentoEvent(ordemServico.Id));
-            }
-            else if (ordemServico.Status == StatusOrdemServico.Cancelada)
-            {
-                await _mediator.Publish(new OrdemServicoCanceladaEvent(ordemServico.Id));
-            }
-            else if (ordemServico.Status == StatusOrdemServico.Finalizada)
-            {
-                await _mediator.Publish(new OrdemServicoFinalizadaEvent(ordemServico.Id));
-            }
-
+            
             var response = _mapper.Map<OrdemServicoResponse>(ordemServico);
 
             LogFim(metodo, response);
@@ -257,7 +240,6 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
         else
         {
             ordemServico.Cancelar();
-            await _mediator.Publish(new OrdemServicoCanceladaEvent(id));
         }
 
         await _repositorio.EditarAsync(ordemServico);

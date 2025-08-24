@@ -4,8 +4,10 @@ using Dominio.Especificacoes.Base;
 using Infraestrutura.Dados;
 using Infraestrutura.Repositorios;
 using MecanicaOSTests.Infraestrutura.Projecoes;
+using MediatR;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using System.Linq.Expressions;
 
 namespace MecanicaOSTests.Infraestrutura;
@@ -16,9 +18,11 @@ public class RepositorioTests : IDisposable
     private readonly DbContextOptions<MecanicaContexto> _options;
     private readonly MecanicaContexto _contexto;
     private readonly Repositorio<OrdemServico> _repositorio;
+    private readonly Mock<IMediator> _mediatR;
 
     public RepositorioTests()
     {
+        _mediatR = new Mock<IMediator>();
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
 
@@ -27,7 +31,7 @@ public class RepositorioTests : IDisposable
             .EnableSensitiveDataLogging()
             .Options;
 
-        _contexto = new MecanicaContexto(_options);
+        _contexto = new MecanicaContexto(_options, _mediatR.Object);
         _contexto.Database.EnsureCreated();
 
         _repositorio = new Repositorio<OrdemServico>(_contexto);

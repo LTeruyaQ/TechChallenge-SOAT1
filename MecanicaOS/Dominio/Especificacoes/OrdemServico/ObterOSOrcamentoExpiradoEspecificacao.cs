@@ -1,4 +1,5 @@
-﻿using Dominio.Enumeradores;
+﻿using Dominio.Entidades;
+using Dominio.Enumeradores;
 using Dominio.Especificacoes.Base;
 using System.Linq.Expressions;
 
@@ -16,5 +17,5 @@ public class ObterOSOrcamentoExpiradoEspecificacao : EspecificacaoBase<Entidades
         o => o.Status == StatusOrdemServico.AguardandoAprovação && 
              o.OrcamentoId.HasValue &&
              o.Orcamento.DataEnvio.HasValue && 
-             o.Orcamento.DataEnvio.Value.AddDays(o.Orcamento.DIAS_PARA_EXPIRACAO) <= DateTime.UtcNow;
+             o.Orcamento.DataEnvio.Value.AddDays(Orcamento.DIAS_PARA_EXPIRACAO) <= DateTime.UtcNow;
 }

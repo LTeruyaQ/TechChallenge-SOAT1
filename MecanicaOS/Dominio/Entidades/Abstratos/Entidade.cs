@@ -1,4 +1,7 @@
 
+using MediatR;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Dominio.Entidades.Abstratos
 {
     public abstract class Entidade
@@ -7,10 +10,14 @@ namespace Dominio.Entidades.Abstratos
         public DateTime DataCadastro { get; set; }
         public DateTime? DataAtualizacao { get; set; } = null;
         public bool Ativo { get; set; } = true;
+        
+        private readonly List<INotification> _eventos;
+        public IEnumerable<INotification> Eventos => _eventos;
 
         protected Entidade()
         {
             Id = Guid.NewGuid();
+            _eventos ??= new List<INotification>();
         }
 
         public static bool operator ==(Entidade e1, Entidade e2)
@@ -45,6 +52,11 @@ namespace Dominio.Entidades.Abstratos
         public override int GetHashCode()
         {
             return Id.GetHashCode();
+        }
+
+        public void AdicionarEvento(INotification evento)
+        {
+            _eventos.Add(evento);
         }
     }
 }

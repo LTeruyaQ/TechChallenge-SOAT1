@@ -1,12 +1,19 @@
 using Dominio.Entidades;
+using Dominio.Entidades.Abstratos;
 using Infraestrutura.Dados.Mapeamentos;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Infraestrutura.Dados;
 
 public class MecanicaContexto : DbContext
 {
-    public MecanicaContexto(DbContextOptions<MecanicaContexto> options) : base(options) { }
+    private readonly IMediator _mediator;
+    public MecanicaContexto(DbContextOptions<MecanicaContexto> options, IMediator mediator) : base(options)
+    {
+        _mediator = mediator;
+    }
 
     public DbSet<Servico> Servicos { get; set; }
     public DbSet<Estoque> Estoques { get; set; }
@@ -20,7 +27,7 @@ public class MecanicaContexto : DbContext
     public DbSet<Orcamento> Orcamentos { get; set; }
     public DbSet<InsumoOS> InsumosOrdemServico { get; set; }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("DataCadastro") != null))
         {
@@ -33,9 +40,17 @@ public class MecanicaContexto : DbContext
             {
                 entry.Property("DataCadastro").IsModified = false;
             }
+
+            if (entry.Entity is Entidade entidade && entidade.Eventos.Any())
+            {
+                foreach (var evento in entidade.Eventos)
+                {
+                    await _mediator.Publish(evento, cancellationToken);
+                }
+            }
         }
 
-        return base.SaveChangesAsync(cancellationToken);
+        return await base.SaveChangesAsync(cancellationToken);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -27,7 +27,6 @@ namespace MecanicaOSTests.Servicos
         private readonly Mock<ILogServico<OrdemServicoServico>> _logServicoMock;
         private readonly Mock<IUnidadeDeTrabalho> _udtMock;
         private readonly Mock<IMapper> _mapperMock;
-        private readonly Mock<IMediator> _mediatorMock;
         private readonly Mock<IRepositorio<Cliente>> _clienteRepositorioMock;
         private readonly Mock<IServicoServico> _servicoServicoMock;
         private readonly Mock<IUsuarioLogadoServico> _usuarioLogadoServicoMock;
@@ -39,7 +38,6 @@ namespace MecanicaOSTests.Servicos
             _logServicoMock = new Mock<ILogServico<OrdemServicoServico>>();
             _udtMock = new Mock<IUnidadeDeTrabalho>();
             _mapperMock = new Mock<IMapper>();
-            _mediatorMock = new Mock<IMediator>();
             _clienteRepositorioMock = new Mock<IRepositorio<Cliente>>();
             _servicoServicoMock = new Mock<IServicoServico>();
             _usuarioLogadoServicoMock = new Mock<IUsuarioLogadoServico>();
@@ -49,7 +47,6 @@ namespace MecanicaOSTests.Servicos
                 _logServicoMock.Object,
                 _udtMock.Object,
                 _mapperMock.Object,
-                _mediatorMock.Object,
                 _clienteRepositorioMock.Object,
                 _servicoServicoMock.Object,
                 _usuarioLogadoServicoMock.Object
@@ -94,8 +91,7 @@ namespace MecanicaOSTests.Servicos
             // Act
             await _ordemServicoServico.AtualizarAsync(id, request);
 
-            // Assert
-            _mediatorMock.Verify(m => m.Publish(It.IsAny<OrdemServicoEmOrcamentoEvent>(), default), Times.Once);
+            //TODO: Trabalhar melhor esse teste
         }
 
         [Fact]
@@ -134,7 +130,6 @@ namespace MecanicaOSTests.Servicos
 
             // Assert
             os.Status.Should().Be(StatusOrdemServico.Cancelada);
-            _mediatorMock.Verify(m => m.Publish(It.IsAny<OrdemServicoCanceladaEvent>(), default), Times.Once);
         }
 
         [Fact]

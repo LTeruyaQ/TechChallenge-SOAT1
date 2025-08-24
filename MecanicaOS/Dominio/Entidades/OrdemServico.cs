@@ -1,6 +1,8 @@
-﻿using Dominio.Entidades.Abstratos;
+﻿using Aplicacao.Notificacoes.OS;
+using Dominio.Entidades.Abstratos;
 using Dominio.Enumeradores;
 using Dominio.Exceptions;
+using MediatR;
 
 namespace Dominio.Entidades;
 
@@ -27,8 +29,27 @@ public class OrdemServico : Entidade
         if (servicoId != null) ServicoId = servicoId.Value;
         if (!string.IsNullOrEmpty(descricao)) Descricao = descricao;
         if (status != null) Status = status.Value;
-    
+
         DataAtualizacao = DateTime.UtcNow;
+
+        AtribuirEventos();
+    }
+
+    private void AtribuirEventos()
+    {
+        if (ObterEventoStatus() is INotification evento && evento != null)
+            AdicionarEvento(evento);
+    }
+
+    private INotification? ObterEventoStatus()
+    {
+        return Status switch
+        {
+            StatusOrdemServico.EmDiagnostico => new OrdemServicoEmOrcamentoEvent(Id),
+            StatusOrdemServico.Cancelada => new OrdemServicoCanceladaEvent(Id),
+            StatusOrdemServico.Finalizada => new OrdemServicoFinalizadaEvent(Id),
+            _ => null
+        };
     }
 
     public void ValidarStatusAguardando()
@@ -55,6 +76,7 @@ public class OrdemServico : Entidade
         DataAtualizacao = DateTime.UtcNow;
         Status = StatusOrdemServico.Cancelada;
         Orcamento?.RejeitarOrcamento();
+        AtribuirEventos();
     }
 
     public bool DeveExpirar()

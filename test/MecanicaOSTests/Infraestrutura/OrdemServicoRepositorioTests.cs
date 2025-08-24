@@ -4,14 +4,23 @@ using Dominio.Especificacoes.Base;
 using Dominio.Especificacoes.OrdemServico;
 using Infraestrutura.Dados;
 using Infraestrutura.Repositorios;
+using MediatR;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using System.Linq.Expressions;
 
 namespace MecanicaOSTests.Infraestrutura;
 
 public class OrdemServicoRepositorioTests
 {
+    private readonly Mock<IMediator> _mediatR;
+
+    public OrdemServicoRepositorioTests()
+    {
+        _mediatR = new Mock<IMediator>();
+    }
+
     [Fact]
     public async Task Dado_OrdemServicoComNavegacoes_Quando_ObterUmAsync_Entao_DeveIncluirTodasNavegacoes()
     {
@@ -26,7 +35,7 @@ public class OrdemServicoRepositorioTests
 
         Guid osId;
 
-        using (var contexto = new MecanicaContexto(options))
+        using (var contexto = new MecanicaContexto(options, _mediatR.Object))
         {
             contexto.Database.EnsureCreated();
 
@@ -95,7 +104,7 @@ public class OrdemServicoRepositorioTests
         }
 
         // Act
-        using (var contexto = new MecanicaContexto(options))
+        using (var contexto = new MecanicaContexto(options, _mediatR.Object))
         {
             var repositorio = new Repositorio<OrdemServico>(contexto);
             var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(osId);
@@ -126,7 +135,7 @@ public class OrdemServicoRepositorioTests
 
         Guid osId;
 
-        using (var contexto = new MecanicaContexto(options))
+        using (var contexto = new MecanicaContexto(options, _mediatR.Object))
         {
             await contexto.Database.EnsureCreatedAsync();
 
@@ -210,7 +219,7 @@ public class OrdemServicoRepositorioTests
         }
 
         // Act
-        using (var contexto = new MecanicaContexto(options))
+        using (var contexto = new MecanicaContexto(options, _mediatR.Object))
         {
             var repositorio = new Repositorio<OrdemServico>(contexto);
 
