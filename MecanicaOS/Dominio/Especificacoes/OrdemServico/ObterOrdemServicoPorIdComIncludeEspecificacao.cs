@@ -12,6 +12,7 @@ public class ObterOrdemServicoPorIdComIncludeEspecificacao : EspecificacaoBase<E
         _id = id;
         AdicionarInclusao(os => os.Servico);
         AdicionarInclusao(os => os.Veiculo);
+        AdicionarInclusao(os => os.Orcamento);
         AdicionarInclusao(os => os.Cliente.Contato);
         AdicionarInclusao(os => os.InsumosOS, io => io.Estoque);
     }
