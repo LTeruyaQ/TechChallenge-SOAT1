@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Dominio.Especificacoes.Base.Interfaces;
+using Dominio.Especificacoes.Base;
 
 namespace MecanicaOSTests.Servicos
 {
@@ -42,7 +43,7 @@ namespace MecanicaOSTests.Servicos
             _clienteRepositorioMock = new Mock<IRepositorio<Cliente>>();
             _servicoServicoMock = new Mock<IServicoServico>();
             _usuarioLogadoServicoMock = new Mock<IUsuarioLogadoServico>();
-
+        
             _ordemServicoServico = new OrdemServicoServico(
                 _repositorioMock.Object,
                 _logServicoMock.Object,
@@ -102,9 +103,10 @@ namespace MecanicaOSTests.Servicos
         {
             // Arrange
             var id = Guid.NewGuid();
-            var os = new OrdemServico { Id = id, Status = StatusOrdemServico.AguardandoAprovação, DataEnvioOrcamento = DateTime.UtcNow };
+            var orcamento = new Orcamento { DataEnvio = DateTime.UtcNow };
+            var os = new OrdemServico { Id = id, Status = StatusOrdemServico.AguardandoAprovação, Orcamento = orcamento };
 
-            _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(os);
+            _repositorioMock.Setup(r => r.ObterUmAsync(It.IsAny<EspecificacaoBase<OrdemServico>>())).ReturnsAsync(os);
             _udtMock.Setup(u => u.Commit()).ReturnsAsync(true);
 
             // Act
@@ -120,9 +122,11 @@ namespace MecanicaOSTests.Servicos
         {
             // Arrange
             var id = Guid.NewGuid();
-            var os = new OrdemServico { Id = id, Status = StatusOrdemServico.AguardandoAprovação, DataEnvioOrcamento = DateTime.UtcNow };
+            var os = new OrdemServico { Id = id, Status = StatusOrdemServico.AguardandoAprovação };
+            os.Orcamento = new Orcamento { OrdemServico = os, OrdemServicoId = os.Id, DataEnvio = DateTime.UtcNow };
+            os.OrcamentoId = os.Orcamento.Id;
 
-            _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(os);
+            _repositorioMock.Setup(r => r.ObterUmAsync(It.IsAny<EspecificacaoBase<OrdemServico>>())).ReturnsAsync(os);
             _udtMock.Setup(u => u.Commit()).ReturnsAsync(true);
 
             // Act
@@ -138,9 +142,9 @@ namespace MecanicaOSTests.Servicos
         {
             // Arrange
             var id = Guid.NewGuid();
-            var os = new OrdemServico { Id = id, Status = StatusOrdemServico.OrcamentoExpirado };
+            var os = new OrdemServico { Id = id, Status = StatusOrdemServico.OrcamentoExpirado, Orcamento = new(id, 100m) };
 
-            _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(os);
+            _repositorioMock.Setup(r => r.ObterUmAsync(It.IsAny<EspecificacaoBase<OrdemServico>>())).ReturnsAsync(os);
 
             // Act & Assert
             await _ordemServicoServico.Invoking(s => s.AceitarOrcamentoAsync(id))

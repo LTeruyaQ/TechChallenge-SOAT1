@@ -139,7 +139,7 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
         {
             LogInicio(metodo);
 
-            var especificacao = new ObterOrdemServicoPorIdComInsumosEspecificacao(id);
+            var especificacao = new ObterOrdemServicoPorIdComInsumosEOrcamentoEspecificacao(id);
             var ordemServico = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
             var response = _mapper.Map<OrdemServicoResponse>(ordemServico);
 
@@ -244,16 +244,19 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
 
     private async Task ProcessarRespostaOrcamentoAsync(Guid id, bool aceito)
     {
-        OrdemServico ordemServico = await _repositorio.ObterPorIdAsync(id) ??
+        var filtroOS = new ObterOrdemServicoPorIdComOrcamentoEspecificacao(id);
+        OrdemServico ordemServico = await _repositorio.ObterUmAsync(filtroOS) ??
             throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
+        
+        ordemServico.ValidarOrcamentoPresente();
 
         await VerificarOrcamentoExpiradoAsync(ordemServico);
-
+        
         if (aceito)
-            ordemServico.Status = StatusOrdemServico.EmExecucao;
+            ordemServico.AprovarOrcamento();
         else
         {
-            ordemServico.Status = StatusOrdemServico.Cancelada;
+            ordemServico.Cancelar();
             await _mediator.Publish(new OrdemServicoCanceladaEvent(id));
         }
 
@@ -265,21 +268,24 @@ public class OrdemServicoServico : ServicoAbstrato<OrdemServicoServico, OrdemSer
 
     private async Task VerificarOrcamentoExpiradoAsync(OrdemServico ordemServico)
     {
-        if (ordemServico.Status == StatusOrdemServico.OrcamentoExpirado)
+        if (ordemServico.OrcamentoExpirou())
             throw new OrcamentoExpiradoException("Orçamento expirado");
+        
+        ordemServico.ValidarStatusAguardando();
+        
+        if (ordemServico.DeveExpirar())
+            await ExpirarOrcamentoAsync(ordemServico);
+    }
 
-        bool deveExpirar = ordemServico.Status == StatusOrdemServico.AguardandoAprovação
-            && ordemServico.DataEnvioOrcamento.HasValue
-            && ordemServico.DataEnvioOrcamento.Value.AddDays(3) <= DateTime.UtcNow;
+    private async Task ExpirarOrcamentoAsync(OrdemServico ordemServico)
+    {
+        ordemServico.Expirar();
 
-        if (deveExpirar)
-        {
-            ordemServico.Status = StatusOrdemServico.OrcamentoExpirado;
+        await _repositorio.EditarAsync(ordemServico);
+        
+        if (!await Commit())
+            throw new PersistirDadosException("Erro ao expirar o orçamento da ordem de serviço");
 
-            await _repositorio.EditarAsync(ordemServico);
-            await Commit();
-
-            throw new OrcamentoExpiradoException("Orçamento expirado");
-        }
+        throw new OrcamentoExpiradoException("Orçamento expirado");
     }
 }

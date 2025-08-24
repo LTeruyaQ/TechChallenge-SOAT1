@@ -43,8 +43,14 @@ namespace MecanicaOSTests.Dominio.Especificacoes.OrdemServico
                 Veiculo = veiculo,
                 Servico = servico,
                 Status = StatusOrdemServico.AguardandoAprovação,
-                DataEnvioOrcamento = DateTime.UtcNow.AddDays(-3)
             };
+
+            ordemExpirada.Orcamento = new Orcamento(ordemExpirada.Id, 150)
+            {
+                DataEnvio = DateTime.UtcNow.AddDays(-3)
+            };
+
+            ordemExpirada.OrcamentoId = ordemExpirada.Orcamento.Id;
 
             return new List<global::Dominio.Entidades.OrdemServico> { ordemComInsumos, ordemSemInsumos, ordemExpirada };
         }
@@ -55,7 +61,7 @@ namespace MecanicaOSTests.Dominio.Especificacoes.OrdemServico
             // Arrange
             var ordens = GetOrdensDeServicoDeTeste();
             var ordemComInsumos = ordens.First(o => o.InsumosOS.Any());
-            var especificacao = new ObterOrdemServicoPorIdComInsumosEspecificacao(ordemComInsumos.Id);
+            var especificacao = new ObterOrdemServicoPorIdComInsumosEOrcamentoEspecificacao(ordemComInsumos.Id);
 
             // Act
             var resultado = ordens.Where(especificacao.Expressao.Compile()).ToList();
@@ -93,7 +99,7 @@ namespace MecanicaOSTests.Dominio.Especificacoes.OrdemServico
 
             // Assert
             Assert.Single(resultado);
-            Assert.True(resultado.First().DataEnvioOrcamento < DateTime.UtcNow.AddDays(-2));
+            Assert.True(resultado.First().Orcamento.DataEnvio < DateTime.UtcNow.AddDays(-2));
         }
     }
 }

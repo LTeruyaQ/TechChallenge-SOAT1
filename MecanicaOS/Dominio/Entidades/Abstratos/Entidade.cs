@@ -5,7 +5,7 @@ namespace Dominio.Entidades.Abstratos
     {
         public Guid Id { get; set; }
         public DateTime DataCadastro { get; set; }
-        public DateTime? DataAtualizacao { get; set; }
+        public DateTime? DataAtualizacao { get; set; } = null;
         public bool Ativo { get; set; } = true;
 
         protected Entidade()

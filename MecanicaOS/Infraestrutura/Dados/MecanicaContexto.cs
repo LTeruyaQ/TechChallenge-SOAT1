@@ -17,6 +17,7 @@ public class MecanicaContexto : DbContext
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<AlertaEstoque> AlertasEstoque { get; set; }
     public DbSet<OrdemServico> OrdensSevico { get; set; }
+    public DbSet<Orcamento> Orcamentos { get; set; }
     public DbSet<InsumoOS> InsumosOrdemServico { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

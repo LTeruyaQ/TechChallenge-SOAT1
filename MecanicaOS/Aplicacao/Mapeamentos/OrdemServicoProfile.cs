@@ -12,6 +12,7 @@ public class OrdemServicoProfile : Profile
     {
         CreateMap<OrdemServico, OrdemServicoResponse>()
             .ForMember(dest => dest.Insumos, opt => opt.MapFrom(src => src.InsumosOS))
+            .ForMember(dest => dest.Orcamento, opt => opt.MapFrom(src => src.Orcamento))
             .ReverseMap();
 
         CreateMap<OrdemServico, AtualizarOrdemServicoRequest>()

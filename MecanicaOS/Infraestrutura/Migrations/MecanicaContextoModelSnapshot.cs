@@ -17,7 +17,7 @@ namespace Infraestrutura.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.7")
+                .HasAnnotation("ProductVersion", "9.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -241,6 +241,38 @@ namespace Infraestrutura.Migrations
                     b.ToTable("InsumosOrdemServico");
                 });
 
+            modelBuilder.Entity("Dominio.Entidades.Orcamento", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("DataAtualizacao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DataEnvio")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OrdemServicoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orcamentos");
+                });
+
             modelBuilder.Entity("Dominio.Entidades.OrdemServico", b =>
                 {
                     b.Property<Guid>("Id")
@@ -259,15 +291,12 @@ namespace Infraestrutura.Migrations
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("DataEnvioOrcamento")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Descricao")
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
 
-                    b.Property<decimal?>("Orcamento")
-                        .HasColumnType("numeric");
+                    b.Property<Guid?>("OrcamentoId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("ServicoId")
                         .HasColumnType("uuid");
@@ -283,6 +312,9 @@ namespace Infraestrutura.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClienteId");
+
+                    b.HasIndex("OrcamentoId")
+                        .IsUnique();
 
                     b.HasIndex("ServicoId");
 
@@ -484,6 +516,11 @@ namespace Infraestrutura.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Dominio.Entidades.Orcamento", "Orcamento")
+                        .WithOne("OrdemServico")
+                        .HasForeignKey("Dominio.Entidades.OrdemServico", "OrcamentoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Dominio.Entidades.Servico", "Servico")
                         .WithMany()
                         .HasForeignKey("ServicoId")
@@ -497,6 +534,8 @@ namespace Infraestrutura.Migrations
                         .IsRequired();
 
                     b.Navigation("Cliente");
+
+                    b.Navigation("Orcamento");
 
                     b.Navigation("Servico");
 
@@ -531,6 +570,12 @@ namespace Infraestrutura.Migrations
                         .IsRequired();
 
                     b.Navigation("Veiculos");
+                });
+
+            modelBuilder.Entity("Dominio.Entidades.Orcamento", b =>
+                {
+                    b.Navigation("OrdemServico")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Dominio.Entidades.OrdemServico", b =>

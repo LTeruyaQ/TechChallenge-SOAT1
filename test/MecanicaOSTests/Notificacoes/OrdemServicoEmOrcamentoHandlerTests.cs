@@ -1,5 +1,4 @@
-﻿using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Notificacoes.OS;
+﻿using Aplicacao.Notificacoes.OS;
 using Dominio.Entidades;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
@@ -14,7 +13,6 @@ namespace MecanicaOSTests.Notificacoes
     public class OrdemServicoEmOrcamentoHandlerTests
     {
         private readonly Mock<IRepositorio<OrdemServico>> _repositorioMock;
-        private readonly Mock<IOrcamentoServico> _orcamentoServicoMock;
         private readonly Mock<IServicoEmail> _emailServicoMock;
         private readonly Mock<ILogServico<OrdemServicoEmOrcamentoHandler>> _logServicoMock;
         private readonly Mock<IUnidadeDeTrabalho> _udtMock;
@@ -23,7 +21,6 @@ namespace MecanicaOSTests.Notificacoes
         public OrdemServicoEmOrcamentoHandlerTests()
         {
             _repositorioMock = new Mock<IRepositorio<OrdemServico>>();
-            _orcamentoServicoMock = new Mock<IOrcamentoServico>();
             _emailServicoMock = new Mock<IServicoEmail>();
             _logServicoMock = new Mock<ILogServico<OrdemServicoEmOrcamentoHandler>>();
             _udtMock = new Mock<IUnidadeDeTrabalho>();
@@ -38,7 +35,6 @@ namespace MecanicaOSTests.Notificacoes
 
             _handler = new OrdemServicoEmOrcamentoHandler(
                 _repositorioMock.Object,
-                _orcamentoServicoMock.Object,
                 _emailServicoMock.Object,
                 _logServicoMock.Object,
                 _udtMock.Object
@@ -50,19 +46,21 @@ namespace MecanicaOSTests.Notificacoes
         {
             // Arrange
             var notification = new OrdemServicoEmOrcamentoEvent(System.Guid.NewGuid());
+            Guid osId = Guid.NewGuid();
+
             var os = new OrdemServico
             {
+                Id = osId,
                 Cliente = new Cliente { Nome = "Teste", Contato = new Contato { Email = "test@test.com" } },
                 Servico = new Servico { Nome = "Teste", Descricao = "Teste", Valor = 100 },
-                Orcamento = 100
             };
+
             _repositorioMock.Setup(r => r.ObterUmAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<OrdemServico>>())).ReturnsAsync(os);
 
             // Act
             await _handler.Handle(notification, CancellationToken.None);
 
             // Assert
-            _orcamentoServicoMock.Verify(s => s.GerarOrcamento(os), Times.Once);
             _emailServicoMock.Verify(s => s.EnviarAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             _repositorioMock.Verify(r => r.EditarAsync(os), Times.Once);
             _udtMock.Verify(u => u.Commit(), Times.Once);

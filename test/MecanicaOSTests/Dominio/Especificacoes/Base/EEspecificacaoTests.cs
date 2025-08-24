@@ -67,8 +67,10 @@ public class EEspecificacaoTests
             Servico = servico1,
             Status = StatusOrdemServico.AguardandoAprovação,
             DataCadastro = DateTime.UtcNow.AddDays(-2),
-            Orcamento = 150m
         };
+
+        ordem1.Orcamento = new Orcamento(ordem1.Id, 150m);
+        ordem1.OrcamentoId = ordem1.Orcamento.Id;
 
         var ordem2 = new global::Dominio.Entidades.OrdemServico
         {
@@ -77,8 +79,10 @@ public class EEspecificacaoTests
             Servico = servico2,
             Status = StatusOrdemServico.EmExecucao,
             DataCadastro = DateTime.UtcNow.AddDays(-1),
-            Orcamento = 200m
         };
+
+        ordem2.Orcamento = new Orcamento(ordem2.Id, 200m);
+        ordem2.OrcamentoId = ordem2.Orcamento.Id;
 
         var ordem3 = new global::Dominio.Entidades.OrdemServico
         {
@@ -87,8 +91,10 @@ public class EEspecificacaoTests
             Servico = servico3,
             Status = StatusOrdemServico.Cancelada,
             DataCadastro = DateTime.UtcNow,
-            Orcamento = 300m
         };
+
+        ordem3.Orcamento = new Orcamento(ordem3.Id, 300m);
+        ordem3.OrcamentoId = ordem3.Orcamento.Id;
 
         // Adicionar insumos à ordem de serviço
         ordem1.InsumosOS.Add(new global::Dominio.Entidades.InsumoOS { Estoque = estoque, Quantidade = 2 });
@@ -112,7 +118,8 @@ public class EEspecificacaoTests
 
         // Criar especificações individuais
         var especAprovado = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Status == StatusOrdemServico.EmExecucao);
-        var especOrcamentoAlto = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento >= 200m);
+        var especOrcamentoAlto = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento.Valor >= 200m);
+        especOrcamentoAlto.AdicionarInclusao(os => os.Orcamento);
 
         // Combinar com EEspecificacaoTeste
         var especCombinada = new EEspecificacaoTeste<global::Dominio.Entidades.OrdemServico>(especAprovado, especOrcamentoAlto);
@@ -125,7 +132,7 @@ public class EEspecificacaoTests
         Assert.All(resultados, os =>
         {
             Assert.Equal(StatusOrdemServico.EmExecucao, os.Status);
-            Assert.True(os.Orcamento >= 200m);
+            Assert.True(os.Orcamento.Valor >= 200m);
         });
     }
 
@@ -139,8 +146,9 @@ public class EEspecificacaoTests
         var especComServico = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Status == StatusOrdemServico.EmExecucao);
         especComServico.AdicionarInclusao(os => os.Servico);
 
-        var especComCliente = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento > 100m);
+        var especComCliente = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento.Valor > 100m);
         especComCliente.AdicionarInclusao(os => os.Cliente);
+        especComCliente.AdicionarInclusao(os => os.Orcamento);
 
         // Combinar com EEspecificacaoTeste
         var especCombinada = new EEspecificacaoTeste<global::Dominio.Entidades.OrdemServico>(especComServico, especComCliente);
@@ -155,7 +163,7 @@ public class EEspecificacaoTests
             Assert.NotNull(os.Servico);
             Assert.NotNull(os.Cliente);
             Assert.Equal(StatusOrdemServico.EmExecucao, os.Status);
-            Assert.True(os.Orcamento > 100m);
+            Assert.True(os.Orcamento.Valor > 100m);
         });
     }
 
@@ -228,9 +236,10 @@ public class EEspecificacaoTests
     public void Dado_EspecificacaoComInclusoesENula_Quando_CombinadaComEEspecificacao_Entao_DeveManterInclusoesExistentes()
     {
         // Arrange
-        var especComInclusoes = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento > 100);
+        var especComInclusoes = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento.Valor > 100);
         especComInclusoes.AdicionarInclusao(os => os.Cliente);
         especComInclusoes.AdicionarInclusao(os => os.Servico);
+        especComInclusoes.AdicionarInclusao(os => os.Orcamento);
 
         var especSemInclusoes = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Status != StatusOrdemServico.Cancelada);
 
@@ -240,8 +249,8 @@ public class EEspecificacaoTests
 
         // Assert - Em ambos os casos, as inclusões devem ser mantidas
         // Verifica se as inclusões foram combinadas corretamente
-        Assert.Equal(2, especCombinada1.InclusoesPublicas.Count);
-        Assert.Equal(2, especCombinada2.InclusoesPublicas.Count);
+        Assert.Equal(3, especCombinada1.InclusoesPublicas.Count);
+        Assert.Equal(3, especCombinada2.InclusoesPublicas.Count);
 
         Assert.All(new[] { especCombinada1, especCombinada2 }, espec =>
         {
@@ -255,9 +264,10 @@ public class EEspecificacaoTests
     public void Dado_EspecificacoesComInclusoes_Quando_CombinadasComEEspecificacao_Entao_DeveCombinarTodasAsInclusoes()
     {
         // Arrange
-        var especEsquerda = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento > 100);
+        var especEsquerda = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento.Valor > 100);
         especEsquerda.AdicionarInclusao(os => os.Cliente);
         especEsquerda.AdicionarInclusao(os => os.Veiculo);
+        especEsquerda.AdicionarInclusao(os => os.Orcamento);
 
         var especDireita = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Status != StatusOrdemServico.Cancelada);
         especDireita.AdicionarInclusao(os => os.Servico);
@@ -268,7 +278,7 @@ public class EEspecificacaoTests
 
         // Assert
         // Verifica se todas as inclusões foram combinadas (inclusive duplicadas)
-        Assert.Equal(3, especCombinada.InclusoesPublicas.Count);
+        Assert.Equal(4, especCombinada.InclusoesPublicas.Count);
 
         // Verifica se as inclusões específicas estão presentes
         Assert.Contains(especCombinada.InclusoesPublicas, i => i.Contains("Cliente"));
@@ -283,8 +293,12 @@ public class EEspecificacaoTests
         var repositorio = new Repositorio<global::Dominio.Entidades.OrdemServico>(_context);
 
         // Criar especificações
-        var espec1 = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento > 100m);
-        var espec2 = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento < 250m);
+        var espec1 = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento.Valor > 100m);
+        espec1.AdicionarInclusao(x => x.Orcamento);
+
+        var espec2 = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento.Valor < 250m);
+        espec2.AdicionarInclusao(x => x.Orcamento);
+        
         var espec3 = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(
             os => os.Status != StatusOrdemServico.Cancelada);
 
@@ -299,7 +313,7 @@ public class EEspecificacaoTests
         Assert.NotEmpty(resultados);
         Assert.All(resultados, os =>
         {
-            Assert.True(os.Orcamento > 100m && os.Orcamento < 250m);
+            Assert.True(os.Orcamento?.Valor > 100m && os.Orcamento.Valor < 250m);
             Assert.NotEqual(StatusOrdemServico.Cancelada, os.Status);
         });
     }

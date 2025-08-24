@@ -1,5 +1,6 @@
 ﻿using Dominio.Entidades.Abstratos;
 using Dominio.Enumeradores;
+using Dominio.Exceptions;
 
 namespace Dominio.Entidades;
 
@@ -11,8 +12,8 @@ public class OrdemServico : Entidade
     public Veiculo Veiculo { get; set; } = null!;
     public Guid ServicoId { get; set; }
     public Servico Servico { get; set; } = null!;
-    public decimal? Orcamento { get; set; }
-    public DateTime? DataEnvioOrcamento { get; set; }
+    public Guid? OrcamentoId { get; set; }
+    public Orcamento? Orcamento { get; set; } = null!;
     public string? Descricao { get; set; }
     public StatusOrdemServico Status { get; set; }
     public ICollection<InsumoOS> InsumosOS { get; set; } = [];
@@ -26,5 +27,62 @@ public class OrdemServico : Entidade
         if (servicoId != null) ServicoId = servicoId.Value;
         if (!string.IsNullOrEmpty(descricao)) Descricao = descricao;
         if (status != null) Status = status.Value;
+    
+        DataAtualizacao = DateTime.UtcNow;
+    }
+
+    public void ValidarStatusAguardando()
+    {
+        if (Status != StatusOrdemServico.AguardandoAprovação)
+            throw new DadosInvalidosException("Orçamento não está aguardando aprovação.");
+    }
+
+    public void ValidarOrcamentoPresente()
+    {
+        if (Orcamento is null)
+            throw new DadosInvalidosException("Orçamento não foi populado.");
+    }
+
+    public void AprovarOrcamento()
+    {
+        Status = StatusOrdemServico.EmExecucao;
+        Orcamento?.AprovarOrcamento();
+    }
+
+    public void Cancelar()
+    {
+        Status = StatusOrdemServico.Cancelada;
+        Orcamento?.RejeitarOrcamento();
+    }
+
+    public bool DeveExpirar()
+    {
+        return Orcamento.DeveExpirar();
+    }
+
+    public bool OrcamentoExpirou()
+    {
+        return Status == StatusOrdemServico.OrcamentoExpirado;
+    }
+
+    public void Expirar()
+    {
+        Status = StatusOrdemServico.OrcamentoExpirado;
+        Orcamento?.ExpirarOrcamento();
+    }
+
+    public void GerarOrcamento()
+    {
+        decimal precoServico = Servico!.Valor;
+        decimal precoInsumos = InsumosOS.Sum(i =>
+            i.Quantidade * i.Estoque.Preco);
+
+        Orcamento = new Orcamento(Id, precoServico + precoInsumos);
+    }
+
+    public void PrepararOrcamentoParaEnvio()
+    {
+        Status = StatusOrdemServico.AguardandoAprovação;
+        Orcamento.PrepararParaEnvio();
     }
 }

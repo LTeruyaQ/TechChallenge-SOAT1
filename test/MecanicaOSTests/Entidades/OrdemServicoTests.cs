@@ -17,7 +17,7 @@ namespace MecanicaOSTests.Entidades
             var veiculoMock = new Mock<Veiculo>();
             var servicoId = Guid.NewGuid();
             var servicoMock = new Mock<Servico>();
-            var orcamento = 250.00m;
+            var valorOrcamento = 250.00m;
             var dataEnvioOrcamento = DateTime.UtcNow;
             var descricao = "Troca de óleo";
             var status = StatusOrdemServico.Recebida;
@@ -31,11 +31,15 @@ namespace MecanicaOSTests.Entidades
                 Veiculo = veiculoMock.Object,
                 ServicoId = servicoId,
                 Servico = servicoMock.Object,
-                Orcamento = orcamento,
-                DataEnvioOrcamento = dataEnvioOrcamento,
                 Descricao = descricao,
                 Status = status
             };
+
+            ordemServico.Orcamento = new Orcamento(ordemServico.Id, valorOrcamento)
+            {
+                DataEnvio = dataEnvioOrcamento
+            };
+            ordemServico.OrcamentoId = ordemServico.Orcamento.Id;
 
             // Assert
             ordemServico.Should().NotBeNull();
@@ -45,8 +49,8 @@ namespace MecanicaOSTests.Entidades
             ordemServico.Veiculo.Should().BeEquivalentTo(veiculoMock.Object);
             ordemServico.ServicoId.Should().Be(servicoId);
             ordemServico.Servico.Should().BeEquivalentTo(servicoMock.Object);
-            ordemServico.Orcamento.Should().Be(orcamento);
-            ordemServico.DataEnvioOrcamento.Should().Be(dataEnvioOrcamento);
+            ordemServico.Orcamento.Valor.Should().Be(valorOrcamento);
+            ordemServico.Orcamento.DataEnvio.Should().Be(dataEnvioOrcamento);
             ordemServico.Descricao.Should().Be(descricao);
             ordemServico.Status.Should().Be(status);
         }
@@ -78,6 +82,27 @@ namespace MecanicaOSTests.Entidades
             ordemServico.ServicoId.Should().Be(novoServicoId);
             ordemServico.Descricao.Should().Be(novaDescricao);
             ordemServico.Status.Should().Be(novoStatus);
+        }
+
+        [Fact]
+        public void GerarOrcamento_DeveCalcularCorretamente()
+        {
+            // Arrange
+            var ordemServico = new OrdemServico
+            {
+                Servico = new Servico { Nome = "Teste", Descricao = "Teste", Valor = 100.00m },
+                InsumosOS = new List<InsumoOS>
+                {
+                    new InsumoOS { Quantidade = 2, Estoque = new Estoque { Preco = 25.00m } },
+                    new InsumoOS { Quantidade = 1, Estoque = new Estoque { Preco = 50.00m } }
+                }
+            };
+
+            // Act
+            ordemServico.GerarOrcamento();
+
+            // Assert
+            ordemServico.Orcamento.Valor.Should().Be(200.00m); // 100 + (2*25) + (1*50)
         }
     }
 }

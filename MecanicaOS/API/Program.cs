@@ -11,7 +11,7 @@ using Hangfire.PostgreSql;
 using Infraestrutura.Autenticacao;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.Extensions;
-using Infraestrutura.Dados.UoT;
+using Infraestrutura.Dados.UdT;
 using Infraestrutura.Logs;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
@@ -68,10 +68,11 @@ builder.Services.AddOpenApi();
 
 builder.Configuration.AddEnvironmentVariables();
 
-string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+string? connectionStringLocalhost = builder.Configuration.GetConnectionString("localhost");
 
 builder.Services.AddDbContext<MecanicaContexto>(options =>
-    options.UseNpgsql(connectionString, npgsqlOptionsAction: sqlOptions =>
+    options.UseNpgsql(connectionStringLocalhost, npgsqlOptionsAction: sqlOptions =>
     {
         sqlOptions.EnableRetryOnFailure(
             maxRetryCount: 5,
@@ -83,7 +84,7 @@ builder.Services.AddHangfire(config => config
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UsePostgreSqlStorage(options => options.UseNpgsqlConnection(connectionString)));
+    .UsePostgreSqlStorage(options => options.UseNpgsqlConnection(connectionStringLocalhost)));
 
 builder.Services.AddHangfireServer();
 
@@ -124,7 +125,6 @@ builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
 builder.Services.AddScoped<IClienteServico, ClienteServico>();
 builder.Services.AddScoped<IOrdemServicoServico, OrdemServicoServico>();
 builder.Services.AddScoped<IInsumoOSServico, InsumoOSServico>();
-builder.Services.AddScoped<IOrcamentoServico, OrcamentoServico>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 
 // Serviços de autenticação
