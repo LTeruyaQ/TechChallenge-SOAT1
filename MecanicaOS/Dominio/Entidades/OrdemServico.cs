@@ -45,12 +45,14 @@ public class OrdemServico : Entidade
 
     public void AprovarOrcamento()
     {
+        DataAtualizacao = DateTime.UtcNow;
         Status = StatusOrdemServico.EmExecucao;
         Orcamento?.AprovarOrcamento();
     }
 
     public void Cancelar()
     {
+        DataAtualizacao = DateTime.UtcNow;
         Status = StatusOrdemServico.Cancelada;
         Orcamento?.RejeitarOrcamento();
     }
@@ -68,6 +70,7 @@ public class OrdemServico : Entidade
     public void Expirar()
     {
         Status = StatusOrdemServico.OrcamentoExpirado;
+        DataAtualizacao = DateTime.UtcNow;
         Orcamento?.ExpirarOrcamento();
     }
 
