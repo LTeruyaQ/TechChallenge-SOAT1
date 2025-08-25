@@ -44,7 +44,7 @@ public class MecanicaContexto : DbContext
             }
 
             if (entry.Entity is Entidade entidade && entidade.Eventos.Any())
-                eventos.AddRange(entidade.Eventos);
+                eventos.AddRange(entidade.Eventos.Where(x => x != null));
         }
 
         var quantidadeDeItensSalvos = await base.SaveChangesAsync(cancellationToken);
