@@ -72,15 +72,14 @@ public class OrdemServico : Entidade
     {
         DataAtualizacao = DateTime.UtcNow;
         Status = StatusOrdemServico.EmExecucao;
-        Orcamento?.AprovarOrcamento();
+        Orcamento?.Aprovar();
     }
 
     public void Cancelar()
     {
         DataAtualizacao = DateTime.UtcNow;
-        Status = StatusOrdemServico.Cancelada;
-        Orcamento?.RejeitarOrcamento();
-        AtribuirEventos();
+        AlterarStatus(StatusOrdemServico.Cancelada);
+        Orcamento?.Rejeitar();
     }
 
     public bool DeveExpirar()
@@ -97,7 +96,7 @@ public class OrdemServico : Entidade
     {
         Status = StatusOrdemServico.OrcamentoExpirado;
         DataAtualizacao = DateTime.UtcNow;
-        Orcamento?.ExpirarOrcamento();
+        Orcamento?.Expirar();
     }
 
     public void GerarOrcamento()

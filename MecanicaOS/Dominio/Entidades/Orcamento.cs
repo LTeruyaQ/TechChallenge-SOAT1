@@ -43,7 +43,7 @@ public class Orcamento : Entidade
         DataAtualizacao = DateTime.UtcNow;
     }
 
-    public void ExpirarOrcamento()
+    public void Expirar()
     {
         if (Status != StatusOrcamentoEnum.AguardandoAprovacao)
             throw new InvalidOperationException("Orçamento não está aguardando aprovação.");
@@ -52,7 +52,7 @@ public class Orcamento : Entidade
         DataAtualizacao = DateTime.UtcNow;
     }
 
-    public void AprovarOrcamento()
+    public void Aprovar()
     {
         if (Status != StatusOrcamentoEnum.AguardandoAprovacao)
             throw new InvalidOperationException("Orçamento não está aguardando aprovação.");
@@ -61,7 +61,7 @@ public class Orcamento : Entidade
         DataAtualizacao = DateTime.UtcNow;
     }
 
-    public void RejeitarOrcamento()
+    public void Rejeitar()
     {
         if (Status != StatusOrcamentoEnum.AguardandoAprovacao)
             throw new InvalidOperationException("Orçamento não está aguardando aprovação.");
