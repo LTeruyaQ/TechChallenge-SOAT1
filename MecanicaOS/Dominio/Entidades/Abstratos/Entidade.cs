@@ -12,7 +12,7 @@ namespace Dominio.Entidades.Abstratos
         public bool Ativo { get; set; } = true;
         
         private readonly List<INotification> _eventos;
-        public IEnumerable<INotification> Eventos => _eventos;
+        public IEnumerable<INotification> Eventos => _eventos.Where(x => x != null);
 
         protected Entidade()
         {
