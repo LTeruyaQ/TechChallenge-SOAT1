@@ -17,7 +17,7 @@ namespace Dominio.Entidades.Abstratos
         protected Entidade()
         {
             Id = Guid.NewGuid();
-            _eventos ??= new List<INotification>();
+            _eventos ??= [];
         }
 
         public static bool operator ==(Entidade e1, Entidade e2)
