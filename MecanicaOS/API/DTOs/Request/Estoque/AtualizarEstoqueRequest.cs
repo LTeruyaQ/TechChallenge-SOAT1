@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Aplicacao.UseCases.Estoque.AtualizarEstoque
+namespace API.DTOs.Request.Estoque
 {
     public class AtualizarEstoqueRequest
     {

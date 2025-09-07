@@ -1,13 +1,9 @@
-using Aplicacao.UseCases.Estoque;
-using Aplicacao.Servicos;
 using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
 using Aplicacao.UseCases.Estoque.DeletarEstoque;
-using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
 using Moq;
 using Aplicacao.UseCases.Estoque.ObterEstoque;
 using Aplicacao.UseCases.Estoque.ListaEstoque;
@@ -15,201 +11,171 @@ using Aplicacao.Interfaces.Gateways;
 
 public class EstoqueUseCasesTests
 {
-    private readonly Mock<IRepositorio<Estoque>> _repositorioMock;
-    private readonly Mock<IEstoqueGateway> _estoqueRepository;
-    private readonly Mock<IUnidadeDeTrabalho> _uotMock;
-    private readonly Mock<IMapper> _mapperMock;
-    private readonly Mock<IUsuarioLogadoServico> _usuarioLogadoServico = new();
-    private readonly CriarEstoqueUseCase _criarEstoqueUseCase;
-    private readonly AtualizarEstoqueUseCase _atualizarEstoqueUseCase;
-    private readonly DeletarEstoqueUseCase _deletarEstoqueUse;
-    private readonly ObterEstoquePorIdUseCase _obterEstoquePorIdUseCase;
-    private readonly ListarEstoqueUseCase _listarEstoqueUseCase;
+    private readonly Mock<IEstoqueGateway> _mockGateway;
+    private readonly Mock<IUnidadeDeTrabalho> _mockUdt;
 
     public EstoqueUseCasesTests()
     {
-        _repositorioMock = new Mock<IRepositorio<Estoque>>();
-        _estoqueRepository = new Mock<IEstoqueGateway>();
-        _uotMock = new Mock<IUnidadeDeTrabalho>();
-        _mapperMock = new Mock<IMapper>();
-
-        _criarEstoqueUseCase = new CriarEstoqueUseCase(
-            _estoqueRepository.Object,
-            _uotMock.Object
-        );
-
-        _atualizarEstoqueUseCase = new AtualizarEstoqueUseCase(
-            _estoqueRepository.Object,
-            _uotMock.Object
-        );
-
-        _deletarEstoqueUse = new DeletarEstoqueUseCase(
-            _estoqueRepository.Object,
-            _uotMock.Object
-        );
-
-        _obterEstoquePorIdUseCase = new ObterEstoquePorIdUseCase(
-            _estoqueRepository.Object
-        );
-
-        _listarEstoqueUseCase = new ListarEstoqueUseCase(
-            _estoqueRepository.Object
-        );
+        _mockGateway = new Mock<IEstoqueGateway>();
+        _mockUdt = new Mock<IUnidadeDeTrabalho>();
     }
 
     [Fact]
-    public async Task Dado_RequestValido_Quando_CadastrarAsync_Entao_RetornaResponse()
+    public async Task CriarEstoque_QuandoSucesso_DeveChamarGatewayECorretamente()
     {
-        var request = new CriarEstoqueRequest();
-        var estoque = new Estoque();
-        var response = new EstoqueResponse();
+        // Arrange
+        var estoque = new Estoque("Insumo", "Desc", 10m, 5, 2);
+        _mockUdt.Setup(u => u.Commit()).ReturnsAsync(true);
+        var useCase = new CriarEstoqueUseCase(_mockGateway.Object, _mockUdt.Object);
 
-        _mapperMock.Setup(m => m.Map<Estoque>(request)).Returns(estoque);
-        _uotMock.Setup(m => m.Commit()).ReturnsAsync(true);
-        _mapperMock.Setup(m => m.Map<EstoqueResponse>(estoque)).Returns(response);
+        // Act
+        var resultado = await useCase.ExecutarAsync(estoque);
 
-        var result = await _criarEstoqueUseCase.ExecutarAsync(request);
-
-        Assert.Equal(response, result);
+        // Assert
+        _mockGateway.Verify(g => g.CadastrarAsync(estoque), Times.Once);
+        _mockUdt.Verify(u => u.Commit(), Times.Once);
+        Assert.Equal(estoque, resultado);
     }
 
     [Fact]
-    public async Task Dado_FalhaNoCommit_Quando_CadastrarAsync_Entao_LancaExcecaoPersistirDados()
+    public async Task CriarEstoque_QuandoErroNaPersistencia_DeveLancarExcecao()
     {
-        var request = new CriarEstoqueRequest();
-        var estoque = new Estoque();
+        // Arrange
+        var estoque = new Estoque("Insumo", "Desc", 10m, 5, 2);
+        _mockUdt.Setup(u => u.Commit()).ReturnsAsync(false);
+        var useCase = new CriarEstoqueUseCase(_mockGateway.Object, _mockUdt.Object);
 
-        _mapperMock.Setup(m => m.Map<Estoque>(request)).Returns(estoque);
-        _uotMock.Setup(m => m.Commit()).ReturnsAsync(false);
-
-        await Assert.ThrowsAsync<DomainException>(() => _criarEstoqueUseCase.ExecutarAsync(request));
+        // Act & Assert
+        await Assert.ThrowsAsync<PersistirDadosException>(() => useCase.ExecutarAsync(estoque));
+        _mockGateway.Verify(g => g.CadastrarAsync(estoque), Times.Once);
+        _mockUdt.Verify(u => u.Commit(), Times.Once);
     }
 
     [Fact]
-    public async Task Dado_IdValido_Quando_ObterPorIdAsync_Entao_RetornaResponse()
+    public async Task DeletarEstoque_QuandoSucesso_DeveRetornarTrue()
     {
-        var id = Guid.NewGuid();
-        var estoque = new Estoque();
-        var response = new EstoqueResponse();
+        // Arrange
+        var estoque = new Estoque("Insumo", "Desc", 10m, 5, 2);
+        _mockGateway.Setup(g => g.ObterPorIdAsync(estoque.Id)).ReturnsAsync(estoque);
+        _mockUdt.Setup(u => u.Commit()).ReturnsAsync(true);
+        var useCase = new DeletarEstoqueUseCase(_mockGateway.Object, _mockUdt.Object);
 
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(estoque);
-        _mapperMock.Setup(m => m.Map<EstoqueResponse>(estoque)).Returns(response);
+        // Act
+        var resultado = await useCase.ExecutarAsync(estoque.Id);
 
-        var result = await _obterEstoquePorIdUseCase.ExecutarAsync(id);
-
-        Assert.Equal(response, result);
+        // Assert
+        _mockGateway.Verify(g => g.ObterPorIdAsync(estoque.Id), Times.Once);
+        _mockGateway.Verify(g => g.DeletarAsync(estoque), Times.Once);
+        _mockUdt.Verify(u => u.Commit(), Times.Once);
+        Assert.True(resultado);
     }
 
     [Fact]
-    public async Task Dado_IdInvalido_Quando_ObterPorIdAsync_Entao_LancaExcecao()
-    {
-        var id = Guid.NewGuid();
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync((Estoque)null);
-
-        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _obterEstoquePorIdUseCase.ExecutarAsync(id));
-    }
-
-    [Fact]
-    public async Task Dado_IdValido_Quando_DeletarAsync_Entao_RetornaTrue()
-    {
-        var id = Guid.NewGuid();
-        var estoque = new Estoque();
-
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(estoque);
-        _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
-
-        var result = await _deletarEstoqueUse.ExecutarAsync(id);
-
-        Assert.True(result);
-    }
-
-    [Fact]
-    public async Task Dado_IdInvalido_Quando_DeletarAsync_Entao_LancaExcecao()
-    {
-        var id = Guid.NewGuid();
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync((Estoque)null);
-
-        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _deletarEstoqueUse.ExecutarAsync(id));
-    }
-
-    [Fact]
-    public async Task Quando_ObterTodosAsync_Entao_RetornaLista()
-    {
-        var estoques = new List<Estoque> { new Estoque() };
-        var responses = new List<EstoqueResponse> { new EstoqueResponse() };
-
-        _repositorioMock.Setup(r => r.ObterTodosAsync()).ReturnsAsync(estoques);
-        _mapperMock.Setup(m => m.Map<IEnumerable<EstoqueResponse>>(estoques)).Returns(responses);
-
-        var result = await _listarEstoqueUseCase.ExecutarAsync();
-
-        Assert.Equal(responses, result);
-    }
-
-    [Fact]
-    public async Task Dado_IdValidoERequest_Quando_AtualizarAsync_Entao_RetornaResponse()
-    {
-        var id = Guid.NewGuid();
-        var request = new AtualizarEstoqueRequest
-        {
-            Insumo = "NovoInsumo",
-            Descricao = "DescricaoAtualizada",
-            Preco = 15,
-            QuantidadeDisponivel = 5,
-            QuantidadeMinima = 2
-        };
-        var estoque = new Estoque();
-        var response = new EstoqueResponse();
-
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(estoque);
-        _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
-        _mapperMock.Setup(m => m.Map<EstoqueResponse>(estoque)).Returns(response);
-
-        var result = await _atualizarEstoqueUseCase.ExecutarAsync(id, request);
-
-        Assert.Equal(response, result);
-    }
-
-    [Fact]
-    public async Task Dado_IdInvalido_Quando_AtualizarAsync_Entao_LancaExcecao()
-    {
-        var id = Guid.NewGuid();
-        var request = new AtualizarEstoqueRequest();
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync((Estoque)null);
-
-        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _atualizarEstoqueUseCase.ExecutarAsync(id, request));
-    }
-
-    [Fact]
-    public async Task Dado_FalhaNoCommit_Quando_AtualizarAsync_Entao_LancaExcecaoPersistirDados()
-    {
-        var id = Guid.NewGuid();
-        var request = new AtualizarEstoqueRequest();
-        var estoque = new Estoque();
-
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(estoque);
-        _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
-
-        await Assert.ThrowsAsync<PersistirDadosException>(() => _atualizarEstoqueUseCase.ExecutarAsync(id, request));
-    }
-
-    [Fact]
-    public async Task AtualizarAsync_ComRequestParcial_DeveAtualizarApenasCamposFornecidos()
+    public async Task DeletarEstoque_QuandoNaoEncontrado_DeveLancarExcecao()
     {
         // Arrange
         var id = Guid.NewGuid();
-        var request = new AtualizarEstoqueRequest { Preco = 20 };
-        var estoque = new Estoque("Óleo Motor", "Óleo sintético 5W30", 10, 10, 10);
-        var response = new EstoqueResponse();
+        _mockGateway.Setup(g => g.ObterPorIdAsync(id)).ReturnsAsync((Estoque)null);
+        var useCase = new DeletarEstoqueUseCase(_mockGateway.Object, _mockUdt.Object);
 
-        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(estoque);
-        _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
-        _mapperMock.Setup(m => m.Map<EstoqueResponse>(estoque)).Returns(response);
+        // Act & Assert
+        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => useCase.ExecutarAsync(id));
+        _mockGateway.Verify(g => g.ObterPorIdAsync(id), Times.Once);
+        _mockGateway.Verify(g => g.DeletarAsync(It.IsAny<Estoque>()), Times.Never);
+        _mockUdt.Verify(u => u.Commit(), Times.Never);
+    }
+
+    [Fact]
+    public async Task DeletarEstoque_QuandoErroNaPersistencia_DeveRetornarFalse()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var estoque = new Estoque("Insumo", "Desc", 10m, 5, 2);
+        _mockGateway.Setup(g => g.ObterPorIdAsync(id)).ReturnsAsync(estoque);
+        _mockUdt.Setup(u => u.Commit()).ReturnsAsync(false);
+        var useCase = new DeletarEstoqueUseCase(_mockGateway.Object, _mockUdt.Object);
 
         // Act
-        await _atualizarEstoqueUseCase.ExecutarAsync(id, request);
+        var resultado = await useCase.ExecutarAsync(id);
 
         // Assert
-        Assert.Equal(20, estoque.Preco);
+        Assert.False(resultado);
+    }
+
+    [Fact]
+    public async Task ListarEstoque_Sempre_DeveRetornarTodosOsEstoquesDoGateway()
+    {
+        // Arrange
+        var estoques = new List<Estoque> { new("I1", "D1", 1m, 1, 1), new("I2", "D2", 2m, 2, 2) };
+        _mockGateway.Setup(g => g.ObterTodosAsync()).ReturnsAsync(estoques);
+        var useCase = new ListarEstoqueUseCase(_mockGateway.Object);
+
+        // Act
+        var resultado = await useCase.ExecutarAsync();
+
+        // Assert
+        Assert.Equal(estoques, resultado);
+        _mockGateway.Verify(g => g.ObterTodosAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task ObterEstoquePorId_QuandoEncontrado_DeveRetornarEstoque()
+    {
+        // Arrange
+        var estoque = new Estoque("I1", "D1", 1m, 1, 1);
+        _mockGateway.Setup(g => g.ObterPorIdAsync(estoque.Id)).ReturnsAsync(estoque);
+        var useCase = new ObterEstoquePorIdUseCase(_mockGateway.Object);
+
+        // Act
+        var resultado = await useCase.ExecutarAsync(estoque.Id);
+
+        // Assert
+        Assert.Equal(estoque, resultado);
+        _mockGateway.Verify(g => g.ObterPorIdAsync(estoque.Id), Times.Once);
+    }
+
+    [Fact]
+    public async Task ObterEstoquePorId_QuandoNaoEncontrado_DeveLancarExcecao()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        _mockGateway.Setup(g => g.ObterPorIdAsync(id)).ReturnsAsync((Estoque)null);
+        var useCase = new ObterEstoquePorIdUseCase(_mockGateway.Object);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => useCase.ExecutarAsync(id));
+        _mockGateway.Verify(g => g.ObterPorIdAsync(id), Times.Once);
+    }
+
+    [Fact]
+    public async Task AtualizarEstoque_QuandoSucesso_DeveRetornarEstoqueAtualizado()
+    {
+        // Arrange
+        var estoque = new Estoque("I1", "D1", 1m, 1, 1);
+        _mockUdt.Setup(u => u.Commit()).ReturnsAsync(true);
+        var useCase = new AtualizarEstoqueUseCase(_mockGateway.Object, _mockUdt.Object);
+
+        // Act
+        var resultado = await useCase.ExecutarAsync(estoque);
+
+        // Assert
+        _mockGateway.Verify(g => g.EditarAsync(estoque), Times.Once);
+        _mockUdt.Verify(u => u.Commit(), Times.Once);
+        Assert.Equal(estoque, resultado);
+        Assert.NotEqual(default, resultado.DataAtualizacao); // Garante que a data foi atualizada
+    }
+
+    [Fact]
+    public async Task AtualizarEstoque_QuandoErroNaPersistencia_DeveLancarExcecao()
+    {
+        // Arrange
+        var estoque = new Estoque( "I1", "D1", 1m, 1, 1);
+        _mockUdt.Setup(u => u.Commit()).ReturnsAsync(false);
+        var useCase = new AtualizarEstoqueUseCase(_mockGateway.Object, _mockUdt.Object);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<PersistirDadosException>(() => useCase.ExecutarAsync(estoque));
+        _mockGateway.Verify(g => g.EditarAsync(estoque), Times.Once);
+        _mockUdt.Verify(u => u.Commit(), Times.Once);
     }
 }

@@ -9,17 +9,8 @@ namespace Aplicacao.UseCases.Estoque.CriarEstoque
         private readonly IEstoqueGateway gateway = gateway;
         private readonly IUnidadeDeTrabalho udt = udt;
 
-        public async Task<Dominio.Entidades.Estoque> ExecutarAsync(CriarEstoqueRequest request)
+        public async Task<Dominio.Entidades.Estoque> ExecutarAsync(Dominio.Entidades.Estoque estoque)
         {
-            var estoque = new Dominio.Entidades.Estoque
-            (
-                request.Insumo,
-                request.Descricao,
-                request.Preco,
-                request.QuantidadeDisponivel,
-                request.QuantidadeMinima
-            );
-
             await gateway.CadastrarAsync(estoque);
 
             if (!await udt.Commit())

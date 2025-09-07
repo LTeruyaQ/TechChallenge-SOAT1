@@ -1,3 +1,5 @@
+using API.DTOs.Request.Estoque;
+using API.Mappers.Estoque;
 using API.Middlewares;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
@@ -292,7 +294,8 @@ app.MapPost("/Estoque", async (CriarEstoqueRequest request) =>
 {
     try
     {
-        var response = await criarEstoqueUseCase.ExecutarAsync(request);
+        var estoque = CriarEstoqueRequestMapper.ParaEntidade(request);
+        var response = await criarEstoqueUseCase.ExecutarAsync(estoque);
         estoqueLogger.LogInformation("Estoque criado com sucesso {@Response}", response);
         return Results.Created($"/Estoque/{response.Id}", response);
     }
@@ -359,7 +362,9 @@ app.MapPatch("/Estoque/{id:guid}", async (Guid id, AtualizarEstoqueRequest reque
 {
     try
     {
-        var response = await atualizarEstoqueUseCase.ExecutarAsync(id, request);
+        var estoque = await obterEstoquePorIdUseCase.ExecutarAsync(id);
+        AtualizarEstoqueRequestMapper.ParaEntidade(request, estoque);
+        var response = await atualizarEstoqueUseCase.ExecutarAsync(estoque);
 
         estoqueLogger.LogInformation("Estoque atualizado com sucesso {@Response}", response);
 

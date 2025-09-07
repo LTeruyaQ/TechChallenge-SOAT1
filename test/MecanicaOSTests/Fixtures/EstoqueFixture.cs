@@ -1,5 +1,5 @@
+using API.DTOs.Request.Estoque;
 using Aplicacao.UseCases.Estoque.AtualizarEstoque;
-using Aplicacao.UseCases.Estoque.CriarEstoque;
 using Dominio.Entidades;
 
 namespace MecanicaOSTests.Fixtures

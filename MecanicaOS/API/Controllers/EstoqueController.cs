@@ -1,3 +1,5 @@
+using API.DTOs.Request.Estoque;
+using API.Mappers.Estoque;
 using API.Models;
 using API.Presenters;
 using Aplicacao.UseCases.Estoque;
@@ -90,8 +92,9 @@ public class EstoqueController(
         {
             _logger.LogInformation("Iniciando criação de estoque {@Request}", request);
 
-            var estoque = await criarEstoqueUseCase.ExecutarAsync(request);
-            var response = EstoquePresenter.ParaResponse(estoque);
+            var estoqueEntidade = CriarEstoqueRequestMapper.ParaEntidade(request);
+            var estoqueCriado = await criarEstoqueUseCase.ExecutarAsync(estoqueEntidade);
+            var response = EstoquePresenter.ParaResponse(estoqueCriado);
 
             _logger.LogInformation("Estoque criado com sucesso {@Response}", response);
 
@@ -125,8 +128,11 @@ public class EstoqueController(
         {
             _logger.LogInformation("Iniciando atualização parcial de estoque {@Request} para ID {Id}", request, id);
 
-            var estoque = await atualizarEstoqueUseCase.ExecutarAsync(id, request);
-            var response = EstoquePresenter.ParaResponse(estoque);
+            var estoque = await obterEstoquePorIdUseCase.ExecutarAsync(id);
+            AtualizarEstoqueRequestMapper.ParaEntidade(request, estoque);
+            var estoqueAtualizado = await atualizarEstoqueUseCase.ExecutarAsync(estoque);
+
+            var response = EstoquePresenter.ParaResponse(estoqueAtualizado);
 
             _logger.LogInformation("Estoque atualizado com sucesso {@Response}", response);
 

@@ -9,18 +9,8 @@ namespace Aplicacao.UseCases.Estoque.AtualizarEstoque
         private readonly IEstoqueGateway gateway = gateway;
         private readonly IUnidadeDeTrabalho udt = udt;
 
-        public async Task<Dominio.Entidades.Estoque> ExecutarAsync(Guid id, AtualizarEstoqueRequest request)
+        public async Task<Dominio.Entidades.Estoque> ExecutarAsync(Dominio.Entidades.Estoque estoque)
         {
-            var estoque = await gateway.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Estoque não encontrado.");
-
-            estoque.Atualizar(
-                request.Insumo,
-                request.Descricao,
-                request.Preco,
-                request.QuantidadeDisponivel,
-                request.QuantidadeMinima
-            );
-
             estoque.DataAtualizacao = DateTime.UtcNow;
 
             await gateway.EditarAsync(estoque);
