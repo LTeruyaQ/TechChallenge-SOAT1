@@ -3,11 +3,11 @@ using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
 using Aplicacao.Mapeamentos;
 using Aplicacao.Notificacoes.OS;
-using Aplicacao.Ports;
 using Aplicacao.Servicos;
 using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
 using Aplicacao.UseCases.Estoque.DeletarEstoque;
+using Aplicacao.UseCases.Estoque.ObterEstoque;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
@@ -284,15 +284,16 @@ var udt = new UnidadeDeTrabalho(dbContext);
 var criarEstoqueUseCase = new CriarEstoqueUseCase(estoqueRepo, udt);
 var atualizarEstoqueUseCase = new AtualizarEstoqueUseCase(estoqueRepo, udt);
 var deletarEstoqueUseCase = new DeletarEstoqueUseCase(estoqueRepo, udt);
+var obterEstoquePorIdUseCase = new ObterEstoquePorIdUseCase(estoqueRepo);
 
 // Endpoints manuais
-app.MapPost("/estoques", async (CriarEstoqueRequest request) =>
+app.MapPost("/Estoque", async (CriarEstoqueRequest request) =>
 {
     try
     {
         var response = await criarEstoqueUseCase.ExecuteAsync(request);
         estoqueLogger.LogInformation("Estoque criado com sucesso {@Response}", response);
-        return Results.Created($"/estoques/{response.Id}", response);
+        return Results.Created($"/Estoque/{response.Id}", response);
     }
     catch (DomainException ex)
     {
@@ -314,25 +315,20 @@ app.MapPost("/estoques", async (CriarEstoqueRequest request) =>
     }
 });
 
-app.MapGet("/estoques/{id:guid}", async (Guid id) =>
+app.MapGet("/Estoque/{id:guid}", async (Guid id) =>
 {
     try
     {
-        var estoque = await estoqueRepo.ObterPorIdAsync(id);
-        if (estoque is null) return Results.NotFound();
+        var response = await obterEstoquePorIdUseCase.ExecuteAsync(id);
 
-        var response = new CriarEstoqueResponse
-        {
-            Id = estoque.Id,
-            Insumo = estoque.Insumo,
-            Descricao = estoque.Descricao,
-            QuantidadeDisponivel = estoque.QuantidadeDisponivel,
-            QuantidadeMinima = estoque.QuantidadeMinima,
-            DataCadastro = estoque.DataCadastro,
-            DataAtualizacao = estoque.DataAtualizacao
-        };
+        estoqueLogger.LogInformation("Estoque consultado com sucesso {@Response}", response);
 
         return Results.Ok(response);
+    }
+    catch (DadosNaoEncontradosException ex)
+    {
+        estoqueLogger.LogError(ex, "Estoque não encontrado");
+        return Results.NotFound(ex.Message);
     }
     catch (Exception ex)
     {
@@ -341,13 +337,13 @@ app.MapGet("/estoques/{id:guid}", async (Guid id) =>
     }
 });
 
-app.MapPatch("/estoques/{id:guid}", async (Guid id, AtualizarEstoqueRequest request) =>
+app.MapPatch("/Estoque/{id:guid}", async (Guid id, AtualizarEstoqueRequest request) =>
 {
     try
     {
         var response = await atualizarEstoqueUseCase.ExecuteAsync(id, request);
 
-        estoqueLogger.LogInformation("Estoque atualizado parcialmente com sucesso {@Response}", response);
+        estoqueLogger.LogInformation("Estoque atualizado com sucesso {@Response}", response);
 
         return Results.Ok(response);
     }
@@ -368,7 +364,7 @@ app.MapPatch("/estoques/{id:guid}", async (Guid id, AtualizarEstoqueRequest requ
     }
 });
 
-app.MapDelete("/estoques/{id:guid}", async (Guid id) =>
+app.MapDelete("/Estoque/{id:guid}", async (Guid id) =>
 {
     try
     {

@@ -1,9 +1,10 @@
 using API.Models;
-using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Interfaces.Servicos;
+using Aplicacao.UseCases.Estoque;
 using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
 using Aplicacao.UseCases.Estoque.DeletarEstoque;
+using Aplicacao.UseCases.Estoque.ObterEstoque;
 using Dominio.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,13 @@ public class EstoqueController(IEstoqueServico estoqueService,
     ILogger<EstoqueController> logger, 
     ICriarEstoqueUseCase criarEstoqueUseCase, 
     IAtualizarEstoqueUseCase atualizarEstoqueUseCase,
-    IDeletarEstoqueUseCase deletarEstoqueUseCase) : BaseApiController
+    IDeletarEstoqueUseCase deletarEstoqueUseCase,
+    IObterEstoquePorIdUseCase obterEstoquePorIdUseCase) : BaseApiController
 {
     private readonly ICriarEstoqueUseCase criarEstoqueUseCase = criarEstoqueUseCase;
     private readonly IAtualizarEstoqueUseCase atualizarEstoqueUseCase = atualizarEstoqueUseCase;
     private readonly IDeletarEstoqueUseCase deletarEstoqueUseCase = deletarEstoqueUseCase;
+    private readonly IObterEstoquePorIdUseCase obterEstoquePorIdUseCase = obterEstoquePorIdUseCase;
     private readonly IEstoqueServico _estoqueService = estoqueService;
     private readonly ILogger<EstoqueController> _logger = logger;
 
@@ -38,15 +41,33 @@ public class EstoqueController(IEstoqueServico estoqueService,
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterPorId(Guid id)
     {
-        var estoque = await _estoqueService.ObterPorIdAsync(id);
-        return Ok(estoque);
+        try
+        {
+            _logger.LogInformation("Iniciando consulta de estoque {@Id}", id);
+
+            var estoque = await obterEstoquePorIdUseCase.ExecuteAsync(id);
+
+            _logger.LogInformation("Estoque consultado com sucesso {@Id}", id);
+
+            return Ok(estoque);
+        }
+        catch (DadosNaoEncontradosException ex)
+        {
+            _logger.LogWarning(ex, "Estoque não encontrado {@Id}", id);
+            return NotFound(new ErrorResponse(404, ex.Message));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro inesperado ao remover estoque {@Id}", id);
+            return StatusCode(500, new ErrorResponse(500, "Erro interno no servidor"));
+        }
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<CriarEstoqueResponse>> Criar([FromBody] CriarEstoqueRequest request)
+    public async Task<ActionResult<EstoqueResponse>> Criar([FromBody] CriarEstoqueRequest request)
     {
         try
         {
@@ -80,7 +101,7 @@ public class EstoqueController(IEstoqueServico estoqueService,
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<CriarEstoqueResponse>> Atualizar(Guid id, [FromBody] AtualizarEstoqueRequest request)
+    public async Task<ActionResult<EstoqueResponse>> Atualizar(Guid id, [FromBody] AtualizarEstoqueRequest request)
     {
         try
         {

@@ -1,6 +1,6 @@
-﻿namespace Aplicacao.UseCases.Estoque.AtualizarEstoque
+﻿namespace Aplicacao.UseCases.Estoque
 {
-    public class AtualizarEstoqueResponse
+    public class EstoqueResponse
     {
         public Guid Id { get; set; }
         public string Insumo { get; set; } = default!;

@@ -9,9 +9,9 @@ namespace Aplicacao.UseCases.Estoque.AtualizarEstoque
         private readonly IEstoqueRepository repositorio = repositorio;
         private readonly IUnidadeDeTrabalho udt = udt;
 
-        public async Task<AtualizarEstoqueResponse> ExecuteAsync(Guid id, AtualizarEstoqueRequest request)
+        public async Task<EstoqueResponse> ExecuteAsync(Guid id, AtualizarEstoqueRequest request)
         {
-            var estoque = await repositorio.ObterPorIdAsync(id) ?? throw new DomainException("Estoque não encontrado.");
+            var estoque = await repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Estoque não encontrado.");
 
             estoque.Atualizar(
                 request.Insumo,
@@ -28,7 +28,7 @@ namespace Aplicacao.UseCases.Estoque.AtualizarEstoque
             if (!await udt.Commit())
                 throw new PersistirDadosException("Erro ao atualizar estoque");
 
-            return new AtualizarEstoqueResponse
+            return new EstoqueResponse
             {
                 Id = estoque.Id,
                 Insumo = estoque.Insumo,

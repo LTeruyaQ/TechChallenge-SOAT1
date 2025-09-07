@@ -16,7 +16,6 @@ namespace Aplicacao.Servicos;
 
 public class InsumoOSServico(
     IOrdemServicoServico oSServico,
-    IEstoqueServico estoqueServico,
     VerificarEstoqueJob verificarEstoqueJob,
     IRepositorio<InsumoOS> repositorio,
     ILogServico<InsumoOSServico> logServico,
@@ -25,7 +24,6 @@ public class InsumoOSServico(
     IUsuarioLogadoServico usuarioLogadoServico) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, udt, mapper, usuarioLogadoServico), IInsumoOSServico
 {
     private readonly IOrdemServicoServico _oSServico = oSServico;
-    private readonly IEstoqueServico _estoqueServico = estoqueServico;
 
     private readonly VerificarEstoqueJob _verificarEstoqueJob = verificarEstoqueJob;
 
@@ -121,8 +119,10 @@ public class InsumoOSServico(
 
     private async Task<Estoque> ObterEstoqueOuLancarErroAsync(Guid estoqueId)
     {
-        return _mapper.Map<Estoque>(await _estoqueServico.ObterPorIdAsync(estoqueId))
-            ?? throw new DadosNaoEncontradosException("Insumo não encontrado no estoque.");
+        //TODO: adaptar para o clean
+        //return _mapper.Map<Estoque>(await _estoqueServico.ObterPorIdAsync(estoqueId))
+        //    ?? throw new DadosNaoEncontradosException("Insumo não encontrado no estoque.");
+        throw new NotImplementedException();
     }
 
     private static bool TemEstoqueSuficiente(Estoque estoque, int quantidadeSolicitada)

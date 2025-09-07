@@ -1,4 +1,4 @@
-using Aplicacao.DTOs.Responses.Estoque;
+using Aplicacao.UseCases.Estoque;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
 using AutoMapper;
@@ -32,29 +32,6 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
             var estoques = await _repositorio.ObterTodosAsync();
             var response = _mapper.Map<IEnumerable<EstoqueResponse>>(estoques);
 
-            LogFim(metodo, response);
-
-            return response;
-        }
-        catch (Exception e)
-        {
-            LogErro(metodo, e);
-            throw;
-        }
-    }
-
-    public async Task<EstoqueResponse> ObterPorIdAsync(Guid id)
-    {
-        string metodo = nameof(ObterPorIdAsync);
-
-        try
-        {
-            LogInicio(metodo);
-
-            var estoque = await _repositorio.ObterPorIdAsync(id)
-                ?? throw new DadosNaoEncontradosException("Estoque não encontrado");
-
-            var response = _mapper.Map<EstoqueResponse>(estoque);
             LogFim(metodo, response);
 
             return response;

@@ -9,7 +9,7 @@ namespace Aplicacao.UseCases.Estoque.CriarEstoque
         private readonly IEstoqueRepository repositorio = repositorio;
         private readonly IUnidadeDeTrabalho udt = udt;
 
-        public async Task<CriarEstoqueResponse> ExecuteAsync(CriarEstoqueRequest request)
+        public async Task<EstoqueResponse> ExecuteAsync(CriarEstoqueRequest request)
         {
             var estoque = new Dominio.Entidades.Estoque
             (
@@ -25,7 +25,7 @@ namespace Aplicacao.UseCases.Estoque.CriarEstoque
             if (!await udt.Commit())
                 throw new PersistirDadosException("Erro ao cadastrar estoque");
 
-            return new CriarEstoqueResponse
+            return new EstoqueResponse
             {
                 Id = estoque.Id,
                 Insumo = estoque.Insumo,

@@ -2,6 +2,6 @@
 {
     public interface ICriarEstoqueUseCase
     {
-        Task<CriarEstoqueResponse> ExecuteAsync(CriarEstoqueRequest request);
+        Task<EstoqueResponse> ExecuteAsync(CriarEstoqueRequest request);
     }
 }

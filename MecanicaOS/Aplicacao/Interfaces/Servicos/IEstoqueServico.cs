@@ -1,10 +1,9 @@
-using Aplicacao.DTOs.Responses.Estoque;
+using Aplicacao.UseCases.Estoque;
 
 namespace Aplicacao.Interfaces.Servicos
 {
     public interface IEstoqueServico
     {
-        Task<EstoqueResponse> ObterPorIdAsync(Guid id);
         Task<IEnumerable<EstoqueResponse>> ObterTodosAsync();
     }
 }
