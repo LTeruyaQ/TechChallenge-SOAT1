@@ -24,8 +24,8 @@ namespace MecanicaOSTests.Servicos
                 Servico = new Servico { Nome = "Teste", Descricao = "Teste", Valor = 100.00m },
                 InsumosOS = new List<InsumoOS>
                 {
-                    new InsumoOS { Quantidade = 2, Estoque = new Estoque { Preco = 25.00m } },
-                    new InsumoOS { Quantidade = 1, Estoque = new Estoque { Preco = 50.00m } }
+                    new InsumoOS { Quantidade = 2, Estoque = new Estoque("Óleo Motor", "Óleo sintético 5W30", (decimal)25, 10, 10) },
+                    new InsumoOS { Quantidade = 1, Estoque = new Estoque("Óleo Motor", "Óleo sintético 5W30", (decimal)50, 10, 10) }
                 }
             };
 

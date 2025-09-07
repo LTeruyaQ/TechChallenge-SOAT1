@@ -18,7 +18,6 @@ namespace MecanicaOSTests.Fixtures
             {
                 cfg.AddMaps(new[] {
                     typeof(ClienteProfile),
-                    typeof(EstoqueProfile),
                     typeof(ServicoProfile),
                     typeof(UsuarioProfile),
                     typeof(VeiculoProfile)

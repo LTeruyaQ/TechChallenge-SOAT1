@@ -5,15 +5,15 @@ using Infraestrutura.Dados;
 using Infraestrutura.Dados.Especificacoes;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infraestrutura.Repositorios
+namespace Infraestrutura.Gateways
 {
-    public class Repositorio<T> : IRepositorio<T> where T : Entidade
+    public class RepositorioGateway<T> : IRepositorio<T> where T : Entidade
     {
         protected readonly MecanicaContexto _dbContext;
         protected readonly DbSet<T> _dbSet;
         protected readonly AvaliadorDeEspecificacao<T> _avaliadorDeEspecificacao = new AvaliadorDeEspecificacao<T>();
 
-        public Repositorio(MecanicaContexto dbContext)
+        public RepositorioGateway(MecanicaContexto dbContext)
         {
             _dbContext = dbContext;
             _dbSet = _dbContext.Set<T>();

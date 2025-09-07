@@ -13,9 +13,9 @@ namespace MecanicaOSTests.Dominio.Especificacoes.Estoque
         {
             return new List<global::Dominio.Entidades.Estoque>
             {
-                new global::Dominio.Entidades.Estoque { Id = Guid.NewGuid(), Insumo = "Oleo", Preco = 50, QuantidadeDisponivel = 10, QuantidadeMinima = 5 },
-                new global::Dominio.Entidades.Estoque { Id = Guid.NewGuid(), Insumo = "Filtro", Preco = 20, QuantidadeDisponivel = 3, QuantidadeMinima = 5 }, // Estoque crítico
-                new global::Dominio.Entidades.Estoque { Id = Guid.NewGuid(), Insumo = "Vela", Preco = 15, QuantidadeDisponivel = 2, QuantidadeMinima = 10 } // Estoque crítico
+                new global::Dominio.Entidades.Estoque ( "Oleo", string.Empty,50, 10, 5 ),
+                new global::Dominio.Entidades.Estoque ( "Filtro", string.Empty,20, 3, 5 ), // Estoque crítico
+                new global::Dominio.Entidades.Estoque ( "Vela",string.Empty, 15, 2, 10 ) // Estoque crítico
             };
         }
 

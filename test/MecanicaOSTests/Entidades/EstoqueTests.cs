@@ -17,13 +17,13 @@ namespace MecanicaOSTests.Entidades
 
             // Act
             var estoque = new Estoque
-            {
-                Insumo = insumo,
-                Descricao = descricao,
-                Preco = preco,
-                QuantidadeDisponivel = quantidadeDisponivel,
-                QuantidadeMinima = quantidadeMinima
-            };
+            (
+                insumo,
+                descricao,
+                preco,
+                quantidadeDisponivel,
+                quantidadeMinima
+            );
 
             // Assert
             estoque.Should().NotBeNull();

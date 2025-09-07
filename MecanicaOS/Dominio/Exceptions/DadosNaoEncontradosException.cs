@@ -1,7 +1,5 @@
 ﻿namespace Dominio.Exceptions;
 
-public class DadosNaoEncontradosException : Exception
+public class DadosNaoEncontradosException(string mensagem) : DomainException(mensagem)
 {
-    public DadosNaoEncontradosException(string mensagem) : base(mensagem) { }
 }
-
