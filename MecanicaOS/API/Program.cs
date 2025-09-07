@@ -7,6 +7,7 @@ using Aplicacao.Ports;
 using Aplicacao.Servicos;
 using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
+using Aplicacao.UseCases.Estoque.DeletarEstoque;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
@@ -276,12 +277,13 @@ var options = new DbContextOptionsBuilder<MecanicaContexto>()
 var dbContext = new MecanicaContexto(options);
 
 // Repositório e UoW
-IEstoqueRepository estoqueRepo = new EstoqueRepositorio(dbContext);
-IUnidadeDeTrabalho udt = new UnidadeDeTrabalho(dbContext);
+var estoqueRepo = new EstoqueRepositorio(dbContext);
+var udt = new UnidadeDeTrabalho(dbContext);
 
 // UseCase
-ICriarEstoqueUseCase criarEstoqueUseCase = new CriarEstoqueUseCase(estoqueRepo, udt);
-IAtualizarEstoqueUseCase atualizarEstoqueUseCase = new AtualizarEstoqueUseCase(estoqueRepo, udt);
+var criarEstoqueUseCase = new CriarEstoqueUseCase(estoqueRepo, udt);
+var atualizarEstoqueUseCase = new AtualizarEstoqueUseCase(estoqueRepo, udt);
+var deletarEstoqueUseCase = new DeletarEstoqueUseCase(estoqueRepo, udt);
 
 // Endpoints manuais
 app.MapPost("/estoques", async (CriarEstoqueRequest request) =>
@@ -366,6 +368,26 @@ app.MapPatch("/estoques/{id:guid}", async (Guid id, AtualizarEstoqueRequest requ
     }
 });
 
+app.MapDelete("/estoques/{id:guid}", async (Guid id) =>
+{
+    try
+    {
+        var response = await deletarEstoqueUseCase.ExecuteAsync(id);
+        estoqueLogger.LogInformation("Estoque apagado com sucesso");
+        return Results.NoContent();
+
+    }
+    catch (DadosNaoEncontradosException ex)
+    {
+        estoqueLogger.LogError(ex, "Estoque não encontrado");
+        return Results.NotFound(ex.Message);
+    }
+    catch (Exception ex)
+    {
+        estoqueLogger.LogError(ex, "Erro ao obter estoque");
+        return Results.Problem("Erro interno no servidor");
+    }
+});
 #endregion
 
 #if DEBUG

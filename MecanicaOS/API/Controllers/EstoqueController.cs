@@ -3,6 +3,7 @@ using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
+using Aplicacao.UseCases.Estoque.DeletarEstoque;
 using Dominio.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class EstoqueController(IEstoqueServico estoqueService, ILogger<EstoqueController> logger, ICriarEstoqueUseCase criarEstoqueUseCase, IAtualizarEstoqueUseCase atualizarEstoqueUseCase) : BaseApiController
+public class EstoqueController(IEstoqueServico estoqueService, 
+    ILogger<EstoqueController> logger, 
+    ICriarEstoqueUseCase criarEstoqueUseCase, 
+    IAtualizarEstoqueUseCase atualizarEstoqueUseCase,
+    IDeletarEstoqueUseCase deletarEstoqueUseCase) : BaseApiController
 {
-    private readonly ICriarEstoqueUseCase _criarEstoqueUseCase = criarEstoqueUseCase;
-    private readonly IAtualizarEstoqueUseCase _atualizarEstoqueUseCase = atualizarEstoqueUseCase;
+    private readonly ICriarEstoqueUseCase criarEstoqueUseCase = criarEstoqueUseCase;
+    private readonly IAtualizarEstoqueUseCase atualizarEstoqueUseCase = atualizarEstoqueUseCase;
+    private readonly IDeletarEstoqueUseCase deletarEstoqueUseCase = deletarEstoqueUseCase;
     private readonly IEstoqueServico _estoqueService = estoqueService;
     private readonly ILogger<EstoqueController> _logger = logger;
 
@@ -46,7 +52,7 @@ public class EstoqueController(IEstoqueServico estoqueService, ILogger<EstoqueCo
         {
             _logger.LogInformation("Iniciando criação de estoque {@Request}", request);
 
-            var response = await _criarEstoqueUseCase.ExecuteAsync(request);
+            var response = await criarEstoqueUseCase.ExecuteAsync(request);
 
             _logger.LogInformation("Estoque criado com sucesso {@Response}", response);
 
@@ -80,7 +86,7 @@ public class EstoqueController(IEstoqueServico estoqueService, ILogger<EstoqueCo
         {
             _logger.LogInformation("Iniciando atualização parcial de estoque {@Request} para ID {Id}", request, id);
 
-            var response = await _atualizarEstoqueUseCase.ExecuteAsync(id, request);
+            var response = await atualizarEstoqueUseCase.ExecuteAsync(id, request);
 
             _logger.LogInformation("Estoque atualizado com sucesso {@Response}", response);
 
@@ -109,10 +115,30 @@ public class EstoqueController(IEstoqueServico estoqueService, ILogger<EstoqueCo
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Remover(Guid id)
     {
-        var sucesso = await _estoqueService.DeletarAsync(id);
-        if (!sucesso)
-            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Erro ao remover o item do estoque" });
+        try
+        {
+            _logger.LogInformation("Iniciando exclusão de estoque {@Id}", id);
 
-        return NoContent();
+            var sucesso = await deletarEstoqueUseCase.ExecuteAsync(id);
+
+            if (!sucesso)
+            {
+                _logger.LogError("Erro ao remover o estoque {@Id}", id);
+                return StatusCode(500, new ErrorResponse(500, "Erro ao remover o item do estoque"));
+            }
+
+            _logger.LogInformation("Estoque removido com sucesso {@Id}", id);
+            return NoContent();
+        }
+        catch (DadosNaoEncontradosException ex)
+        {
+            _logger.LogWarning(ex, "Estoque não encontrado {@Id}", id);
+            return NotFound(new ErrorResponse(404, ex.Message));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro inesperado ao remover estoque {@Id}", id);
+            return StatusCode(500, new ErrorResponse(500, "Erro interno no servidor"));
+        }
     }
 }
