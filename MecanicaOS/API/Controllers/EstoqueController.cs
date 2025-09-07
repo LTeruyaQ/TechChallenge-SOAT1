@@ -4,6 +4,7 @@ using Aplicacao.UseCases.Estoque;
 using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
 using Aplicacao.UseCases.Estoque.DeletarEstoque;
+using Aplicacao.UseCases.Estoque.ListaEstoque;
 using Aplicacao.UseCases.Estoque.ObterEstoque;
 using Dominio.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -12,27 +13,41 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class EstoqueController(IEstoqueServico estoqueService, 
-    ILogger<EstoqueController> logger, 
-    ICriarEstoqueUseCase criarEstoqueUseCase, 
+public class EstoqueController(
+    ILogger<EstoqueController> logger,
+    ICriarEstoqueUseCase criarEstoqueUseCase,
     IAtualizarEstoqueUseCase atualizarEstoqueUseCase,
     IDeletarEstoqueUseCase deletarEstoqueUseCase,
-    IObterEstoquePorIdUseCase obterEstoquePorIdUseCase) : BaseApiController
+    IObterEstoquePorIdUseCase obterEstoquePorIdUseCase,
+    IListarEstoqueUseCase listarEstoqueUseCase) : BaseApiController
 {
     private readonly ICriarEstoqueUseCase criarEstoqueUseCase = criarEstoqueUseCase;
     private readonly IAtualizarEstoqueUseCase atualizarEstoqueUseCase = atualizarEstoqueUseCase;
     private readonly IDeletarEstoqueUseCase deletarEstoqueUseCase = deletarEstoqueUseCase;
     private readonly IObterEstoquePorIdUseCase obterEstoquePorIdUseCase = obterEstoquePorIdUseCase;
-    private readonly IEstoqueServico _estoqueService = estoqueService;
+    private readonly IListarEstoqueUseCase listarEstoqueUseCase = listarEstoqueUseCase;
     private readonly ILogger<EstoqueController> _logger = logger;
 
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<EstoqueResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<EstoqueResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterTodos()
     {
-        var estoques = await _estoqueService.ObterTodosAsync();
-        return Ok(estoques);
+        try
+        {
+            _logger.LogInformation("Iniciando consulta de estoques");
+
+            var estoques = await listarEstoqueUseCase.ExecuteAsync();
+
+            _logger.LogInformation("Estoques consultados com sucesso");
+
+            return Ok(estoques);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro inesperado ao consultar estoques");
+            return StatusCode(500, new ErrorResponse(500, "Erro interno no servidor"));
+        }
     }
 
     [HttpGet("{id:guid}")]

@@ -7,6 +7,7 @@ using Aplicacao.Servicos;
 using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
 using Aplicacao.UseCases.Estoque.DeletarEstoque;
+using Aplicacao.UseCases.Estoque.ListaEstoque;
 using Aplicacao.UseCases.Estoque.ObterEstoque;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
@@ -143,7 +144,6 @@ builder.Services.AddAuthorization(options =>
 // Serviços
 builder.Services.AddScoped<IServicoServico, ServicoServico>();
 builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
-builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
 builder.Services.AddScoped<IClienteServico, ClienteServico>();
 builder.Services.AddScoped<IOrdemServicoServico, OrdemServicoServico>();
 builder.Services.AddScoped<IInsumoOSServico, InsumoOSServico>();
@@ -285,6 +285,7 @@ var criarEstoqueUseCase = new CriarEstoqueUseCase(estoqueRepo, udt);
 var atualizarEstoqueUseCase = new AtualizarEstoqueUseCase(estoqueRepo, udt);
 var deletarEstoqueUseCase = new DeletarEstoqueUseCase(estoqueRepo, udt);
 var obterEstoquePorIdUseCase = new ObterEstoquePorIdUseCase(estoqueRepo);
+var listarEstoqueUseCase = new ListarEstoqueUseCase(estoqueRepo);
 
 // Endpoints manuais
 app.MapPost("/Estoque", async (CriarEstoqueRequest request) =>
@@ -333,6 +334,23 @@ app.MapGet("/Estoque/{id:guid}", async (Guid id) =>
     catch (Exception ex)
     {
         estoqueLogger.LogError(ex, "Erro ao obter estoque");
+        return Results.Problem("Erro interno no servidor");
+    }
+});
+
+app.MapGet("/Estoque", async () =>
+{
+    try
+    {
+        var response = await listarEstoqueUseCase.ExecuteAsync();
+
+        estoqueLogger.LogInformation("Estoques consultados com sucesso {@Response}", response);
+
+        return Results.Ok(response);
+    }
+    catch (Exception ex)
+    {
+        estoqueLogger.LogError(ex, "Erro ao obter estoques");
         return Results.Problem("Erro interno no servidor");
     }
 });

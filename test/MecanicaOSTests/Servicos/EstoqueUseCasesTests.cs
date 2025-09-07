@@ -11,36 +11,27 @@ using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using Moq;
 using Aplicacao.UseCases.Estoque.ObterEstoque;
+using Aplicacao.UseCases.Estoque.ListaEstoque;
 
 public class EstoqueUseCasesTests
 {
     private readonly Mock<IRepositorio<Estoque>> _repositorioMock;
     private readonly Mock<IEstoqueRepository> _estoqueRepository;
-    private readonly Mock<ILogServico<EstoqueServico>> _logServicoMock;
     private readonly Mock<IUnidadeDeTrabalho> _uotMock;
     private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<IUsuarioLogadoServico> _usuarioLogadoServico = new();
-    private readonly EstoqueServico _estoqueServico;
     private readonly CriarEstoqueUseCase _criarEstoqueUseCase;
     private readonly AtualizarEstoqueUseCase _atualizarEstoqueUseCase;
     private readonly DeletarEstoqueUseCase _deletarEstoqueUse;
     private readonly ObterEstoquePorIdUseCase _obterEstoquePorIdUseCase;
+    private readonly ListarEstoqueUseCase _listarEstoqueUseCase;
 
     public EstoqueUseCasesTests()
     {
         _repositorioMock = new Mock<IRepositorio<Estoque>>();
         _estoqueRepository = new Mock<IEstoqueRepository>();
-        _logServicoMock = new Mock<ILogServico<EstoqueServico>>();
         _uotMock = new Mock<IUnidadeDeTrabalho>();
         _mapperMock = new Mock<IMapper>();
-
-        _estoqueServico = new EstoqueServico(
-            _repositorioMock.Object,
-            _logServicoMock.Object,
-            _uotMock.Object,
-            _mapperMock.Object,
-            _usuarioLogadoServico.Object
-        );
 
         _criarEstoqueUseCase = new CriarEstoqueUseCase(
             _estoqueRepository.Object,
@@ -58,6 +49,10 @@ public class EstoqueUseCasesTests
         );
 
         _obterEstoquePorIdUseCase = new ObterEstoquePorIdUseCase(
+            _estoqueRepository.Object
+        );
+
+        _listarEstoqueUseCase = new ListarEstoqueUseCase(
             _estoqueRepository.Object
         );
     }
@@ -146,7 +141,7 @@ public class EstoqueUseCasesTests
         _repositorioMock.Setup(r => r.ObterTodosAsync()).ReturnsAsync(estoques);
         _mapperMock.Setup(m => m.Map<IEnumerable<EstoqueResponse>>(estoques)).Returns(responses);
 
-        var result = await _estoqueServico.ObterTodosAsync();
+        var result = await _listarEstoqueUseCase.ExecuteAsync();
 
         Assert.Equal(responses, result);
     }
