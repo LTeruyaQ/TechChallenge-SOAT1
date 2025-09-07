@@ -58,13 +58,13 @@ public class OrdemServicoRepositorioTests
                 Disponivel = true
             };
             var estoque = new Estoque
-            {
-                Insumo = "Filtro de Óleo",
-                Descricao = "Filtro de óleo para motor",
-                Preco = 25m,
-                QuantidadeDisponivel = 100,
-                QuantidadeMinima = 10
-            };
+            (
+                "Filtro de Óleo",
+                "Filtro de óleo para motor",
+                25m,
+                100,
+                10
+            );
 
             var veiculo = new Veiculo
             {
@@ -174,22 +174,22 @@ public class OrdemServicoRepositorioTests
             };
 
             var estoque1 = new Estoque
-            {
-                Insumo = "Filtro de Ar",
-                Descricao = "Filtro de ar do motor",
-                Preco = 80m,
-                QuantidadeDisponivel = 50,
-                QuantidadeMinima = 5
-            };
+            (
+                "Filtro de Ar",
+                "Filtro de ar do motor",
+                80m,
+                50,
+                5
+            );
 
             var estoque2 = new Estoque
-            {
-                Insumo = "Óleo 5W30",
-                Descricao = "Óleo sintético 5W30 5L",
-                Preco = 120m,
-                QuantidadeDisponivel = 100,
-                QuantidadeMinima = 10
-            };
+            (
+                "Óleo 5W30",
+                "Óleo sintético 5W30 5L",
+                120m,
+                100,
+                10
+            );
 
             var ordemServico = new OrdemServico
             {

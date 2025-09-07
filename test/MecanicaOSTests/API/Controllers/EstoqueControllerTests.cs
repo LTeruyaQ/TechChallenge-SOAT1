@@ -1,22 +1,24 @@
 using API.Controllers;
-using Aplicacao.Interfaces.Servicos;
 using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
+using Aplicacao.Interfaces.Servicos;
+using Aplicacao.UseCases.Estoque.CriarEstoque;
 using MecanicaOSTests.Fixtures;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
-using System.Collections.Generic;
 
 namespace MecanicaOSTests.API.Controllers
 {
     public static class EstoqueFixture
     {
-        public static CadastrarEstoqueRequest CriarCadastrarEstoqueRequestValido()
+        public static CriarEstoqueRequest CriarCadastrarEstoqueRequestValido()
         {
-            return new CadastrarEstoqueRequest
+            return new CriarEstoqueRequest
             {
                 Insumo = "Oleo",
                 Descricao = "Oleo de motor",
@@ -41,12 +43,16 @@ namespace MecanicaOSTests.API.Controllers
     public class EstoqueControllerTests
     {
         private readonly Mock<IEstoqueServico> _estoqueServicoMock;
+        private readonly Mock<ILogger<EstoqueController>> _iLoggerServicoMock;
+        private readonly Mock<ICriarEstoqueUseCase> _criarEstoqueUseCaseMock;
         private readonly EstoqueController _controller;
 
         public EstoqueControllerTests()
         {
             _estoqueServicoMock = new Mock<IEstoqueServico>();
-            _controller = new EstoqueController(_estoqueServicoMock.Object);
+            _iLoggerServicoMock = new Mock<ILogger<EstoqueController>>();
+            _criarEstoqueUseCaseMock = new Mock<ICriarEstoqueUseCase>();
+            _controller = new EstoqueController(_estoqueServicoMock.Object, _iLoggerServicoMock.Object);
         }
 
         [Fact]
@@ -71,8 +77,8 @@ namespace MecanicaOSTests.API.Controllers
         {
             // Arrange
             var cadastrarEstoqueDto = EstoqueFixture.CriarCadastrarEstoqueRequestValido();
-            var estoqueResponseDto = new EstoqueResponse { Id = Guid.NewGuid() };
-            _estoqueServicoMock.Setup(s => s.CadastrarAsync(cadastrarEstoqueDto)).ReturnsAsync(estoqueResponseDto);
+            var estoqueResponseDto = new CriarEstoqueResponse { Id = Guid.NewGuid() };
+            _criarEstoqueUseCaseMock.Setup(s => s.ExecuteAsync(cadastrarEstoqueDto)).ReturnsAsync(estoqueResponseDto);
 
             // Act
             var resultado = await _controller.Criar(cadastrarEstoqueDto);
@@ -80,7 +86,7 @@ namespace MecanicaOSTests.API.Controllers
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(resultado);
             Assert.Equal(nameof(_controller.ObterPorId), createdAtActionResult.ActionName);
-            Assert.Equal(estoqueResponseDto.Id, ((EstoqueResponse)createdAtActionResult.Value).Id);
+            Assert.Equal(estoqueResponseDto.Id, ((CriarEstoqueResponse)createdAtActionResult.Value).Id);
         }
 
         [Fact]

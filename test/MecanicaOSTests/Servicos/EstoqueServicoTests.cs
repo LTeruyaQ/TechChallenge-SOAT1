@@ -1,6 +1,8 @@
 using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
+using Aplicacao.Ports;
 using Aplicacao.Servicos;
+using Aplicacao.UseCases.Estoque.CriarEstoque;
 using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Exceptions;
@@ -11,15 +13,18 @@ using Moq;
 public class EstoqueServicoTests
 {
     private readonly Mock<IRepositorio<Estoque>> _repositorioMock;
+    private readonly Mock<IEstoqueRepository> _estoqueRepository;
     private readonly Mock<ILogServico<EstoqueServico>> _logServicoMock;
     private readonly Mock<IUnidadeDeTrabalho> _uotMock;
     private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<IUsuarioLogadoServico> _usuarioLogadoServico = new();
     private readonly EstoqueServico _estoqueServico;
+    private readonly CriarEstoqueUseCase _criarEstoqueUseCase;
 
     public EstoqueServicoTests()
     {
         _repositorioMock = new Mock<IRepositorio<Estoque>>();
+        _estoqueRepository = new Mock<IEstoqueRepository>();
         _logServicoMock = new Mock<ILogServico<EstoqueServico>>();
         _uotMock = new Mock<IUnidadeDeTrabalho>();
         _mapperMock = new Mock<IMapper>();
@@ -31,20 +36,25 @@ public class EstoqueServicoTests
             _mapperMock.Object,
             _usuarioLogadoServico.Object
         );
+
+        _criarEstoqueUseCase = new CriarEstoqueUseCase(
+            _estoqueRepository.Object,
+            _uotMock.Object
+        );
     }
 
     [Fact]
     public async Task Dado_RequestValido_Quando_CadastrarAsync_Entao_RetornaResponse()
     {
-        var request = new CadastrarEstoqueRequest();
+        var request = new CriarEstoqueRequest();
         var estoque = new Estoque();
-        var response = new EstoqueResponse();
+        var response = new CriarEstoqueResponse();
 
         _mapperMock.Setup(m => m.Map<Estoque>(request)).Returns(estoque);
         _uotMock.Setup(m => m.Commit()).ReturnsAsync(true);
-        _mapperMock.Setup(m => m.Map<EstoqueResponse>(estoque)).Returns(response);
+        _mapperMock.Setup(m => m.Map<CriarEstoqueResponse>(estoque)).Returns(response);
 
-        var result = await _estoqueServico.CadastrarAsync(request);
+        var result = await _criarEstoqueUseCase.ExecuteAsync(request);
 
         Assert.Equal(response, result);
     }
@@ -52,13 +62,13 @@ public class EstoqueServicoTests
     [Fact]
     public async Task Dado_FalhaNoCommit_Quando_CadastrarAsync_Entao_LancaExcecaoPersistirDados()
     {
-        var request = new CadastrarEstoqueRequest();
+        var request = new CriarEstoqueRequest();
         var estoque = new Estoque();
 
         _mapperMock.Setup(m => m.Map<Estoque>(request)).Returns(estoque);
         _uotMock.Setup(m => m.Commit()).ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<PersistirDadosException>(() => _estoqueServico.CadastrarAsync(request));
+        await Assert.ThrowsAsync<DomainException>(() => _criarEstoqueUseCase.ExecuteAsync(request));
     }
 
     [Fact]
@@ -169,23 +179,23 @@ public class EstoqueServicoTests
         await Assert.ThrowsAsync<PersistirDadosException>(() => _estoqueServico.AtualizarAsync(id, request));
     }
 
-        [Fact]
-        public async Task AtualizarAsync_ComRequestParcial_DeveAtualizarApenasCamposFornecidos()
-        {
-            // Arrange
-            var id = Guid.NewGuid();
-            var request = new AtualizarEstoqueRequest { Preco = 20 };
-            var estoque = new Estoque { Preco = 10 };
-            var response = new EstoqueResponse();
+    [Fact]
+    public async Task AtualizarAsync_ComRequestParcial_DeveAtualizarApenasCamposFornecidos()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var request = new AtualizarEstoqueRequest { Preco = 20 };
+        var estoque = new Estoque("Óleo Motor", "Óleo sintético 5W30", 10, 10, 10);
+        var response = new EstoqueResponse();
 
-            _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(estoque);
-            _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
-            _mapperMock.Setup(m => m.Map<EstoqueResponse>(estoque)).Returns(response);
+        _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(estoque);
+        _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
+        _mapperMock.Setup(m => m.Map<EstoqueResponse>(estoque)).Returns(response);
 
-            // Act
-            await _estoqueServico.AtualizarAsync(id, request);
+        // Act
+        await _estoqueServico.AtualizarAsync(id, request);
 
-            // Assert
-            Assert.Equal(20, estoque.Preco);
-        }
+        // Assert
+        Assert.Equal(20, estoque.Preco);
+    }
 }

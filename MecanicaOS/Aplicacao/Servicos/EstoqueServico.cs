@@ -33,11 +33,11 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
             var estoque = await _repositorio.ObterPorIdAsync(id)
                 ?? throw new DadosNaoEncontradosException("Estoque não encontrado");
 
-            if (request.Insumo != null) estoque.Insumo = request.Insumo;
-            if (request.Descricao != null) estoque.Descricao = request.Descricao;
-            if (request.Preco.HasValue) estoque.Preco = request.Preco.Value;
-            if (request.QuantidadeDisponivel.HasValue) estoque.QuantidadeDisponivel = request.QuantidadeDisponivel.Value;
-            if (request.QuantidadeMinima.HasValue) estoque.QuantidadeMinima = request.QuantidadeMinima.Value;
+            //if (request.Insumo != null) estoque.Insumo = request.Insumo;
+            //if (request.Descricao != null) estoque.Descricao = request.Descricao;
+            //if (request.Preco.HasValue) estoque.Preco = request.Preco.Value;
+            //if (request.QuantidadeDisponivel.HasValue) estoque.QuantidadeDisponivel = request.QuantidadeDisponivel.Value;
+            //if (request.QuantidadeMinima.HasValue) estoque.QuantidadeMinima = request.QuantidadeMinima.Value;
 
             estoque.DataAtualizacao = DateTime.UtcNow;
 
@@ -45,33 +45,6 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
 
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao atualizar estoque");
-
-            var response = _mapper.Map<EstoqueResponse>(estoque);
-            LogFim(metodo, response);
-
-            return response;
-        }
-        catch (Exception e)
-        {
-            LogErro(metodo, e);
-            throw;
-        }
-    }
-
-    public async Task<EstoqueResponse> CadastrarAsync(CadastrarEstoqueRequest request)
-    {
-        string metodo = nameof(CadastrarAsync);
-
-        try
-        {
-            LogInicio(metodo, request);
-
-            var estoque = _mapper.Map<Estoque>(request);
-
-            await _repositorio.CadastrarAsync(estoque);
-
-            if (!await Commit())
-                throw new PersistirDadosException("Erro ao cadastrar estoque");
 
             var response = _mapper.Map<EstoqueResponse>(estoque);
             LogFim(metodo, response);

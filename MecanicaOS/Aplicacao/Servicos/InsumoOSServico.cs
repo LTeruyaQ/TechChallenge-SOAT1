@@ -92,7 +92,7 @@ public class InsumoOSServico(
                 continue;
             }
 
-            estoque.QuantidadeDisponivel -= insumo.Quantidade;
+            //estoque.QuantidadeDisponivel -= insumo.Quantidade;
 
             await AtualizarEstoqueAsync(estoque);
         }
@@ -157,7 +157,8 @@ public class InsumoOSServico(
 
             foreach (var insumo in insumosOS)
             {
-                insumo.Estoque.QuantidadeDisponivel += insumo.Quantidade;
+                //TODO: ajustar
+                //insumo.Estoque.QuantidadeDisponivel += insumo.Quantidade;
 
                 await _estoqueServico.AtualizarAsync(
                     insumo.EstoqueId,

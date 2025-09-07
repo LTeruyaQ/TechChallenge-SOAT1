@@ -1,9 +1,13 @@
 using API.Middlewares;
+using API.Models;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
 using Aplicacao.Mapeamentos;
 using Aplicacao.Notificacoes.OS;
+using Aplicacao.Ports;
 using Aplicacao.Servicos;
+using Aplicacao.UseCases.Estoque.CriarEstoque;
+using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using Hangfire;
@@ -13,15 +17,18 @@ using Infraestrutura.Dados;
 using Infraestrutura.Dados.Extensions;
 using Infraestrutura.Dados.UoT;
 using Infraestrutura.Logs;
+using Infraestrutura.Repositories;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IO.Compression;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -29,8 +36,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddControllers().AddJsonOptions(options =>
-             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+    .ConfigureApplicationPartManager(manager =>
+    {
+        // Removendo EstoqueController do pipeline de controllers para teste
+        var controllerFeatureProvider = manager.FeatureProviders
+            .OfType<ControllerFeatureProvider>()
+            .FirstOrDefault();
+
+        if (controllerFeatureProvider != null)
+        {
+            manager.FeatureProviders.Remove(controllerFeatureProvider);
+        }
+
+        manager.FeatureProviders.Add(new FilterEstoqueControllerFeatureProvider());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -235,6 +257,89 @@ app.UseEndpoints(endpoints =>
     _ = endpoints.MapControllers();
 });
 
+#region Mapeando manualmente endpoints
+var estoqueLogger = LoggerFactory.Create(logging => logging.AddConsole())
+                                 .CreateLogger("EstoqueEndpoints");
+
+// Criação do DbContext manual
+var options = new DbContextOptionsBuilder<MecanicaContexto>()
+    .UseNpgsql(connectionString, npgsqlOptions =>
+    {
+        npgsqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorCodesToAdd: null
+        );
+    })
+    .Options;
+
+// DbContext
+var dbContext = new MecanicaContexto(options);
+
+// Repositório e UoW
+IEstoqueRepository estoqueRepo = new EstoqueRepositorio(dbContext);
+IUnidadeDeTrabalho udt = new UnidadeDeTrabalho(dbContext);
+
+// UseCase
+ICriarEstoqueUseCase criarEstoqueUseCase = new CriarEstoqueUseCase(estoqueRepo, udt);
+
+// Endpoints manuais
+app.MapPost("/estoques", async (CriarEstoqueRequest request) =>
+{
+    try
+    {
+        var response = await criarEstoqueUseCase.ExecuteAsync(request);
+        estoqueLogger.LogInformation("Estoque criado com sucesso {@Response}", response);
+        return Results.Created($"/estoques/{response.Id}", response);
+    }
+    catch (DomainException ex)
+    {
+        estoqueLogger.LogError(ex, "Regra de negócio violada ao criar estoque");
+        return Results.Problem(
+            detail: ex.Message,
+            statusCode: StatusCodes.Status400BadRequest
+        );
+    }
+    catch (PersistirDadosException ex)
+    {
+        estoqueLogger.LogError(ex, "Erro ao persistir dados");
+        return Results.Problem(ex.Message);
+    }
+    catch (Exception ex)
+    {
+        estoqueLogger.LogError(ex, "Erro ao criar estoque");
+        return Results.Problem("Erro interno no servidor");
+    }
+});
+
+app.MapGet("/estoques/{id:guid}", async (Guid id) =>
+{
+    try
+    {
+        var estoque = await estoqueRepo.ObterPorIdAsync(id);
+        if (estoque == null) return Results.NotFound();
+
+        var response = new CriarEstoqueResponse
+        {
+            Id = estoque.Id,
+            Insumo = estoque.Insumo,
+            Descricao = estoque.Descricao,
+            QuantidadeDisponivel = estoque.QuantidadeDisponivel,
+            QuantidadeMinima = estoque.QuantidadeMinima,
+            DataCadastro = estoque.DataCadastro,
+            DataAtualizacao = estoque.DataAtualizacao
+        };
+
+        return Results.Ok(response);
+    }
+    catch (Exception ex)
+    {
+        estoqueLogger.LogError(ex, "Erro ao obter estoque");
+        return Results.Problem("Erro interno no servidor");
+    }
+});
+#endregion
+
 #if DEBUG
 app.UseHangfireDashboard("/hangfire");
 #endif
@@ -276,3 +381,16 @@ catch (Exception ex)
 }
 
 app.Run();
+
+// FeatureProvider customizado
+public class FilterEstoqueControllerFeatureProvider : ControllerFeatureProvider
+{
+    protected override bool IsController(TypeInfo typeInfo)
+    {
+        // Ignora EstoqueController
+        if (typeInfo.AsType() == typeof(API.Controllers.EstoqueController))
+            return false;
+
+        return base.IsController(typeInfo);
+    }
+}

@@ -12,9 +12,9 @@ namespace MecanicaOSTests.Dominio.Especificacoes.Insumo
         private List<global::Dominio.Entidades.InsumoOS> GetInsumosDeTeste()
         {
             var osId = Guid.NewGuid();
-            var estoque1 = new global::Dominio.Entidades.Estoque { Id = Guid.NewGuid(), Insumo = "Oleo" };
-            var estoque2 = new global::Dominio.Entidades.Estoque { Id = Guid.NewGuid(), Insumo = "Filtro" };
-            var estoque3 = new global::Dominio.Entidades.Estoque { Id = Guid.NewGuid(), Insumo = "Vela" };
+            var estoque1 = new global::Dominio.Entidades.Estoque("Oleo", string.Empty, 50, 10, 5);
+            var estoque2 = new global::Dominio.Entidades.Estoque("Filtro", string.Empty, 20, 100, 5); // Estoque crítico
+            var estoque3 = new global::Dominio.Entidades.Estoque("Vela", string.Empty, 15, 200, 10);
 
             return new List<global::Dominio.Entidades.InsumoOS>
             {

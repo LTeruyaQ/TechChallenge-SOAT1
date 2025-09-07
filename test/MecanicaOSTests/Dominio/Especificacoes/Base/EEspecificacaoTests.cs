@@ -51,13 +51,13 @@ public class EEspecificacaoTests
 
         // Criar estoque de teste
         var estoque = new global::Dominio.Entidades.Estoque
-        {
-            Insumo = "Óleo Motor",
-            Descricao = "Óleo 5W30 Sintético 1L",
-            Preco = 50m,
-            QuantidadeDisponivel = 50,
-            QuantidadeMinima = 5
-        };
+        (
+            "Óleo Motor",
+            "Óleo 5W30 Sintético 1L",
+            50m,
+            50,
+            5
+        );
 
         // Criar ordens de serviço de teste
         var ordem1 = new global::Dominio.Entidades.OrdemServico

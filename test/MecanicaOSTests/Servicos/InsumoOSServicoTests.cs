@@ -61,7 +61,7 @@ namespace MecanicaOSTests.Servicos
             var ordemServicoId = Guid.NewGuid();
             var requests = new List<CadastrarInsumoOSRequest> { new CadastrarInsumoOSRequest { EstoqueId = Guid.NewGuid(), Quantidade = 1 } };
             var osResponse = new OrdemServicoResponse { Id = ordemServicoId };
-            var estoque = new Estoque { Id = requests[0].EstoqueId, QuantidadeDisponivel = 10 };
+            var estoque = new Estoque("Óleo Motor", "Óleo sintético 5W30", (decimal)45.90, 10, 10);
 
             _ordemServicoServicoMock.Setup(s => s.ObterPorIdAsync(ordemServicoId)).ReturnsAsync(osResponse);
             _mapperMock.Setup(m => m.Map<OrdemServico>(osResponse)).Returns(new OrdemServico { Id = ordemServicoId });
@@ -121,7 +121,7 @@ namespace MecanicaOSTests.Servicos
             var ordemServicoId = Guid.NewGuid();
             var requests = new List<CadastrarInsumoOSRequest> { new CadastrarInsumoOSRequest { EstoqueId = Guid.NewGuid(), Quantidade = 10 } };
             var osResponse = new OrdemServicoResponse { Id = ordemServicoId };
-            var estoque = new Estoque { Id = requests[0].EstoqueId, QuantidadeDisponivel = 5 };
+            var estoque = new Estoque("Óleo Motor", "Óleo sintético 5W30", 50, 5, 5);
 
             _ordemServicoServicoMock.Setup(s => s.ObterPorIdAsync(ordemServicoId)).ReturnsAsync(osResponse);
             _mapperMock.Setup(m => m.Map<OrdemServico>(osResponse)).Returns(new OrdemServico { Id = ordemServicoId });
@@ -141,7 +141,7 @@ namespace MecanicaOSTests.Servicos
             // Arrange
             var insumos = new List<InsumoOS>
             {
-                new InsumoOS { EstoqueId = Guid.NewGuid(), Quantidade = 2, Estoque = new Estoque { Id = Guid.NewGuid(), QuantidadeDisponivel = 8 } }
+                new InsumoOS { EstoqueId = Guid.NewGuid(), Quantidade = 2, Estoque = new Estoque("Óleo Motor", "Óleo sintético 5W30", (decimal)50, 8, 5) }
             };
 
             // Act

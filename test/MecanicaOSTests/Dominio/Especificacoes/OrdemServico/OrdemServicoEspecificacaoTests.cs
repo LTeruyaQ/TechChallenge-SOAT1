@@ -15,7 +15,7 @@ namespace MecanicaOSTests.Dominio.Especificacoes.OrdemServico
             var cliente = new global::Dominio.Entidades.Cliente { Id = Guid.NewGuid(), Nome = "Cliente Teste", Documento = "12345678901" };
             var veiculo = new global::Dominio.Entidades.Veiculo { Id = Guid.NewGuid(), Placa = "ABC-1234", Cliente = cliente };
             var servico = new global::Dominio.Entidades.Servico { Id = Guid.NewGuid(), Nome = "Troca de Oleo", Descricao = "Desc", Valor = 100 };
-            var estoque = new global::Dominio.Entidades.Estoque { Id = Guid.NewGuid(), Insumo = "Oleo", Preco = 50, QuantidadeDisponivel = 10 };
+            var estoque = new global::Dominio.Entidades.Estoque("Oleo", "Descrição", 50, 10, 10);
 
             var ordemComInsumos = new global::Dominio.Entidades.OrdemServico
             {

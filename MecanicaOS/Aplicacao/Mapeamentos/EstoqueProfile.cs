@@ -13,11 +13,6 @@ namespace Aplicacao.Mapeamentos
                 .ReverseMap();
 
             CreateMap<Estoque, AtualizarEstoqueRequest>();
-
-            CreateMap<CadastrarEstoqueRequest, Estoque>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.DataCadastro, opt => opt.MapFrom(_ => DateTime.UtcNow))
-                .ForMember(dest => dest.Ativo, opt => opt.MapFrom(_ => true));
         }
     }
 }

@@ -2,20 +2,19 @@ using API.Models;
 using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Interfaces.Servicos;
+using Aplicacao.UseCases.Estoque.CriarEstoque;
+using Dominio.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class EstoqueController : BaseApiController
+public class EstoqueController(IEstoqueServico estoqueService, ILogger<EstoqueController> logger, ICriarEstoqueUseCase criarEstoqueUseCase) : BaseApiController
 {
-    private readonly IEstoqueServico _estoqueService;
-
-    public EstoqueController(IEstoqueServico estoqueService)
-    {
-        _estoqueService = estoqueService;
-    }
+    private readonly ICriarEstoqueUseCase _criarEstoqueUseCase = criarEstoqueUseCase;
+    private readonly IEstoqueServico _estoqueService = estoqueService;
+    private readonly ILogger<EstoqueController> _logger = logger;
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<EstoqueResponse>), StatusCodes.Status200OK)]
@@ -39,15 +38,34 @@ public class EstoqueController : BaseApiController
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Criar([FromBody] CadastrarEstoqueRequest request)
+    public async Task<ActionResult<CriarEstoqueResponse>> Criar([FromBody] CriarEstoqueRequest request)
     {
-        var resultadoValidacao = ValidarModelState();
-        if (resultadoValidacao != null) return resultadoValidacao;
+        try
+        {
+            _logger.LogInformation("Iniciando criação de estoque {@Request}", request);
 
-        var estoque = await _estoqueService.CadastrarAsync(request);
-        return CreatedAtAction(nameof(ObterPorId), new { id = estoque.Id }, estoque);
+            var response = await _criarEstoqueUseCase.ExecuteAsync(request);
+
+            _logger.LogInformation("Estoque criado com sucesso {@Response}", response);
+
+            return CreatedAtAction(nameof(ObterPorId), new { id = response.Id }, response);
+        }
+        catch (DomainException ex)
+        {
+            _logger.LogWarning(ex, "Regra de negócio violada ao criar estoque");
+            return BadRequest(new ErrorResponse(400, ex.Message));
+        }
+        catch (PersistirDadosException ex)
+        {
+            _logger.LogError(ex, "Erro ao persistir dados");
+            return StatusCode(500, new ErrorResponse(500, ex.Message));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro inesperado ao criar estoque");
+            return StatusCode(500, new ErrorResponse(500, "Erro interno no servidor"));
+        }
     }
 
     [HttpPut("{id:guid}")]
