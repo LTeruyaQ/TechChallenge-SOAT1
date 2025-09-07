@@ -49,9 +49,7 @@ namespace MecanicaOSTests.Servicos
                 _logServicoMock.Object,
                 _udtMock.Object,
                 _mapperMock.Object,
-                _usuarioLogadoServicoMock.Object,
-                _obterEstoquePorIdUseCase.Object,
-                _atualizarEstoqueUseCase.Object
+                _usuarioLogadoServicoMock.Object
             );
         }
 
@@ -129,7 +127,7 @@ namespace MecanicaOSTests.Servicos
             _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<InsumoOS>>())).ReturnsAsync(new List<InsumoOS>());
             _obterEstoquePorIdUseCase.Setup(s => s.ExecutarAsync(requests[0].EstoqueId)).ReturnsAsync(new Estoque());
             _mapperMock.Setup(m => m.Map<Estoque>(It.IsAny<EstoqueResponse>())).Returns(estoque);
-            _mapperMock.Setup(m => m.Map<InsumoOS>(It.IsAny<CadastrarInsumoOSRequest>())).Returns(new InsumoOS { EstoqueId = requests[0].EstoqueId, Quantidade = 10 });
+            _mapperMock.Setup(m => m.Map<InsumoOS>(It.IsAny<CadastrarInsumoOSRequest>())).Returns(new InsumoOS { EstoqueId = requests[0].EstoqueId, Estoque = estoque, Quantidade = 10 });
 
             // Act & Assert
             await _insumoOSServico.Invoking(s => s.CadastrarInsumosAsync(ordemServicoId, requests))
@@ -149,7 +147,8 @@ namespace MecanicaOSTests.Servicos
             await _insumoOSServico.DevolverInsumosAoEstoqueAsync(insumos);
 
             // Assert
-            _atualizarEstoqueUseCase.Verify(s => s.ExecutarAsync(It.IsAny<Estoque>()), Times.Once);
+            //TODO: ajustar quando o service for adaptado para UseCase
+            //_atualizarEstoqueUseCase.Verify(s => s.ExecutarAsync(It.IsAny<Estoque>()), Times.Once);
             insumos[0].Estoque.QuantidadeDisponivel.Should().Be(10);
         }
     }
