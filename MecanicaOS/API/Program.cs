@@ -1,11 +1,11 @@
 using API.Middlewares;
-using API.Models;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
 using Aplicacao.Mapeamentos;
 using Aplicacao.Notificacoes.OS;
 using Aplicacao.Ports;
 using Aplicacao.Servicos;
+using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
@@ -174,7 +174,6 @@ builder.Services.AddMediatR(cfg =>
 // Aplicacao
 builder.Services.AddAutoMapper(
     typeof(ServicoProfile),
-    typeof(EstoqueProfile),
     typeof(VeiculoProfile),
     typeof(UsuarioProfile),
     typeof(ClienteProfile),
@@ -282,6 +281,7 @@ IUnidadeDeTrabalho udt = new UnidadeDeTrabalho(dbContext);
 
 // UseCase
 ICriarEstoqueUseCase criarEstoqueUseCase = new CriarEstoqueUseCase(estoqueRepo, udt);
+IAtualizarEstoqueUseCase atualizarEstoqueUseCase = new AtualizarEstoqueUseCase(estoqueRepo, udt);
 
 // Endpoints manuais
 app.MapPost("/estoques", async (CriarEstoqueRequest request) =>
@@ -317,7 +317,7 @@ app.MapGet("/estoques/{id:guid}", async (Guid id) =>
     try
     {
         var estoque = await estoqueRepo.ObterPorIdAsync(id);
-        if (estoque == null) return Results.NotFound();
+        if (estoque is null) return Results.NotFound();
 
         var response = new CriarEstoqueResponse
         {
@@ -338,6 +338,34 @@ app.MapGet("/estoques/{id:guid}", async (Guid id) =>
         return Results.Problem("Erro interno no servidor");
     }
 });
+
+app.MapPatch("/estoques/{id:guid}", async (Guid id, AtualizarEstoqueRequest request) =>
+{
+    try
+    {
+        var response = await atualizarEstoqueUseCase.ExecuteAsync(id, request);
+
+        estoqueLogger.LogInformation("Estoque atualizado parcialmente com sucesso {@Response}", response);
+
+        return Results.Ok(response);
+    }
+    catch (DomainException ex)
+    {
+        estoqueLogger.LogWarning(ex, "Regra de negócio violada ao atualizar estoque ID {Id}", id);
+        return Results.Problem(ex.Message, statusCode: 400);
+    }
+    catch (PersistirDadosException ex)
+    {
+        estoqueLogger.LogError(ex, "Erro ao persistir dados ao atualizar estoque ID {Id}", id);
+        return Results.Problem(ex.Message, statusCode: 500);
+    }
+    catch (Exception ex)
+    {
+        estoqueLogger.LogError(ex, "Erro inesperado ao atualizar estoque ID {Id}", id);
+        return Results.Problem("Erro interno no servidor", statusCode: 500);
+    }
+});
+
 #endregion
 
 #if DEBUG

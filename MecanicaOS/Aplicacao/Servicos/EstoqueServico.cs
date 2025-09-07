@@ -1,4 +1,3 @@
-using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Servicos.Abstrato;
@@ -20,42 +19,6 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
         IUsuarioLogadoServico usuarioLogadoServico)
         : base(repositorio, logServico, udt, mapper, usuarioLogadoServico)
     {
-    }
-
-    public async Task<EstoqueResponse> AtualizarAsync(Guid id, AtualizarEstoqueRequest request)
-    {
-        string metodo = nameof(AtualizarAsync);
-
-        try
-        {
-            LogInicio(metodo, request);
-
-            var estoque = await _repositorio.ObterPorIdAsync(id)
-                ?? throw new DadosNaoEncontradosException("Estoque não encontrado");
-
-            //if (request.Insumo != null) estoque.Insumo = request.Insumo;
-            //if (request.Descricao != null) estoque.Descricao = request.Descricao;
-            //if (request.Preco.HasValue) estoque.Preco = request.Preco.Value;
-            //if (request.QuantidadeDisponivel.HasValue) estoque.QuantidadeDisponivel = request.QuantidadeDisponivel.Value;
-            //if (request.QuantidadeMinima.HasValue) estoque.QuantidadeMinima = request.QuantidadeMinima.Value;
-
-            estoque.DataAtualizacao = DateTime.UtcNow;
-
-            await _repositorio.EditarAsync(estoque);
-
-            if (!await Commit())
-                throw new PersistirDadosException("Erro ao atualizar estoque");
-
-            var response = _mapper.Map<EstoqueResponse>(estoque);
-            LogFim(metodo, response);
-
-            return response;
-        }
-        catch (Exception e)
-        {
-            LogErro(metodo, e);
-            throw;
-        }
     }
 
     public async Task<IEnumerable<EstoqueResponse>> ObterTodosAsync()

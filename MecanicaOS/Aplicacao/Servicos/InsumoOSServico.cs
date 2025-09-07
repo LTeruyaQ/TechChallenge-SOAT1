@@ -1,5 +1,4 @@
-﻿using Aplicacao.DTOs.Requests.Estoque;
-using Aplicacao.DTOs.Requests.OrdemServico;
+﻿using Aplicacao.DTOs.Requests.OrdemServico;
 using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
 using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Aplicacao.Interfaces.Servicos;
@@ -59,7 +58,7 @@ public class InsumoOSServico(
             await AtualizarStatusOrdemServicoAsync(os);
 
             var response = _mapper.Map<List<InsumoOSResponse>>(entidades);
-            
+
             LogFim(metodo, response);
 
             return response;
@@ -133,9 +132,10 @@ public class InsumoOSServico(
 
     private async Task AtualizarEstoqueAsync(Estoque estoque)
     {
-        await _estoqueServico.AtualizarAsync(
-            estoque.Id,
-            _mapper.Map<AtualizarEstoqueRequest>(estoque));
+        //TODO: adaptar para o clean
+        //await _estoqueServico.AtualizarAsync(
+        //    estoque.Id,
+        //    _mapper.Map<AtualizarEstoqueRequest>(estoque));
     }
 
     private async Task AtualizarStatusOrdemServicoAsync(OrdemServico ordemServico)
@@ -157,12 +157,13 @@ public class InsumoOSServico(
 
             foreach (var insumo in insumosOS)
             {
-                //TODO: ajustar
+                //TODO: ajustar para o clean
+
                 //insumo.Estoque.QuantidadeDisponivel += insumo.Quantidade;
 
-                await _estoqueServico.AtualizarAsync(
-                    insumo.EstoqueId,
-                    _mapper.Map<AtualizarEstoqueRequest>(insumo.Estoque));
+                //await _estoqueServico.AtualizarAsync(
+                //    insumo.EstoqueId,
+                //    _mapper.Map<AtualizarEstoqueRequest>(insumo.Estoque));
             }
 
             LogFim(metodo);

@@ -15,9 +15,6 @@ public class Estoque : Entidade
 
     public Estoque(string insumo, string? descricao, decimal preco, int quantidadeDisponivel, int quantidadeMinima)
     {
-        if (quantidadeMinima > quantidadeDisponivel)
-            throw new EstoqueQuantidadeMinimaException();
-
         if (preco <= 0)
             throw new EstoquePrecoInvalidoException();
 
@@ -26,5 +23,19 @@ public class Estoque : Entidade
         Preco = preco;
         QuantidadeDisponivel = quantidadeDisponivel;
         QuantidadeMinima = quantidadeMinima;
+    }
+
+    public void Atualizar(string? insumo, string? descricao, decimal? preco, int? quantidadeDisponivel, int? quantidadeMinima)
+    {
+        if (!string.IsNullOrEmpty(insumo)) Insumo = insumo;
+        if (!string.IsNullOrEmpty(descricao)) Descricao = descricao;
+        if (quantidadeDisponivel.HasValue) QuantidadeDisponivel = quantidadeDisponivel.Value;
+        if (quantidadeMinima.HasValue) QuantidadeMinima = quantidadeMinima.Value;
+
+        if (preco.HasValue)
+        {
+            if (preco.Value <= 0) throw new EstoquePrecoInvalidoException();
+            Preco = preco.Value;
+        }
     }
 }

@@ -1,7 +1,7 @@
 using API.Models;
-using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Interfaces.Servicos;
+using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
 using Dominio.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -10,9 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class EstoqueController(IEstoqueServico estoqueService, ILogger<EstoqueController> logger, ICriarEstoqueUseCase criarEstoqueUseCase) : BaseApiController
+public class EstoqueController(IEstoqueServico estoqueService, ILogger<EstoqueController> logger, ICriarEstoqueUseCase criarEstoqueUseCase, IAtualizarEstoqueUseCase atualizarEstoqueUseCase) : BaseApiController
 {
     private readonly ICriarEstoqueUseCase _criarEstoqueUseCase = criarEstoqueUseCase;
+    private readonly IAtualizarEstoqueUseCase _atualizarEstoqueUseCase = atualizarEstoqueUseCase;
     private readonly IEstoqueServico _estoqueService = estoqueService;
     private readonly ILogger<EstoqueController> _logger = logger;
 
@@ -68,18 +69,38 @@ public class EstoqueController(IEstoqueServico estoqueService, ILogger<EstoqueCo
         }
     }
 
-    [HttpPut("{id:guid}")]
-    [ProducesResponseType(typeof(EstoqueResponse), StatusCodes.Status200OK)]
+    [HttpPatch("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarEstoqueRequest request)
+    public async Task<ActionResult<CriarEstoqueResponse>> AtualizarParcial(Guid id, [FromBody] AtualizarEstoqueRequest request)
     {
-        var resultadoValidacao = ValidarModelState();
-        if (resultadoValidacao != null) return resultadoValidacao;
+        try
+        {
+            _logger.LogInformation("Iniciando atualização parcial de estoque {@Request} para ID {Id}", request, id);
 
-        var estoqueAtualizado = await _estoqueService.AtualizarAsync(id, request);
-        return Ok(estoqueAtualizado);
+            var response = await _atualizarEstoqueUseCase.ExecuteAsync(id, request);
+
+            _logger.LogInformation("Estoque atualizado com sucesso {@Response}", response);
+
+            return Ok(response);
+        }
+        catch (DomainException ex)
+        {
+            _logger.LogWarning(ex, "Regra de negócio violada ao atualizar estoque ID {Id}", id);
+            return BadRequest(new ErrorResponse(400, ex.Message));
+        }
+        catch (PersistirDadosException ex)
+        {
+            _logger.LogError(ex, "Erro ao persistir dados ao atualizar estoque ID {Id}", id);
+            return StatusCode(500, new ErrorResponse(500, ex.Message));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro inesperado ao atualizar estoque ID {Id}", id);
+            return StatusCode(500, new ErrorResponse(500, "Erro interno no servidor"));
+        }
     }
 
     [HttpDelete("{id:guid}")]
