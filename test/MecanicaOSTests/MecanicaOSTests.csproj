@@ -27,7 +27,10 @@
   <ItemGroup>
     <None Include="API\Controllers\AutenticacaoControllerTests.cs">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AutenticacaoControllerTests.Context.cs</LastGenOutput>
+      <LastGenOutput>AutenticacaoControllerTests.cs</LastGenOutput>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AutenticacaoControllerTests.cs</DependentUpon>
     </None>
   </ItemGroup>
 
