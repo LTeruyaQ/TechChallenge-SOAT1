@@ -2,7 +2,7 @@ using Dominio.Entidades;
 using Dominio.Enumeradores;
 using Dominio.Especificacoes.Base;
 using Infraestrutura.Dados;
-using Infraestrutura.Repositorios;
+using Infraestrutura.Gateways;
 using MecanicaOSTests.Infraestrutura.Projecoes;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +15,7 @@ public class RepositorioTests : IDisposable
     private readonly SqliteConnection _connection;
     private readonly DbContextOptions<MecanicaContexto> _options;
     private readonly MecanicaContexto _contexto;
-    private readonly Repositorio<OrdemServico> _repositorio;
+    private readonly RepositorioGateway<OrdemServico> _repositorio;
 
     public RepositorioTests()
     {
@@ -30,7 +30,7 @@ public class RepositorioTests : IDisposable
         _contexto = new MecanicaContexto(_options);
         _contexto.Database.EnsureCreated();
 
-        _repositorio = new Repositorio<OrdemServico>(_contexto);
+        _repositorio = new RepositorioGateway<OrdemServico>(_contexto);
     }
 
     private async Task<Guid> CriarDadosTeste()

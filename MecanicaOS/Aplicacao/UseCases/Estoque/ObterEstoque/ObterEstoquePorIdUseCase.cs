@@ -1,28 +1,18 @@
-﻿using Aplicacao.Ports;
+﻿using Aplicacao.Interfaces.Gateways;
 using Dominio.Exceptions;
 
 namespace Aplicacao.UseCases.Estoque.ObterEstoque
 {
-    public class ObterEstoquePorIdUseCase(IEstoqueRepository repositorio) : IObterEstoquePorIdUseCase
+    public class ObterEstoquePorIdUseCase(IEstoqueGateway gateway) : IObterEstoquePorIdUseCase
     {
-        private readonly IEstoqueRepository repositorio = repositorio;
+        private readonly IEstoqueGateway gateway = gateway;
 
-        public async Task<EstoqueResponse> ExecuteAsync(Guid id)
+        public async Task<Dominio.Entidades.Estoque> ExecutarAsync(Guid id)
         {
-            var estoque = await repositorio.ObterPorIdAsync(id) 
+            var estoque = await gateway.ObterPorIdAsync(id) 
                 ?? throw new DadosNaoEncontradosException("Estoque não encontrado.");
 
-            return new EstoqueResponse
-            {
-                Id = estoque.Id,
-                Insumo = estoque.Insumo,
-                Descricao = estoque.Descricao,
-                Preco = estoque.Preco,
-                QuantidadeDisponivel = estoque.QuantidadeDisponivel,
-                QuantidadeMinima = estoque.QuantidadeMinima,
-                DataCadastro = estoque.DataCadastro,
-                DataAtualizacao = estoque.DataAtualizacao
-            };
+            return estoque;
         }
     }
 }

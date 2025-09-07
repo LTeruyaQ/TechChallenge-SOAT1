@@ -1,15 +1,15 @@
-﻿using Aplicacao.Ports;
+﻿using Aplicacao.Interfaces.Gateways;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 
 namespace Aplicacao.UseCases.Estoque.CriarEstoque
 {
-    public class CriarEstoqueUseCase(IEstoqueRepository repositorio, IUnidadeDeTrabalho udt) : ICriarEstoqueUseCase
+    public class CriarEstoqueUseCase(IEstoqueGateway gateway, IUnidadeDeTrabalho udt) : ICriarEstoqueUseCase
     {
-        private readonly IEstoqueRepository repositorio = repositorio;
+        private readonly IEstoqueGateway gateway = gateway;
         private readonly IUnidadeDeTrabalho udt = udt;
 
-        public async Task<EstoqueResponse> ExecuteAsync(CriarEstoqueRequest request)
+        public async Task<Dominio.Entidades.Estoque> ExecutarAsync(CriarEstoqueRequest request)
         {
             var estoque = new Dominio.Entidades.Estoque
             (
@@ -20,22 +20,12 @@ namespace Aplicacao.UseCases.Estoque.CriarEstoque
                 request.QuantidadeMinima
             );
 
-            await repositorio.CadastrarAsync(estoque);
+            await gateway.CadastrarAsync(estoque);
 
             if (!await udt.Commit())
                 throw new PersistirDadosException("Erro ao cadastrar estoque");
 
-            return new EstoqueResponse
-            {
-                Id = estoque.Id,
-                Insumo = estoque.Insumo,
-                Descricao = estoque.Descricao,
-                Preco = estoque.Preco,
-                QuantidadeDisponivel = estoque.QuantidadeDisponivel,
-                QuantidadeMinima = estoque.QuantidadeMinima,
-                DataCadastro = estoque.DataCadastro,
-                DataAtualizacao = estoque.DataAtualizacao
-            };
+            return estoque;
         }
     }
 }

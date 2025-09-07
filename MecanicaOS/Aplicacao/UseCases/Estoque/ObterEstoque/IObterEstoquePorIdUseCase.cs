@@ -2,6 +2,6 @@
 {
     public interface IObterEstoquePorIdUseCase
     {
-        Task<EstoqueResponse> ExecuteAsync(Guid id);
+        Task<Dominio.Entidades.Estoque> ExecutarAsync(Guid id);
     }
 }

@@ -3,7 +3,7 @@ using Dominio.Enumeradores;
 using Dominio.Especificacoes.Base;
 using Dominio.Especificacoes.OrdemServico;
 using Infraestrutura.Dados;
-using Infraestrutura.Repositorios;
+using Infraestrutura.Gateways;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -97,7 +97,7 @@ public class OrdemServicoRepositorioTests
         // Act
         using (var contexto = new MecanicaContexto(options))
         {
-            var repositorio = new Repositorio<OrdemServico>(contexto);
+            var repositorio = new RepositorioGateway<OrdemServico>(contexto);
             var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(osId);
 
             var resultado = await repositorio.ObterUmAsync(especificacao);
@@ -212,7 +212,7 @@ public class OrdemServicoRepositorioTests
         // Act
         using (var contexto = new MecanicaContexto(options))
         {
-            var repositorio = new Repositorio<OrdemServico>(contexto);
+            var repositorio = new RepositorioGateway<OrdemServico>(contexto);
 
             // Cria uma especificação que usa os múltiplos níveis de navegação
             var especificacao = new ObterOrdemServicoComMultiplosNiveisEspecificacao(osId);

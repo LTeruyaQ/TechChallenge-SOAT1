@@ -1,17 +1,17 @@
-﻿using Aplicacao.Ports;
+﻿using Aplicacao.Interfaces.Gateways;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 
 namespace Aplicacao.UseCases.Estoque.AtualizarEstoque
 {
-    public class AtualizarEstoqueUseCase(IEstoqueRepository repositorio, IUnidadeDeTrabalho udt) : IAtualizarEstoqueUseCase
+    public class AtualizarEstoqueUseCase(IEstoqueGateway gateway, IUnidadeDeTrabalho udt) : IAtualizarEstoqueUseCase
     {
-        private readonly IEstoqueRepository repositorio = repositorio;
+        private readonly IEstoqueGateway gateway = gateway;
         private readonly IUnidadeDeTrabalho udt = udt;
 
-        public async Task<EstoqueResponse> ExecuteAsync(Guid id, AtualizarEstoqueRequest request)
+        public async Task<Dominio.Entidades.Estoque> ExecutarAsync(Guid id, AtualizarEstoqueRequest request)
         {
-            var estoque = await repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Estoque não encontrado.");
+            var estoque = await gateway.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Estoque não encontrado.");
 
             estoque.Atualizar(
                 request.Insumo,
@@ -23,22 +23,12 @@ namespace Aplicacao.UseCases.Estoque.AtualizarEstoque
 
             estoque.DataAtualizacao = DateTime.UtcNow;
 
-            await repositorio.EditarAsync(estoque);
+            await gateway.EditarAsync(estoque);
 
             if (!await udt.Commit())
                 throw new PersistirDadosException("Erro ao atualizar estoque");
 
-            return new EstoqueResponse
-            {
-                Id = estoque.Id,
-                Insumo = estoque.Insumo,
-                Descricao = estoque.Descricao,
-                Preco = estoque.Preco,
-                QuantidadeDisponivel = estoque.QuantidadeDisponivel,
-                QuantidadeMinima = estoque.QuantidadeMinima,
-                DataCadastro = estoque.DataCadastro,
-                DataAtualizacao = estoque.DataAtualizacao
-            };
+            return estoque;
         }
     }
 }

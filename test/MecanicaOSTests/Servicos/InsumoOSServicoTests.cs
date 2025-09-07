@@ -70,7 +70,7 @@ namespace MecanicaOSTests.Servicos
             _ordemServicoServicoMock.Setup(s => s.ObterPorIdAsync(ordemServicoId)).ReturnsAsync(osResponse);
             _mapperMock.Setup(m => m.Map<OrdemServico>(osResponse)).Returns(new OrdemServico { Id = ordemServicoId });
             _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<InsumoOS>>())).ReturnsAsync(new List<InsumoOS>());
-            _obterEstoquePorIdUseCase.Setup(s => s.ExecuteAsync(requests[0].EstoqueId)).ReturnsAsync(new EstoqueResponse());
+            _obterEstoquePorIdUseCase.Setup(s => s.ExecutarAsync(requests[0].EstoqueId)).ReturnsAsync(new EstoqueResponse());
             _mapperMock.Setup(m => m.Map<Estoque>(It.IsAny<EstoqueResponse>())).Returns(estoque);
             _udtMock.Setup(u => u.Commit()).ReturnsAsync(true);
             _mapperMock.Setup(m => m.Map<InsumoOS>(It.IsAny<CadastrarInsumoOSRequest>())).Returns(new InsumoOS { EstoqueId = requests[0].EstoqueId, Quantidade = 1 });
@@ -130,7 +130,7 @@ namespace MecanicaOSTests.Servicos
             _ordemServicoServicoMock.Setup(s => s.ObterPorIdAsync(ordemServicoId)).ReturnsAsync(osResponse);
             _mapperMock.Setup(m => m.Map<OrdemServico>(osResponse)).Returns(new OrdemServico { Id = ordemServicoId });
             _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<InsumoOS>>())).ReturnsAsync(new List<InsumoOS>());
-            _obterEstoquePorIdUseCase.Setup(s => s.ExecuteAsync(requests[0].EstoqueId)).ReturnsAsync(new EstoqueResponse());
+            _obterEstoquePorIdUseCase.Setup(s => s.ExecutarAsync(requests[0].EstoqueId)).ReturnsAsync(new EstoqueResponse());
             _mapperMock.Setup(m => m.Map<Estoque>(It.IsAny<EstoqueResponse>())).Returns(estoque);
             _mapperMock.Setup(m => m.Map<InsumoOS>(It.IsAny<CadastrarInsumoOSRequest>())).Returns(new InsumoOS { EstoqueId = requests[0].EstoqueId, Quantidade = 10 });
 
@@ -152,7 +152,7 @@ namespace MecanicaOSTests.Servicos
             await _insumoOSServico.DevolverInsumosAoEstoqueAsync(insumos);
 
             // Assert
-            _atualizarEstoqueUseCase.Verify(s => s.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<AtualizarEstoqueRequest>()), Times.Once);
+            _atualizarEstoqueUseCase.Verify(s => s.ExecutarAsync(It.IsAny<Guid>(), It.IsAny<AtualizarEstoqueRequest>()), Times.Once);
             insumos[0].Estoque.QuantidadeDisponivel.Should().Be(10);
         }
     }

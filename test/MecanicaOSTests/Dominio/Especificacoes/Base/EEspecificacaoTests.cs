@@ -2,7 +2,7 @@ using Dominio.Entidades;
 using Dominio.Enumeradores;
 using Dominio.Especificacoes.Base;
 using Infraestrutura.Dados;
-using Infraestrutura.Repositorios;
+using Infraestrutura.Gateways;
 using MecanicaOSTests.Fixtures;
 using System.Linq.Expressions;
 
@@ -108,7 +108,7 @@ public class EEspecificacaoTests
     public async Task Dado_DuasEspecificacoes_Quando_CombinadasComEEspecificacao_Entao_DeveRetornarApenasRegistrosQueAtendemAmbas()
     {
         // Arrange
-        var repositorio = new Repositorio<global::Dominio.Entidades.OrdemServico>(_context);
+        var repositorio = new RepositorioGateway<global::Dominio.Entidades.OrdemServico>(_context);
 
         // Criar especificações individuais
         var especAprovado = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Status == StatusOrdemServico.EmExecucao);
@@ -133,7 +133,7 @@ public class EEspecificacaoTests
     public async Task Dado_EspecificacaoComInclusoes_Quando_CombinadaComEEspecificacao_Entao_DeveManterTodasAsInclusoes()
     {
         // Arrange
-        var repositorio = new Repositorio<global::Dominio.Entidades.OrdemServico>(_context);
+        var repositorio = new RepositorioGateway<global::Dominio.Entidades.OrdemServico>(_context);
 
         // Criar especificações com inclusões
         var especComServico = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Status == StatusOrdemServico.EmExecucao);
@@ -163,7 +163,7 @@ public class EEspecificacaoTests
     public async Task Dado_EspecificacaoComInclusaoDeColecao_Quando_CombinadaComEEspecificacao_Entao_DeveCarregarAColecao()
     {
         // Arrange
-        var repositorio = new Repositorio<global::Dominio.Entidades.OrdemServico>(_context);
+        var repositorio = new RepositorioGateway<global::Dominio.Entidades.OrdemServico>(_context);
 
         // Criar especificações
         var especComInsumos = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.InsumosOS.Any());
@@ -192,7 +192,7 @@ public class EEspecificacaoTests
     public async Task Dado_EspecificacaoCombinada_Quando_UsadaComRepositorio_Entao_DeveAplicarTodasAsCondicoes()
     {
         // Arrange
-        var repositorio = new Repositorio<global::Dominio.Entidades.OrdemServico>(_context);
+        var repositorio = new RepositorioGateway<global::Dominio.Entidades.OrdemServico>(_context);
 
         // Criar especificações
         var especStatus = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(
@@ -280,7 +280,7 @@ public class EEspecificacaoTests
     public async Task Dado_EspecificacaoCombinadaComTresCondicoes_Quando_UsadaComRepositorio_Entao_DeveAplicarTodasAsCondicoes()
     {
         // Arrange
-        var repositorio = new Repositorio<global::Dominio.Entidades.OrdemServico>(_context);
+        var repositorio = new RepositorioGateway<global::Dominio.Entidades.OrdemServico>(_context);
 
         // Criar especificações
         var espec1 = new EspecificacaoSimples<global::Dominio.Entidades.OrdemServico>(os => os.Orcamento > 100m);

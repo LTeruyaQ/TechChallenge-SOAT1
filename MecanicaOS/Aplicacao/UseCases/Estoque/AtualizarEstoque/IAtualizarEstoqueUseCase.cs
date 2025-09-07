@@ -2,6 +2,6 @@
 {
     public interface IAtualizarEstoqueUseCase
     {
-        Task<EstoqueResponse> ExecuteAsync(Guid id, AtualizarEstoqueRequest request);
+        Task<Dominio.Entidades.Estoque> ExecutarAsync(Guid id, AtualizarEstoqueRequest request);
     }
 }

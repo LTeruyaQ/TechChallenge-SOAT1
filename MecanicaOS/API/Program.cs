@@ -18,9 +18,9 @@ using Infraestrutura.Autenticacao;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.Extensions;
 using Infraestrutura.Dados.UoT;
+using Infraestrutura.Gateways;
 using Infraestrutura.Logs;
 using Infraestrutura.Repositories;
-using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -191,7 +191,7 @@ builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 
 // Repositórios
-builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
+builder.Services.AddScoped(typeof(IRepositorio<>), typeof(RepositorioGateway<>));
 
 builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
@@ -277,7 +277,7 @@ var options = new DbContextOptionsBuilder<MecanicaContexto>()
 var dbContext = new MecanicaContexto(options);
 
 // Repositório e UoW
-var estoqueRepo = new EstoqueRepositorio(dbContext);
+var estoqueRepo = new EstoqueGateway(dbContext);
 var udt = new UnidadeDeTrabalho(dbContext);
 
 // UseCase
@@ -292,7 +292,7 @@ app.MapPost("/Estoque", async (CriarEstoqueRequest request) =>
 {
     try
     {
-        var response = await criarEstoqueUseCase.ExecuteAsync(request);
+        var response = await criarEstoqueUseCase.ExecutarAsync(request);
         estoqueLogger.LogInformation("Estoque criado com sucesso {@Response}", response);
         return Results.Created($"/Estoque/{response.Id}", response);
     }
@@ -320,7 +320,7 @@ app.MapGet("/Estoque/{id:guid}", async (Guid id) =>
 {
     try
     {
-        var response = await obterEstoquePorIdUseCase.ExecuteAsync(id);
+        var response = await obterEstoquePorIdUseCase.ExecutarAsync(id);
 
         estoqueLogger.LogInformation("Estoque consultado com sucesso {@Response}", response);
 
@@ -342,7 +342,7 @@ app.MapGet("/Estoque", async () =>
 {
     try
     {
-        var response = await listarEstoqueUseCase.ExecuteAsync();
+        var response = await listarEstoqueUseCase.ExecutarAsync();
 
         estoqueLogger.LogInformation("Estoques consultados com sucesso {@Response}", response);
 
@@ -359,7 +359,7 @@ app.MapPatch("/Estoque/{id:guid}", async (Guid id, AtualizarEstoqueRequest reque
 {
     try
     {
-        var response = await atualizarEstoqueUseCase.ExecuteAsync(id, request);
+        var response = await atualizarEstoqueUseCase.ExecutarAsync(id, request);
 
         estoqueLogger.LogInformation("Estoque atualizado com sucesso {@Response}", response);
 
@@ -386,7 +386,7 @@ app.MapDelete("/Estoque/{id:guid}", async (Guid id) =>
 {
     try
     {
-        var response = await deletarEstoqueUseCase.ExecuteAsync(id);
+        var response = await deletarEstoqueUseCase.ExecutarAsync(id);
         estoqueLogger.LogInformation("Estoque apagado com sucesso");
         return Results.NoContent();
 

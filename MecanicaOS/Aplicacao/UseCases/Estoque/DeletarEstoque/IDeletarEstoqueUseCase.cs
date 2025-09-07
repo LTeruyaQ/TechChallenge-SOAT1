@@ -2,6 +2,6 @@
 {
     public interface IDeletarEstoqueUseCase
     {
-        Task<bool> ExecuteAsync(Guid id);
+        Task<bool> ExecutarAsync(Guid id);
     }
 }

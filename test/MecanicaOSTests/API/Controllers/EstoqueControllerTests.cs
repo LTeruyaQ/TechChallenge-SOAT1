@@ -77,7 +77,7 @@ namespace MecanicaOSTests.API.Controllers
             // Arrange
             var estoqueId = Guid.NewGuid();
             var estoqueResponseDto = new EstoqueResponse { Id = estoqueId };
-            _obterEstoquePorIdUseCaseMock.Setup(s => s.ExecuteAsync(estoqueId)).ReturnsAsync(estoqueResponseDto);
+            _obterEstoquePorIdUseCaseMock.Setup(s => s.ExecutarAsync(estoqueId)).ReturnsAsync(estoqueResponseDto);
 
             // Act
             var resultado = await _controller.ObterPorId(estoqueId);
@@ -94,7 +94,7 @@ namespace MecanicaOSTests.API.Controllers
             // Arrange
             var cadastrarEstoqueDto = EstoqueFixture.CriarCadastrarEstoqueRequestValido();
             var estoqueResponseDto = new EstoqueResponse { Id = Guid.NewGuid() };
-            _criarEstoqueUseCaseMock.Setup(s => s.ExecuteAsync(cadastrarEstoqueDto)).ReturnsAsync(estoqueResponseDto);
+            _criarEstoqueUseCaseMock.Setup(s => s.ExecutarAsync(cadastrarEstoqueDto)).ReturnsAsync(estoqueResponseDto);
 
             // Act
             var resultado = await _controller.Criar(cadastrarEstoqueDto);
@@ -112,7 +112,7 @@ namespace MecanicaOSTests.API.Controllers
             var estoqueId = Guid.NewGuid();
             var atualizarEstoqueDto = EstoqueFixture.CriarAtualizarEstoqueRequestValido();
             var estoqueResponseDto = new EstoqueResponse { Id = estoqueId };
-            _atualizarEstoqueUseCaseMock.Setup(s => s.ExecuteAsync(estoqueId, atualizarEstoqueDto)).ReturnsAsync(estoqueResponseDto);
+            _atualizarEstoqueUseCaseMock.Setup(s => s.ExecutarAsync(estoqueId, atualizarEstoqueDto)).ReturnsAsync(estoqueResponseDto);
 
             // Act
             var resultado = await _controller.Atualizar(estoqueId, atualizarEstoqueDto);
@@ -127,7 +127,7 @@ namespace MecanicaOSTests.API.Controllers
         {
             // Arrange
             var estoqueId = Guid.NewGuid();
-            _deletarEstoqueUseCaseMock.Setup(s => s.ExecuteAsync(estoqueId)).ReturnsAsync(true);
+            _deletarEstoqueUseCaseMock.Setup(s => s.ExecutarAsync(estoqueId)).ReturnsAsync(true);
 
             // Act
             var resultado = await _controller.Remover(estoqueId);
@@ -141,7 +141,7 @@ namespace MecanicaOSTests.API.Controllers
         {
             // Arrange
             var estoques = new List<EstoqueResponse> { new EstoqueResponse() };
-            _listarEstoqueUseCase.Setup(s => s.ExecuteAsync()).ReturnsAsync(estoques);
+            _listarEstoqueUseCase.Setup(s => s.ExecutarAsync()).ReturnsAsync(estoques);
 
             // Act
             var resultado = await _controller.ObterTodos();

@@ -2,6 +2,6 @@
 {
     public interface IListarEstoqueUseCase
     {
-        Task<List<EstoqueResponse>> ExecuteAsync();
+        Task<IEnumerable<Dominio.Entidades.Estoque>> ExecutarAsync();
     }
 }

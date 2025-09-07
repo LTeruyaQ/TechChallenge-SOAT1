@@ -1,19 +1,19 @@
-﻿using Aplicacao.Ports;
+﻿using Aplicacao.Interfaces.Gateways;
 using Dominio.Exceptions;
 using Dominio.Interfaces.Repositorios;
 
 namespace Aplicacao.UseCases.Estoque.DeletarEstoque
 {
-    public class DeletarEstoqueUseCase(IEstoqueRepository repositorio, IUnidadeDeTrabalho udt) : IDeletarEstoqueUseCase
+    public class DeletarEstoqueUseCase(IEstoqueGateway gateway, IUnidadeDeTrabalho udt) : IDeletarEstoqueUseCase
     {
-        private readonly IEstoqueRepository repositorio = repositorio;
+        private readonly IEstoqueGateway gateway = gateway;
         private readonly IUnidadeDeTrabalho udt = udt;
 
-        public async Task<bool> ExecuteAsync(Guid id)
+        public async Task<bool> ExecutarAsync(Guid id)
         {
-            var estoque = await repositorio.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Estoque não encontrado.");
+            var estoque = await gateway.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Estoque não encontrado.");
 
-            await repositorio.DeletarAsync(estoque);
+            await gateway.DeletarAsync(estoque);
 
             return await udt.Commit();
         }

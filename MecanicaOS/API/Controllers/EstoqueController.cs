@@ -1,5 +1,5 @@
 using API.Models;
-using Aplicacao.Interfaces.Servicos;
+using API.Presenters;
 using Aplicacao.UseCases.Estoque;
 using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
@@ -29,7 +29,7 @@ public class EstoqueController(
     private readonly ILogger<EstoqueController> _logger = logger;
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<EstoqueResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<EstoqueResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterTodos()
     {
@@ -37,11 +37,12 @@ public class EstoqueController(
         {
             _logger.LogInformation("Iniciando consulta de estoques");
 
-            var estoques = await listarEstoqueUseCase.ExecuteAsync();
+            var estoques = await listarEstoqueUseCase.ExecutarAsync();
+            var response = EstoquePresenter.ParaIEnumerableResponse(estoques);
 
             _logger.LogInformation("Estoques consultados com sucesso");
 
-            return Ok(estoques);
+            return Ok(response);
         }
         catch (Exception ex)
         {
@@ -60,7 +61,8 @@ public class EstoqueController(
         {
             _logger.LogInformation("Iniciando consulta de estoque {@Id}", id);
 
-            var estoque = await obterEstoquePorIdUseCase.ExecuteAsync(id);
+            var estoque = await obterEstoquePorIdUseCase.ExecutarAsync(id);
+            var response = EstoquePresenter.ParaResponse(estoque);
 
             _logger.LogInformation("Estoque consultado com sucesso {@Id}", id);
 
@@ -88,7 +90,8 @@ public class EstoqueController(
         {
             _logger.LogInformation("Iniciando criação de estoque {@Request}", request);
 
-            var response = await criarEstoqueUseCase.ExecuteAsync(request);
+            var estoque = await criarEstoqueUseCase.ExecutarAsync(request);
+            var response = EstoquePresenter.ParaResponse(estoque);
 
             _logger.LogInformation("Estoque criado com sucesso {@Response}", response);
 
@@ -122,7 +125,8 @@ public class EstoqueController(
         {
             _logger.LogInformation("Iniciando atualização parcial de estoque {@Request} para ID {Id}", request, id);
 
-            var response = await atualizarEstoqueUseCase.ExecuteAsync(id, request);
+            var estoque = await atualizarEstoqueUseCase.ExecutarAsync(id, request);
+            var response = EstoquePresenter.ParaResponse(estoque);
 
             _logger.LogInformation("Estoque atualizado com sucesso {@Response}", response);
 
@@ -155,7 +159,7 @@ public class EstoqueController(
         {
             _logger.LogInformation("Iniciando exclusão de estoque {@Id}", id);
 
-            var sucesso = await deletarEstoqueUseCase.ExecuteAsync(id);
+            var sucesso = await deletarEstoqueUseCase.ExecutarAsync(id);
 
             if (!sucesso)
             {

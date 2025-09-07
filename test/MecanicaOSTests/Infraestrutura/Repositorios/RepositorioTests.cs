@@ -1,12 +1,9 @@
 using Dominio.Entidades;
 using Dominio.Especificacoes.Base;
 using Infraestrutura.Dados;
-using Infraestrutura.Repositorios;
+using Infraestrutura.Gateways;
 using MecanicaOSTests.Fixtures;
-using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOSTests.Infraestrutura.Repositorios
 {
@@ -26,7 +23,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task CadastrarAsync_DeveAdicionarEntidadeAoContexto()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "Teste", Documento = "12345678901", DataNascimento = "1990-01-01" };
 
             // Act
@@ -43,7 +40,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task DeletarAsync_DeveRemoverEntidadeDoContexto()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "Teste", Documento = "12345678901", DataNascimento = "1990-01-01" };
             await repositorio.CadastrarAsync(cliente);
             await _context.SaveChangesAsync();
@@ -61,7 +58,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task CadastrarVariosAsync_DeveAdicionarVariasEntidadesAoContexto()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var clientes = new List<Cliente>
             {
                 new Cliente { Nome = "Teste 1", Documento = "11111111111", DataNascimento = "1990-01-01" },
@@ -80,7 +77,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task DeletarVariosAsync_DeveRemoverVariasEntidadesDoContexto()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var clientes = new List<Cliente>
             {
                 new Cliente { Nome = "Teste 1", Documento = "11111111111", DataNascimento = "1990-01-01" },
@@ -101,7 +98,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task DeletarLogicamenteAsync_DeveMarcarEntidadeComoInativa()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "Teste", Documento = "12345678901", DataNascimento = "1990-01-01" };
             await repositorio.CadastrarAsync(cliente);
             await _context.SaveChangesAsync();
@@ -120,7 +117,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task EditarAsync_DeveAtualizarEntidadeNoContexto()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "Teste", Documento = "12345678901", DataNascimento = "1990-01-01" };
             await repositorio.CadastrarAsync(cliente);
             await _context.SaveChangesAsync();
@@ -140,7 +137,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task ObterPorIdAsync_DeveRetornarEntidadeCorreta()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "Teste", Documento = "12345678901", DataNascimento = "1990-01-01" };
             await repositorio.CadastrarAsync(cliente);
             await _context.SaveChangesAsync();
@@ -157,7 +154,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task ObterTodosAsync_DeveRetornarTodasEntidades()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var clientes = new List<Cliente>
             {
                 new Cliente { Nome = "Teste 1", Documento = "11111111111", DataNascimento = "1990-01-01" },
@@ -177,7 +174,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task EditarVariosAsync_DeveAtualizarVariasEntidades()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var clientes = new List<Cliente>
             {
                 new Cliente { Nome = "Teste 1", Documento = "11111111111", DataNascimento = "1990-01-01" },
@@ -203,7 +200,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task CadastrarVariosAsync_ComListaNulaOuVazia_DeveRetornarEnumerableVazio()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
 
             // Act
             var resultadoNulo = await repositorio.CadastrarVariosAsync(null);
@@ -230,7 +227,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task ListarAsync_ComEspecificacao_DeveRetornarEntidadesFiltradas()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var clientes = new List<Cliente>
             {
                 new Cliente { Nome = "Filtro", Documento = "111", DataNascimento = "1990-01-01" },
@@ -253,7 +250,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task ObterUmAsync_ComEspecificacao_DeveRetornarEntidadeUnica()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "Unico", Documento = "444", DataNascimento = "1990-01-01" };
             await repositorio.CadastrarAsync(cliente);
             await _context.SaveChangesAsync();
@@ -271,7 +268,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task ListarSemRastreamentoAsync_DeveRetornarEntidadesNaoRastreadas()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "NaoRastreado", Documento = "555", DataNascimento = "1990-01-01" };
             await repositorio.CadastrarAsync(cliente);
             await _context.SaveChangesAsync();
@@ -292,7 +289,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task ObterUmSemRastreamentoAsync_DeveRetornarEntidadeNaoRastreada()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "UnicoNaoRastreado", Documento = "666", DataNascimento = "1990-01-01" };
             await repositorio.CadastrarAsync(cliente);
             await _context.SaveChangesAsync();
@@ -330,7 +327,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task ListarProjetadoAsync_DeveRetornarDtoCorretamente()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "Projecao", Documento = "777", DataNascimento = "1990-01-01" };
             await repositorio.CadastrarAsync(cliente);
             await _context.SaveChangesAsync();
@@ -348,7 +345,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task ObterUmProjetadoAsync_DeveRetornarDtoUnico()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "ProjecaoUnica", Documento = "888", DataNascimento = "1990-01-01" };
             await repositorio.CadastrarAsync(cliente);
             await _context.SaveChangesAsync();
@@ -366,7 +363,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task ListarProjetadoSemRastreamentoAsync_DeveRetornarDtoCorretamente()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "ProjecaoSemRastreio", Documento = "999", DataNascimento = "1990-01-01" };
             await repositorio.CadastrarAsync(cliente);
             await _context.SaveChangesAsync();
@@ -384,7 +381,7 @@ namespace MecanicaOSTests.Infraestrutura.Repositorios
         public async Task ObterUmProjetadoSemRastreamentoAsync_DeveRetornarDtoUnico()
         {
             // Arrange
-            var repositorio = new Repositorio<Cliente>(_context);
+            var repositorio = new RepositorioGateway<Cliente>(_context);
             var cliente = new Cliente { Nome = "ProjecaoUnicaSemRastreio", Documento = "101010", DataNascimento = "1990-01-01" };
             await repositorio.CadastrarAsync(cliente);
             await _context.SaveChangesAsync();
