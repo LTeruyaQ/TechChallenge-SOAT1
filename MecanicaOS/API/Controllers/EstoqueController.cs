@@ -68,7 +68,7 @@ public class EstoqueController(
 
             _logger.LogInformation("Estoque consultado com sucesso {@Id}", id);
 
-            return Ok(estoque);
+            return Ok(response);
         }
         catch (DadosNaoEncontradosException ex)
         {
@@ -137,6 +137,11 @@ public class EstoqueController(
             _logger.LogInformation("Estoque atualizado com sucesso {@Response}", response);
 
             return Ok(response);
+        }
+        catch (DadosNaoEncontradosException ex)
+        {
+            _logger.LogWarning(ex, "Estoque não encontrado {@Id}", id);
+            return NotFound(new ErrorResponse(404, ex.Message));
         }
         catch (DomainException ex)
         {

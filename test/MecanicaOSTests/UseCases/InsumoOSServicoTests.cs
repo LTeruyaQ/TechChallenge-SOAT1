@@ -49,7 +49,9 @@ namespace MecanicaOSTests.Servicos
                 _logServicoMock.Object,
                 _udtMock.Object,
                 _mapperMock.Object,
-                _usuarioLogadoServicoMock.Object
+                _usuarioLogadoServicoMock.Object,
+                _obterEstoquePorIdUseCase.Object,
+                _atualizarEstoqueUseCase.Object
             );
         }
 
@@ -58,17 +60,17 @@ namespace MecanicaOSTests.Servicos
         {
             // Arrange
             var ordemServicoId = Guid.NewGuid();
-            var requests = new List<CadastrarInsumoOSRequest> { new CadastrarInsumoOSRequest { EstoqueId = Guid.NewGuid(), Quantidade = 1 } };
+            var estoque = new Estoque("Óleo Motor", "Óleo sintético 5W30", (decimal)45.90, 10000, 10);
+            var requests = new List<CadastrarInsumoOSRequest> { new CadastrarInsumoOSRequest { EstoqueId = estoque.Id, Quantidade = 1 } };
             var osResponse = new OrdemServicoResponse { Id = ordemServicoId };
-            var estoque = new Estoque("Óleo Motor", "Óleo sintético 5W30", (decimal)45.90, 10, 10);
 
             _ordemServicoServicoMock.Setup(s => s.ObterPorIdAsync(ordemServicoId)).ReturnsAsync(osResponse);
             _mapperMock.Setup(m => m.Map<OrdemServico>(osResponse)).Returns(new OrdemServico { Id = ordemServicoId });
             _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<global::Dominio.Especificacoes.Base.Interfaces.IEspecificacao<InsumoOS>>())).ReturnsAsync(new List<InsumoOS>());
-            _obterEstoquePorIdUseCase.Setup(s => s.ExecutarAsync(requests[0].EstoqueId)).ReturnsAsync(new Estoque());
-            _mapperMock.Setup(m => m.Map<Estoque>(It.IsAny<EstoqueResponse>())).Returns(estoque);
+            _obterEstoquePorIdUseCase.Setup(s => s.ExecutarAsync(requests[0].EstoqueId)).ReturnsAsync(estoque);
+            _mapperMock.Setup(m => m.Map<Estoque>(It.IsAny<Estoque>())).Returns(estoque);
             _udtMock.Setup(u => u.Commit()).ReturnsAsync(true);
-            _mapperMock.Setup(m => m.Map<InsumoOS>(It.IsAny<CadastrarInsumoOSRequest>())).Returns(new InsumoOS { EstoqueId = requests[0].EstoqueId, Quantidade = 1 });
+            _mapperMock.Setup(m => m.Map<InsumoOS>(It.IsAny<CadastrarInsumoOSRequest>())).Returns(new InsumoOS { EstoqueId = requests[0].EstoqueId, Estoque = estoque, Quantidade = 1 });
             _repositorioMock.Setup(r => r.CadastrarVariosAsync(It.IsAny<IEnumerable<InsumoOS>>())).ReturnsAsync((IEnumerable<InsumoOS> insumos) => insumos.ToList());
             _mapperMock.Setup(m => m.Map<List<InsumoOSResponse>>(It.IsAny<List<InsumoOS>>())).Returns(new List<InsumoOSResponse> { new InsumoOSResponse() });
 

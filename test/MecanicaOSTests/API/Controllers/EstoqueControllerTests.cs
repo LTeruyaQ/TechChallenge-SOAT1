@@ -93,17 +93,16 @@ namespace MecanicaOSTests.API.Controllers
         public async Task ObterPorId_QuandoEncontrado_DeveRetornarOkComEstoque()
         {
             // Arrange
-            var id = Guid.NewGuid();
             var estoque = new Estoque("InsumoTeste", "DescTeste", 10m, 5, 2);
-            _mockObterEstoquePorIdUseCase.Setup(uc => uc.ExecutarAsync(id)).ReturnsAsync(estoque);
+            _mockObterEstoquePorIdUseCase.Setup(uc => uc.ExecutarAsync(estoque.Id)).ReturnsAsync(estoque);
 
             // Act
-            var result = await _controller.ObterPorId(id);
+            var result = await _controller.ObterPorId(estoque.Id);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             var returnedEstoque = Assert.IsType<EstoqueResponse>(okResult.Value);
-            Assert.Equal(id, returnedEstoque.Id);
+            Assert.Equal(estoque.Id, returnedEstoque.Id);
         }
 
         [Fact]

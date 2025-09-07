@@ -4,6 +4,8 @@ using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Aplicacao.Interfaces.Servicos;
 using Aplicacao.Jobs;
 using Aplicacao.Servicos.Abstrato;
+using Aplicacao.UseCases.Estoque.AtualizarEstoque;
+using Aplicacao.UseCases.Estoque.ObterEstoque;
 using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Enumeradores;
@@ -21,9 +23,15 @@ public class InsumoOSServico(
     ILogServico<InsumoOSServico> logServico,
     IUnidadeDeTrabalho udt,
     IMapper mapper,
-    IUsuarioLogadoServico usuarioLogadoServico) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, udt, mapper, usuarioLogadoServico), IInsumoOSServico
+    IUsuarioLogadoServico usuarioLogadoServico,
+    IObterEstoquePorIdUseCase obterEstoquePorIdUse,
+    IAtualizarEstoqueUseCase atualizarEstoqueUseCase) : ServicoAbstrato<InsumoOSServico, InsumoOS>(repositorio, logServico, udt, mapper, usuarioLogadoServico), IInsumoOSServico
 {
     private readonly IOrdemServicoServico _oSServico = oSServico;
+
+    private readonly IObterEstoquePorIdUseCase obterEstoquePorIdUse = obterEstoquePorIdUse;
+
+    private readonly IAtualizarEstoqueUseCase atualizarEstoqueUseCase = atualizarEstoqueUseCase;
 
     private readonly VerificarEstoqueJob _verificarEstoqueJob = verificarEstoqueJob;
 
@@ -89,7 +97,9 @@ public class InsumoOSServico(
                 continue;
             }
 
-            //estoque.QuantidadeDisponivel -= insumo.Quantidade;
+            int qtdDisponivel = estoque.QuantidadeDisponivel - insumo.Quantidade;
+
+            insumo.Estoque.Atualizar(null, null, null, qtdDisponivel, null);
 
             await AtualizarEstoqueAsync(estoque);
         }
@@ -119,10 +129,7 @@ public class InsumoOSServico(
 
     private async Task<Estoque> ObterEstoqueOuLancarErroAsync(Guid estoqueId)
     {
-        //TODO: adaptar para o clean
-        //return _mapper.Map<Estoque>(await _estoqueServico.ObterPorIdAsync(estoqueId))
-        //    ?? throw new DadosNaoEncontradosException("Insumo não encontrado no estoque.");
-        throw new NotImplementedException();
+        return await obterEstoquePorIdUse.ExecutarAsync(estoqueId);
     }
 
     private static bool TemEstoqueSuficiente(Estoque estoque, int quantidadeSolicitada)
@@ -133,9 +140,7 @@ public class InsumoOSServico(
     private async Task AtualizarEstoqueAsync(Estoque estoque)
     {
         //TODO: adaptar para o clean
-        //await _estoqueServico.AtualizarAsync(
-        //    estoque.Id,
-        //    _mapper.Map<AtualizarEstoqueRequest>(estoque));
+        await atualizarEstoqueUseCase.ExecutarAsync(estoque);
     }
 
     private async Task AtualizarStatusOrdemServicoAsync(OrdemServico ordemServico)
@@ -159,11 +164,11 @@ public class InsumoOSServico(
             {
                 //TODO: ajustar para o clean
 
-                //insumo.Estoque.QuantidadeDisponivel += insumo.Quantidade;
+                int qtdDisponivel = insumo.Estoque.QuantidadeDisponivel + insumo.Quantidade;
 
-                //await _estoqueServico.AtualizarAsync(
-                //    insumo.EstoqueId,
-                //    _mapper.Map<AtualizarEstoqueRequest>(insumo.Estoque));
+                insumo.Estoque.Atualizar(null, null, null, qtdDisponivel, null);
+
+                await atualizarEstoqueUseCase.ExecutarAsync(insumo.Estoque);
             }
 
             LogFim(metodo);
