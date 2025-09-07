@@ -1,4 +1,4 @@
-using Aplicacao.DTOs.Requests.Estoque;
+using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
 using Dominio.Entidades;
 

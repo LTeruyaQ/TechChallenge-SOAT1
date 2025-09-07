@@ -1,8 +1,9 @@
 using API.Controllers;
-using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Interfaces.Servicos;
+using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
+using Aplicacao.UseCases.Estoque.DeletarEstoque;
 using MecanicaOSTests.Fixtures;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -45,6 +46,8 @@ namespace MecanicaOSTests.API.Controllers
         private readonly Mock<IEstoqueServico> _estoqueServicoMock;
         private readonly Mock<ILogger<EstoqueController>> _iLoggerServicoMock;
         private readonly Mock<ICriarEstoqueUseCase> _criarEstoqueUseCaseMock;
+        private readonly Mock<IAtualizarEstoqueUseCase> _atualizarEstoqueUseCaseMock;
+        private readonly Mock<IDeletarEstoqueUseCase> _deletarEstoqueUseCaseMock;
         private readonly EstoqueController _controller;
 
         public EstoqueControllerTests()
@@ -52,7 +55,15 @@ namespace MecanicaOSTests.API.Controllers
             _estoqueServicoMock = new Mock<IEstoqueServico>();
             _iLoggerServicoMock = new Mock<ILogger<EstoqueController>>();
             _criarEstoqueUseCaseMock = new Mock<ICriarEstoqueUseCase>();
-            _controller = new EstoqueController(_estoqueServicoMock.Object, _iLoggerServicoMock.Object);
+            _atualizarEstoqueUseCaseMock = new Mock<IAtualizarEstoqueUseCase>();
+            _deletarEstoqueUseCaseMock = new Mock<IDeletarEstoqueUseCase>();
+
+            _controller = new EstoqueController(
+                _estoqueServicoMock.Object,
+                _iLoggerServicoMock.Object,
+                _criarEstoqueUseCaseMock.Object,
+                _atualizarEstoqueUseCaseMock.Object,
+                _deletarEstoqueUseCaseMock.Object);
         }
 
         [Fact]
@@ -95,8 +106,8 @@ namespace MecanicaOSTests.API.Controllers
             // Arrange
             var estoqueId = Guid.NewGuid();
             var atualizarEstoqueDto = EstoqueFixture.CriarAtualizarEstoqueRequestValido();
-            var estoqueResponseDto = new EstoqueResponse { Id = estoqueId };
-            _estoqueServicoMock.Setup(s => s.AtualizarAsync(estoqueId, atualizarEstoqueDto)).ReturnsAsync(estoqueResponseDto);
+            var estoqueResponseDto = new AtualizarEstoqueResponse { Id = estoqueId };
+            _atualizarEstoqueUseCaseMock.Setup(s => s.ExecuteAsync(estoqueId, atualizarEstoqueDto)).ReturnsAsync(estoqueResponseDto);
 
             // Act
             var resultado = await _controller.Atualizar(estoqueId, atualizarEstoqueDto);
@@ -111,7 +122,7 @@ namespace MecanicaOSTests.API.Controllers
         {
             // Arrange
             var estoqueId = Guid.NewGuid();
-            _estoqueServicoMock.Setup(s => s.DeletarAsync(estoqueId)).ReturnsAsync(true);
+            _deletarEstoqueUseCaseMock.Setup(s => s.ExecuteAsync(estoqueId)).ReturnsAsync(true);
 
             // Act
             var resultado = await _controller.Remover(estoqueId);

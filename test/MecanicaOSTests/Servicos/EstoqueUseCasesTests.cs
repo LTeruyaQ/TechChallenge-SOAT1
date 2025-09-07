@@ -1,8 +1,9 @@
-using Aplicacao.DTOs.Requests.Estoque;
 using Aplicacao.DTOs.Responses.Estoque;
 using Aplicacao.Ports;
 using Aplicacao.Servicos;
+using Aplicacao.UseCases.Estoque.AtualizarEstoque;
 using Aplicacao.UseCases.Estoque.CriarEstoque;
+using Aplicacao.UseCases.Estoque.DeletarEstoque;
 using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Exceptions;
@@ -10,7 +11,7 @@ using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
 using Moq;
 
-public class EstoqueServicoTests
+public class EstoqueUseCasesTests
 {
     private readonly Mock<IRepositorio<Estoque>> _repositorioMock;
     private readonly Mock<IEstoqueRepository> _estoqueRepository;
@@ -20,8 +21,10 @@ public class EstoqueServicoTests
     private readonly Mock<IUsuarioLogadoServico> _usuarioLogadoServico = new();
     private readonly EstoqueServico _estoqueServico;
     private readonly CriarEstoqueUseCase _criarEstoqueUseCase;
+    private readonly AtualizarEstoqueUseCase _atualizarEstoqueUseCase;
+    private readonly DeletarEstoqueUseCase _deletarEstoqueUse;
 
-    public EstoqueServicoTests()
+    public EstoqueUseCasesTests()
     {
         _repositorioMock = new Mock<IRepositorio<Estoque>>();
         _estoqueRepository = new Mock<IEstoqueRepository>();
@@ -38,6 +41,16 @@ public class EstoqueServicoTests
         );
 
         _criarEstoqueUseCase = new CriarEstoqueUseCase(
+            _estoqueRepository.Object,
+            _uotMock.Object
+        );
+
+        _atualizarEstoqueUseCase = new AtualizarEstoqueUseCase(
+            _estoqueRepository.Object,
+            _uotMock.Object
+        );
+
+        _deletarEstoqueUse = new DeletarEstoqueUseCase(
             _estoqueRepository.Object,
             _uotMock.Object
         );
@@ -104,7 +117,7 @@ public class EstoqueServicoTests
         _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(estoque);
         _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
 
-        var result = await _estoqueServico.DeletarAsync(id);
+        var result = await _deletarEstoqueUse.ExecuteAsync(id);
 
         Assert.True(result);
     }
@@ -115,7 +128,7 @@ public class EstoqueServicoTests
         var id = Guid.NewGuid();
         _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync((Estoque)null);
 
-        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _estoqueServico.DeletarAsync(id));
+        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _deletarEstoqueUse.ExecuteAsync(id));
     }
 
     [Fact]
@@ -145,13 +158,13 @@ public class EstoqueServicoTests
             QuantidadeMinima = 2
         };
         var estoque = new Estoque();
-        var response = new EstoqueResponse();
+        var response = new AtualizarEstoqueResponse();
 
         _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(estoque);
         _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
-        _mapperMock.Setup(m => m.Map<EstoqueResponse>(estoque)).Returns(response);
+        _mapperMock.Setup(m => m.Map<AtualizarEstoqueResponse>(estoque)).Returns(response);
 
-        var result = await _estoqueServico.AtualizarAsync(id, request);
+        var result = await _atualizarEstoqueUseCase.ExecuteAsync(id, request);
 
         Assert.Equal(response, result);
     }
@@ -163,7 +176,7 @@ public class EstoqueServicoTests
         var request = new AtualizarEstoqueRequest();
         _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync((Estoque)null);
 
-        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _estoqueServico.AtualizarAsync(id, request));
+        await Assert.ThrowsAsync<DadosNaoEncontradosException>(() => _atualizarEstoqueUseCase.ExecuteAsync(id, request));
     }
 
     [Fact]
@@ -176,7 +189,7 @@ public class EstoqueServicoTests
         _repositorioMock.Setup(r => r.ObterPorIdAsync(id)).ReturnsAsync(estoque);
         _uotMock.Setup(u => u.Commit()).ReturnsAsync(false);
 
-        await Assert.ThrowsAsync<PersistirDadosException>(() => _estoqueServico.AtualizarAsync(id, request));
+        await Assert.ThrowsAsync<PersistirDadosException>(() => _atualizarEstoqueUseCase.ExecuteAsync(id, request));
     }
 
     [Fact]
@@ -193,7 +206,7 @@ public class EstoqueServicoTests
         _mapperMock.Setup(m => m.Map<EstoqueResponse>(estoque)).Returns(response);
 
         // Act
-        await _estoqueServico.AtualizarAsync(id, request);
+        await _atualizarEstoqueUseCase.ExecuteAsync(id, request);
 
         // Assert
         Assert.Equal(20, estoque.Preco);

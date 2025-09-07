@@ -80,7 +80,7 @@ public class EstoqueController(IEstoqueServico estoqueService,
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<CriarEstoqueResponse>> AtualizarParcial(Guid id, [FromBody] AtualizarEstoqueRequest request)
+    public async Task<ActionResult<CriarEstoqueResponse>> Atualizar(Guid id, [FromBody] AtualizarEstoqueRequest request)
     {
         try
         {

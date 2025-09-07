@@ -65,29 +65,4 @@ public class EstoqueServico : ServicoAbstrato<EstoqueServico, Estoque>, IEstoque
             throw;
         }
     }
-
-    public async Task<bool> DeletarAsync(Guid id)
-    {
-        string metodo = nameof(DeletarAsync);
-
-        try
-        {
-            LogInicio(metodo);
-
-            var estoque = await _repositorio.ObterPorIdAsync(id)
-                ?? throw new DadosNaoEncontradosException("Estoque não encontrado");
-
-            await _repositorio.DeletarAsync(estoque);
-            var sucesso = await Commit();
-
-            LogFim(metodo, sucesso);
-
-            return sucesso;
-        }
-        catch (Exception e)
-        {
-            LogErro(metodo, e);
-            throw;
-        }
-    }
 }
