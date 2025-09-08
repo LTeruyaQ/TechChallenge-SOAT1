@@ -77,7 +77,12 @@ public class UsuarioUseCases : UseCasesAbstrato<UsuarioUseCases, Usuario>, IUsua
 
             await VerificarUsuarioCadastradoAsync(request.Email);
 
-            var usuario = _mapper.Map<Usuario>(request);
+            Usuario usuario = new ()
+            {
+                Email = request.Email,
+                TipoUsuario = request.TipoUsuario,
+                RecebeAlertaEstoque = request.RecebeAlertaEstoque.HasValue ? request.RecebeAlertaEstoque.Value : false,  
+            };
 
             usuario.Senha = _servicoSenha.CriptografarSenha(request.Senha);
 
@@ -89,7 +94,6 @@ public class UsuarioUseCases : UseCasesAbstrato<UsuarioUseCases, Usuario>, IUsua
             if (!await Commit())
                 throw new PersistirDadosException("Erro ao cadastrar usuário");
             IsNotGetSenha(usuario);
-
 
             LogFim(metodo, usuario);
 

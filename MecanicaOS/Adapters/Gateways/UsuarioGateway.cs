@@ -14,9 +14,9 @@ namespace Adapters.Gateways
             _repositorioUsuario = repositorioUsuario;
         }
 
-        public async Task CadastrarAsync(object usuario)
+        public async Task<Usuario> CadastrarAsync(Usuario usuario)
         {
-            await _repositorioUsuario.CadastrarAsync((Usuario)usuario);
+            return await _repositorioUsuario.CadastrarAsync(usuario);
         }
 
         public async Task DeletarAsync(Usuario usuario)

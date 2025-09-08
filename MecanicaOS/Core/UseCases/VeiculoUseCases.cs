@@ -66,7 +66,16 @@ namespace Core.UseCases
             {
                 LogInicio(metodo, request);
 
-                var veiculo = _mapper.Map<Veiculo>(request);
+                Veiculo veiculo = new ()
+                {
+                    Ano = request.Ano,
+                    Cor = request.Cor,
+                    Marca = request.Marca,
+                    Modelo = request.Modelo,
+                    Placa = request.Placa,
+                    Anotacoes = request.Anotacoes,
+                    ClienteId = request.ClienteId,
+                };
 
                 await _veiculoGateway.CadastrarAsync(veiculo);
 
@@ -114,9 +123,6 @@ namespace Core.UseCases
             {
                 LogInicio(metodo, clienteId);
 
-                //var filtro = new ObterVeiculoPorClienteEspecificacao(clienteId);
-                //var veiculos = await _repositorio.ListarAsync(filtro)
-                //    ?? throw new DadosNaoEncontradosException("Cliente não possui nenhum veículo.");
                 var veiculos = await _veiculoGateway.ObterVeiculoPorClienteAsync(clienteId);
                 LogFim(metodo, veiculos);
 
@@ -137,9 +143,6 @@ namespace Core.UseCases
             {
                 LogInicio(metodo, placa);
 
-                //var filtro = new ObterVeiculoPorPlacaEspecificacao(placa);
-                //var veiculos = await _repositorio.ListarAsync(filtro)
-                //    ?? throw new DadosNaoEncontradosException($"Veículo com placa {placa} não encontrado
                 var veiculos = await _veiculoGateway.ObterVeiculoPorPlacaAsync(placa);
 
                 var veiculo = veiculos.FirstOrDefault();

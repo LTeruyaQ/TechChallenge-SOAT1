@@ -9,7 +9,7 @@ namespace Core.Interfaces.Gateways
 {
     public interface IUsuarioGateway
     {
-        Task CadastrarAsync(object usuario);
+        Task<Usuario> CadastrarAsync(Usuario usuario);
         Task DeletarAsync(Usuario usuario);
         Task EditarAsync(Usuario usuario);
         Task<Usuario?> ObterPorEmailAsync(string email);

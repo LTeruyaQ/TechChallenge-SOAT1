@@ -33,7 +33,13 @@ namespace Core.UseCases
                 if (await ObterServicoPorNomeUseCaseAsync(request.Nome) != null)
                     throw new DadosJaCadastradosException("Serviço já cadastrado");
 
-                var servico = _mapper.Map<Servico>(request);
+                Servico servico = new()
+                {
+                    Nome = request.Nome,
+                    Valor = request.Valor,
+                    Disponivel = request.Disponivel,
+                    Descricao = request.Descricao
+                };
 
                 var entidade = await _servicoGateway.CadastrarAsync(servico);
 

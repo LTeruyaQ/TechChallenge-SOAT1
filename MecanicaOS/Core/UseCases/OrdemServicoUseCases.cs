@@ -1,4 +1,5 @@
-﻿using Core.DTOs.OrdemServico;
+﻿using Core.DTOs.Eventos;
+using Core.DTOs.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
@@ -14,6 +15,7 @@ public class OrdemServicoUseCases : UseCasesAbstrato<OrdemServicoUseCases, Ordem
 {
     private readonly IClienteGateway _clienteGateway;
     private readonly IServicoUseCases _servicoUseCase;
+    private readonly IEventosGateway _eventosGateway;
     private readonly IOrdemServicoGateway _ordemServicoGateway;
 
     public OrdemServicoUseCases(
@@ -22,12 +24,14 @@ public class OrdemServicoUseCases : UseCasesAbstrato<OrdemServicoUseCases, Ordem
         IClienteGateway clienteGateway,
         IServicoUseCases servicoUseCase,
         IUsuarioLogadoServico usuarioLogadoServico,
-        IOrdemServicoGateway ordemServicoGateway) :
+        IOrdemServicoGateway ordemServicoGateway,
+        IEventosGateway eventosGateway) :
         base(logServico, udt, usuarioLogadoServico)
     {
         _clienteGateway = clienteGateway;
         _servicoUseCase = servicoUseCase;
         _ordemServicoGateway = ordemServicoGateway;
+        _eventosGateway = eventosGateway;
     }
 
     public async Task<OrdemServico> AtualizarUseCaseAsync(Guid id, AtualizarOrdemServicoUseCaseDto request)
@@ -56,15 +60,15 @@ public class OrdemServicoUseCases : UseCasesAbstrato<OrdemServicoUseCases, Ordem
             //TODO: refatorar isso
             if (ordemServico.Status == StatusOrdemServico.EmDiagnostico)
             {
-                await _mediator.Publish(new OrdemServicoEmOrcamentoEvent(ordemServico.Id));
+                await _eventosGateway.Publicar(new OrdemServicoEmOrcamentoEventDTO(ordemServico.Id));
             }
             else if (ordemServico.Status == StatusOrdemServico.Cancelada)
             {
-                await _mediator.Publish(new OrdemServicoCanceladaEvent(ordemServico.Id));
+                await _eventosGateway.Publicar(new OrdemServicoCanceladaEventDTO(ordemServico.Id));
             }
             else if (ordemServico.Status == StatusOrdemServico.Finalizada)
             {
-                await _mediator.Publish(new OrdemServicoFinalizadaEvent(ordemServico.Id));
+                await _eventosGateway.Publicar(new OrdemServicoFinalizadaEventDTO(ordemServico.Id));
             }
 
             LogFim(metodo, ordemServico);
@@ -114,9 +118,6 @@ public class OrdemServicoUseCases : UseCasesAbstrato<OrdemServicoUseCases, Ordem
 
     private async Task VerificarEntidadesRelacionadasAsync(CadastrarOrdemServicoUseCaseDto request)
     {
-        //var especificacao = new ObterClienteComVeiculoPorIdEspecificacao(request.ClienteId);
-        //var cliente = await _clienteGateway.ObterUmAsync(especificacao)
-        //    ?? throw new DadosNaoEncontradosException("O cliente não foi encontrado");
         var cliente = await _clienteGateway.ObterClienteComVeiculoPorIdAsync(request.ClienteId)
             ?? throw new DadosNaoEncontradosException("O cliente não foi encontrado");
 
@@ -247,7 +248,7 @@ public class OrdemServicoUseCases : UseCasesAbstrato<OrdemServicoUseCases, Ordem
         else
         {
             ordemServico.Status = StatusOrdemServico.Cancelada;
-            await _mediator.Publish(new OrdemServicoCanceladaEvent(id));
+            await _eventosGateway.Publicar(new OrdemServicoCanceladaEventDTO(id));
         }
 
         await _ordemServicoGateway.EditarAsync(ordemServico);
