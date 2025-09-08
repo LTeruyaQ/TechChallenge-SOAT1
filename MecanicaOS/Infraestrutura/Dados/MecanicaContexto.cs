@@ -1,4 +1,5 @@
-using Dominio.Entidades;
+
+using Core.Entidades;
 using Infraestrutura.Dados.Mapeamentos;
 using Microsoft.EntityFrameworkCore;
 

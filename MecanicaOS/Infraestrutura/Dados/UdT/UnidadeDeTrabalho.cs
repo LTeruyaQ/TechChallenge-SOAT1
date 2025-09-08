@@ -1,6 +1,6 @@
 using Dominio.Interfaces.Repositorios;
 
-namespace Infraestrutura.Dados.UoT
+namespace Infraestrutura.Dados.UdT
 {
     public class UnidadeDeTrabalho : IUnidadeDeTrabalho
     {

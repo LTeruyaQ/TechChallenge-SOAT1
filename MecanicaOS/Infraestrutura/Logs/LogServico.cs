@@ -1,4 +1,4 @@
-﻿using Dominio.Interfaces.Servicos;
+﻿using Core.Interfaces.Servicos;
 using Infraestrutura.Logs.DTOs;
 using Microsoft.Extensions.Logging;
 using System.Text.Encodings.Web;

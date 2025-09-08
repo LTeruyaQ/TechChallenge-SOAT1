@@ -11,7 +11,7 @@ using Hangfire.PostgreSql;
 using Infraestrutura.Autenticacao;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.Extensions;
-using Infraestrutura.Dados.UoT;
+using Infraestrutura.Dados.UdT;
 using Infraestrutura.Logs;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;

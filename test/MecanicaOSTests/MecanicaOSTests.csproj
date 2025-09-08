@@ -58,7 +58,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\MecanicaOS\API\API.csproj" />
     <ProjectReference Include="..\..\MecanicaOS\Aplicacao\Aplicacao.csproj" />
-    <ProjectReference Include="..\..\MecanicaOS\Dominio\Dominio.csproj" />
     <ProjectReference Include="..\..\MecanicaOS\Infraestrutura\Infraestrutura.csproj" />
   </ItemGroup>
 
