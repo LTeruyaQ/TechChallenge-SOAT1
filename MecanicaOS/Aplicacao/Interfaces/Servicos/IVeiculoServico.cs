@@ -11,5 +11,7 @@ namespace Aplicacao.Interfaces.Servicos
         Task<VeiculoResponse> ObterPorIdAsync(Guid id);
         Task<IEnumerable<VeiculoResponse>> ObterTodosAsync();
         Task<IEnumerable<VeiculoResponse>> ObterPorClienteAsync(Guid clienteId);
+        Task<IEnumerable<VeiculoResponse>> ObterTodosPorClienteAsync(Guid clienteId);
+        Task<VeiculoResponse?> ObterPorPlacaAsync(string placa);
     }
 }

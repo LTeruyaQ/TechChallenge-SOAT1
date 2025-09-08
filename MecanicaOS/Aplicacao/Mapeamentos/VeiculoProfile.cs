@@ -10,6 +10,7 @@ namespace Aplicacao.Mapeamentos
         public VeiculoProfile()
         {
             CreateMap<CadastrarVeiculoRequest, Veiculo>();
+            CreateMap<AtualizarVeiculoRequest, Veiculo>();
             CreateMap<Veiculo, VeiculoResponse>();
         }
     }

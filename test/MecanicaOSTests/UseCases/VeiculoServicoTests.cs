@@ -55,7 +55,7 @@ public class VeiculoServicoTests
         var result = await _servico.AtualizarAsync(id, request);
 
         Assert.NotNull(result);
-        Assert.Equal("Azul", veiculo.Cor);
+        _mapperMock.Verify(m => m.Map(request, veiculo), Times.Once);
     }
 
     [Fact]
@@ -149,7 +149,7 @@ public class VeiculoServicoTests
     {
         var veiculos = new List<Veiculo> { CriarVeiculo() };
 
-        _repositorioMock.Setup(r => r.ObterTodosAsync()).ReturnsAsync(veiculos);
+        _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<ObterVeiculosAtivosEspecificacao>())).ReturnsAsync(veiculos);
         _mapperMock.Setup(m => m.Map<IEnumerable<VeiculoResponse>>(veiculos))
             .Returns(new List<VeiculoResponse> { new VeiculoResponse() });
 
@@ -158,17 +158,50 @@ public class VeiculoServicoTests
         Assert.NotNull(result);
         Assert.Single(result);
     }
+
+    [Fact]
+    public async Task Dado_VeiculoDeletado_Quando_ObterTodosAsync_Entao_NaoRetornaVeiculo()
+    {
+        var veiculoAtivo = CriarVeiculo();
+        var veiculoInativo = CriarVeiculo();
+        veiculoInativo.Ativo = false;
+
+        var veiculos = new List<Veiculo> { veiculoAtivo };
+
+        _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<ObterVeiculosAtivosEspecificacao>())).ReturnsAsync(veiculos);
+        _mapperMock.Setup(m => m.Map<IEnumerable<VeiculoResponse>>(veiculos))
+            .Returns(new List<VeiculoResponse> { new VeiculoResponse() });
+
+        var result = await _servico.ObterTodosAsync();
+
+        Assert.NotNull(result);
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public async Task Dado_PlacaJaExistente_Quando_CadastrarAsync_Entao_LancaExcecaoDadosJaCadastrados()
+    {
+        var request = new CadastrarVeiculoRequest { Placa = "ABC1234" };
+        var veiculoExistente = CriarVeiculo();
+
+        _repositorioMock.Setup(r => r.ListarAsync(It.IsAny<ObterVeiculoPorPlacaEspecificacao>())).ReturnsAsync(new List<Veiculo> { veiculoExistente });
+        _mapperMock.Setup(m => m.Map<VeiculoResponse>(veiculoExistente)).Returns(new VeiculoResponse());
+
+        await Assert.ThrowsAsync<DadosJaCadastradosException>(() => _servico.CadastrarAsync(request));
+    }
+
     [Fact]
     public async Task Dado_IdExistente_Quando_DeletarAsync_Entao_RetornaTrue()
     {
         var veiculo = CriarVeiculo();
         _repositorioMock.Setup(r => r.ObterPorIdAsync(veiculo.Id)).ReturnsAsync(veiculo);
-        _repositorioMock.Setup(r => r.DeletarAsync(veiculo)).Returns(Task.CompletedTask);
+        _repositorioMock.Setup(r => r.EditarAsync(veiculo)).Returns(Task.CompletedTask);
         _uotMock.Setup(u => u.Commit()).ReturnsAsync(true);
 
         var result = await _servico.DeletarAsync(veiculo.Id);
 
         Assert.True(result);
+        Assert.False(veiculo.Ativo);
     }
 
     [Fact]
