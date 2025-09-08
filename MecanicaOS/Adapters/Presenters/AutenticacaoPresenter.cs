@@ -1,4 +1,5 @@
 using Adapters.DTOs.Requests.Autenticacao;
+using Adapters.DTOs.Responses.Autenticacao;
 using Adapters.Presenters.Interfaces;
 using Core.DTOs.Autenticacao;
 
@@ -16,6 +17,16 @@ namespace Adapters.Presenters
             {
                 Email = request.Email,
                 Senha = request.Senha
+            };
+        }
+
+        public AutenticacaoResponse ParaResponse(AutenticacaoDto autenticacaoUseCaseDto)
+        {
+            if (autenticacaoUseCaseDto == null)
+                return null;
+            return new AutenticacaoResponse()
+            {
+                Token = autenticacaoUseCaseDto.Token
             };
         }
     }

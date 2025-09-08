@@ -21,10 +21,7 @@ namespace Adapters.Controllers
             var autenticacaoDto = await _autenticacaoUseCases.AutenticarUseCaseAsync(
                 _autenticacaoPresenter.ParaUseCaseDto(autenticacaoRequest));
                 
-            return new AutenticacaoResponse
-            {
-                Token = autenticacaoDto.Token
-            };
+            return _autenticacaoPresenter.ParaResponse(autenticacaoDto);
         }
     }
 }
