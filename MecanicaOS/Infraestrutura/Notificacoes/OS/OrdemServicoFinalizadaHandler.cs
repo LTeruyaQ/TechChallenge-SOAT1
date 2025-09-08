@@ -1,7 +1,7 @@
-﻿using Dominio.Entidades;
-using Dominio.Especificacoes.OrdemServico;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
+﻿using Core.Entidades;
+using Core.Especificacoes.OrdemServico;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
 using MediatR;
 using System.Text;
 

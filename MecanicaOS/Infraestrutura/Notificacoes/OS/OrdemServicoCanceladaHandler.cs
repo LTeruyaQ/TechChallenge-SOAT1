@@ -1,16 +1,16 @@
-﻿using Aplicacao.Interfaces.Servicos;
-using Dominio.Entidades;
-using Dominio.Especificacoes.Insumo;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
+﻿using Core.Entidades;
+using Core.Especificacoes.Insumo;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.Interfaces.UseCases;
 using MediatR;
 
 namespace Infraestrutura.Notificacoes.OS;
 
-public class OrdemServicoCanceladaHandler(IRepositorio<InsumoOS> ordemServicoRepositorio, IInsumoOSServico insumoOSServico, ILogServico<OrdemServicoCanceladaHandler> logServico) : INotificationHandler<OrdemServicoCanceladaEvent>
+public class OrdemServicoCanceladaHandler(IRepositorio<InsumoOS> ordemServicoRepositorio, IInsumoOSUseCases insumoOSUseCases, ILogServico<OrdemServicoCanceladaHandler> logServico) : INotificationHandler<OrdemServicoCanceladaEvent>
 {
     private readonly IRepositorio<InsumoOS> _insumoOSRepositorio = ordemServicoRepositorio;
-    private readonly IInsumoOSServico _insumoOSServico = insumoOSServico;
+    private readonly IInsumoOSUseCases _insumoOSUseCases = insumoOSUseCases;
     private readonly ILogServico<OrdemServicoCanceladaHandler> _logServico = logServico;
 
     public async Task Handle(OrdemServicoCanceladaEvent notification, CancellationToken cancellationToken)
@@ -26,7 +26,7 @@ public class OrdemServicoCanceladaHandler(IRepositorio<InsumoOS> ordemServicoRep
 
             if (!insumosOS.Any()) return;
 
-            await _insumoOSServico.DevolverInsumosAoEstoqueAsync(insumosOS);
+            await _insumoOSUseCases.DevolverInsumosAoEstoqueUseCaseAsync(insumosOS);
 
             _logServico.LogFim(metodo);
         }

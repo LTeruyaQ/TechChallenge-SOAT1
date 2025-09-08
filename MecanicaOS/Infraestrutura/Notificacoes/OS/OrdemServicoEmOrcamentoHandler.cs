@@ -1,9 +1,9 @@
-﻿using Aplicacao.Interfaces.Servicos;
-using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Especificacoes.OrdemServico;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
+﻿using Core.Entidades;
+using Core.Enumeradores;
+using Core.Especificacoes.OrdemServico;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.Interfaces.UseCases;
 using MediatR;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,13 +12,13 @@ namespace Infraestrutura.Notificacoes.OS;
 
 public class OrdemServicoEmOrcamentoHandler(
     IRepositorio<OrdemServico> ordemServicoRepositorio,
-    IOrcamentoServico orcamentoServico,
+    IOrcamentoUseCases orcamentoUseCases,
     IServicoEmail emailServico,
     ILogServico<OrdemServicoEmOrcamentoHandler> logServico,
     IUnidadeDeTrabalho udt) : INotificationHandler<OrdemServicoEmOrcamentoEvent>
 {
     private readonly IRepositorio<OrdemServico> _ordemServicoRepositorio = ordemServicoRepositorio;
-    private readonly IOrcamentoServico _orcamentoServico = orcamentoServico;
+    private readonly IOrcamentoUseCases _orcamentoUseCases = orcamentoUseCases;
     private readonly IServicoEmail _emailServico = emailServico;
     private readonly IUnidadeDeTrabalho _uot = udt;
     private readonly ILogServico<OrdemServicoEmOrcamentoHandler> _logServico = logServico;
@@ -36,7 +36,7 @@ public class OrdemServicoEmOrcamentoHandler(
 
             if (os is null) return;
 
-            os.Orcamento = _orcamentoServico.GerarOrcamento(os);
+            os.Orcamento = _orcamentoUseCases.GerarOrcamentoUseCase(os);
             os.Status = StatusOrdemServico.AguardandoAprovação;
             os.DataEnvioOrcamento = DateTime.UtcNow;
 
