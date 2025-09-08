@@ -1,6 +1,6 @@
+using Adapters.DTOs.Requests.OrdemServico;
+using Adapters.DTOs.Requests.OrdemServico.InsumoOS;
 using Adapters.Presenters.Interfaces;
-using Aplicacao.DTOs.Requests.OrdemServico;
-using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.DTOs.OrdemServico;
 using Core.DTOs.OrdemServico.InsumoOS;
 

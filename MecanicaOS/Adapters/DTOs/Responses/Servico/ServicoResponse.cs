@@ -1,4 +1,4 @@
-namespace Aplicacao.DTOs.Responses.Servico
+namespace Adapters.DTOs.Responses.Servico
 {
     public class ServicoResponse
     {

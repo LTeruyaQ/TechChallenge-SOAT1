@@ -1,4 +1,4 @@
-using Aplicacao.DTOs.Requests.Veiculo;
+using Adapters.DTOs.Requests.Veiculo;
 using Core.DTOs.Veiculo;
 
 namespace Adapters.Presenters.Interfaces

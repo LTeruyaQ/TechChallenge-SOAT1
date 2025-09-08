@@ -1,4 +1,4 @@
-namespace Aplicacao.DTOs.Responses.Estoque
+namespace Adapters.DTOs.Responses.Estoque
 {
     public class EstoqueResponse
     {

@@ -1,4 +1,4 @@
-﻿namespace Aplicacao.DTOs.Requests.Autenticacao
+﻿namespace Adapters.DTOs.Requests.Autenticacao
 {
     public class AutenticacaoRequest
     {

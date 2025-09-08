@@ -1,4 +1,4 @@
-﻿namespace Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
+﻿namespace Adapters.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 
 public class InsumoOSResponse
 {

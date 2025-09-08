@@ -1,4 +1,4 @@
-using Aplicacao.DTOs.Requests.Estoque;
+using Adapters.DTOs.Requests.Estoque;
 using Core.DTOs.Estoque;
 
 namespace Adapters.Presenters.Interfaces

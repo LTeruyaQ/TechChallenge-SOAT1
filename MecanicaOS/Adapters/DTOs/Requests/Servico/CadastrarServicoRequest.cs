@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Aplicacao.DTOs.Requests.Servico
+namespace Adapters.DTOs.Requests.Servico
 {
     [DisplayName("Cadastro de Serviço")]
     public class CadastrarServicoRequest

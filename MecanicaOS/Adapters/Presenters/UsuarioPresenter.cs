@@ -1,5 +1,5 @@
+using Adapters.DTOs.Requests.Usuario;
 using Adapters.Presenters.Interfaces;
-using Aplicacao.DTOs.Requests.Usuario;
 using Core.DTOs.Usuario;
 
 namespace Adapters.Presenters

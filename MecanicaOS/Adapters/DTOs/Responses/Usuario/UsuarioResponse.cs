@@ -1,6 +1,6 @@
 ﻿using Core.Enumeradores;
 
-namespace Aplicacao.DTOs.Responses.Usuario;
+namespace Adapters.DTOs.Responses.Usuario;
 
 public class UsuarioResponse
 {

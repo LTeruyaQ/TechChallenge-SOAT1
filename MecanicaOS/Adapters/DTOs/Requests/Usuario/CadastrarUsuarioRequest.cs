@@ -3,7 +3,7 @@ using Core.Validacoes.AtributosValidacao;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Aplicacao.DTOs.Requests.Usuario;
+namespace Adapters.DTOs.Requests.Usuario;
 
 [DisplayName("Cadastro de Usuário")]
 public class CadastrarUsuarioRequest

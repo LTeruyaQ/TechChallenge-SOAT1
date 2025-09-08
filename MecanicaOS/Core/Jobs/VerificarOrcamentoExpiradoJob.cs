@@ -4,7 +4,7 @@ using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 
-namespace Aplicacao.Jobs;
+namespace Core.Jobs;
 
 public class VerificarOrcamentoExpiradoJob(IOrdemServicoGateway ordemServicoGateway, IInsumoOSUseCases insumoOSServico, IUnidadeDeTrabalho udt, ILogServico<VerificarOrcamentoExpiradoJob> logServico)
 {

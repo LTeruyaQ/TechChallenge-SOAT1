@@ -2,7 +2,7 @@ using Core.Enumeradores;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Aplicacao.DTOs.Requests.Cliente
+namespace Adapters.DTOs.Requests.Cliente
 {
     [DisplayName("Atualização de Cliente")]
     public class AtualizarClienteRequest

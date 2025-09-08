@@ -1,5 +1,5 @@
+using Adapters.DTOs.Requests.Autenticacao;
 using Adapters.Presenters.Interfaces;
-using Aplicacao.DTOs.Requests.Autenticacao;
 using Core.DTOs.Autenticacao;
 
 namespace Adapters.Presenters

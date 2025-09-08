@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Aplicacao.DTOs.Requests.Estoque
+namespace Adapters.DTOs.Requests.Estoque
 {
     public class CadastrarEstoqueRequest
     {

@@ -2,7 +2,7 @@ using Core.Enumeradores;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Aplicacao.DTOs.Requests.Usuario;
+namespace Adapters.DTOs.Requests.Usuario;
 
 [DisplayName("Atualização de Usuário")]
 public class AtualizarUsuarioRequest

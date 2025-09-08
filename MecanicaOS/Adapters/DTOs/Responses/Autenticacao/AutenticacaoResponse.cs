@@ -1,4 +1,4 @@
-﻿namespace Aplicacao.DTOs.Responses.Autenticacao
+﻿namespace Adapters.DTOs.Responses.Autenticacao
 {
     public class AutenticacaoResponse
     {

@@ -1,5 +1,4 @@
-
-namespace Aplicacao.DTOs.Responses.Veiculo
+namespace Adapters.DTOs.Responses.Veiculo
 {
     public class VeiculoResponse
     {

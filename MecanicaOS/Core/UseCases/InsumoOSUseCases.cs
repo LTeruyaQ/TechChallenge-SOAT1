@@ -1,5 +1,4 @@
-﻿using Aplicacao.Jobs;
-using Core.DTOs.Estoque;
+﻿using Core.DTOs.Estoque;
 using Core.DTOs.OrdemServico;
 using Core.DTOs.OrdemServico.InsumoOS;
 using Core.Entidades;
@@ -9,6 +8,7 @@ using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
+using Core.Jobs;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases;

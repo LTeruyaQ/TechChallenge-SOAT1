@@ -1,11 +1,35 @@
+using Adapters.DTOs.Requests.Servico;
+using Adapters.DTOs.Responses.Servico;
 using Adapters.Presenters.Interfaces;
-using Aplicacao.DTOs.Requests.Servico;
 using Core.DTOs.Servico;
+using Core.Entidades;
 
 namespace Adapters.Presenters
 {
     public class ServicoPresenter : IServicoPresenter
     {
+        public IEnumerable<ServicoResponse> ParaResponse(IEnumerable<Servico> enumerable)
+        {
+            if (enumerable == null)
+                return new List<ServicoResponse>();
+
+            return enumerable.Select(ParaResponse);
+        }
+
+        public ServicoResponse ParaResponse(Servico servico)
+        {
+            return new ServicoResponse
+            {
+                Id = servico.Id,
+                Nome = servico.Nome,
+                Descricao = servico.Descricao,
+                Valor = servico.Valor,
+                Disponivel = servico.Disponivel,
+                DataCadastro = servico.DataCadastro,
+                DataAtualizacao = servico.DataAtualizacao
+            };
+        }
+
         public CadastrarServicoUseCaseDto ParaUseCaseDto(CadastrarServicoRequest request)
         {
             if (request == null)

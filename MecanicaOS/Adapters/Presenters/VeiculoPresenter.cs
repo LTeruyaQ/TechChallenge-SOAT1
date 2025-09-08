@@ -1,5 +1,5 @@
+using Adapters.DTOs.Requests.Veiculo;
 using Adapters.Presenters.Interfaces;
-using Aplicacao.DTOs.Requests.Veiculo;
 using Core.DTOs.Veiculo;
 
 namespace Adapters.Presenters

@@ -5,7 +5,7 @@ using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using System.Text;
 
-namespace Aplicacao.Jobs;
+namespace Core.Jobs;
 
 public class VerificarEstoqueJob(
     IRepositorio<Estoque> estoqueRepositorio,

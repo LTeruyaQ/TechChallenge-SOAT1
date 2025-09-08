@@ -1,4 +1,4 @@
-using Aplicacao.DTOs.Requests.Cliente;
+using Adapters.DTOs.Requests.Cliente;
 using Core.DTOs.Cliente;
 
 namespace Adapters.Presenters.Interfaces

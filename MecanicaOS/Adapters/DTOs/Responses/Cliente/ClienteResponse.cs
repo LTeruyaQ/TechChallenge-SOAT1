@@ -1,6 +1,6 @@
-using Aplicacao.DTOs.Responses.Veiculo;
+using Adapters.DTOs.Responses.Veiculo;
 
-namespace Aplicacao.DTOs.Responses.Cliente
+namespace Adapters.DTOs.Responses.Cliente
 {
     public class ClienteResponse
     {

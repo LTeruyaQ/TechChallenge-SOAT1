@@ -1,7 +1,7 @@
-﻿using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
+﻿using Adapters.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Core.Enumeradores;
 
-namespace Aplicacao.DTOs.Responses.OrdemServico;
+namespace Adapters.DTOs.Responses.OrdemServico;
 
 public class OrdemServicoResponse
 {
