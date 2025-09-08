@@ -1,6 +1,8 @@
 using Adapters.DTOs.Requests.Estoque;
+using Adapters.DTOs.Responses.Estoque;
 using Adapters.Presenters.Interfaces;
 using Core.DTOs.Estoque;
+using Core.Entidades;
 
 namespace Adapters.Presenters
 {
@@ -15,7 +17,7 @@ namespace Adapters.Presenters
             {
                 Insumo = request.Insumo,
                 Descricao = request.Descricao,
-                Preco = request.Preco,
+                Preco = (decimal)request.Preco,
                 QuantidadeDisponivel = request.QuantidadeDisponivel,
                 QuantidadeMinima = request.QuantidadeMinima
             };
@@ -34,6 +36,32 @@ namespace Adapters.Presenters
                 QuantidadeDisponivel = request.QuantidadeDisponivel,
                 QuantidadeMinima = request.QuantidadeMinima
             };
+        }
+
+        public EstoqueResponse ParaResponse(Estoque estoque)
+        {
+            if (estoque == null)
+                return null;
+
+            return new EstoqueResponse
+            {
+                Id = estoque.Id,
+                Insumo = estoque.Insumo,
+                Descricao = estoque.Descricao,
+                Preco = (double)estoque.Preco,
+                QuantidadeDisponivel = estoque.QuantidadeDisponivel,
+                QuantidadeMinima = estoque.QuantidadeMinima,
+                DataCadastro = estoque.DataCadastro,
+                DataAtualizacao = estoque.DataAtualizacao
+            };
+        }
+
+        public IEnumerable<EstoqueResponse> ParaResponse(IEnumerable<Estoque> estoques)
+        {
+            if (estoques == null)
+                return new List<EstoqueResponse>();
+
+            return estoques.Select(ParaResponse).ToList();
         }
     }
 }

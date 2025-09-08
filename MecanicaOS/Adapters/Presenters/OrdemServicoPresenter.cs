@@ -1,8 +1,11 @@
 using Adapters.DTOs.Requests.OrdemServico;
 using Adapters.DTOs.Requests.OrdemServico.InsumoOS;
+using Adapters.DTOs.Responses.OrdemServico;
+using Adapters.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Adapters.Presenters.Interfaces;
 using Core.DTOs.OrdemServico;
 using Core.DTOs.OrdemServico.InsumoOS;
+using Core.Entidades;
 
 namespace Adapters.Presenters
 {
@@ -47,6 +50,38 @@ namespace Adapters.Presenters
                 EstoqueId = request.EstoqueId,
                 Quantidade = request.Quantidade
             };
+        }
+
+        public OrdemServicoResponse ParaResponse(OrdemServico ordemServico)
+        {
+            if (ordemServico == null)
+                return null;
+
+            return new OrdemServicoResponse
+            {
+                Id = ordemServico.Id,
+                ClienteId = ordemServico.ClienteId,
+                VeiculoId = ordemServico.VeiculoId,
+                ServicoId = ordemServico.ServicoId,
+                Orcamento = ordemServico.Orcamento,
+                Descricao = ordemServico.Descricao,
+                Status = ordemServico.Status,
+                DataEnvioOrcamento = ordemServico.DataEnvioOrcamento,
+                Insumos = ordemServico.Insumos?.Select(i => new InsumoOSResponse
+                {
+                    OrdemServicoId = i.OrdemServicoId,
+                    EstoqueId = i.EstoqueId,
+                    Quantidade = i.Quantidade
+                })
+            };
+        }
+
+        public IEnumerable<OrdemServicoResponse> ParaResponse(IEnumerable<OrdemServico> ordensServico)
+        {
+            if (ordensServico == null)
+                return new List<OrdemServicoResponse>();
+
+            return ordensServico.Select(ParaResponse).ToList();
         }
     }
 }

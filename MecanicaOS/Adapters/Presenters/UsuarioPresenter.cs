@@ -1,6 +1,8 @@
 using Adapters.DTOs.Requests.Usuario;
+using Adapters.DTOs.Responses.Usuario;
 using Adapters.Presenters.Interfaces;
 using Core.DTOs.Usuario;
+using Core.Entidades;
 
 namespace Adapters.Presenters
 {
@@ -34,6 +36,33 @@ namespace Adapters.Presenters
                 TipoUsuario = request.TipoUsuario,
                 RecebeAlertaEstoque = request.RecebeAlertaEstoque
             };
+        }
+
+        public UsuarioResponse ParaResponse(Usuario usuario)
+        {
+            if (usuario == null)
+                return null;
+
+            return new UsuarioResponse
+            {
+                Id = usuario.Id,
+                Email = usuario.Email,
+                Senha = usuario.Senha,
+                DataUltimoAcesso = usuario.DataUltimoAcesso,
+                TipoUsuario = usuario.TipoUsuario,
+                RecebeAlertaEstoque = usuario.RecebeAlertaEstoque,
+                Ativo = usuario.Ativo,
+                DataCadastro = usuario.DataCadastro,
+                DataAtualizacao = usuario.DataAtualizacao
+            };
+        }
+
+        public IEnumerable<UsuarioResponse> ParaResponse(IEnumerable<Usuario> usuarios)
+        {
+            if (usuarios == null)
+                return new List<UsuarioResponse>();
+
+            return usuarios.Select(ParaResponse).ToList();
         }
     }
 }

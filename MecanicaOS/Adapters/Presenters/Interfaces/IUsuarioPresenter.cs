@@ -1,5 +1,7 @@
 using Adapters.DTOs.Requests.Usuario;
+using Adapters.DTOs.Responses.Usuario;
 using Core.DTOs.Usuario;
+using Core.Entidades;
 
 namespace Adapters.Presenters.Interfaces
 {
@@ -7,5 +9,7 @@ namespace Adapters.Presenters.Interfaces
     {
         CadastrarUsuarioUseCaseDto ParaUseCaseDto(CadastrarUsuarioRequest request);
         AtualizarUsuarioUseCaseDto ParaUseCaseDto(AtualizarUsuarioRequest request);
+        UsuarioResponse ParaResponse(Usuario usuario);
+        IEnumerable<UsuarioResponse> ParaResponse(IEnumerable<Usuario> usuarios);
     }
 }

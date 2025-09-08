@@ -1,5 +1,7 @@
 using Adapters.DTOs.Requests.Veiculo;
+using Adapters.DTOs.Responses.Veiculo;
 using Core.DTOs.Veiculo;
+using Core.Entidades;
 
 namespace Adapters.Presenters.Interfaces
 {
@@ -7,5 +9,7 @@ namespace Adapters.Presenters.Interfaces
     {
         CadastrarVeiculoUseCaseDto ParaUseCaseDto(CadastrarVeiculoRequest request);
         AtualizarVeiculoUseCaseDto ParaUseCaseDto(AtualizarVeiculoRequest request);
+        VeiculoResponse ParaResponse(Veiculo veiculo);
+        IEnumerable<VeiculoResponse> ParaResponse(IEnumerable<Veiculo> veiculos);
     }
 }

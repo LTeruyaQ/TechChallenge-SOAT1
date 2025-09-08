@@ -1,6 +1,8 @@
 using Adapters.DTOs.Requests.Veiculo;
+using Adapters.DTOs.Responses.Veiculo;
 using Adapters.Presenters.Interfaces;
 using Core.DTOs.Veiculo;
+using Core.Entidades;
 
 namespace Adapters.Presenters
 {
@@ -38,6 +40,35 @@ namespace Adapters.Presenters
                 Anotacoes = request.Anotacoes,
                 ClienteId = request.ClienteId
             };
+        }
+
+        public VeiculoResponse ParaResponse(Veiculo veiculo)
+        {
+            if (veiculo == null)
+                return null;
+
+            return new VeiculoResponse
+            {
+                Id = veiculo.Id,
+                Placa = veiculo.Placa,
+                Marca = veiculo.Marca,
+                Modelo = veiculo.Modelo,
+                Cor = veiculo.Cor,
+                Ano = veiculo.Ano,
+                Anotacoes = veiculo.Anotacoes,
+                ClienteId = veiculo.ClienteId,
+                ClienteNome = veiculo.Cliente?.Nome ?? string.Empty,
+                DataCadastro = veiculo.DataCadastro,
+                DataAtualizacao = veiculo.DataAtualizacao
+            };
+        }
+
+        public IEnumerable<VeiculoResponse> ParaResponse(IEnumerable<Veiculo> veiculos)
+        {
+            if (veiculos == null)
+                return new List<VeiculoResponse>();
+
+            return veiculos.Select(ParaResponse).ToList();
         }
     }
 }
