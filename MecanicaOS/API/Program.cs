@@ -13,6 +13,7 @@ using Infraestrutura.Dados;
 using Infraestrutura.Dados.Extensions;
 using Infraestrutura.Dados.UdT;
 using Infraestrutura.Logs;
+using Infraestrutura.Notificacoes.OS;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

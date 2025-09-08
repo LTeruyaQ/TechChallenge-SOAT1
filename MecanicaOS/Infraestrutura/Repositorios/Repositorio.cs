@@ -1,6 +1,6 @@
-using Dominio.Entidades.Abstratos;
-using Dominio.Especificacoes.Base.Interfaces;
-using Dominio.Interfaces.Repositorios;
+using Core.Entidades.Abstratos;
+using Core.Especificacoes.Base.Interfaces;
+using Core.Interfaces.Repositorios;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.Especificacoes;
 using Microsoft.EntityFrameworkCore;

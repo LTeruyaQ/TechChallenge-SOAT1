@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Dominio.Especificacoes.Base.Interfaces;
+using Infraestrutura.Notificacoes.OS;
 
 namespace MecanicaOSTests.Servicos
 {

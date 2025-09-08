@@ -2,11 +2,11 @@
 {
     public class OrdemServicoFinalizadaEventDTO
     {
-        public Guid Id { get; set; }
+        public Guid OrdemServicoId{ get; set; }
 
-        public OrdemServicoFinalizadaEventDTO(Guid id)
+        public OrdemServicoFinalizadaEventDTO(Guid ordemServicoId)
         {
-            Id = id;
+            OrdemServicoId = ordemServicoId;
         }
     }
 }

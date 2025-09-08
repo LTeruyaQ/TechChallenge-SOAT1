@@ -1,4 +1,4 @@
-﻿using Dominio.Especificacoes.Base.Interfaces;
+﻿using Core.Especificacoes.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

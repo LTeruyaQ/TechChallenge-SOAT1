@@ -3,6 +3,7 @@ using Aplicacao.Notificacoes.OS;
 using Dominio.Entidades;
 using Dominio.Interfaces.Repositorios;
 using Dominio.Interfaces.Servicos;
+using Infraestrutura.Notificacoes.OS;
 using Moq;
 using System.IO;
 using System.Threading;

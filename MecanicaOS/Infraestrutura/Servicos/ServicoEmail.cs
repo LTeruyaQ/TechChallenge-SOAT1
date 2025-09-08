@@ -1,4 +1,4 @@
-﻿using Dominio.Interfaces.Servicos;
+﻿using Core.Interfaces.Servicos;
 using Microsoft.Extensions.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
