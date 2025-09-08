@@ -34,14 +34,7 @@ namespace Aplicacao.Servicos
                 var veiculo = await _repositorio.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Veículo não encontrado");
 
-                if (request.Placa != null) veiculo.Placa = request.Placa;
-                if (request.Marca != null) veiculo.Marca = request.Marca;
-                if (request.Modelo != null) veiculo.Modelo = request.Modelo;
-                if (request.Cor != null) veiculo.Cor = request.Cor;
-                if (request.Ano != null) veiculo.Ano = request.Ano;
-                if (request.Anotacoes != null) veiculo.Anotacoes = request.Anotacoes;
-                if (request.ClienteId.HasValue) veiculo.ClienteId = request.ClienteId.Value;
-
+                _mapper.Map(request, veiculo);
                 veiculo.DataAtualizacao = DateTime.UtcNow;
 
                 await _repositorio.EditarAsync(veiculo);
@@ -67,6 +60,10 @@ namespace Aplicacao.Servicos
             try
             {
                 LogInicio(metodo, request);
+
+                var veiculoExistente = await ObterPorPlacaAsync(request.Placa);
+                if (veiculoExistente != null)
+                    throw new DadosJaCadastradosException("Veículo com a placa informada já cadastrado.");
 
                 var veiculo = _mapper.Map<Veiculo>(request);
 
@@ -134,6 +131,30 @@ namespace Aplicacao.Servicos
             }
         }
 
+        public async Task<IEnumerable<VeiculoResponse>> ObterTodosPorClienteAsync(Guid clienteId)
+        {
+            string metodo = nameof(ObterTodosPorClienteAsync);
+
+            try
+            {
+                LogInicio(metodo, clienteId);
+
+                var filtro = new ObterTodosVeiculosPorClienteEspecificacao(clienteId);
+                var veiculos = await _repositorio.ListarAsync(filtro)
+                    ?? throw new DadosNaoEncontradosException("Cliente não possui nenhum veículo.");
+
+                var response = _mapper.Map<IEnumerable<VeiculoResponse>>(veiculos);
+                LogFim(metodo, response);
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+
         public async Task<VeiculoResponse?> ObterPorPlacaAsync(string placa)
         {
             string metodo = nameof(ObterPorPlacaAsync);
@@ -168,7 +189,8 @@ namespace Aplicacao.Servicos
             {
                 LogInicio(metodo);
 
-                var veiculos = await _repositorio.ObterTodosAsync();
+                var filtro = new ObterVeiculosAtivosEspecificacao();
+                var veiculos = await _repositorio.ListarAsync(filtro);
                 var response = _mapper.Map<IEnumerable<VeiculoResponse>>(veiculos);
 
                 LogFim(metodo, response);
@@ -192,7 +214,10 @@ namespace Aplicacao.Servicos
                 var veiculo = await _repositorio.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Veículo não encontrado");
 
-                await _repositorio.DeletarAsync(veiculo);
+                veiculo.Ativo = false;
+                veiculo.DataAtualizacao = DateTime.UtcNow;
+
+                await _repositorio.EditarAsync(veiculo);
                 var sucesso = await Commit();
 
                 if (!sucesso)
