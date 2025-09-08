@@ -10,6 +10,6 @@ namespace Core.Interfaces.Gateways
     public interface IAlertaEstoqueGateway
     {
         Task CadastrarVariosAsync(IEnumerable<AlertaEstoque> alertas);
-        Task<IEnumerable<AlertaEstoque>> ObterAlertaDoDiaPorEstoqueAsync(Guid id, DateTime dataAtual);
+        Task<IEnumerable<AlertaEstoque>> ObterAlertaDoDiaPorEstoqueAsync(Guid insumoId, DateTime dataAtual);
     }
 }

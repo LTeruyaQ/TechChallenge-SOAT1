@@ -13,7 +13,7 @@ namespace Core.Interfaces.Gateways
         Task DeletarAsync(Servico servico);
         Task EditarAsync(Servico servico);
         Task<Servico?> ObterPorIdAsync(Guid id);
-        IEnumerable<Servico> ObterServicoDisponivelAsync();
+        Task<IEnumerable<Servico>> ObterServicoDisponivelAsync();
         Task<Servico?> ObterServicosDisponiveisPorNomeAsync(string nome);
         Task<IEnumerable<Servico>> ObterTodosAsync();
     }

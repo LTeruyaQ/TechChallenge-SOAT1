@@ -57,10 +57,6 @@ namespace Core.UseCases
             {
                 LogInicio(metodo);
 
-                //var especificacao = new ObterServicoPorNomeEspecificacao(nome)
-                //    .E(new ObterServicoDisponivelEspecificacao());
-
-                //var servico = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
                 var servicosDisponiveis = await _servicoGateway.ObterServicosDisponiveisPorNomeAsync(nome);
 
                 LogFim(metodo, servicosDisponiveis);
@@ -151,10 +147,7 @@ namespace Core.UseCases
             {
                 LogInicio(metodo);
 
-                //IEspecificacao<Servico> filtro = new ObterServicoDisponivelEspecificacao();
-
-                //var servicos = await _repositorio.ListarAsync(filtro);
-                var servicosDisponiveis = _servicoGateway.ObterServicoDisponivelAsync();
+                var servicosDisponiveis = await _servicoGateway.ObterServicoDisponivelAsync();
 
                 LogFim(metodo, servicosDisponiveis);
 

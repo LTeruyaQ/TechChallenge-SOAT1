@@ -107,8 +107,6 @@ public class InsumoOSUseCases(
 
     private async Task<IEnumerable<CadastrarInsumoOSUseCaseDto>> RemoverInsumosJaCadastradosAsync(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> insumos)
     {
-        //var especificacao = new ObterInsumosOSPorOSEspecificacao(ordemServicoId);
-        //var insumosOS = await _repositorio.ListarAsync(especificacao);
         var insumosOS = await _insumosGateway.ObterInsumosOSPorOSAsync(ordemServicoId);
 
         var estoqueIdsJaCadastrados = insumosOS.Select(x => x.EstoqueId).ToHashSet();

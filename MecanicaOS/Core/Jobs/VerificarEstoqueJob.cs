@@ -60,10 +60,6 @@ public class VerificarEstoqueJob(
 
         foreach (var insumo in insumosCriticos)
         {
-            //var alertaEnviadoHoje = await _alertaEstoqueGateway.ListarAsync(
-            //    new ObterAlertaDoDiaPorEstoqueEspecificacao(
-            //        insumo.Id,
-            //        dataAtual));
             var alertasEnviadosHoje = await _alertaEstoqueGateway.ObterAlertaDoDiaPorEstoqueAsync(
                 insumo.Id,
                 dataAtual);
@@ -83,9 +79,7 @@ public class VerificarEstoqueJob(
         _logServico.LogInicio(metodo);
         try
         {
-            //var filtroInsumosCriticos = new ObterEstoqueCriticoEspecificacao();
-            //var insumosCriticos = await _estoqueRepositorio.ListarAsync(filtroInsumosCriticos);
-            var insumosCriticos = await _estoqueGateway.ObterEstoqueCritico();
+            var insumosCriticos = await _estoqueGateway.ObterEstoqueCriticoAsync();
 
             _logServico.LogFim(metodo, insumosCriticos);
             return insumosCriticos;
@@ -104,8 +98,6 @@ public class VerificarEstoqueJob(
         _logServico.LogInicio(metodo, insumosCriticos);
         try
         {
-            //var especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
-            //var usuariosAlerta = await _usuarioRepositorio.ListarAsync(especificacao);
             var usuariosAlerta = await _usuarioGateway.ObterUsuarioParaAlertaEstoqueAsync();
 
             var conteudo = await GerarConteudoEmailAsync(insumosCriticos);

@@ -21,8 +21,6 @@ public class VerificarOrcamentoExpiradoJob(IOrdemServicoGateway ordemServicoGate
         {
             _logServico.LogInicio(metodo);
 
-            //var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
-            //var ordensServico = await _ordemServicoGateway.ListarAsync(especificacao);
             var ordensServico = await _ordemServicoGateway.ListarOSOrcamentoExpiradoAsync();
 
             if (!ordensServico.Any())

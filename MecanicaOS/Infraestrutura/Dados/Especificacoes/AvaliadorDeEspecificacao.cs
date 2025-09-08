@@ -1,4 +1,4 @@
-using Dominio.Especificacoes.Base.Interfaces;
+﻿using Dominio.Especificacoes.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -34,7 +34,7 @@ namespace Infraestrutura.Dados.Especificacoes
         {
             if (!especificacao.UsarProjecao)
             {
-                throw new InvalidOperationException("A especificaÃ§Ã£o nÃ£o contÃ©m uma projeÃ§Ã£o definida.");
+                throw new InvalidOperationException("A especificação não contém uma projeção definida.");
             }
 
             var projecao = especificacao.ObterProjecao() as Expression<Func<T, TProjecao>>;
@@ -43,7 +43,7 @@ namespace Infraestrutura.Dados.Especificacoes
                 var projecaoObj = especificacao.ObterProjecao() as Expression<Func<T, object>>;
                 if (projecaoObj == null)
                 {
-                    throw new InvalidOperationException("Tipo de projeÃ§Ã£o incompatÃ­vel.");
+                    throw new InvalidOperationException("Tipo de projeção incompatível.");
                 }
 
                 var parametro = Expression.Parameter(typeof(T), "x");

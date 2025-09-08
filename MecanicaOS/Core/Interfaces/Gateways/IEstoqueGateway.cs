@@ -12,7 +12,7 @@ namespace Core.Interfaces.Gateways
         Task CadastrarAsync(Estoque estoque);
         Task DeletarAsync(Estoque estoque);
         Task EditarAsync(Estoque estoque);
-        Task<IEnumerable<Estoque>> ObterEstoqueCritico();
+        Task<IEnumerable<Estoque>> ObterEstoqueCriticoAsync();
         Task<Estoque?> ObterPorIdAsync(Guid id);
         Task<IEnumerable<Estoque>> ObterTodosAsync();
     }
