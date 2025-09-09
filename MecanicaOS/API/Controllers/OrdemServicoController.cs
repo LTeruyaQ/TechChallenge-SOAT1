@@ -1,111 +1,181 @@
+using Adapters.Controllers;
+using Adapters.DTOs.Requests.OrdemServico;
+using Adapters.DTOs.Requests.OrdemServico.InsumoOS;
+using Adapters.DTOs.Responses.OrdemServico;
+using Adapters.Gateways;
+using Adapters.Presenters;
+using Adapters.Presenters.Interfaces;
 using API.Models;
-using Aplicacao.DTOs.Requests.OrdemServico;
-using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
-using Aplicacao.DTOs.Responses.OrdemServico;
-using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
-using Aplicacao.Interfaces.Servicos;
-using Dominio.Enumeradores;
+using Core.Enumeradores;
+using Core.Interfaces.Gateways;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.Interfaces.UseCases;
+using Core.UseCases;
+using Infraestrutura.Jobs;
+using Infraestrutura.Logs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
-
-[Authorize]
-public class OrdemServicoController : BaseApiController
+namespace API.Controllers
 {
-    private readonly IOrdemServicoServico _ordemServico;
-    private readonly IInsumoOSServico _insumoOSServico;
-
-    public OrdemServicoController(IOrdemServicoServico ordemServico, IInsumoOSServico insumoOSServico)
+    [Authorize]
+    public class OrdemServicoController : BaseApiController
     {
-        _ordemServico = ordemServico;
-        _insumoOSServico = insumoOSServico;
-    }
+        private readonly Adapters.Controllers.OrdemServicoController _ordemServicoController;
+        private readonly Adapters.Controllers.InsumoOSController _insumoOSController;
 
-    [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<OrdemServicoResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ObterTodos()
-    {
-        var ordemServicos = await _ordemServico.ObterTodosAsync();
-        return Ok(ordemServicos);
-    }
+        public OrdemServicoController(
+            IRepositorio<Core.Entidades.OrdemServico> repositorioOrdemServico,
+            IRepositorio<Core.Entidades.InsumoOS> repositorioInsumoOS,
+            IRepositorio<Core.Entidades.Estoque> repositorioEstoque,
+            IUnidadeDeTrabalho unidadeDeTrabalho,
+            IUsuarioLogadoServico usuarioLogadoServico,
+            VerificarEstoqueJob verificarEstoqueJob,
+            IIdCorrelacionalService idCorrelacionalService,
+            ILogger<OrdemServicoUseCases> loggerOrdemServicoUseCases,
+            ILogger<EstoqueUseCases> loggerEstoqueUseCases,
+            ILogger<InsumoOSUseCases> loggerInsumoOSUseCases)
+        {
+            // Criando gateways
+            IOrdemServicoGateway ordemServicoGateway = new OrdemServicoGateway(repositorioOrdemServico);
+            IInsumosGateway insumosGateway = new InsumosGateway(repositorioInsumoOS);
+            IEstoqueGateway estoqueGateway = new EstoqueGateway(repositorioEstoque);
 
-    [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ObterPorId(Guid id)
-    {
-        var ordemServico = await _ordemServico.ObterPorIdAsync(id)
-            ?? throw new KeyNotFoundException("Ordem de Serviço não encontrado");
-        return Ok(ordemServico);
-    }
+            // Criando logs
+            ILogServico<OrdemServicoUseCases> logOrdemServicoUseCases = new LogServico<OrdemServicoUseCases>(idCorrelacionalService, loggerOrdemServicoUseCases, usuarioLogadoServico);
+            ILogServico<EstoqueUseCases> logEstoqueUseCases = new LogServico<EstoqueUseCases>(idCorrelacionalService, loggerEstoqueUseCases, usuarioLogadoServico);
+            ILogServico<InsumoOSUseCases> logInsumoOSUseCases = new LogServico<InsumoOSUseCases>(idCorrelacionalService, loggerInsumoOSUseCases, usuarioLogadoServico);
 
-    [HttpGet("{status}")]
-    [ProducesResponseType(typeof(IEnumerable<OrdemServicoResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ObterPorStatus(StatusOrdemServico status)
-    {
-        var ordemServico = await _ordemServico.ObterPorStatusAsync(status)
-            ?? throw new KeyNotFoundException("Ordem de Serviço não encontrado");
-        return Ok(ordemServico);
-    }
+            // Criando presenter
+            IOrdemServicoPresenter ordemServicoPresenter = new OrdemServicoPresenter();
 
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Criar([FromBody] CadastrarOrdemServicoRequest request)
-    {
-        var ordemServico = await _ordemServico.CadastrarAsync(request);
-        return CreatedAtAction(nameof(ObterPorId), new { id = ordemServico.Id }, ordemServico);
-    }
+            // Criando use cases
+            IEstoqueUseCases estoqueUseCases = new EstoqueUseCases(
+                estoqueGateway,
+                logEstoqueUseCases,
+                unidadeDeTrabalho,
+                usuarioLogadoServico);
 
-    [HttpPut("{id:guid}")]
-    [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarOrdemServicoRequest request)
-    {
-        var ordemServicoAtualizado = await _ordemServico.AtualizarAsync(id, request);
-        return Ok(ordemServicoAtualizado);
-    }
+            IOrdemServicoUseCases ordemServicoUseCases = new OrdemServicoUseCases(
+                ordemServicoGateway,
+                logOrdemServicoUseCases,
+                unidadeDeTrabalho,
+                usuarioLogadoServico);
 
-    [HttpPost("{ordemServicoId}/insumos")]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(InsumoOSResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> AdicionarInsumosOS(Guid ordemServicoId, List<CadastrarInsumoOSRequest> request)
-    {
-        var insumosOS = await _insumoOSServico.CadastrarInsumosAsync(ordemServicoId, request);
-        return Ok(insumosOS);
-    }
+            IInsumoOSUseCases insumoOSUseCases = new InsumoOSUseCases(
+                ordemServicoUseCases,
+                estoqueUseCases,
+                verificarEstoqueJob,
+                insumosGateway,
+                repositorioInsumoOS,
+                logInsumoOSUseCases,
+                unidadeDeTrabalho,
+                usuarioLogadoServico);
 
-    [HttpPatch("{id}/aceitar-orcamento")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> AceitarOrcamento(Guid id)
-    {
-        await _ordemServico.AceitarOrcamentoAsync(id);
-        return NoContent();
-    }
+            // Criando controllers
+            _ordemServicoController = new Adapters.Controllers.OrdemServicoController(ordemServicoUseCases, ordemServicoPresenter);
+            _insumoOSController = new Adapters.Controllers.InsumoOSController(insumoOSUseCases, ordemServicoPresenter);
+        }
 
-    [HttpPatch("{id}/recusar-orcamento")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> RecusarOrcamento(Guid id)
-    {
-        await _ordemServico.RecusarOrcamentoAsync(id);
-        return NoContent();
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<OrdemServicoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObterTodos()
+        {
+            var ordemServicos = await _ordemServicoController.ObterTodos();
+            return Ok(ordemServicos);
+        }
+
+        [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObterPorId(Guid id)
+        {
+            var ordemServico = await _ordemServicoController.ObterPorId(id);
+            if (ordemServico == null)
+                return NotFound(new ErrorResponse { Message = "Ordem de Serviço não encontrada" });
+
+            return Ok(ordemServico);
+        }
+
+        [HttpGet("status/{status}")]
+        [ProducesResponseType(typeof(IEnumerable<OrdemServicoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObterPorStatus(StatusOrdemServico status)
+        {
+            var ordensServico = await _ordemServicoController.ObterPorStatus(status);
+            if (ordensServico == null || !ordensServico.Any())
+                return NotFound(new ErrorResponse { Message = "Nenhuma ordem de serviço encontrada com o status informado" });
+
+            return Ok(ordensServico);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Criar([FromBody] CadastrarOrdemServicoRequest request)
+        {
+            var resultadoValidacao = ValidarModelState();
+            if (resultadoValidacao != null) return resultadoValidacao;
+
+            var ordemServico = await _ordemServicoController.Cadastrar(request);
+            return CreatedAtAction(nameof(ObterPorId), new { id = ordemServico.Id }, ordemServico);
+        }
+
+        [HttpPut("{id:guid}")]
+        [ProducesResponseType(typeof(OrdemServicoResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarOrdemServicoRequest request)
+        {
+            var resultadoValidacao = ValidarModelState();
+            if (resultadoValidacao != null) return resultadoValidacao;
+
+            var ordemServicoAtualizado = await _ordemServicoController.Atualizar(id, request);
+            return Ok(ordemServicoAtualizado);
+        }
+
+        [HttpPost("{ordemServicoId}/insumos")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(IEnumerable<Core.Entidades.InsumoOS>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AdicionarInsumosOS(Guid ordemServicoId, List<CadastrarInsumoOSRequest> request)
+        {
+            var resultadoValidacao = ValidarModelState();
+            if (resultadoValidacao != null) return resultadoValidacao;
+
+            var insumosOS = await _insumoOSController.CadastrarInsumos(ordemServicoId, request);
+            return Ok(insumosOS);
+        }
+
+        [HttpPatch("{id}/aceitar-orcamento")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AceitarOrcamento(Guid id)
+        {
+            await _ordemServicoController.AceitarOrcamento(id);
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/recusar-orcamento")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RecusarOrcamento(Guid id)
+        {
+            await _ordemServicoController.RecusarOrcamento(id);
+            return NoContent();
+        }
     }
 }

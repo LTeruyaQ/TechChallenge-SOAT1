@@ -1,13 +1,13 @@
 using API.Middlewares;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
-using Core.Jobs;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Infraestrutura.Autenticacao;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.Extensions;
 using Infraestrutura.Dados.UdT;
+using Infraestrutura.Jobs;
 using Infraestrutura.Logs;
 using Infraestrutura.Notificacoes.OS;
 using Infraestrutura.Repositorios;
@@ -76,14 +76,6 @@ builder.Services.AddDbContext<MecanicaContexto>(options =>
             errorCodesToAdd: null);
     }));
 
-builder.Services.AddHangfire(config => config
-    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-    .UseSimpleAssemblyNameTypeSerializer()
-    .UseRecommendedSerializerSettings()
-    .UsePostgreSqlStorage(options => options.UseNpgsqlConnection(connectionString)));
-
-builder.Services.AddHangfireServer();
-
 // Configuração JWT
 var jwtConfig = builder.Configuration.GetSection("Jwt").Get<ConfiguracaoJwt>();
 builder.Services.Configure<ConfiguracaoJwt>(builder.Configuration.GetSection("Jwt"));
@@ -114,31 +106,20 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
-// Serviços
-builder.Services.AddScoped<IServicoServico, ServicoServico>();
-builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
-builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
-builder.Services.AddScoped<IClienteServico, ClienteServico>();
-builder.Services.AddScoped<IOrdemServicoServico>(x => new OrdemServicoServico ());
-builder.Services.AddScoped<IInsumoOSServico, InsumoOSServico>();
-builder.Services.AddScoped<IOrcamentoServico, OrcamentoServico>();
-builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
-
-// Serviços de autenticação
-builder.Services.AddScoped<IServicoJwt, ServicoJwt>();
-builder.Services.AddScoped<IServicoSenha, ServicoSenha>();
-builder.Services.AddScoped<IAutenticacaoServico, AutenticacaoServico>();
-
-// Serviço de usuário logado
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IUsuarioLogadoServico, UsuarioLogadoServico>();
 
-// Serviço de usuário deve ser registrado após os serviços de autenticação
-builder.Services.AddScoped<IUsuarioServico, UsuarioServico>();
-builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
-
+#region Infraestrutura
 // Jobs Hangfire
+builder.Services.AddHangfire(config => config
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UsePostgreSqlStorage(options => options.UseNpgsqlConnection(connectionString)));
+
+builder.Services.AddHangfireServer();
+
 builder.Services.AddScoped<VerificarEstoqueJob>();
+builder.Services.AddScoped<VerificarOrcamentoExpiradoJob>();
 
 // Notificações
 builder.Services.AddMediatR(cfg =>
@@ -146,10 +127,10 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(OrdemServicoEmOrcamentoEvent).Assembly);
 });
 
-// Infraestrutura
 builder.Services.AddScoped<IServicoEmail, ServicoEmail>();
 builder.Services.AddScoped<IServicoJwt, ServicoJwt>();
 builder.Services.AddScoped<IServicoSenha, ServicoSenha>();
+builder.Services.AddScoped<IUsuarioLogadoServico, UsuarioLogadoServico>();
 builder.Services.AddScoped<IIdCorrelacionalService, IdCorrelacionalService>();
 builder.Services.AddScoped<IdCorrelacionalLogMiddleware>();
 builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
@@ -157,6 +138,7 @@ builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
 
 // Repositórios
 builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
+#endregion
 
 builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {

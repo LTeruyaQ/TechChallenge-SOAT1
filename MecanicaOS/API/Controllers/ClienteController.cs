@@ -1,75 +1,126 @@
+using Adapters.Controllers;
+using Adapters.DTOs.Requests.Cliente;
+using Adapters.DTOs.Responses.Cliente;
+using Adapters.Gateways;
+using Adapters.Presenters;
+using Adapters.Presenters.Interfaces;
 using API.Models;
-using Aplicacao.DTOs.Requests.Cliente;
-using Aplicacao.DTOs.Responses.Cliente;
-using Aplicacao.Interfaces.Servicos;
+using Core.Entidades;
+using Core.Interfaces.Gateways;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.Interfaces.UseCases;
+using Core.UseCases;
+using Infraestrutura.Logs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
-
-[Authorize]
-public class ClienteController : BaseApiController
+namespace API.Controllers
 {
-    private readonly IClienteServico _clienteService;
-
-    public ClienteController(IClienteServico service)
+    [Authorize]
+    public class ClienteController : BaseApiController
     {
-        _clienteService = service;
-    }
+        private readonly Adapters.Controllers.ClienteController _clienteController;
 
-    [HttpGet]
-    [Authorize(Roles = "Admin,Cliente")]
-    [ProducesResponseType(typeof(IEnumerable<ClienteResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ObterTodos()
-    {
-        return Ok(await _clienteService.ObterTodosAsync());
-    }
+        public ClienteController(
+            IRepositorio<Cliente> repositorioCliente,
+            IRepositorio<Endereco> repositorioEndereco,
+            IRepositorio<Contato> repositorioContato,
+            IUnidadeDeTrabalho unidadeDeTrabalho,
+            IUsuarioLogadoServico usuarioLogadoServico,
+            IdCorrelacionalService idCorrelacionalService,
+            ILogger<ClienteUseCases> loggerClienteUseCases)
+        {
+            // Criando gateways
+            IClienteGateway clienteGateway = new ClienteGateway(repositorioCliente);
+            IEnderecoGateway enderecoGateway = new EnderecoGateway(repositorioEndereco);
+            IContatoGateway contatoGateway = new ContatoGateway(repositorioContato);
 
-    [HttpGet("{id:guid}")]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(IEnumerable<ClienteResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ObterPorId(Guid id)
-    {
-        return Ok(await _clienteService.ObterPorIdAsync(id));
-    }
+            // Criando logs
+            ILogServico<ClienteUseCases> logClienteUseCases = new LogServico<ClienteUseCases>(idCorrelacionalService, loggerClienteUseCases, usuarioLogadoServico);
 
-    [HttpPost]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Criar([FromBody] CadastrarClienteRequest request)
-    {
-        var cliente = await _clienteService.CadastrarAsync(request);
+            // Criando use cases
+            IClienteUseCases clienteUseCases = new ClienteUseCases(
+                clienteGateway,
+                enderecoGateway,
+                contatoGateway,
+                logClienteUseCases,
+                unidadeDeTrabalho,
+                usuarioLogadoServico);
 
-        return CreatedAtAction(nameof(ObterPorId), new { id = cliente.Id }, cliente);
-    }
+            // Criando presenter
+            IClientePresenter clientePresenter = new ClientePresenter();
 
-    [HttpPut("{id:guid}")]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(ClienteResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarClienteRequest request)
-    {
-        var resultadoValidacao = ValidarModelState();
-        if (resultadoValidacao != null) return resultadoValidacao;
+            // Criando controller
+            _clienteController = new Adapters.Controllers.ClienteController(clienteUseCases, clientePresenter);
+        }
 
-        return Ok(await _clienteService.AtualizarAsync(id, request));
-    }
+        [HttpGet]
+        [Authorize(Roles = "Admin,Cliente")]
+        [ProducesResponseType(typeof(IEnumerable<ClienteResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObterTodos()
+        {
+            return Ok(await _clienteController.ObterTodos());
+        }
 
-    [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Remover(Guid id)
-    {
-        await _clienteService.RemoverAsync(id);
-        return NoContent();
+        [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(ClienteResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObterPorId(Guid id)
+        {
+            return Ok(await _clienteController.ObterPorId(id));
+        }
+
+        [HttpGet("documento/{documento}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(ClienteResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObterPorDocumento(string documento)
+        {
+            return Ok(await _clienteController.ObterPorDocumento(documento));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Criar([FromBody] CadastrarClienteRequest request)
+        {
+            var resultadoValidacao = ValidarModelState();
+            if (resultadoValidacao != null) return resultadoValidacao;
+
+            var cliente = await _clienteController.Cadastrar(request);
+
+            return CreatedAtAction(nameof(ObterPorId), new { id = cliente.Id }, cliente);
+        }
+
+        [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(ClienteResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarClienteRequest request)
+        {
+            var resultadoValidacao = ValidarModelState();
+            if (resultadoValidacao != null) return resultadoValidacao;
+
+            return Ok(await _clienteController.Atualizar(id, request));
+        }
+
+        [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Remover(Guid id)
+        {
+            await _clienteController.Remover(id);
+            return NoContent();
+        }
     }
 }

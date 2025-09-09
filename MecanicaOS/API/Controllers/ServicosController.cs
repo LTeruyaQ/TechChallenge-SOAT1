@@ -1,28 +1,57 @@
+using Adapters.Controllers;
+using Adapters.DTOs.Requests.Servico;
+using Adapters.DTOs.Responses.Servico;
+using Adapters.Gateways;
+using Adapters.Presenters;
+using Adapters.Presenters.Interfaces;
 using API.Models;
-using Aplicacao.DTOs.Requests.Servico;
-using Aplicacao.DTOs.Responses.Servico;
-using Aplicacao.Interfaces.Servicos;
+using Core.Interfaces.Gateways;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.Interfaces.UseCases;
+using Core.UseCases;
+using Infraestrutura.Logs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
-
-[Authorize]
-public class ServicosController : BaseApiController
+namespace API.Controllers
 {
-    private readonly IServicoServico _servico;
-
-    public ServicosController(IServicoServico servico)
+    [Authorize]
+    public class ServicosController : BaseApiController
     {
-        _servico = servico;
-    }
+        private readonly Adapters.Controllers.ServicoController _servicoController;
+
+        public ServicosController(
+            IRepositorio<Core.Entidades.Servico> repositorioServico,
+            IUnidadeDeTrabalho unidadeDeTrabalho,
+            IUsuarioLogadoServico usuarioLogadoServico)
+        {
+            // Criando gateways
+            IServicoGateway servicoGateway = new ServicoGateway(repositorioServico);
+            
+            // Criando logs
+            ILogServico<ServicoUseCases> logServicoUseCases = new LogServico<ServicoUseCases>();
+            
+            // Criando use cases
+            IServicoUseCases servicoUseCases = new ServicoUseCases(
+                servicoGateway,
+                logServicoUseCases,
+                unidadeDeTrabalho,
+                usuarioLogadoServico);
+                
+            // Criando presenter
+            IServicoPresenter servicoPresenter = new ServicoPresenter();
+                
+            // Criando controller
+            _servicoController = new Adapters.Controllers.ServicoController(servicoUseCases, servicoPresenter);
+        }
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ServicoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterTodos()
     {
-        var servicos = await _servico.ObterTodosAsync();
+        var servicos = await _servicoController.ObterTodos();
         return Ok(servicos);
     }
 
@@ -31,7 +60,9 @@ public class ServicosController : BaseApiController
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterServicosDisponiveis()
     {
-        var servicos = await _servico.ObterServicosDisponiveisAsync();
+        // O método do controller da arquitetura limpa espera um id, mas o método da API não usa esse parâmetro
+        // Passamos 0 como um valor padrão já que o método não usa esse parâmetro
+        var servicos = await _servicoController.ObterServicosDisponiveis(0);
         return Ok(servicos);
     }
 
@@ -41,7 +72,10 @@ public class ServicosController : BaseApiController
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterPorId(Guid id)
     {
-        var servico = await _servico.ObterServicoPorIdAsync(id);
+        var servico = await _servicoController.ObterPorId(id);
+        if (servico == null)
+            return NotFound(new ErrorResponse { Message = "Serviço não encontrado" });
+            
         return Ok(servico);
     }
 
@@ -56,8 +90,19 @@ public class ServicosController : BaseApiController
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
 
-        var servico = await _servico.CadastrarServicoAsync(request);
-        return CreatedAtAction(nameof(ObterPorId), new { id = servico.Id }, servico);
+        try
+        {
+            var servico = await _servicoController.Criar(request);
+            return CreatedAtAction(nameof(ObterPorId), new { id = servico.Id }, servico);
+        }
+        catch (Core.Exceptions.DadosJaCadastradosException ex)
+        {
+            return Conflict(new ErrorResponse { Message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
+        }
     }
 
     [HttpPut("{id:guid}")]
@@ -71,8 +116,19 @@ public class ServicosController : BaseApiController
         var resultadoValidacao = ValidarModelState();
         if (resultadoValidacao != null) return resultadoValidacao;
 
-        var servicoAtualizado = await _servico.EditarServicoAsync(id, request);
-        return Ok(servicoAtualizado);
+        try
+        {
+            var servicoAtualizado = await _servicoController.Atualizar(id, request);
+            return Ok(servicoAtualizado);
+        }
+        catch (Core.Exceptions.DadosNaoEncontradosException ex)
+        {
+            return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
+        }
     }
 
     [HttpDelete("{id:guid}")]
@@ -82,7 +138,18 @@ public class ServicosController : BaseApiController
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Deletar(Guid id)
     {
-        await _servico.DeletarServicoAsync(id);
-        return NoContent();
+        try
+        {
+            await _servicoController.Deletar(id);
+            return NoContent();
+        }
+        catch (Core.Exceptions.DadosNaoEncontradosException ex)
+        {
+            return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
+        }
     }
 }

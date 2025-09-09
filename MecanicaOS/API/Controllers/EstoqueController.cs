@@ -1,79 +1,112 @@
+using Adapters.Controllers;
+using Adapters.DTOs.Requests.Estoque;
+using Adapters.DTOs.Responses.Estoque;
+using Adapters.Gateways;
+using Adapters.Presenters;
+using Adapters.Presenters.Interfaces;
 using API.Models;
-using Aplicacao.DTOs.Requests.Estoque;
-using Aplicacao.DTOs.Responses.Estoque;
-using Aplicacao.Interfaces.Servicos;
+using Core.Entidades;
+using Core.Interfaces.Gateways;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.Interfaces.UseCases;
+using Core.UseCases;
+using Infraestrutura.Logs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
-
-[Authorize(Roles = "Admin")]
-public class EstoqueController : BaseApiController
+namespace API.Controllers
 {
-    private readonly IEstoqueServico _estoqueService;
-
-    public EstoqueController(IEstoqueServico estoqueService)
+    [Authorize(Roles = "Admin")]
+    public class EstoqueController : BaseApiController
     {
-        _estoqueService = estoqueService;
-    }
+        private readonly Adapters.Controllers.EstoqueController _estoqueController;
 
-    [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<EstoqueResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ObterTodos()
-    {
-        var estoques = await _estoqueService.ObterTodosAsync();
-        return Ok(estoques);
-    }
+        public EstoqueController(
+            IRepositorio<Estoque> repositorioEstoque,
+            IUnidadeDeTrabalho unidadeDeTrabalho,
+            IUsuarioLogadoServico usuarioLogadoServico,
+            IdCorrelacionalService idCorrelacionalService,
+            ILogger<EstoqueUseCases> loggerEstoqueUseCases)
+        {
+            // Criando gateways
+            IEstoqueGateway estoqueGateway = new EstoqueGateway(repositorioEstoque);
 
-    [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(EstoqueResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ObterPorId(Guid id)
-    {
-        var estoque = await _estoqueService.ObterPorIdAsync(id);
-        return Ok(estoque);
-    }
+            // Criando logs
+            ILogServico<EstoqueUseCases> logEstoqueUseCases = new LogServico<EstoqueUseCases>(idCorrelacionalService, loggerEstoqueUseCases, usuarioLogadoServico);
 
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Criar([FromBody] CadastrarEstoqueRequest request)
-    {
-        var resultadoValidacao = ValidarModelState();
-        if (resultadoValidacao != null) return resultadoValidacao;
+            // Criando use cases
+            IEstoqueUseCases estoqueUseCases = new EstoqueUseCases(
+                estoqueGateway,
+                logEstoqueUseCases,
+                unidadeDeTrabalho,
+                usuarioLogadoServico);
 
-        var estoque = await _estoqueService.CadastrarAsync(request);
-        return CreatedAtAction(nameof(ObterPorId), new { id = estoque.Id }, estoque);
-    }
+            // Criando presenter
+            IEstoquePresenter estoquePresenter = new EstoquePresenter();
 
-    [HttpPut("{id:guid}")]
-    [ProducesResponseType(typeof(EstoqueResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarEstoqueRequest request)
-    {
-        var resultadoValidacao = ValidarModelState();
-        if (resultadoValidacao != null) return resultadoValidacao;
+            // Criando controller
+            _estoqueController = new Adapters.Controllers.EstoqueController(estoqueUseCases, estoquePresenter);
+        }
 
-        var estoqueAtualizado = await _estoqueService.AtualizarAsync(id, request);
-        return Ok(estoqueAtualizado);
-    }
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<EstoqueResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObterTodos()
+        {
+            var estoques = await _estoqueController.ObterTodos();
+            return Ok(estoques);
+        }
 
-    [HttpDelete("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Remover(Guid id)
-    {
-        var sucesso = await _estoqueService.DeletarAsync(id);
-        if (!sucesso)
-            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Erro ao remover o item do estoque" });
+        [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(EstoqueResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObterPorId(Guid id)
+        {
+            var estoque = await _estoqueController.ObterPorId(id);
+            return Ok(estoque);
+        }
 
-        return NoContent();
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Criar([FromBody] CadastrarEstoqueRequest request)
+        {
+            var resultadoValidacao = ValidarModelState();
+            if (resultadoValidacao != null) return resultadoValidacao;
+
+            var estoque = await _estoqueController.Cadastrar(request);
+            return CreatedAtAction(nameof(ObterPorId), new { id = estoque.Id }, estoque);
+        }
+
+        [HttpPut("{id:guid}")]
+        [ProducesResponseType(typeof(EstoqueResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarEstoqueRequest request)
+        {
+            var resultadoValidacao = ValidarModelState();
+            if (resultadoValidacao != null) return resultadoValidacao;
+
+            var estoqueAtualizado = await _estoqueController.Atualizar(id, request);
+            return Ok(estoqueAtualizado);
+        }
+
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Remover(Guid id)
+        {
+            var sucesso = await _estoqueController.Deletar(id);
+            if (!sucesso)
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Erro ao remover o item do estoque" });
+
+            return NoContent();
+        }
     }
 }

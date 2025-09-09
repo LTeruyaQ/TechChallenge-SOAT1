@@ -2,9 +2,21 @@ using Adapters.Controllers;
 using Adapters.DTOs.Requests.Autenticacao;
 using Adapters.DTOs.Requests.Usuario;
 using Adapters.DTOs.Responses.Autenticacao;
+using Adapters.Gateways;
+using Adapters.Presenters;
+using Adapters.Presenters.Interfaces;
 using API.Models;
+using Core.Entidades;
+using Core.Interfaces.Gateways;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.Interfaces.UseCases;
+using Core.UseCases;
+using Infraestrutura.Autenticacao;
+using Infraestrutura.Logs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace API.Controllers
 {
@@ -13,10 +25,65 @@ namespace API.Controllers
         private readonly IAutenticacaoController _autenticacaoController;
         private readonly IUsuarioController _usuarioController;
 
-        public AutenticacaoController(IAutenticacaoController autenticacaoController, IUsuarioController usuarioController)
+        public AutenticacaoController(
+            IRepositorio<Usuario> repositorioUsuario,
+            IRepositorio<Cliente> repositorioCliente,
+            IRepositorio<Endereco> repositorioEndereco,
+            IRepositorio<Contato> repositorioContato,
+            IOptions<ConfiguracaoJwt> configuracaoJwt,
+            IUnidadeDeTrabalho unidadeDeTrabalho,
+            IUsuarioLogadoServico usuarioLogadoServico,
+            IIdCorrelacionalService idCorrelacionalService,
+            ILogger<ClienteUseCases> loggerClienteUseCases,
+            ILogger<UsuarioUseCases> loggerUsuarioUseCases,
+            ILogger<AutenticacaoUseCases> loggerAutenticacaoUseCases)
         {
-            _autenticacaoController = autenticacaoController;
-            _usuarioController = usuarioController;
+            // Criando gateways
+            IUsuarioGateway usuarioGateway = new UsuarioGateway(repositorioUsuario);
+            IClienteGateway clienteGateway = new ClienteGateway(repositorioCliente);
+            IEnderecoGateway enderecoGateway = new EnderecoGateway(repositorioEndereco);
+            IContatoGateway contatoGateway = new ContatoGateway(repositorioContato);
+            
+            // Criando serviços
+            IServicoSenha servicoSenha = new ServicoSenha();
+            IServicoJwt servicoJwt = new ServicoJwt(configuracaoJwt);
+            
+            // Criando logs
+            ILogServico<ClienteUseCases> logClienteUseCases = new LogServico<ClienteUseCases>(idCorrelacionalService, loggerClienteUseCases, usuarioLogadoServico);
+            ILogServico<UsuarioUseCases> logUsuarioUseCases = new LogServico<UsuarioUseCases>(idCorrelacionalService, loggerUsuarioUseCases, usuarioLogadoServico);
+            ILogServico<AutenticacaoUseCases> logAutenticacaoUseCases = new LogServico<AutenticacaoUseCases>(idCorrelacionalService, loggerAutenticacaoUseCases, usuarioLogadoServico);
+            
+            // Criando use cases
+            IClienteUseCases clienteUseCases = new ClienteUseCases(
+                clienteGateway, 
+                enderecoGateway, 
+                contatoGateway, 
+                logClienteUseCases, 
+                unidadeDeTrabalho, 
+                usuarioLogadoServico);
+                
+            IUsuarioUseCases usuarioUseCases = new UsuarioUseCases(
+                logUsuarioUseCases, 
+                unidadeDeTrabalho, 
+                clienteUseCases, 
+                servicoSenha, 
+                usuarioLogadoServico, 
+                usuarioGateway);
+                
+            IAutenticacaoUseCases autenticacaoUseCases = new AutenticacaoUseCases(
+                usuarioUseCases, 
+                servicoSenha, 
+                servicoJwt, 
+                logAutenticacaoUseCases, 
+                clienteUseCases);
+                
+            // Criando presenters
+            IAutenticacaoPresenter autenticacaoPresenter = new AutenticacaoPresenter();
+            IUsuarioPresenter usuarioPresenter = new UsuarioPresenter();
+                
+            // Criando controllers
+            _autenticacaoController = new Adapters.Controllers.AutenticacaoController(autenticacaoUseCases, autenticacaoPresenter);
+            _usuarioController = new Adapters.Controllers.UsuarioController(usuarioUseCases, usuarioPresenter);
         }
 
         [HttpPost("Login")]
