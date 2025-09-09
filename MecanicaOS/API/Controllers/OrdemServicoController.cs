@@ -75,7 +75,7 @@ namespace API.Controllers
 
             // Criando controllers
             _ordemServicoController = new Adapters.Controllers.OrdemServicoController(ordemServicoUseCases, ordemServicoPresenter);
-            _insumoOSController = new Adapters.Controllers.InsumoOSController(insumoOSUseCases, ordemServicoPresenter);
+            _insumoOSController = new InsumoOSController(insumoOSUseCases, ordemServicoPresenter);
         }
 
         [HttpGet]
