@@ -1,7 +1,7 @@
-using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
+using Core.Entidades;
+using Core.Enumeradores;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 

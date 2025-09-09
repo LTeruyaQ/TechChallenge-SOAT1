@@ -1,4 +1,4 @@
-using Dominio.Interfaces.Repositorios;
+using Core.Interfaces.Repositorios;
 
 namespace Infraestrutura.Dados.UdT
 {

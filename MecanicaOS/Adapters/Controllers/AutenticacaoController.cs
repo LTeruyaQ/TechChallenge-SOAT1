@@ -5,7 +5,7 @@ using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
 {
-    public class AutenticacaoController
+    public class AutenticacaoController : IAutenticacaoController
     {
         private readonly IAutenticacaoUseCases _autenticacaoUseCases;
         private readonly IAutenticacaoPresenter _autenticacaoPresenter;
@@ -16,11 +16,11 @@ namespace Adapters.Controllers
             _autenticacaoPresenter = autenticacaoPresenter;
         }
 
-        public async Task<AutenticacaoResponse> Autenticar(AutenticacaoRequest autenticacaoRequest)
+        public async Task<AutenticacaoResponse> AutenticarAsync(AutenticacaoRequest autenticacaoRequest)
         {
             var autenticacaoDto = await _autenticacaoUseCases.AutenticarUseCaseAsync(
                 _autenticacaoPresenter.ParaUseCaseDto(autenticacaoRequest));
-                
+
             return _autenticacaoPresenter.ParaResponse(autenticacaoDto);
         }
     }

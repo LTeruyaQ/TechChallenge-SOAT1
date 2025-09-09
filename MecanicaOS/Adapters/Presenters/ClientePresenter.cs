@@ -73,7 +73,6 @@ namespace Adapters.Presenters
                 TipoCliente = cliente.TipoCliente.ToString(),
                 EnderecoId = cliente.Endereco.Id,
                 ContatoId = cliente.Contato.Id,
-                UsuarioId = cliente.Usuario.Id,
                 DataCadastro = cliente.DataCadastro.ToString("yyyy-MM-dd HH:mm:ss"),
                 DataAtualizacao = cliente.DataAtualizacao?.ToString("yyyy-MM-dd HH:mm:ss"),
                 Veiculos = cliente.Veiculos?.Select(v => new VeiculoResponse

@@ -1,4 +1,4 @@
-using Dominio.Interfaces.Servicos;
+using Core.Interfaces.Servicos;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

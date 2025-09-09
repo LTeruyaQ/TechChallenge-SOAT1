@@ -1,11 +1,7 @@
 using API.Middlewares;
-using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Jobs;
-using Aplicacao.Mapeamentos;
-using Aplicacao.Notificacoes.OS;
-using Aplicacao.Servicos;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.Jobs;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Infraestrutura.Autenticacao;
@@ -123,7 +119,7 @@ builder.Services.AddScoped<IServicoServico, ServicoServico>();
 builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
 builder.Services.AddScoped<IEstoqueServico, EstoqueServico>();
 builder.Services.AddScoped<IClienteServico, ClienteServico>();
-builder.Services.AddScoped<IOrdemServicoServico, OrdemServicoServico>();
+builder.Services.AddScoped<IOrdemServicoServico>(x => new OrdemServicoServico ());
 builder.Services.AddScoped<IInsumoOSServico, InsumoOSServico>();
 builder.Services.AddScoped<IOrcamentoServico, OrcamentoServico>();
 builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
@@ -149,16 +145,6 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(OrdemServicoEmOrcamentoEvent).Assembly);
 });
-
-// Aplicacao
-builder.Services.AddAutoMapper(
-    typeof(ServicoProfile),
-    typeof(EstoqueProfile),
-    typeof(VeiculoProfile),
-    typeof(UsuarioProfile),
-    typeof(ClienteProfile),
-    typeof(OrdemServicoProfile),
-    typeof(InsumoOSProfile));
 
 // Infraestrutura
 builder.Services.AddScoped<IServicoEmail, ServicoEmail>();

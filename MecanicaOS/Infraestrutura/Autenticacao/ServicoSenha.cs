@@ -1,5 +1,5 @@
 using BCrypt.Net;
-using Dominio.Interfaces.Servicos;
+using Core.Interfaces.Servicos;
 
 namespace Infraestrutura.Autenticacao;
 

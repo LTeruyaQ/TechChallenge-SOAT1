@@ -63,11 +63,11 @@ namespace Adapters.Presenters
                 ClienteId = ordemServico.ClienteId,
                 VeiculoId = ordemServico.VeiculoId,
                 ServicoId = ordemServico.ServicoId,
-                Orcamento = ordemServico.Orcamento,
+                Orcamento = (double?)ordemServico.Orcamento,
                 Descricao = ordemServico.Descricao,
                 Status = ordemServico.Status,
                 DataEnvioOrcamento = ordemServico.DataEnvioOrcamento,
-                Insumos = ordemServico.Insumos?.Select(i => new InsumoOSResponse
+                Insumos = ordemServico.InsumosOS?.Select(i => new InsumoOSResponse
                 {
                     OrdemServicoId = i.OrdemServicoId,
                     EstoqueId = i.EstoqueId,

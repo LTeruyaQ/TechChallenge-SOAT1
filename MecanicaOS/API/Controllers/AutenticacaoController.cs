@@ -1,8 +1,8 @@
+using Adapters.Controllers;
+using Adapters.DTOs.Requests.Autenticacao;
+using Adapters.DTOs.Requests.Usuario;
+using Adapters.DTOs.Responses.Autenticacao;
 using API.Models;
-using Aplicacao.DTOs.Requests.Autenticacao;
-using Aplicacao.DTOs.Requests.Usuario;
-using Aplicacao.DTOs.Responses.Autenticacao;
-using Aplicacao.Interfaces.Servicos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,13 +10,13 @@ namespace API.Controllers
 {
     public class AutenticacaoController : BaseApiController
     {
-        private readonly IAutenticacaoServico _autenticacaoServico;
-        private readonly IUsuarioServico _usuarioServico;
+        private readonly IAutenticacaoController _autenticacaoController;
+        private readonly IUsuarioController _usuarioController;
 
-        public AutenticacaoController(IAutenticacaoServico autenticacaoServico, IUsuarioServico usuarioServico)
+        public AutenticacaoController(IAutenticacaoController autenticacaoController, IUsuarioController usuarioController)
         {
-            _autenticacaoServico = autenticacaoServico ?? throw new ArgumentNullException(nameof(autenticacaoServico));
-            _usuarioServico = usuarioServico ?? throw new ArgumentNullException(nameof(usuarioServico));
+            _autenticacaoController = autenticacaoController;
+            _usuarioController = usuarioController;
         }
 
         [HttpPost("Login")]
@@ -26,7 +26,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] AutenticacaoRequest request)
         {
-            return ValidarModelState() ?? Ok(await _autenticacaoServico.AutenticarAsync(request));
+            return ValidarModelState() ?? Ok(await _autenticacaoController.AutenticarAsync(request));
         }
 
         [HttpPost("Registrar")]
@@ -37,7 +37,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Registrar(CadastrarUsuarioRequest request)
         {
-            var usuario = await _usuarioServico.CadastrarAsync(request);
+            var usuario = await _usuarioController.CadastrarAsync(request);
             return CreatedAtAction(nameof(Login), new AutenticacaoRequest { Email = usuario.Email, Senha = usuario.Senha }, usuario);
         }
 
