@@ -14,7 +14,6 @@ using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases;
-using Infraestrutura.Jobs;
 using Infraestrutura.Logs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
