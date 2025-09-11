@@ -1,5 +1,5 @@
 using API.Filters;
-using Dominio.Interfaces.Servicos;
+using Core.Interfaces.Servicos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

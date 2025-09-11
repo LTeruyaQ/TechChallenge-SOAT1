@@ -1,21 +1,21 @@
 ﻿using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Jobs;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
+using Hangfire;
 using System.Text;
 
 namespace Infraestrutura.Jobs;
 
 public class VerificarEstoqueJob(
-    IRepositorio<Estoque> estoqueRepositorio,
-    IRepositorio<Usuario> usuarioRepositorio,
     IAlertaEstoqueGateway alertaEstoqueGateway,
     IServicoEmail notificacaoEmail,
     ILogServico<VerificarEstoqueJob> logServico,
     IUnidadeDeTrabalho udt,
     IEstoqueGateway estoqueGateway,
-    IUsuarioGateway usuarioGateway)
+    IUsuarioGateway usuarioGateway) : IVerificarEstoqueJob
 {
     private readonly IEstoqueGateway _estoqueGateway = estoqueGateway;
     private readonly IUsuarioGateway _usuarioGateway = usuarioGateway;
@@ -24,6 +24,7 @@ public class VerificarEstoqueJob(
     private readonly IServicoEmail _servicoEmail = notificacaoEmail;
     private readonly IUnidadeDeTrabalho _uot = udt;
 
+    [DisableConcurrentExecution(timeoutInSeconds: 3600)]
     public async Task ExecutarAsync()
     {
         var metodo = nameof(ExecutarAsync);

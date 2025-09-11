@@ -8,9 +8,9 @@ namespace Adapters.Presenters
 
     public class AutenticacaoPresenter : IAutenticacaoPresenter
     {
-        public AutenticacaoUseCaseDto ParaUseCaseDto(AutenticacaoRequest request)
+        public AutenticacaoUseCaseDto? ParaUseCaseDto(AutenticacaoRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new AutenticacaoUseCaseDto
@@ -20,9 +20,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public AutenticacaoResponse ParaResponse(AutenticacaoDto autenticacaoUseCaseDto)
+        public AutenticacaoResponse? ParaResponse(AutenticacaoDto autenticacaoUseCaseDto)
         {
-            if (autenticacaoUseCaseDto == null)
+            if (autenticacaoUseCaseDto is null)
                 return null;
             return new AutenticacaoResponse()
             {

@@ -11,9 +11,9 @@ namespace Adapters.Presenters
 {
     public class OrdemServicoPresenter : IOrdemServicoPresenter
     {
-        public CadastrarOrdemServicoUseCaseDto ParaUseCaseDto(CadastrarOrdemServicoRequest request)
+        public CadastrarOrdemServicoUseCaseDto? ParaUseCaseDto(CadastrarOrdemServicoRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new CadastrarOrdemServicoUseCaseDto
@@ -25,9 +25,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public AtualizarOrdemServicoUseCaseDto ParaUseCaseDto(AtualizarOrdemServicoRequest request)
+        public AtualizarOrdemServicoUseCaseDto? ParaUseCaseDto(AtualizarOrdemServicoRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new AtualizarOrdemServicoUseCaseDto
@@ -40,9 +40,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public CadastrarInsumoOSUseCaseDto ParaUseCaseDto(CadastrarInsumoOSRequest request)
+        public CadastrarInsumoOSUseCaseDto? ParaUseCaseDto(CadastrarInsumoOSRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new CadastrarInsumoOSUseCaseDto
@@ -52,9 +52,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public OrdemServicoResponse ParaResponse(OrdemServico ordemServico)
+        public OrdemServicoResponse? ParaResponse(OrdemServico ordemServico)
         {
-            if (ordemServico == null)
+            if (ordemServico is null)
                 return null;
 
             return new OrdemServicoResponse
@@ -76,12 +76,12 @@ namespace Adapters.Presenters
             };
         }
 
-        public IEnumerable<OrdemServicoResponse> ParaResponse(IEnumerable<OrdemServico> ordensServico)
+        public IEnumerable<OrdemServicoResponse?> ParaResponse(IEnumerable<OrdemServico> ordensServico)
         {
-            if (ordensServico == null)
-                return new List<OrdemServicoResponse>();
+            if (ordensServico is null)
+                return [];
 
-            return ordensServico.Select(ParaResponse).ToList();
+            return ordensServico.Select(ParaResponse);
         }
     }
 }

@@ -8,9 +8,9 @@ namespace Adapters.Presenters
 {
     public class EstoquePresenter : IEstoquePresenter
     {
-        public CadastrarEstoqueUseCaseDto ParaUseCaseDto(CadastrarEstoqueRequest request)
+        public CadastrarEstoqueUseCaseDto? ParaUseCaseDto(CadastrarEstoqueRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new CadastrarEstoqueUseCaseDto
@@ -23,9 +23,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public AtualizarEstoqueUseCaseDto ParaUseCaseDto(AtualizarEstoqueRequest request)
+        public AtualizarEstoqueUseCaseDto? ParaUseCaseDto(AtualizarEstoqueRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new AtualizarEstoqueUseCaseDto
@@ -38,9 +38,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public EstoqueResponse ParaResponse(Estoque estoque)
+        public EstoqueResponse? ParaResponse(Estoque estoque)
         {
-            if (estoque == null)
+            if (estoque is null)
                 return null;
 
             return new EstoqueResponse
@@ -56,12 +56,12 @@ namespace Adapters.Presenters
             };
         }
 
-        public IEnumerable<EstoqueResponse> ParaResponse(IEnumerable<Estoque> estoques)
+        public IEnumerable<EstoqueResponse?> ParaResponse(IEnumerable<Estoque> estoques)
         {
             if (estoques == null)
-                return new List<EstoqueResponse>();
+                return [];
 
-            return estoques.Select(ParaResponse).ToList();
+            return estoques.Select(ParaResponse);
         }
     }
 }

@@ -7,6 +7,7 @@ using Adapters.Presenters.Interfaces;
 using API.Models;
 using Core.Entidades;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Jobs;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
@@ -29,6 +30,7 @@ namespace API.Controllers
             IdCorrelacionalService idCorrelacionalService,
             ILogger<EstoqueUseCases> loggerEstoqueUseCases)
         {
+
             // Criando gateways
             IEstoqueGateway estoqueGateway = new EstoqueGateway(repositorioEstoque);
 

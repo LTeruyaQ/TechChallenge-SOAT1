@@ -44,5 +44,6 @@ namespace Adapters.Gateways
         {
             return await _repositorioEstoque.ObterTodosAsync();
         }
+
     }
 }

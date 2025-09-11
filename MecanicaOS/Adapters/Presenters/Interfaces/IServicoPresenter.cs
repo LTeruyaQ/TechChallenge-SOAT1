@@ -7,9 +7,9 @@ namespace Adapters.Presenters.Interfaces
 {
     public interface IServicoPresenter
     {
-        IEnumerable<ServicoResponse> ParaResponse(IEnumerable<Servico> enumerable);
-        ServicoResponse ParaResponse(Servico servico);
-        CadastrarServicoUseCaseDto ParaUseCaseDto(CadastrarServicoRequest request);
-        EditarServicoUseCaseDto ParaUseCaseDto(EditarServicoRequest request);
+        IEnumerable<ServicoResponse?> ParaResponse(IEnumerable<Servico> enumerable);
+        ServicoResponse? ParaResponse(Servico servico);
+        CadastrarServicoUseCaseDto? ParaUseCaseDto(CadastrarServicoRequest request);
+        EditarServicoUseCaseDto? ParaUseCaseDto(EditarServicoRequest request);
     }
 }

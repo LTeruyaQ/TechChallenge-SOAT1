@@ -6,7 +6,7 @@ namespace Adapters.Presenters.Interfaces
 {
     public interface IAutenticacaoPresenter
     {
-        AutenticacaoUseCaseDto ParaUseCaseDto(AutenticacaoRequest request);
-        AutenticacaoResponse ParaResponse(AutenticacaoDto autenticacaoUseCaseDto);
+        AutenticacaoUseCaseDto? ParaUseCaseDto(AutenticacaoRequest request);
+        AutenticacaoResponse? ParaResponse(AutenticacaoDto autenticacaoUseCaseDto);
     }
 }

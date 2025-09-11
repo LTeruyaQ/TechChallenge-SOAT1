@@ -8,9 +8,9 @@ namespace Adapters.Presenters
 {
     public class UsuarioPresenter : IUsuarioPresenter
     {
-        public CadastrarUsuarioUseCaseDto ParaUseCaseDto(CadastrarUsuarioRequest request)
+        public CadastrarUsuarioUseCaseDto? ParaUseCaseDto(CadastrarUsuarioRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new CadastrarUsuarioUseCaseDto
@@ -23,9 +23,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public AtualizarUsuarioUseCaseDto ParaUseCaseDto(AtualizarUsuarioRequest request)
+        public AtualizarUsuarioUseCaseDto? ParaUseCaseDto(AtualizarUsuarioRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new AtualizarUsuarioUseCaseDto
@@ -38,9 +38,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public UsuarioResponse ParaResponse(Usuario usuario)
+        public UsuarioResponse? ParaResponse(Usuario usuario)
         {
-            if (usuario == null)
+            if (usuario is null)
                 return null;
 
             return new UsuarioResponse
@@ -57,12 +57,12 @@ namespace Adapters.Presenters
             };
         }
 
-        public IEnumerable<UsuarioResponse> ParaResponse(IEnumerable<Usuario> usuarios)
+        public IEnumerable<UsuarioResponse?> ParaResponse(IEnumerable<Usuario> usuarios)
         {
-            if (usuarios == null)
-                return new List<UsuarioResponse>();
+            if (usuarios is null)
+                return [];
 
-            return usuarios.Select(ParaResponse).ToList();
+            return usuarios.Select(ParaResponse);
         }
     }
 }

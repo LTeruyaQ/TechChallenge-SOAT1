@@ -9,10 +9,10 @@ namespace Adapters.Presenters.Interfaces
 {
     public interface IOrdemServicoPresenter
     {
-        CadastrarOrdemServicoUseCaseDto ParaUseCaseDto(CadastrarOrdemServicoRequest request);
-        AtualizarOrdemServicoUseCaseDto ParaUseCaseDto(AtualizarOrdemServicoRequest request);
-        CadastrarInsumoOSUseCaseDto ParaUseCaseDto(CadastrarInsumoOSRequest request);
-        OrdemServicoResponse ParaResponse(OrdemServico ordemServico);
-        IEnumerable<OrdemServicoResponse> ParaResponse(IEnumerable<OrdemServico> ordensServico);
+        CadastrarOrdemServicoUseCaseDto? ParaUseCaseDto(CadastrarOrdemServicoRequest request);
+        AtualizarOrdemServicoUseCaseDto? ParaUseCaseDto(AtualizarOrdemServicoRequest request);
+        CadastrarInsumoOSUseCaseDto? ParaUseCaseDto(CadastrarInsumoOSRequest request);
+        OrdemServicoResponse? ParaResponse(OrdemServico ordemServico);
+        IEnumerable<OrdemServicoResponse?> ParaResponse(IEnumerable<OrdemServico> ordensServico);
     }
 }

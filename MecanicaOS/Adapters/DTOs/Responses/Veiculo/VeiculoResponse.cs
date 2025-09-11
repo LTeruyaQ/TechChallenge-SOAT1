@@ -9,7 +9,7 @@ namespace Adapters.DTOs.Responses.Veiculo
         public string Cor { get; set; } = string.Empty;
         public string Ano { get; set; } = string.Empty;
         public string? Anotacoes { get; set; }
-        public Guid ClienteId { get; set; }
+        public Guid? ClienteId { get; set; }
         public string ClienteNome { get; set; } = string.Empty;
         public DateTime DataCadastro { get; set; }
         public DateTime? DataAtualizacao { get; set; }

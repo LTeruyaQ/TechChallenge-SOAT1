@@ -10,8 +10,8 @@ namespace Adapters.Presenters
     {
         public IEnumerable<ServicoResponse> ParaResponse(IEnumerable<Servico> enumerable)
         {
-            if (enumerable == null)
-                return new List<ServicoResponse>();
+            if (enumerable is null)
+                return [];
 
             return enumerable.Select(ParaResponse);
         }
@@ -30,9 +30,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public CadastrarServicoUseCaseDto ParaUseCaseDto(CadastrarServicoRequest request)
+        public CadastrarServicoUseCaseDto? ParaUseCaseDto(CadastrarServicoRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new CadastrarServicoUseCaseDto
@@ -44,9 +44,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public EditarServicoUseCaseDto ParaUseCaseDto(EditarServicoRequest request)
+        public EditarServicoUseCaseDto? ParaUseCaseDto(EditarServicoRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new EditarServicoUseCaseDto

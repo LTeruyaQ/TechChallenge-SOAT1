@@ -1,10 +1,10 @@
-using Adapters.Controllers;
 using Adapters.DTOs.Requests.Usuario;
 using Adapters.DTOs.Responses.Usuario;
 using Adapters.Gateways;
 using Adapters.Presenters;
 using Adapters.Presenters.Interfaces;
 using API.Models;
+using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -22,25 +22,33 @@ namespace API.Controllers
         private readonly Adapters.Controllers.UsuarioController _usuarioController;
 
         public UsuarioController(
-            IRepositorio<Core.Entidades.Usuario> repositorioUsuario,
-            IRepositorio<Core.Entidades.Cliente> repositorioCliente,
+            IRepositorio<Usuario> repositorioUsuario,
+            IRepositorio<Cliente> repositorioCliente,
+            IRepositorio<Endereco> repositorioEndereco,
+            IRepositorio<Contato> repositorioContato,
             IUnidadeDeTrabalho unidadeDeTrabalho,
             IUsuarioLogadoServico usuarioLogadoServico,
-            IServicoSenha servicoSenha)
+            IServicoSenha servicoSenha,
+            IIdCorrelacionalService idCorrelacionalService,
+            ILogger<ClienteUseCases> loggerClienteUseCase,
+            ILogger<UsuarioUseCases> loggerUsuarioUseCase
+            )
         {
             // Criando gateways
             IUsuarioGateway usuarioGateway = new UsuarioGateway(repositorioUsuario);
             IClienteGateway clienteGateway = new ClienteGateway(repositorioCliente);
+            IEnderecoGateway EnderecoGateway = new EnderecoGateway(repositorioEndereco);
+            IContatoGateway ContatoGateway = new ContatoGateway(repositorioContato);
             
             // Criando logs
-            ILogServico<ClienteUseCases> logClienteUseCases = new LogServico<ClienteUseCases>();
-            ILogServico<UsuarioUseCases> logUsuarioUseCases = new LogServico<UsuarioUseCases>();
+            ILogServico<ClienteUseCases> logClienteUseCases = new LogServico<ClienteUseCases>(idCorrelacionalService, loggerClienteUseCase, usuarioLogadoServico);
+            ILogServico<UsuarioUseCases> logUsuarioUseCases = new LogServico<UsuarioUseCases>(idCorrelacionalService, loggerUsuarioUseCase, usuarioLogadoServico);
             
             // Criando use cases
             IClienteUseCases clienteUseCases = new ClienteUseCases(
-                clienteGateway, 
-                null, // enderecoGateway não é necessário para este controller
-                null, // contatoGateway não é necessário para este controller
+                clienteGateway,
+                EnderecoGateway, 
+                ContatoGateway, 
                 logClienteUseCases, 
                 unidadeDeTrabalho, 
                 usuarioLogadoServico);

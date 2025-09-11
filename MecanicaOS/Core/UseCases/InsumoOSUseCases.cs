@@ -8,7 +8,6 @@ using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
-using Core.Jobs;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases;
@@ -16,18 +15,16 @@ namespace Core.UseCases;
 public class InsumoOSUseCases(
     IOrdemServicoUseCases oSUseCases,
     IEstoqueUseCases estoqueUseCases,
-    VerificarEstoqueJob verificarEstoqueJob,
     IInsumosGateway insumosGateway,
-    IRepositorio<InsumoOS> repositorio,
     ILogServico<InsumoOSUseCases> logServico,
     IUnidadeDeTrabalho udt,
-    IUsuarioLogadoServico usuarioLogadoServico) : UseCasesAbstrato<InsumoOSUseCases, InsumoOS>(logServico, udt, usuarioLogadoServico), IInsumoOSUseCases
+    IUsuarioLogadoServico usuarioLogadoServico,
+    IVerificarEstoqueJobGateway verificarEstoqueJobGateway) : UseCasesAbstrato<InsumoOSUseCases, InsumoOS>(logServico, udt, usuarioLogadoServico), IInsumoOSUseCases
 {
     private readonly IInsumosGateway _insumosGateway = insumosGateway;
     private readonly IOrdemServicoUseCases _oSUseCases = oSUseCases;
     private readonly IEstoqueUseCases _estoqueUseCases = estoqueUseCases;
-
-    private readonly VerificarEstoqueJob _verificarEstoqueJob = verificarEstoqueJob;
+    private readonly IVerificarEstoqueJobGateway _verificarEstoqueJobGateway = verificarEstoqueJobGateway;
 
     public async Task<IEnumerable<InsumoOS>> CadastrarInsumosUseCaseAsync(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request)
     {
@@ -99,7 +96,7 @@ public class InsumoOSUseCases(
 
         if (insumosIndisponiveis.Count != 0)
         {
-            _ = _verificarEstoqueJob.ExecutarAsync();
+            _ = _verificarEstoqueJobGateway.VerificarEstoqueAsync();
 
             throw new InsumosIndisponiveisException("Insumos insuficientes no estoque para atender ao serviço solicitado.");
         }

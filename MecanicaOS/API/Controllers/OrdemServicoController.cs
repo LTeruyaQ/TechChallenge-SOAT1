@@ -6,8 +6,10 @@ using Adapters.Gateways;
 using Adapters.Presenters;
 using Adapters.Presenters.Interfaces;
 using API.Models;
+using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Jobs;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
@@ -23,29 +25,30 @@ namespace API.Controllers
     public class OrdemServicoController : BaseApiController
     {
         private readonly Adapters.Controllers.OrdemServicoController _ordemServicoController;
-        private readonly Adapters.Controllers.InsumoOSController _insumoOSController;
+        private readonly InsumoOSController _insumoOSController;
 
         public OrdemServicoController(
-            IRepositorio<Core.Entidades.OrdemServico> repositorioOrdemServico,
-            IRepositorio<Core.Entidades.InsumoOS> repositorioInsumoOS,
-            IRepositorio<Core.Entidades.Estoque> repositorioEstoque,
+            IRepositorio<OrdemServico> repositorioOrdemServico,
+            IRepositorio<InsumoOS> repositorioInsumoOS,
+            IRepositorio<Estoque> repositorioEstoque,
             IUnidadeDeTrabalho unidadeDeTrabalho,
             IUsuarioLogadoServico usuarioLogadoServico,
-            VerificarEstoqueJob verificarEstoqueJob,
+            IVerificarEstoqueJob verificarEstoqueJob,
             IIdCorrelacionalService idCorrelacionalService,
             ILogger<OrdemServicoUseCases> loggerOrdemServicoUseCases,
             ILogger<EstoqueUseCases> loggerEstoqueUseCases,
             ILogger<InsumoOSUseCases> loggerInsumoOSUseCases)
         {
-            // Criando gateways
-            IOrdemServicoGateway ordemServicoGateway = new OrdemServicoGateway(repositorioOrdemServico);
-            IInsumosGateway insumosGateway = new InsumosGateway(repositorioInsumoOS);
-            IEstoqueGateway estoqueGateway = new EstoqueGateway(repositorioEstoque);
-
             // Criando logs
             ILogServico<OrdemServicoUseCases> logOrdemServicoUseCases = new LogServico<OrdemServicoUseCases>(idCorrelacionalService, loggerOrdemServicoUseCases, usuarioLogadoServico);
             ILogServico<EstoqueUseCases> logEstoqueUseCases = new LogServico<EstoqueUseCases>(idCorrelacionalService, loggerEstoqueUseCases, usuarioLogadoServico);
             ILogServico<InsumoOSUseCases> logInsumoOSUseCases = new LogServico<InsumoOSUseCases>(idCorrelacionalService, loggerInsumoOSUseCases, usuarioLogadoServico);
+
+            // Criando gateways
+            IOrdemServicoGateway ordemServicoGateway = new OrdemServicoGateway(repositorioOrdemServico);
+            IInsumosGateway insumosGateway = new InsumosGateway(repositorioInsumoOS);
+            IEstoqueGateway estoqueGateway = new EstoqueGateway(repositorioEstoque);
+            IVerificarEstoqueJobGateway verificarEstoqueJobGateway = new VerificarEstoqueJobGateway(verificarEstoqueJob);
 
             // Criando presenter
             IOrdemServicoPresenter ordemServicoPresenter = new OrdemServicoPresenter();
@@ -58,20 +61,19 @@ namespace API.Controllers
                 usuarioLogadoServico);
 
             IOrdemServicoUseCases ordemServicoUseCases = new OrdemServicoUseCases(
-                ordemServicoGateway,
                 logOrdemServicoUseCases,
                 unidadeDeTrabalho,
+                ordemServicoGateway,
                 usuarioLogadoServico);
 
             IInsumoOSUseCases insumoOSUseCases = new InsumoOSUseCases(
                 ordemServicoUseCases,
                 estoqueUseCases,
-                verificarEstoqueJob,
                 insumosGateway,
-                repositorioInsumoOS,
                 logInsumoOSUseCases,
                 unidadeDeTrabalho,
-                usuarioLogadoServico);
+                usuarioLogadoServico,
+                verificarEstoqueJobGateway);
 
             // Criando controllers
             _ordemServicoController = new Adapters.Controllers.OrdemServicoController(ordemServicoUseCases, ordemServicoPresenter);

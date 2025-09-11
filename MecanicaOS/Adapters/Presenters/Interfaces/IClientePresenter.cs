@@ -7,9 +7,9 @@ namespace Adapters.Presenters.Interfaces
 {
     public interface IClientePresenter
     {
-        CadastrarClienteUseCaseDto ParaUseCaseDto(CadastrarClienteRequest request);
-        AtualizarClienteUseCaseDto ParaUseCaseDto(AtualizarClienteRequest request);
-        ClienteResponse ParaResponse(Cliente cliente);
-        IEnumerable<ClienteResponse> ParaResponse(IEnumerable<Cliente> clientes);
+        CadastrarClienteUseCaseDto? ParaUseCaseDto(CadastrarClienteRequest request);
+        AtualizarClienteUseCaseDto? ParaUseCaseDto(AtualizarClienteRequest request);
+        ClienteResponse? ParaResponse(Cliente cliente);
+        IEnumerable<ClienteResponse?> ParaResponse(IEnumerable<Cliente> clientes);
     }
 }

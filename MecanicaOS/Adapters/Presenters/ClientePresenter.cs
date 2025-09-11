@@ -9,9 +9,9 @@ namespace Adapters.Presenters
 {
     public class ClientePresenter : IClientePresenter
     {
-        public CadastrarClienteUseCaseDto ParaUseCaseDto(CadastrarClienteRequest request)
+        public CadastrarClienteUseCaseDto? ParaUseCaseDto(CadastrarClienteRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new CadastrarClienteUseCaseDto
@@ -32,9 +32,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public AtualizarClienteUseCaseDto ParaUseCaseDto(AtualizarClienteRequest request)
+        public AtualizarClienteUseCaseDto? ParaUseCaseDto(AtualizarClienteRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new AtualizarClienteUseCaseDto
@@ -58,9 +58,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public ClienteResponse ParaResponse(Cliente cliente)
+        public ClienteResponse? ParaResponse(Cliente cliente)
         {
-            if (cliente == null)
+            if (cliente is null)
                 return null;
 
             return new ClienteResponse
@@ -91,12 +91,12 @@ namespace Adapters.Presenters
             };
         }
 
-        public IEnumerable<ClienteResponse> ParaResponse(IEnumerable<Cliente> clientes)
+        public IEnumerable<ClienteResponse?> ParaResponse(IEnumerable<Cliente> clientes)
         {
             if (clientes == null)
-                return new List<ClienteResponse>();
+                return [];
 
-            return clientes.Select(ParaResponse).ToList();
+            return clientes.Select(ParaResponse);
         }
     }
 }

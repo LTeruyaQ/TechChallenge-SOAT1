@@ -1,4 +1,5 @@
 using API.Middlewares;
+using Core.Interfaces.Jobs;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Hangfire;
@@ -118,6 +119,7 @@ builder.Services.AddHangfire(config => config
 
 builder.Services.AddHangfireServer();
 
+builder.Services.AddScoped<IVerificarEstoqueJob, VerificarEstoqueJob>();
 builder.Services.AddScoped<VerificarEstoqueJob>();
 builder.Services.AddScoped<VerificarOrcamentoExpiradoJob>();
 

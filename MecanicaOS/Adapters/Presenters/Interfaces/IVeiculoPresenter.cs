@@ -7,9 +7,9 @@ namespace Adapters.Presenters.Interfaces
 {
     public interface IVeiculoPresenter
     {
-        CadastrarVeiculoUseCaseDto ParaUseCaseDto(CadastrarVeiculoRequest request);
-        AtualizarVeiculoUseCaseDto ParaUseCaseDto(AtualizarVeiculoRequest request);
-        VeiculoResponse ParaResponse(Veiculo veiculo);
-        IEnumerable<VeiculoResponse> ParaResponse(IEnumerable<Veiculo> veiculos);
+        CadastrarVeiculoUseCaseDto? ParaUseCaseDto(CadastrarVeiculoRequest request);
+        AtualizarVeiculoUseCaseDto? ParaUseCaseDto(AtualizarVeiculoRequest request);
+        VeiculoResponse? ParaResponse(Veiculo veiculo);
+        IEnumerable<VeiculoResponse?> ParaResponse(IEnumerable<Veiculo> veiculos);
     }
 }

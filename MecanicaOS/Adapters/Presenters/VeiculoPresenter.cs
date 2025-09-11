@@ -8,9 +8,9 @@ namespace Adapters.Presenters
 {
     public class VeiculoPresenter : IVeiculoPresenter
     {
-        public CadastrarVeiculoUseCaseDto ParaUseCaseDto(CadastrarVeiculoRequest request)
+        public CadastrarVeiculoUseCaseDto? ParaUseCaseDto(CadastrarVeiculoRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new CadastrarVeiculoUseCaseDto
@@ -25,9 +25,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public AtualizarVeiculoUseCaseDto ParaUseCaseDto(AtualizarVeiculoRequest request)
+        public AtualizarVeiculoUseCaseDto? ParaUseCaseDto(AtualizarVeiculoRequest request)
         {
-            if (request == null)
+            if (request is null)
                 return null;
 
             return new AtualizarVeiculoUseCaseDto
@@ -42,9 +42,9 @@ namespace Adapters.Presenters
             };
         }
 
-        public VeiculoResponse ParaResponse(Veiculo veiculo)
+        public VeiculoResponse? ParaResponse(Veiculo veiculo)
         {
-            if (veiculo == null)
+            if (veiculo is null)
                 return null;
 
             return new VeiculoResponse
@@ -63,12 +63,12 @@ namespace Adapters.Presenters
             };
         }
 
-        public IEnumerable<VeiculoResponse> ParaResponse(IEnumerable<Veiculo> veiculos)
+        public IEnumerable<VeiculoResponse?> ParaResponse(IEnumerable<Veiculo> veiculos)
         {
-            if (veiculos == null)
-                return new List<VeiculoResponse>();
+            if (veiculos is null)
+                return [];
 
-            return veiculos.Select(ParaResponse).ToList();
+            return veiculos.Select(ParaResponse);
         }
     }
 }
