@@ -8,6 +8,7 @@ using Adapters.Presenters.Interfaces;
 using API.Models;
 using Core.Entidades;
 using Core.Enumeradores;
+using Core.Interfaces.Eventos;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Jobs;
 using Core.Interfaces.Repositorios;
@@ -15,6 +16,8 @@ using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases;
 using Infraestrutura.Logs;
+using Infraestrutura.Notificacoes;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,29 +33,46 @@ namespace API.Controllers
             IRepositorio<OrdemServico> repositorioOrdemServico,
             IRepositorio<InsumoOS> repositorioInsumoOS,
             IRepositorio<Estoque> repositorioEstoque,
+            IRepositorio<Cliente> repositorioCliente,
+            IRepositorio<Servico> repositorioServico,
             IUnidadeDeTrabalho unidadeDeTrabalho,
             IUsuarioLogadoServico usuarioLogadoServico,
             IVerificarEstoqueJob verificarEstoqueJob,
             IIdCorrelacionalService idCorrelacionalService,
             ILogger<OrdemServicoUseCases> loggerOrdemServicoUseCases,
             ILogger<EstoqueUseCases> loggerEstoqueUseCases,
-            ILogger<InsumoOSUseCases> loggerInsumoOSUseCases)
+            ILogger<InsumoOSUseCases> loggerInsumoOSUseCases,
+            ILogger<ServicoUseCases> loggerServicoUseCases,
+            IMediator mediator)
         {
             // Criando logs
             ILogServico<OrdemServicoUseCases> logOrdemServicoUseCases = new LogServico<OrdemServicoUseCases>(idCorrelacionalService, loggerOrdemServicoUseCases, usuarioLogadoServico);
             ILogServico<EstoqueUseCases> logEstoqueUseCases = new LogServico<EstoqueUseCases>(idCorrelacionalService, loggerEstoqueUseCases, usuarioLogadoServico);
             ILogServico<InsumoOSUseCases> logInsumoOSUseCases = new LogServico<InsumoOSUseCases>(idCorrelacionalService, loggerInsumoOSUseCases, usuarioLogadoServico);
+            ILogServico<ServicoUseCases> logServicoUseCases = new LogServico<ServicoUseCases>(idCorrelacionalService, loggerServicoUseCases, usuarioLogadoServico);
+
+            IEventosPublisher eventosPublisher = new EventoPublisher(mediator);
 
             // Criando gateways
+            IEventosGateway eventosGateway = new EventosGateway(eventosPublisher);
             IOrdemServicoGateway ordemServicoGateway = new OrdemServicoGateway(repositorioOrdemServico);
             IInsumosGateway insumosGateway = new InsumosGateway(repositorioInsumoOS);
             IEstoqueGateway estoqueGateway = new EstoqueGateway(repositorioEstoque);
             IVerificarEstoqueJobGateway verificarEstoqueJobGateway = new VerificarEstoqueJobGateway(verificarEstoqueJob);
+            IClienteGateway clienteGateway = new ClienteGateway(repositorioCliente);
+            IServicoGateway servicoGateway = new ServicoGateway(repositorioServico); // Supondo que exista um repositorioServico
 
             // Criando presenter
             IOrdemServicoPresenter ordemServicoPresenter = new OrdemServicoPresenter();
 
             // Criando use cases
+            IServicoUseCases servicoUseCases = new ServicoUseCases(
+                logServicoUseCases,
+                unidadeDeTrabalho,
+                usuarioLogadoServico,
+                servicoGateway
+            );
+
             IEstoqueUseCases estoqueUseCases = new EstoqueUseCases(
                 estoqueGateway,
                 logEstoqueUseCases,
@@ -62,8 +82,11 @@ namespace API.Controllers
             IOrdemServicoUseCases ordemServicoUseCases = new OrdemServicoUseCases(
                 logOrdemServicoUseCases,
                 unidadeDeTrabalho,
+                clienteGateway,
+                servicoUseCases,
+                usuarioLogadoServico,
                 ordemServicoGateway,
-                usuarioLogadoServico);
+                eventosGateway);
 
             IInsumoOSUseCases insumoOSUseCases = new InsumoOSUseCases(
                 ordemServicoUseCases,

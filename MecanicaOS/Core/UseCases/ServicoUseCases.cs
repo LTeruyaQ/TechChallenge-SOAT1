@@ -13,7 +13,6 @@ namespace Core.UseCases
     {
         private readonly IServicoGateway _servicoGateway;
         public ServicoUseCases(
-            IRepositorio<Servico> repositorio,
             ILogServico<ServicoUseCases> logServico,
             IUnidadeDeTrabalho udt,
             IUsuarioLogadoServico usuarioLogadoServico,

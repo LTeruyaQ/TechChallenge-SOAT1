@@ -41,7 +41,6 @@ namespace API.Controllers
 
             // Criando use cases
             IServicoUseCases servicoUseCases = new ServicoUseCases(
-                repositorioServico,
                 logServicoUseCases,
                 unidadeDeTrabalho,
                 usuarioLogadoServico,
