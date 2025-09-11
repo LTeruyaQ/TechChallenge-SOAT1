@@ -39,31 +39,31 @@ namespace API.Controllers
             IClienteGateway clienteGateway = new ClienteGateway(repositorioCliente);
             IEnderecoGateway EnderecoGateway = new EnderecoGateway(repositorioEndereco);
             IContatoGateway ContatoGateway = new ContatoGateway(repositorioContato);
-            
+
             // Criando logs
             ILogServico<ClienteUseCases> logClienteUseCases = new LogServico<ClienteUseCases>(idCorrelacionalService, loggerClienteUseCase, usuarioLogadoServico);
             ILogServico<UsuarioUseCases> logUsuarioUseCases = new LogServico<UsuarioUseCases>(idCorrelacionalService, loggerUsuarioUseCase, usuarioLogadoServico);
-            
+
             // Criando use cases
             IClienteUseCases clienteUseCases = new ClienteUseCases(
                 clienteGateway,
-                EnderecoGateway, 
-                ContatoGateway, 
-                logClienteUseCases, 
-                unidadeDeTrabalho, 
+                EnderecoGateway,
+                ContatoGateway,
+                logClienteUseCases,
+                unidadeDeTrabalho,
                 usuarioLogadoServico);
-                
+
             IUsuarioUseCases usuarioUseCases = new UsuarioUseCases(
-                logUsuarioUseCases, 
-                unidadeDeTrabalho, 
-                clienteUseCases, 
-                servicoSenha, 
-                usuarioLogadoServico, 
+                logUsuarioUseCases,
+                unidadeDeTrabalho,
+                clienteUseCases,
+                servicoSenha,
+                usuarioLogadoServico,
                 usuarioGateway);
-                
+
             // Criando presenter
             IUsuarioPresenter usuarioPresenter = new UsuarioPresenter();
-                
+
             // Criando controller
             _usuarioController = new Adapters.Controllers.UsuarioController(usuarioUseCases, usuarioPresenter);
         }
@@ -73,15 +73,8 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ObterTodos()
         {
-            try
-            {
-                var usuarios = await _usuarioController.ObterTodosAsync();
-                return Ok(usuarios);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
-            }
+            var usuarios = await _usuarioController.ObterTodosAsync();
+            return Ok(usuarios);
         }
 
         [HttpGet("{id:guid}")]
@@ -90,38 +83,24 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ObterPorId(Guid id)
         {
-            try
-            {
-                var usuario = await _usuarioController.ObterPorIdAsync(id);
-                if (usuario == null)
-                    return NotFound(new ErrorResponse { Message = "Usuário não encontrado" });
-                    
-                return Ok(usuario);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
-            }
+            var usuario = await _usuarioController.ObterPorIdAsync(id);
+            if (usuario == null)
+                return NotFound(new ErrorResponse { Message = "Usuário não encontrado" });
+
+            return Ok(usuario);
         }
-        
+
         [HttpGet("email/{email}")]
         [ProducesResponseType(typeof(UsuarioResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ObterPorEmail(string email)
         {
-            try
-            {
-                var usuario = await _usuarioController.ObterPorEmailAsync(email);
-                if (usuario == null)
-                    return NotFound(new ErrorResponse { Message = "Usuário não encontrado" });
-                    
-                return Ok(usuario);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
-            }
+            var usuario = await _usuarioController.ObterPorEmailAsync(email);
+            if (usuario == null)
+                return NotFound(new ErrorResponse { Message = "Usuário não encontrado" });
+
+            return Ok(usuario);
         }
 
         [HttpPost]
@@ -134,19 +113,8 @@ namespace API.Controllers
             var resultadoValidacao = ValidarModelState();
             if (resultadoValidacao != null) return resultadoValidacao;
 
-            try
-            {
-                var usuario = await _usuarioController.CadastrarAsync(request);
-                return CreatedAtAction(nameof(ObterPorId), new { id = usuario.Id }, usuario);
-            }
-            catch (Core.Exceptions.DadosJaCadastradosException ex)
-            {
-                return Conflict(new ErrorResponse { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
-            }
+            var usuario = await _usuarioController.CadastrarAsync(request);
+            return CreatedAtAction(nameof(ObterPorId), new { id = usuario.Id }, usuario);
         }
 
         [HttpPut("{id:guid}")]
@@ -159,19 +127,8 @@ namespace API.Controllers
             var resultadoValidacao = ValidarModelState();
             if (resultadoValidacao != null) return resultadoValidacao;
 
-            try
-            {
-                var usuarioAtualizado = await _usuarioController.AtualizarAsync(id, request);
-                return Ok(usuarioAtualizado);
-            }
-            catch (Core.Exceptions.DadosNaoEncontradosException ex)
-            {
-                return NotFound(new ErrorResponse { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
-            }
+            var usuarioAtualizado = await _usuarioController.AtualizarAsync(id, request);
+            return Ok(usuarioAtualizado);
         }
 
         [HttpDelete("{id:guid}")]
@@ -180,19 +137,8 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Deletar(Guid id)
         {
-            try
-            {
-                await _usuarioController.DeletarAsync(id);
-                return NoContent();
-            }
-            catch (Core.Exceptions.DadosNaoEncontradosException ex)
-            {
-                return NotFound(new ErrorResponse { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
-            }
+            await _usuarioController.DeletarAsync(id);
+            return NoContent();
         }
     }
 }

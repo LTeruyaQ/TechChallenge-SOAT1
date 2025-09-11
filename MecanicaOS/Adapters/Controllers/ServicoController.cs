@@ -21,7 +21,7 @@ namespace Adapters.Controllers
             return _servicoPresenter.ParaResponse(await _servicoUseCases.ObterTodosUseCaseAsync());
         }
 
-        public async Task<IEnumerable<ServicoResponse>> ObterServicosDisponiveis(int id)
+        public async Task<IEnumerable<ServicoResponse>> ObterServicosDisponiveis()
         {
             return _servicoPresenter.ParaResponse(await _servicoUseCases.ObterServicosDisponiveisUseCaseAsync());
         }

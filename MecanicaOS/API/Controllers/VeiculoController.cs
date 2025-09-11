@@ -68,28 +68,10 @@ namespace API.Controllers
             var resultadoValidacao = ValidarModelState();
             if (resultadoValidacao != null) return resultadoValidacao;
 
-            try
-            {
-                _logger.LogInformation("Iniciando cadastro de veículo");
-                var response = await _veiculoController.Cadastrar(request);
-                _logger.LogInformation("Veículo cadastrado com sucesso: {Id}", response.Id);
-                return CreatedAtAction(nameof(ObterPorId), new { id = response.Id }, response);
-            }
-            catch (Core.Exceptions.DadosJaCadastradosException ex)
-            {
-                _logger.LogWarning(ex, "Veículo já cadastrado");
-                return Conflict(new ErrorResponse { Message = ex.Message });
-            }
-            catch (Core.Exceptions.DadosInvalidosException ex)
-            {
-                _logger.LogWarning(ex, "Dados inválidos ao cadastrar veículo");
-                return BadRequest(new ErrorResponse { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao cadastrar veículo");
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = "Ocorreu um erro ao cadastrar o veículo." });
-            }
+            _logger.LogInformation("Iniciando cadastro de veículo");
+            var response = await _veiculoController.Cadastrar(request);
+            _logger.LogInformation("Veículo cadastrado com sucesso: {Id}", response.Id);
+            return CreatedAtAction(nameof(ObterPorId), new { id = response.Id }, response);
         }
 
         [HttpDelete("{id:guid}")]
@@ -98,26 +80,13 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Deletar(Guid id)
         {
-            try
-            {
-                _logger.LogInformation("Iniciando remoção de veículo: {Id}", id);
-                var sucesso = await _veiculoController.Deletar(id);
-                if (!sucesso)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = "Ocorreu um erro ao remover o veículo." });
-
-                _logger.LogInformation("Veículo removido com sucesso: {Id}", id);
-                return NoContent();
-            }
-            catch (Core.Exceptions.DadosNaoEncontradosException ex)
-            {
-                _logger.LogWarning(ex, "Veículo não encontrado: {Id}", id);
-                return NotFound(new ErrorResponse { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao remover veículo: {Id}", id);
+            _logger.LogInformation("Iniciando remoção de veículo: {Id}", id);
+            var sucesso = await _veiculoController.Deletar(id);
+            if (!sucesso)
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = "Ocorreu um erro ao remover o veículo." });
-            }
+
+            _logger.LogInformation("Veículo removido com sucesso: {Id}", id);
+            return NoContent();
         }
 
         [HttpPut("{id:guid}")]
@@ -130,28 +99,10 @@ namespace API.Controllers
             var resultadoValidacao = ValidarModelState();
             if (resultadoValidacao != null) return resultadoValidacao;
 
-            try
-            {
-                _logger.LogInformation("Iniciando atualização de veículo: {Id}", id);
-                var response = await _veiculoController.Atualizar(id, request);
-                _logger.LogInformation("Veículo atualizado com sucesso: {Id}", id);
-                return Ok(response);
-            }
-            catch (Core.Exceptions.DadosNaoEncontradosException ex)
-            {
-                _logger.LogWarning(ex, "Veículo não encontrado: {Id}", id);
-                return NotFound(new ErrorResponse { Message = ex.Message });
-            }
-            catch (Core.Exceptions.DadosInvalidosException ex)
-            {
-                _logger.LogWarning(ex, "Dados inválidos ao atualizar veículo: {Id}", id);
-                return BadRequest(new ErrorResponse { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao atualizar veículo: {Id}", id);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = "Ocorreu um erro ao atualizar o veículo." });
-            }
+            _logger.LogInformation("Iniciando atualização de veículo: {Id}", id);
+            var response = await _veiculoController.Atualizar(id, request);
+            _logger.LogInformation("Veículo atualizado com sucesso: {Id}", id);
+            return Ok(response);
         }
 
         [HttpGet("cliente/{clienteId:guid}")]
@@ -160,17 +111,9 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ObterPorCliente(Guid clienteId)
         {
-            try
-            {
-                _logger.LogInformation("Obtendo veículos do cliente: {ClienteId}", clienteId);
-                var response = await _veiculoController.ObterPorCliente(clienteId);
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao obter veículos do cliente: {ClienteId}", clienteId);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = "Ocorreu um erro ao obter os veículos do cliente." });
-            }
+            _logger.LogInformation("Obtendo veículos do cliente: {ClienteId}", clienteId);
+            var response = await _veiculoController.ObterPorCliente(clienteId);
+            return Ok(response);
         }
 
         [HttpGet("{id:guid}")]
@@ -179,20 +122,12 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ObterPorId(Guid id)
         {
-            try
-            {
-                _logger.LogInformation("Obtendo veículo por ID: {Id}", id);
-                var response = await _veiculoController.ObterPorId(id);
-                if (response == null)
-                    return NotFound(new ErrorResponse { Message = "Veículo não encontrado" });
+            _logger.LogInformation("Obtendo veículo por ID: {Id}", id);
+            var response = await _veiculoController.ObterPorId(id);
+            if (response == null)
+                return NotFound(new ErrorResponse { Message = "Veículo não encontrado" });
 
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao obter veículo por ID: {Id}", id);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = "Ocorreu um erro ao obter o veículo." });
-            }
+            return Ok(response);
         }
 
         [HttpGet("placa/{placa}")]
@@ -201,20 +136,12 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ObterPorPlaca(string placa)
         {
-            try
-            {
-                _logger.LogInformation("Obtendo veículo por placa: {Placa}", placa);
-                var response = await _veiculoController.ObterPorPlaca(placa);
-                if (response == null)
-                    return NotFound(new ErrorResponse { Message = "Veículo não encontrado" });
+            _logger.LogInformation("Obtendo veículo por placa: {Placa}", placa);
+            var response = await _veiculoController.ObterPorPlaca(placa);
+            if (response == null)
+                return NotFound(new ErrorResponse { Message = "Veículo não encontrado" });
 
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao obter veículo por placa: {Placa}", placa);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = "Ocorreu um erro ao obter o veículo." });
-            }
+            return Ok(response);
         }
 
         [HttpGet]
@@ -222,17 +149,9 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ObterTodos()
         {
-            try
-            {
-                _logger.LogInformation("Obtendo todos os veículos");
-                var response = await _veiculoController.ObterTodos();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao obter todos os veículos");
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = "Ocorreu um erro ao obter os veículos." });
-            }
+            _logger.LogInformation("Obtendo todos os veículos");
+            var response = await _veiculoController.ObterTodos();
+            return Ok(response);
         }
     }
 }

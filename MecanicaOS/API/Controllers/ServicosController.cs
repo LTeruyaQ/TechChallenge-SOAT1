@@ -68,9 +68,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ObterServicosDisponiveis()
         {
-            // O método do controller da arquitetura limpa espera um id, mas o método da API não usa esse parâmetro
-            // Passamos 0 como um valor padrão já que o método não usa esse parâmetro
-            var servicos = await _servicoController.ObterServicosDisponiveis(0);
+            var servicos = await _servicoController.ObterServicosDisponiveis();
             return Ok(servicos);
         }
 
@@ -98,19 +96,8 @@ namespace API.Controllers
             var resultadoValidacao = ValidarModelState();
             if (resultadoValidacao != null) return resultadoValidacao;
 
-            try
-            {
-                var servico = await _servicoController.Criar(request);
-                return CreatedAtAction(nameof(ObterPorId), new { id = servico.Id }, servico);
-            }
-            catch (Core.Exceptions.DadosJaCadastradosException ex)
-            {
-                return Conflict(new ErrorResponse { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
-            }
+            var servico = await _servicoController.Criar(request);
+            return CreatedAtAction(nameof(ObterPorId), new { id = servico.Id }, servico);
         }
 
         [HttpPut("{id:guid}")]
@@ -124,19 +111,8 @@ namespace API.Controllers
             var resultadoValidacao = ValidarModelState();
             if (resultadoValidacao != null) return resultadoValidacao;
 
-            try
-            {
-                var servicoAtualizado = await _servicoController.Atualizar(id, request);
-                return Ok(servicoAtualizado);
-            }
-            catch (Core.Exceptions.DadosNaoEncontradosException ex)
-            {
-                return NotFound(new ErrorResponse { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
-            }
+            var servicoAtualizado = await _servicoController.Atualizar(id, request);
+            return Ok(servicoAtualizado);
         }
 
         [HttpDelete("{id:guid}")]
@@ -146,19 +122,8 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Deletar(Guid id)
         {
-            try
-            {
-                await _servicoController.Deletar(id);
-                return NoContent();
-            }
-            catch (Core.Exceptions.DadosNaoEncontradosException ex)
-            {
-                return NotFound(new ErrorResponse { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse { Message = ex.Message });
-            }
+            await _servicoController.Deletar(id);
+            return NoContent();
         }
     }
 }
