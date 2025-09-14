@@ -39,12 +39,18 @@ namespace Core.Entidades.Abstratos
             MarcarComoAtualizada();
         }
 
-        public static bool operator ==(Entidade e1, Entidade e2)
+        public static bool operator ==(Entidade? e1, Entidade? e2)
         {
+            if (ReferenceEquals(e1, null) && ReferenceEquals(e2, null))
+                return true;
+            
+            if (ReferenceEquals(e1, null) || ReferenceEquals(e2, null))
+                return false;
+            
             return e1.Id.Equals(e2.Id);
         }
 
-        public static bool operator !=(Entidade e1, Entidade e2)
+        public static bool operator !=(Entidade? e1, Entidade? e2)
         {
             return !(e1 == e2);
         }

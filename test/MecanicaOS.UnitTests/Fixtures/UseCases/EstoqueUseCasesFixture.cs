@@ -204,7 +204,7 @@ public class EstoqueUseCasesFixture : UseCasesFixtureBase
     {
         var estoqueExistente = CriarEstoqueValido();
         estoqueExistente.Insumo = nome;
-        mockEstoqueGateway.ObterPorIdAsync(estoqueExistente.Id).Returns(estoqueExistente);
+        mockEstoqueGateway.ObterTodosAsync().Returns(new List<Estoque> { estoqueExistente });
     }
 
     public void ConfigurarMockEstoqueGatewayParaListagem(

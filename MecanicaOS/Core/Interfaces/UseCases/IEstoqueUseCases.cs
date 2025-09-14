@@ -1,4 +1,4 @@
-﻿using Core.DTOs.UseCases.Estoque;
+using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 
 namespace Core.Interfaces.UseCases
@@ -10,5 +10,6 @@ namespace Core.Interfaces.UseCases
         Task<bool> DeletarUseCaseAsync(Guid id);
         Task<Estoque> ObterPorIdUseCaseAsync(Guid id);
         Task<IEnumerable<Estoque>> ObterTodosUseCaseAsync();
+        Task<IEnumerable<Estoque>> ObterEstoqueCriticoUseCaseAsync();
     }
 }

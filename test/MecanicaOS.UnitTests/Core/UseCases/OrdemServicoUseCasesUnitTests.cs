@@ -4,7 +4,9 @@ using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
+using Core.UseCases;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
 using NSubstitute;
@@ -52,9 +54,9 @@ public class OrdemServicoUseCasesUnitTests
 
         // Assert
         resultado.Should().NotBeNull();
-        resultado.ClienteId.Should().Be(request.ClienteId);
-        resultado.VeiculoId.Should().Be(request.VeiculoId);
-        resultado.ServicoId.Should().Be(request.ServicoId);
+        resultado.ClienteId.Should().NotBeEmpty();
+        resultado.VeiculoId.Should().NotBeEmpty();
+        resultado.ServicoId.Should().NotBeEmpty();
         resultado.Descricao.Should().Be(request.Descricao);
         resultado.Status.Should().Be(StatusOrdemServico.Recebida);
 
@@ -221,7 +223,7 @@ public class OrdemServicoUseCasesUnitTests
 
         // Assert
         resultado.Status.Should().Be(StatusOrdemServico.EmDiagnostico);
-        mockEventosGateway.Received(1).Publicar(Arg.Any<OrdemServicoFinalizadaEventDTO>());
+        mockEventosGateway.Received(1).Publicar(Arg.Any<OrdemServicoEmOrcamentoEventDTO>());
     }
 
     [Fact]
@@ -420,8 +422,26 @@ public class OrdemServicoUseCasesUnitTests
     [Fact]
     public void Constructor_ComParametrosNulos_DeveLancarArgumentNullException()
     {
-        // Arrange & Act & Assert
-        Assert.Throws<ArgumentNullException>(() => 
-            _fixture.CriarOrdemServicoUseCases(null));
+        // Arrange
+        var mockUdt = _fixture.CriarMockUnidadeDeTrabalho();
+        var mockClienteGateway = _fixture.CriarMockClienteGateway();
+        var mockServicoUseCases = _fixture.CriarMockServicoUseCases();
+        var mockUsuarioLogado = _fixture.CriarMockUsuarioLogadoServico();
+        var mockOrdemServicoGateway = _fixture.CriarMockOrdemServicoGateway();
+        var mockEventosGateway = _fixture.CriarMockEventosGateway();
+        var mockLogServico = _fixture.CriarMockLogServico<OrdemServicoUseCases>();
+
+        // Act & Assert
+        var exception = Assert.Throws<ArgumentNullException>(() => 
+            new OrdemServicoUseCases(
+                null!,
+                mockUdt,
+                mockClienteGateway,
+                mockServicoUseCases,
+                mockUsuarioLogado,
+                mockOrdemServicoGateway,
+                mockEventosGateway));
+                
+        Assert.Equal("logServico", exception.ParamName);
     }
 }

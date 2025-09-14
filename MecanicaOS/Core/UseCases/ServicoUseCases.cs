@@ -105,7 +105,7 @@ namespace Core.UseCases
             {
                 LogInicio(metodo, new { id, request });
 
-                var servico = await _servicoGateway.ObterPorIdAsync(id);
+                var servico = await _servicoGateway.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
 
                 servico.Atualizar(request.Nome, request.Descricao, request.Valor, request.Disponivel);
 

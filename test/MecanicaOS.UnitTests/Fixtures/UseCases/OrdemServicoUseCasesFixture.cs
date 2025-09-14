@@ -20,14 +20,26 @@ public class OrdemServicoUseCasesFixture : UseCasesFixtureBase
         IEventosGateway? mockEventosGateway = null,
         IUnidadeDeTrabalho? mockUdt = null)
     {
+        mockOrdemServicoGateway ??= CriarMockOrdemServicoGateway();
+        mockClienteGateway ??= CriarMockClienteGateway();
+        mockServicoUseCases ??= CriarMockServicoUseCases();
+        mockEventosGateway ??= CriarMockEventosGateway();
+        mockUdt ??= CriarMockUnidadeDeTrabalho();
+        
+        var mockUsuarioLogado = CriarMockUsuarioLogadoServico();
+        var mockLogServico = CriarMockLogServico<OrdemServicoUseCases>();
+        
+        // Configure mocks
+        ConfigurarMocksBasicos(mockUdt, mockUsuarioLogado);
+        
         return new OrdemServicoUseCases(
-            CriarMockLogServico<OrdemServicoUseCases>(),
-            mockUdt ?? CriarMockUnidadeDeTrabalho(),
-            mockClienteGateway ?? CriarMockClienteGateway(),
-            mockServicoUseCases ?? CriarMockServicoUseCases(),
-            CriarMockUsuarioLogadoServico(),
-            mockOrdemServicoGateway ?? CriarMockOrdemServicoGateway(),
-            mockEventosGateway ?? CriarMockEventosGateway());
+            mockLogServico,
+            mockUdt,
+            mockClienteGateway,
+            mockServicoUseCases,
+            mockUsuarioLogado,
+            mockOrdemServicoGateway,
+            mockEventosGateway);
     }
 
     public static OrdemServico CriarOrdemServicoValida()
@@ -107,6 +119,38 @@ public class OrdemServicoUseCasesFixture : UseCasesFixtureBase
             Descricao = "Manutenção preventiva completa",
             Status = StatusOrdemServico.Finalizada,
             DataCadastro = DateTime.UtcNow.AddDays(-7),
+            DataAtualizacao = DateTime.UtcNow.AddDays(-1),
+            Ativo = true
+        };
+    }
+
+    public static OrdemServico CriarOrdemServicoCancelada()
+    {
+        return new OrdemServico
+        {
+            Id = Guid.NewGuid(),
+            ClienteId = Guid.NewGuid(),
+            VeiculoId = Guid.NewGuid(),
+            ServicoId = Guid.NewGuid(),
+            Descricao = "Serviço cancelado pelo cliente",
+            Status = StatusOrdemServico.Cancelada,
+            DataCadastro = DateTime.UtcNow.AddDays(-5),
+            DataAtualizacao = DateTime.UtcNow.AddDays(-2),
+            Ativo = true
+        };
+    }
+
+    public static OrdemServico CriarOrdemServicoEmExecucao()
+    {
+        return new OrdemServico
+        {
+            Id = Guid.NewGuid(),
+            ClienteId = Guid.NewGuid(),
+            VeiculoId = Guid.NewGuid(),
+            ServicoId = Guid.NewGuid(),
+            Descricao = "Serviço em execução",
+            Status = StatusOrdemServico.EmExecucao,
+            DataCadastro = DateTime.UtcNow.AddDays(-3),
             DataAtualizacao = DateTime.UtcNow.AddDays(-1),
             Ativo = true
         };
@@ -222,7 +266,9 @@ public class OrdemServicoUseCasesFixture : UseCasesFixtureBase
             CriarOrdemServicoValida(),
             CriarOrdemServicoEmDiagnostico(),
             CriarOrdemServicoAguardandoAprovacao(),
-            CriarOrdemServicoFinalizada()
+            CriarOrdemServicoFinalizada(),
+            CriarOrdemServicoCancelada(),
+            CriarOrdemServicoEmExecucao()
         };
     }
 

@@ -165,9 +165,22 @@ public class ServicoUseCasesFixture : UseCasesFixtureBase
         IServicoGateway mockServicoGateway,
         Servico? servicoRetorno = null)
     {
-        servicoRetorno ??= CriarServicoValido();
-        mockServicoGateway.CadastrarAsync(Arg.Any<Servico>()).Returns(servicoRetorno);
         mockServicoGateway.ObterServicosDisponiveisPorNomeAsync(Arg.Any<string>()).Returns(Task.FromResult((Servico?)null));
+        
+        mockServicoGateway.CadastrarAsync(Arg.Any<Servico>()).Returns(callInfo => 
+        {
+            var servico = callInfo.Arg<Servico>();
+            if (servicoRetorno != null)
+            {
+                // Use the provided service but preserve the properties from the request
+                servicoRetorno.Nome = servico.Nome;
+                servicoRetorno.Descricao = servico.Descricao;
+                servicoRetorno.Valor = servico.Valor;
+                servicoRetorno.Disponivel = servico.Disponivel;
+                return servicoRetorno;
+            }
+            return servico;
+        });
     }
 
     public void ConfigurarMockServicoGatewayParaAtualizacao(
@@ -208,12 +221,7 @@ public class ServicoUseCasesFixture : UseCasesFixtureBase
         string nome,
         Servico? servicoEncontrado = null)
     {
-        var servicosEncontrados = new List<Servico>();
-        if (servicoEncontrado != null)
-        {
-            servicosEncontrados.Add(servicoEncontrado);
-        }
-        mockServicoGateway.ObterServicosDisponiveisPorNomeAsync(nome).Returns(Task.FromResult(servicosEncontrados.FirstOrDefault()));
+        mockServicoGateway.ObterServicosDisponiveisPorNomeAsync(nome).Returns(Task.FromResult(servicoEncontrado));
     }
 
     public void ConfigurarMockServicoGatewayParaExclusao(

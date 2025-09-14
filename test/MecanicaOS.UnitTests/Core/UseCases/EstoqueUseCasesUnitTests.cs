@@ -143,7 +143,7 @@ public class EstoqueUseCasesUnitTests
             .WithMessage("Estoque não encontrado");
 
         mockEstoqueGateway.Received(1).ObterPorIdAsync(estoqueId);
-        mockEstoqueGateway.Received(1).EditarAsync(Arg.Any<Estoque>());
+        mockEstoqueGateway.DidNotReceive().EditarAsync(Arg.Any<Estoque>());
     }
 
     [Fact]
@@ -206,14 +206,14 @@ public class EstoqueUseCasesUnitTests
         var estoqueUseCases = _fixture.CriarEstoqueUseCases(mockEstoqueGateway);
 
         // Act
-        var resultado = await estoqueUseCases.ObterTodosUseCaseAsync();
+        var resultado = await estoqueUseCases.ObterEstoqueCriticoUseCaseAsync();
 
         // Assert
         resultado.Should().NotBeNull();
         resultado.Should().HaveCount(estoquesCriticos.Count);
         resultado.Should().OnlyContain(e => e.QuantidadeDisponivel <= e.QuantidadeMinima);
 
-        mockEstoqueGateway.Received(1).ObterTodosAsync();
+        mockEstoqueGateway.Received(1).ObterEstoqueCriticoAsync();
     }
 
     [Fact]

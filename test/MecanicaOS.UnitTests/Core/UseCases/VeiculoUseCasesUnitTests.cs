@@ -2,6 +2,7 @@ using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.UseCases;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
 using Xunit;
@@ -412,8 +413,20 @@ public class VeiculoUseCasesUnitTests
     [Fact]
     public void Constructor_ComParametrosNulos_DeveLancarArgumentNullException()
     {
-        // Arrange & Act & Assert
-        Assert.Throws<ArgumentNullException>(() => 
-            _fixture.CriarVeiculoUseCases(null));
+        // Arrange
+        var mockUdt = _fixture.CriarMockUnidadeDeTrabalho();
+        var mockUsuarioLogado = _fixture.CriarMockUsuarioLogadoServico();
+        var mockVeiculoGateway = _fixture.CriarMockVeiculoGateway();
+        var mockLogServico = _fixture.CriarMockLogServico<VeiculoUseCases>();
+
+        // Act & Assert
+        var exception = Assert.Throws<ArgumentNullException>(() => 
+            new VeiculoUseCases(
+                null!,
+                mockUdt,
+                mockUsuarioLogado,
+                mockVeiculoGateway));
+                
+        Assert.Equal("logServico", exception.ParamName);
     }
 }

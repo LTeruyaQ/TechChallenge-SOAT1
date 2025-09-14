@@ -27,7 +27,7 @@ namespace Core.UseCases
             _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
             _servicoJwt = servicoJwt ?? throw new ArgumentNullException(nameof(servicoJwt));
             _log = log ?? throw new ArgumentNullException(nameof(log));
-            _usuarioUseCases = usuarioUseCases ?? throw new ArgumentNullException(nameof(clienteUseCases));
+            _clienteUseCases = clienteUseCases ?? throw new ArgumentNullException(nameof(clienteUseCases));
         }
 
         public async Task<AutenticacaoDto> AutenticarUseCaseAsync(AutenticacaoUseCaseDto request)

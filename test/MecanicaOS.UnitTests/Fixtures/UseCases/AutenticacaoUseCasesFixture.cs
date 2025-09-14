@@ -122,7 +122,8 @@ public class AutenticacaoUseCasesFixture : UseCasesFixtureBase
             Ativo = true,
             DataCadastro = DateTime.UtcNow.AddDays(-7),
             DataUltimoAcesso = DateTime.UtcNow.AddHours(-2),
-            RecebeAlertaEstoque = false
+            RecebeAlertaEstoque = false,
+            ClienteId = Guid.NewGuid()
         };
     }
 
@@ -157,5 +158,22 @@ public class AutenticacaoUseCasesFixture : UseCasesFixtureBase
         string token = "token_jwt_valido")
     {
         mockServicoJwt.GerarToken(Arg.Any<Guid>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IEnumerable<string>>()).Returns(token);
+    }
+    
+    public void ConfigurarMockClienteUseCasesParaClienteValido(
+        IClienteUseCases mockClienteUseCases,
+        Guid clienteId,
+        string nomeCliente = "Cliente Teste")
+    {
+        var cliente = new Cliente
+        {
+            Id = clienteId,
+            Nome = nomeCliente,
+            Ativo = true,
+            DataCadastro = DateTime.UtcNow.AddDays(-10),
+            TipoCliente = TipoCliente.PessoaFisica
+        };
+        
+        mockClienteUseCases.ObterPorIdUseCaseAsync(clienteId).Returns(cliente);
     }
 }

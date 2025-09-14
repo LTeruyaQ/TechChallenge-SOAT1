@@ -66,6 +66,13 @@ public class EstoqueUseCases : UseCasesAbstrato<EstoqueUseCases, Estoque>, IEsto
         {
             LogInicio(metodo, request);
 
+            // Verificar se já existe um estoque com o mesmo nome
+            var estoques = await _estoqueGateway.ObterTodosAsync();
+            if (estoques.Any(e => e.Insumo.Equals(request.Insumo, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new DadosJaCadastradosException("Produto já cadastrado");
+            }
+
             Estoque estoque = new()
             {
                 Insumo = request.Insumo,
@@ -151,6 +158,27 @@ public class EstoqueUseCases : UseCasesAbstrato<EstoqueUseCases, Estoque>, IEsto
             LogFim(metodo, sucesso);
 
             return sucesso;
+        }
+        catch (Exception e)
+        {
+            LogErro(metodo, e);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<Estoque>> ObterEstoqueCriticoUseCaseAsync()
+    {
+        string metodo = nameof(ObterEstoqueCriticoUseCaseAsync);
+
+        try
+        {
+            LogInicio(metodo);
+
+            var estoquesCriticos = await _estoqueGateway.ObterEstoqueCriticoAsync();
+
+            LogFim(metodo, estoquesCriticos);
+
+            return estoquesCriticos;
         }
         catch (Exception e)
         {
