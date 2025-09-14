@@ -1,12 +1,3 @@
-using Aplicacao.DTOs.Requests.Veiculo;
-using Aplicacao.DTOs.Responses.Veiculo;
-using Aplicacao.Servicos;
-using AutoMapper;
-using Dominio.Entidades;
-using Dominio.Especificacoes.Veiculo;
-using Dominio.Exceptions;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
 using Moq;
 
 public class VeiculoServicoTests

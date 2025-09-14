@@ -1,4 +1,4 @@
-﻿using Core.Entidades;
+using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Jobs;
@@ -162,7 +162,10 @@ public class VerificarEstoqueJob(
         try
         {
             var alertas = insumosCriticos
-                .Select(insumo => new AlertaEstoque { EstoqueId = insumo.Id });
+                .Select(insumo => new AlertaEstoque 
+                { 
+                    EstoqueId = insumo.Id
+                });
 
             await _alertaEstoqueGateway.CadastrarVariosAsync(alertas);
 

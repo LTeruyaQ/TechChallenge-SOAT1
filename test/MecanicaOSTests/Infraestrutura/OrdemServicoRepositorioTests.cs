@@ -1,7 +1,3 @@
-using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Especificacoes.Base;
-using Dominio.Especificacoes.OrdemServico;
 using Infraestrutura.Dados;
 using Infraestrutura.Repositorios;
 using Microsoft.Data.Sqlite;

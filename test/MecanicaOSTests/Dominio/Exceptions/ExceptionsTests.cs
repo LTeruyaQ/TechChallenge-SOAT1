@@ -1,7 +1,3 @@
-using Dominio.Exceptions;
-using System;
-using Xunit;
-
 namespace MecanicaOSTests.Dominio.Exceptions
 {
     public class ExceptionsTests

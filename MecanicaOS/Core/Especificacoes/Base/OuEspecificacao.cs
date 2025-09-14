@@ -1,9 +1,10 @@
+using Core.DTOs.Repositories.Autenticacao;
 using Core.Especificacoes.Base.Interfaces;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Base
 {
-    public class OuEspecificacao<T> : EspecificacaoBase<T> where T : class
+    public class OuEspecificacao<T> : EspecificacaoBase<T> where T : RepositoryDto
     {
         public IEspecificacao<T> Esquerda { get; }
         public IEspecificacao<T> Direita { get; }

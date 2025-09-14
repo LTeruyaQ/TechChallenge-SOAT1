@@ -1,14 +1,33 @@
-﻿using Core.Enumeradores;
+﻿using Core.DTOs.Repositories.OrdemServicos;
+using Core.Enumeradores;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.OrdemServico;
 
-public class ObterOrdemServicoPorStatusEspecificacao : EspecificacaoBase<Entidades.OrdemServico>
+public class ObterOrdemServicoPorStatusEspecificacao : EspecificacaoBase<OrdemServicoRepositoryDto>
 {
     private readonly StatusOrdemServico _status;
 
-    public ObterOrdemServicoPorStatusEspecificacao(StatusOrdemServico status) => _status = status;
+    public ObterOrdemServicoPorStatusEspecificacao(StatusOrdemServico status)
+    {
+        _status = status;
 
-    public override Expression<Func<Entidades.OrdemServico, bool>> Expressao => os => os.Status == _status;
+        DefinirProjecao(os => new Entidades.OrdemServico()
+        {
+            Id = os.Id,
+            Ativo = os.Ativo,
+            DataCadastro = os.DataCadastro,
+            DataAtualizacao = os.DataAtualizacao,
+            Descricao = os.Descricao,
+            VeiculoId = os.VeiculoId,
+            Status = os.Status,
+            DataEnvioOrcamento = os.DataEnvioOrcamento,
+            Orcamento = os.Orcamento,
+            ClienteId = os.ClienteId,
+            ServicoId = os.ServicoId,
+        });
+    }
+
+    public override Expression<Func<OrdemServicoRepositoryDto, bool>> Expressao => os => os.Status == _status;
 }

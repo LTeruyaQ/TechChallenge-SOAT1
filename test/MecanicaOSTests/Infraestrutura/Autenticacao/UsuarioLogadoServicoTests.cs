@@ -1,15 +1,8 @@
-﻿using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Interfaces.Repositorios;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Infraestrutura.Autenticacao;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOSTests.Infraestrutura.Autenticacao
 {

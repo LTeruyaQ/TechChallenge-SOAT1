@@ -1,6 +1,3 @@
-using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Especificacoes.Base;
 using Infraestrutura.Dados;
 using Infraestrutura.Repositorios;
 using MecanicaOSTests.Fixtures;

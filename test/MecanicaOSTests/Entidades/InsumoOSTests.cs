@@ -1,4 +1,3 @@
-using Dominio.Entidades;
 using FluentAssertions;
 using Moq;
 

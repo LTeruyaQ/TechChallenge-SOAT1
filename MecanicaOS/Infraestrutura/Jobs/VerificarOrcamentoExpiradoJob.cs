@@ -1,4 +1,4 @@
-﻿using Core.Enumeradores;
+using Core.Enumeradores;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -31,6 +31,7 @@ public class VerificarOrcamentoExpiradoJob(IOrdemServicoGateway ordemServicoGate
             ordensServico.ToList().ForEach(o =>
             {
                 o.Status = StatusOrdemServico.OrcamentoExpirado;
+                o.MarcarComoAtualizada();
             });
 
             await _insumoOSUseCases.DevolverInsumosAoEstoqueUseCaseAsync(ordensServico.SelectMany(os => os.InsumosOS));

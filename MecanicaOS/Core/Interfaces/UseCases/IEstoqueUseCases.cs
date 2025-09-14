@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Estoque;
+﻿using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 
 namespace Core.Interfaces.UseCases

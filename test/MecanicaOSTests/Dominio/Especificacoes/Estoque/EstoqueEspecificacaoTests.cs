@@ -1,10 +1,3 @@
-using Dominio.Entidades;
-using Dominio.Especificacoes.Estoque;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
-
 namespace MecanicaOSTests.Dominio.Especificacoes.Estoque
 {
     public class EstoqueEspecificacaoTests

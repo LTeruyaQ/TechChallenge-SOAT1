@@ -1,11 +1,3 @@
-using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Especificacoes.Usuario;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
-
 namespace MecanicaOSTests.Dominio.Especificacoes.Usuario
 {
     public class UsuarioEspecificacaoTests

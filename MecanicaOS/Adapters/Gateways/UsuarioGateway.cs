@@ -1,3 +1,4 @@
+using Core.DTOs.Repositories.Usuarios;
 using Core.Entidades;
 using Core.Especificacoes.Usuario;
 using Core.Interfaces.Gateways;
@@ -7,48 +8,86 @@ namespace Adapters.Gateways
 {
     public class UsuarioGateway : IUsuarioGateway
     {
-        private readonly IRepositorio<Usuario> _repositorioUsuario;
+        private readonly IRepositorio<UsuarioRepositoryDto> _repositorioUsuario;
 
-        public UsuarioGateway(IRepositorio<Usuario> repositorioUsuario)
+        public UsuarioGateway(IRepositorio<UsuarioRepositoryDto> repositorioUsuario)
         {
             _repositorioUsuario = repositorioUsuario;
         }
 
         public async Task<Usuario> CadastrarAsync(Usuario usuario)
         {
-            return await _repositorioUsuario.CadastrarAsync(usuario);
+            var dto = await _repositorioUsuario.CadastrarAsync(ToDto(usuario));
+            return FromDto(dto);
         }
 
         public async Task DeletarAsync(Usuario usuario)
         {
-            await _repositorioUsuario.DeletarAsync(usuario);
+            await _repositorioUsuario.DeletarAsync(ToDto(usuario));
         }
 
         public async Task EditarAsync(Usuario usuario)
         {
-            await _repositorioUsuario.EditarAsync(usuario);
+            await _repositorioUsuario.EditarAsync(ToDto(usuario));
         }
 
         public async Task<Usuario?> ObterPorEmailAsync(string email)
         {
             var especificacao = new ObterUsuarioPorEmailEspecificacao(email);
-            return await _repositorioUsuario.ObterUmSemRastreamentoAsync(especificacao);
+            var dto = await _repositorioUsuario.ObterUmSemRastreamentoAsync(especificacao);
+            return dto != null ? FromDto(dto) : null;
         }
 
         public async Task<Usuario?> ObterPorIdAsync(Guid id)
         {
-            return await _repositorioUsuario.ObterPorIdAsync(id);
+            var dto = await _repositorioUsuario.ObterPorIdAsync(id);
+            return dto != null ? FromDto(dto) : null;
         }
 
         public async Task<IEnumerable<Usuario>> ObterTodosAsync()
         {
-            return await _repositorioUsuario.ObterTodosAsync();
+            var dtos = await _repositorioUsuario.ObterTodosAsync();
+            return dtos.Select(FromDto);
         }
 
         public async Task<IEnumerable<Usuario>> ObterUsuarioParaAlertaEstoqueAsync()
         {
             var especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
-            return await _repositorioUsuario.ListarAsync(especificacao);
+            return await _repositorioUsuario.ListarProjetadoAsync<Usuario>(especificacao);
+        }
+
+        private static UsuarioRepositoryDto ToDto(Usuario usuario)
+        {
+            return new UsuarioRepositoryDto
+            {
+                Id = usuario.Id,
+                Ativo = usuario.Ativo,
+                DataCadastro = usuario.DataCadastro,
+                DataAtualizacao = usuario.DataAtualizacao,
+                Email = usuario.Email,
+                Senha = usuario.Senha,
+                DataUltimoAcesso = usuario.DataUltimoAcesso,
+                TipoUsuario = usuario.TipoUsuario,
+                RecebeAlertaEstoque = usuario.RecebeAlertaEstoque,
+                ClienteId = usuario.ClienteId
+            };
+        }
+
+        private static Usuario FromDto(UsuarioRepositoryDto dto)
+        {
+            return new Usuario
+            {
+                Id = dto.Id,
+                Ativo = dto.Ativo,
+                DataCadastro = dto.DataCadastro,
+                DataAtualizacao = dto.DataAtualizacao,
+                Email = dto.Email,
+                Senha = dto.Senha,
+                DataUltimoAcesso = dto.DataUltimoAcesso,
+                TipoUsuario = dto.TipoUsuario,
+                RecebeAlertaEstoque = dto.RecebeAlertaEstoque,
+                ClienteId = dto.ClienteId
+            };
         }
     }
 }

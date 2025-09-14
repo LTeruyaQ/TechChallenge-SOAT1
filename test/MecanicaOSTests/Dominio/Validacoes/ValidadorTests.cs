@@ -1,6 +1,4 @@
-﻿using Dominio.Validacoes;
-using FluentAssertions;
-using Xunit;
+﻿using FluentAssertions;
 
 namespace MecanicaOSTests.Dominio.Validacoes
 {

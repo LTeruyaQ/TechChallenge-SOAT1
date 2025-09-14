@@ -1,6 +1,6 @@
 using Adapters.DTOs.Requests.Veiculo;
 using Adapters.DTOs.Responses.Veiculo;
-using Core.DTOs.Veiculo;
+using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
 
 namespace Adapters.Presenters.Interfaces

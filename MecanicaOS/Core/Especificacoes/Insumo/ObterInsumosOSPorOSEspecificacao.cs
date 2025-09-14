@@ -1,10 +1,11 @@
-﻿using Core.Entidades;
+﻿using Core.DTOs.Repositories.OrdemServicos;
+using Core.Entidades;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Insumo;
 
-public class ObterInsumosOSPorOSEspecificacao : EspecificacaoBase<InsumoOS>
+public class ObterInsumosOSPorOSEspecificacao : EspecificacaoBase<InsumoOSRepositoryDto>
 {
     private readonly Guid _ordemServicoId;
 
@@ -12,8 +13,27 @@ public class ObterInsumosOSPorOSEspecificacao : EspecificacaoBase<InsumoOS>
     {
         _ordemServicoId = ordemServicoId;
         AdicionarInclusao(i => i.Estoque);
+        DefinirProjecao(i => new InsumoOS()
+        {
+            Id = i.Id,
+            Ativo = i.Ativo,
+            DataCadastro = i.DataCadastro,
+            DataAtualizacao = i.DataAtualizacao,
+            Quantidade = i.Quantidade,
+            OrdemServicoId = i.OrdemServicoId,
+            EstoqueId = i.EstoqueId,
+            Estoque = new Entidades.Estoque()
+            {
+                Id = i.Estoque.Id,
+                Ativo = i.Estoque.Ativo,
+                DataCadastro = i.Estoque.DataCadastro,
+                DataAtualizacao = i.Estoque.DataAtualizacao,
+                Descricao = i.Estoque.Descricao,
+                QuantidadeMinima = i.Estoque.QuantidadeMinima
+            }
+        });
     }
 
-    public override Expression<Func<InsumoOS, bool>> Expressao =>
+    public override Expression<Func<InsumoOSRepositoryDto, bool>> Expressao =>
         i => i.OrdemServicoId == _ordemServicoId;
 }

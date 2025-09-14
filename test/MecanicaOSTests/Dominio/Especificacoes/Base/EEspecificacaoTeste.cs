@@ -1,5 +1,3 @@
-using Dominio.Especificacoes.Base;
-using Dominio.Especificacoes.Base.Interfaces;
 using System.Linq.Expressions;
 
 namespace MecanicaOSTests.Dominio.Especificacoes.Base

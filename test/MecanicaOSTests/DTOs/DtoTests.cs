@@ -1,7 +1,4 @@
-﻿using Aplicacao.DTOs.Requests.Cliente;
-using Aplicacao.DTOs.Responses.Cliente;
-using FluentAssertions;
-using Xunit;
+﻿using FluentAssertions;
 
 namespace MecanicaOSTests.DTOs
 {

@@ -1,9 +1,10 @@
-﻿using Core.Especificacoes.Base;
+﻿using Core.DTOs.Repositories.OrdemServicos;
+using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.OrdemServico;
 
-public class ObterOrdemServicoPorIdComInsumosEspecificacao : EspecificacaoBase<Entidades.OrdemServico>
+public class ObterOrdemServicoPorIdComInsumosEspecificacao : EspecificacaoBase<OrdemServicoRepositoryDto>
 {
     private readonly Guid _id;
 
@@ -11,7 +12,30 @@ public class ObterOrdemServicoPorIdComInsumosEspecificacao : EspecificacaoBase<E
     {
         _id = id;
         AdicionarInclusao(os => os.InsumosOS);
+        DefinirProjecao(os => new Entidades.OrdemServico
+        {
+            Id = os.Id,
+            Ativo = os.Ativo,
+            DataCadastro = os.DataCadastro,
+            DataAtualizacao = os.DataAtualizacao,
+            Descricao = os.Descricao,
+            Status = os.Status,
+            DataEnvioOrcamento = os.DataEnvioOrcamento,
+            ServicoId = os.ServicoId,
+            VeiculoId = os.VeiculoId,
+            ClienteId = os.ClienteId,
+            InsumosOS = os.InsumosOS.Select(io => new Entidades.InsumoOS
+            {
+                Id = io.Id,
+                Ativo = io.Ativo,
+                DataCadastro = io.DataCadastro,
+                DataAtualizacao = io.DataAtualizacao,
+                Quantidade = io.Quantidade,
+                OrdemServicoId = io.OrdemServicoId,
+                EstoqueId = io.EstoqueId
+            })
+        });
     }
 
-    public override Expression<Func<Entidades.OrdemServico, bool>> Expressao => os => os.Id == _id;
+    public override Expression<Func<OrdemServicoRepositoryDto, bool>> Expressao => os => os.Id == _id;
 }

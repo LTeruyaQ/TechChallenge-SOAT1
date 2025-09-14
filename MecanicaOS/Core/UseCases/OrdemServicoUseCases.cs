@@ -1,5 +1,5 @@
-﻿using Core.DTOs.Eventos;
-using Core.DTOs.OrdemServico;
+using Core.DTOs.UseCases.Eventos;
+using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
@@ -92,12 +92,13 @@ public class OrdemServicoUseCases : UseCasesAbstrato<OrdemServicoUseCases, Ordem
 
             await VerificarEntidadesRelacionadasAsync(request);
 
-            OrdemServico ordemServico = new ()
+            OrdemServico ordemServico = new()
             {
                 ClienteId = request.ClienteId,
                 VeiculoId = request.VeiculoId,
                 ServicoId = request.ServicoId,
                 Descricao = request.Descricao,
+                Status = StatusOrdemServico.Recebida  
             };
 
             var entidade = await _ordemServicoGateway.CadastrarAsync(ordemServico);
@@ -137,8 +138,6 @@ public class OrdemServicoUseCases : UseCasesAbstrato<OrdemServicoUseCases, Ordem
         {
             LogInicio(metodo);
 
-            //var especificacao = new ObterOrdemServicoPorIdComInsumosEspecificacao(id);
-            //var ordemServico = await _repositorio.ObterUmSemRastreamentoAsync(especificacao);
             var ordemServico = await _ordemServicoGateway.ObterOrdemServicoPorIdComInsumos(id);
 
             LogFim(metodo, ordemServico);
@@ -160,8 +159,6 @@ public class OrdemServicoUseCases : UseCasesAbstrato<OrdemServicoUseCases, Ordem
         {
             LogInicio(metodo);
 
-            //var filtroOSStatus = new ObterOrdemServicoPorStatusEspecificacao(status);
-            //var ordemServico = await _repositorio.ListarAsync(filtroOSStatus);
             var ordemServico = await _ordemServicoGateway.ObterOrdemServicoPorStatusAsync(status);
 
             LogFim(metodo, ordemServico);
@@ -251,6 +248,7 @@ public class OrdemServicoUseCases : UseCasesAbstrato<OrdemServicoUseCases, Ordem
             await _eventosGateway.Publicar(new OrdemServicoCanceladaEventDTO(id));
         }
 
+        ordemServico.MarcarComoAtualizada();
         await _ordemServicoGateway.EditarAsync(ordemServico);
 
         if (!await Commit())
@@ -269,6 +267,7 @@ public class OrdemServicoUseCases : UseCasesAbstrato<OrdemServicoUseCases, Ordem
         if (deveExpirar)
         {
             ordemServico.Status = StatusOrdemServico.OrcamentoExpirado;
+            ordemServico.MarcarComoAtualizada();
 
             await _ordemServicoGateway.EditarAsync(ordemServico);
             await Commit();

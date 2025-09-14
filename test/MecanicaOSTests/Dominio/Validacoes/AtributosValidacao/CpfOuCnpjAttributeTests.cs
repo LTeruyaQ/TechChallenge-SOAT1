@@ -1,6 +1,4 @@
-using Dominio.Validacoes.AtributosValidacao;
 using System.ComponentModel.DataAnnotations;
-using Xunit;
 
 namespace MecanicaOSTests.Dominio.Validacoes.AtributosValidacao
 {

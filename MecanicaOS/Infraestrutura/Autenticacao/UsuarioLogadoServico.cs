@@ -1,3 +1,4 @@
+using Core.DTOs.Repositories.Usuarios;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Repositorios;
@@ -10,11 +11,11 @@ namespace Infraestrutura.Autenticacao;
 public class UsuarioLogadoServico : IUsuarioLogadoServico
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IRepositorio<Usuario> _usuarioRepositorio;
+    private readonly IRepositorio<UsuarioRepositoryDto> _usuarioRepositorio;
 
     public UsuarioLogadoServico(
         IHttpContextAccessor httpContextAccessor,
-        IRepositorio<Usuario> usuarioRepositorio)
+        IRepositorio<UsuarioRepositoryDto> usuarioRepositorio)
     {
         _httpContextAccessor = httpContextAccessor;
         _usuarioRepositorio = usuarioRepositorio;
@@ -81,6 +82,22 @@ public class UsuarioLogadoServico : IUsuarioLogadoServico
         if (!EstaAutenticado || !UsuarioId.HasValue)
             return null;
 
-        return _usuarioRepositorio.ObterPorIdAsync(UsuarioId.Value).Result;
+        var usuarioDto = _usuarioRepositorio.ObterPorIdAsync(UsuarioId.Value).Result;
+        if (usuarioDto == null)
+            return null;
+
+        return new Usuario
+        {
+            Id = usuarioDto.Id,
+            Ativo = usuarioDto.Ativo,
+            DataCadastro = usuarioDto.DataCadastro,
+            DataAtualizacao = usuarioDto.DataAtualizacao,
+            Email = usuarioDto.Email,
+            Senha = usuarioDto.Senha,
+            DataUltimoAcesso = usuarioDto.DataUltimoAcesso,
+            TipoUsuario = usuarioDto.TipoUsuario,
+            RecebeAlertaEstoque = usuarioDto.RecebeAlertaEstoque,
+            ClienteId = usuarioDto.ClienteId
+        };
     }
 }

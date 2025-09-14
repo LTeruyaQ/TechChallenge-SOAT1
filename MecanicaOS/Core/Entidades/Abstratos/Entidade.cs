@@ -13,6 +13,32 @@ namespace Core.Entidades.Abstratos
             DataCadastro = DateTime.UtcNow;
         }
 
+        /// <summary>
+        /// Marca a entidade como atualizada, definindo a DataAtualizacao
+        /// </summary>
+        public virtual void MarcarComoAtualizada()
+        {
+            DataAtualizacao = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Desativa a entidade logicamente
+        /// </summary>
+        public virtual void Desativar()
+        {
+            Ativo = false;
+            MarcarComoAtualizada();
+        }
+
+        /// <summary>
+        /// Ativa a entidade
+        /// </summary>
+        public virtual void Ativar()
+        {
+            Ativo = true;
+            MarcarComoAtualizada();
+        }
+
         public static bool operator ==(Entidade e1, Entidade e2)
         {
             return e1.Id.Equals(e2.Id);

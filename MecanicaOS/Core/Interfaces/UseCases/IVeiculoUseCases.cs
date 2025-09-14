@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Veiculo;
+﻿using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
 
 namespace Core.Interfaces.UseCases

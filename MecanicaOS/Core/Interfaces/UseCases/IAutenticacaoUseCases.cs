@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Autenticacao;
+﻿using Core.DTOs.UseCases.Autenticacao;
 
 namespace Core.Interfaces.UseCases
 {

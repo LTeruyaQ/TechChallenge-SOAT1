@@ -1,8 +1,7 @@
-using Core.DTOs.Estoque;
+using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
-using Core.Interfaces.Jobs;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
@@ -67,7 +66,7 @@ public class EstoqueUseCases : UseCasesAbstrato<EstoqueUseCases, Estoque>, IEsto
         {
             LogInicio(metodo, request);
 
-            Estoque estoque = new ()
+            Estoque estoque = new()
             {
                 Insumo = request.Insumo,
                 Descricao = request.Descricao,

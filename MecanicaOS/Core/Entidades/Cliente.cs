@@ -12,7 +12,7 @@ public class Cliente : Entidade
     public TipoCliente TipoCliente { get; set; }
     public Endereco Endereco { get; set; } = null!;
     public Contato Contato { get; set; } = null!;
-    public ICollection<Veiculo> Veiculos { get; set; } = [];
+    public IEnumerable<Veiculo> Veiculos { get; set; } = [];
 
     public void Atualizar(string? nome, string? sexo, TipoCliente? tipoCliente, string? dtNascimento)
     {

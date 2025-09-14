@@ -1,4 +1,5 @@
-﻿using Core.Entidades;
+using Core.DTOs.Repositories.Servico;
+using Core.Entidades;
 using Core.Especificacoes.Base.Extensoes;
 using Core.Especificacoes.Servico;
 using Core.Interfaces.Gateways;
@@ -8,38 +9,39 @@ namespace Adapters.Gateways
 {
     public class ServicoGateway : IServicoGateway
     {
-        private readonly IRepositorio<Servico> _repositorioServico;
+        private readonly IRepositorio<ServicoRepositoryDto> _repositorioServico;
 
-        public ServicoGateway(IRepositorio<Servico> repositorioServico)
+        public ServicoGateway(IRepositorio<ServicoRepositoryDto> repositorioServico)
         {
             _repositorioServico = repositorioServico;
         }
 
         public async Task<Servico> CadastrarAsync(Servico servico)
         {
-            return await _repositorioServico.CadastrarAsync(servico);
+            var dto = await _repositorioServico.CadastrarAsync(ToDto(servico));
+            return FromDto(dto);
         }
 
         public async Task DeletarAsync(Servico servico)
         {
-            await _repositorioServico.DeletarAsync(servico);
+            await _repositorioServico.DeletarAsync(ToDto(servico));
         }
 
         public async Task EditarAsync(Servico servico)
         {
-            await _repositorioServico.EditarAsync(servico);
+            await _repositorioServico.EditarAsync(ToDto(servico));
         }
 
         public async Task<Servico?> ObterPorIdAsync(Guid id)
         {
-            return await _repositorioServico.ObterPorIdAsync(id);
+            var dto = await _repositorioServico.ObterPorIdAsync(id);
+            return dto != null ? FromDto(dto) : null;
         }
 
         public async Task<IEnumerable<Servico>> ObterServicoDisponivelAsync()
         {
-            ObterServicoDisponivelEspecificacao filtro = new ();
-
-            return await _repositorioServico.ListarAsync(filtro); ;
+            ObterServicoDisponivelEspecificacao filtro = new();
+            return await _repositorioServico.ListarProjetadoAsync<Servico>(filtro);
         }
 
         public async Task<Servico?> ObterServicosDisponiveisPorNomeAsync(string nome)
@@ -47,12 +49,44 @@ namespace Adapters.Gateways
             var especificacao = new ObterServicoPorNomeEspecificacao(nome)
                 .E(new ObterServicoDisponivelEspecificacao());
 
-            return await _repositorioServico.ObterUmSemRastreamentoAsync(especificacao);
+            var dto = await _repositorioServico.ObterUmSemRastreamentoAsync(especificacao);
+            return dto != null ? FromDto(dto) : null;
         }
 
         public async Task<IEnumerable<Servico>> ObterTodosAsync()
         {
-            return await _repositorioServico.ObterTodosAsync();
+            var dtos = await _repositorioServico.ObterTodosAsync();
+            return dtos.Select(FromDto);
+        }
+
+        private static ServicoRepositoryDto ToDto(Servico servico)
+        {
+            return new ServicoRepositoryDto
+            {
+                Id = servico.Id,
+                Ativo = servico.Ativo,
+                DataCadastro = servico.DataCadastro,
+                DataAtualizacao = servico.DataAtualizacao,
+                Nome = servico.Nome,
+                Descricao = servico.Descricao,
+                Valor = servico.Valor,
+                Disponivel = servico.Disponivel
+            };
+        }
+
+        private static Servico FromDto(ServicoRepositoryDto dto)
+        {
+            return new Servico
+            {
+                Id = dto.Id,
+                Ativo = dto.Ativo,
+                DataCadastro = dto.DataCadastro,
+                DataAtualizacao = dto.DataAtualizacao,
+                Nome = dto.Nome,
+                Descricao = dto.Descricao,
+                Valor = dto.Valor,
+                Disponivel = dto.Disponivel
+            };
         }
     }
 }

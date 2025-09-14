@@ -1,4 +1,3 @@
-using Adapters.Controllers;
 using Adapters.DTOs.Requests.Cliente;
 using Adapters.DTOs.Responses.Cliente;
 using Adapters.Gateways;
@@ -6,6 +5,7 @@ using Adapters.Presenters;
 using Adapters.Presenters.Interfaces;
 using API.Models;
 using Core.Entidades;
+using Core.DTOs.Repositories.Cliente;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -23,9 +23,9 @@ namespace API.Controllers
         private readonly Adapters.Controllers.ClienteController _clienteController;
 
         public ClienteController(
-            IRepositorio<Cliente> repositorioCliente,
-            IRepositorio<Endereco> repositorioEndereco,
-            IRepositorio<Contato> repositorioContato,
+            IRepositorio<ClienteRepositoryDTO> repositorioCliente,
+            IRepositorio<EnderecoRepositoryDto> repositorioEndereco,
+            IRepositorio<ContatoRepositoryDTO> repositorioContato,
             IUnidadeDeTrabalho unidadeDeTrabalho,
             IUsuarioLogadoServico usuarioLogadoServico,
             IdCorrelacionalService idCorrelacionalService,

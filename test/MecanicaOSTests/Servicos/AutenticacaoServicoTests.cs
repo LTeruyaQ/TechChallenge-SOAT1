@@ -1,12 +1,3 @@
-using Aplicacao.DTOs.Requests.Usuario;
-using Aplicacao.DTOs.Responses.Cliente;
-using Aplicacao.DTOs.Responses.Usuario;
-using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Servicos;
-using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Exceptions;
-using Dominio.Interfaces.Servicos;
 using MecanicaOSTests.Fixtures;
 using Moq;
 

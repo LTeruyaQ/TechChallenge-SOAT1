@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Eventos;
+﻿using Core.DTOs.UseCases.Eventos;
 using Core.Interfaces.Eventos;
 using Core.Interfaces.Gateways;
 

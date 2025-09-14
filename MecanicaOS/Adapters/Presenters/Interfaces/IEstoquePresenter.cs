@@ -1,6 +1,6 @@
 using Adapters.DTOs.Requests.Estoque;
 using Adapters.DTOs.Responses.Estoque;
-using Core.DTOs.Estoque;
+using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 
 namespace Adapters.Presenters.Interfaces

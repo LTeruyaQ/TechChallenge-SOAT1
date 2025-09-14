@@ -1,16 +1,5 @@
-﻿using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Jobs;
-using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOSTests.Jobs
 {

@@ -1,5 +1,4 @@
 using Adapters.DTOs.Requests.OrdemServico;
-using Adapters.DTOs.Requests.OrdemServico.InsumoOS;
 using Adapters.DTOs.Responses.OrdemServico;
 using Adapters.Presenters.Interfaces;
 using Core.Enumeradores;

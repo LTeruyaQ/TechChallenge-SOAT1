@@ -1,5 +1,5 @@
-using Core.DTOs.Autenticacao;
-using Core.DTOs.Usuario;
+using Core.DTOs.UseCases.Autenticacao;
+using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;

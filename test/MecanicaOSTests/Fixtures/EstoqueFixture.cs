@@ -1,6 +1,3 @@
-using Aplicacao.DTOs.Requests.Estoque;
-using Dominio.Entidades;
-
 namespace MecanicaOSTests.Fixtures
 {
     public static class EstoqueFixture

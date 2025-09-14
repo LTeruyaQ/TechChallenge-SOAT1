@@ -1,14 +1,3 @@
-using Aplicacao.DTOs.Requests.Usuario;
-using Aplicacao.DTOs.Responses.Usuario;
-using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Servicos;
-using AutoMapper;
-using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Especificacoes.Base.Interfaces;
-using Dominio.Exceptions;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
 using Moq;
 
 public class UsuarioServicoTests

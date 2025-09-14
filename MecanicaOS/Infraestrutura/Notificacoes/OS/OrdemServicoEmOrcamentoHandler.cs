@@ -1,4 +1,5 @@
-﻿using Core.Entidades;
+using Core.DTOs.Repositories.OrdemServicos;
+using Core.Entidades;
 using Core.Enumeradores;
 using Core.Especificacoes.OrdemServico;
 using Core.Interfaces.Repositorios;
@@ -11,13 +12,13 @@ using System.Text.RegularExpressions;
 namespace Infraestrutura.Notificacoes.OS;
 
 public class OrdemServicoEmOrcamentoHandler(
-    IRepositorio<OrdemServico> ordemServicoRepositorio,
+    IRepositorio<OrdemServicoRepositoryDto> ordemServicoRepositorio,
     IOrcamentoUseCases orcamentoUseCases,
     IServicoEmail emailServico,
     ILogServico<OrdemServicoEmOrcamentoHandler> logServico,
     IUnidadeDeTrabalho udt) : INotificationHandler<OrdemServicoEmOrcamentoEvent>
 {
-    private readonly IRepositorio<OrdemServico> _ordemServicoRepositorio = ordemServicoRepositorio;
+    private readonly IRepositorio<OrdemServicoRepositoryDto> _ordemServicoRepositorio = ordemServicoRepositorio;
     private readonly IOrcamentoUseCases _orcamentoUseCases = orcamentoUseCases;
     private readonly IServicoEmail _emailServico = emailServico;
     private readonly IUnidadeDeTrabalho _uot = udt;
@@ -32,17 +33,26 @@ public class OrdemServicoEmOrcamentoHandler(
             _logServico.LogInicio(metodo, notification.OrdemServicoId);
 
             var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(notification.OrdemServicoId);
-            var os = await _ordemServicoRepositorio.ObterUmAsync(especificacao);
+            var osDto = await _ordemServicoRepositorio.ObterUmAsync(especificacao);
 
-            if (os is null) return;
+            if (osDto is null) return;
 
-            os.Orcamento = _orcamentoUseCases.GerarOrcamentoUseCase(os);
+            // Converter DTO para entidade para usar no UseCase
+            var os = ConvertToEntity(osDto);
+            
+            var orcamento = _orcamentoUseCases.GerarOrcamentoUseCase(os);
+            os.Orcamento = orcamento;
             os.Status = StatusOrdemServico.AguardandoAprovação;
             os.DataEnvioOrcamento = DateTime.UtcNow;
 
             await EnviarOrcamentoAsync(os);
 
-            await _ordemServicoRepositorio.EditarAsync(os);
+            // Atualizar DTO com os novos valores
+            osDto.Orcamento = os.Orcamento;
+            osDto.Status = os.Status;
+            osDto.DataEnvioOrcamento = os.DataEnvioOrcamento;
+            
+            await _ordemServicoRepositorio.EditarAsync(osDto);
             await _uot.Commit();
 
             _logServico.LogFim(metodo);
@@ -98,5 +108,68 @@ public class OrdemServicoEmOrcamentoHandler(
                         </tr>
                     """;
         }));
+    }
+
+    private static OrdemServico ConvertToEntity(OrdemServicoRepositoryDto dto)
+    {
+        return new OrdemServico
+        {
+            Id = dto.Id,
+            Ativo = dto.Ativo,
+            DataCadastro = dto.DataCadastro,
+            DataAtualizacao = dto.DataAtualizacao,
+            ClienteId = dto.ClienteId,
+            VeiculoId = dto.VeiculoId,
+            ServicoId = dto.ServicoId,
+            Orcamento = dto.Orcamento,
+            DataEnvioOrcamento = dto.DataEnvioOrcamento,
+            Descricao = dto.Descricao,
+            Status = dto.Status,
+            InsumosOS = dto.InsumosOS.Select(insumoDto => new InsumoOS
+            {
+                Id = insumoDto.Id,
+                Ativo = insumoDto.Ativo,
+                DataCadastro = insumoDto.DataCadastro,
+                DataAtualizacao = insumoDto.DataAtualizacao,
+                OrdemServicoId = insumoDto.OrdemServicoId,
+                EstoqueId = insumoDto.EstoqueId,
+                Quantidade = insumoDto.Quantidade,
+                Estoque = new Estoque
+                {
+                    Id = insumoDto.Estoque.Id,
+                    Ativo = insumoDto.Estoque.Ativo,
+                    DataCadastro = insumoDto.Estoque.DataCadastro,
+                    DataAtualizacao = insumoDto.Estoque.DataAtualizacao,
+                    QuantidadeMinima = insumoDto.Estoque.QuantidadeMinima,
+                    QuantidadeDisponivel = insumoDto.Estoque.QuantidadeDisponivel,
+                    Descricao = insumoDto.Estoque.Descricao,
+                    Insumo = insumoDto.Estoque.Insumo,
+                    Preco = insumoDto.Estoque.Preco
+                }
+            }).ToList(),
+            Cliente = new Cliente
+            {
+                Id = dto.Cliente.Id,
+                Nome = dto.Cliente.Nome,
+                Contato = new Contato
+                {
+                    Email = dto.Cliente.Contato.Email
+                }
+            },
+            Servico = new Servico
+            {
+                Id = dto.Servico.Id,
+                Nome = dto.Servico.Nome,
+                Descricao = dto.Servico.Descricao,
+                Valor = dto.Servico.Valor,
+                Disponivel = dto.Servico.Disponivel
+            },
+            Veiculo = new Veiculo
+            {
+                Id = dto.Veiculo.Id,
+                Modelo = dto.Veiculo.Modelo,
+                Placa = dto.Veiculo.Placa
+            }
+        };
     }
 }

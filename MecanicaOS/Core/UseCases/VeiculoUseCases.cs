@@ -1,4 +1,4 @@
-using Core.DTOs.Veiculo;
+using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -66,7 +66,7 @@ namespace Core.UseCases
             {
                 LogInicio(metodo, request);
 
-                Veiculo veiculo = new ()
+                Veiculo veiculo = new()
                 {
                     Ano = request.Ano,
                     Cor = request.Cor,

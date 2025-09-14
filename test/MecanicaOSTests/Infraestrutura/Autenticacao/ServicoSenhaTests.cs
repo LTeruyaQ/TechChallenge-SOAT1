@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Infraestrutura.Autenticacao;
-using Xunit;
 
 namespace MecanicaOSTests.Infraestrutura.Autenticacao
 {

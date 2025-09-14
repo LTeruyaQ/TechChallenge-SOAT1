@@ -1,4 +1,4 @@
-﻿using Core.DTOs.OrdemServico.InsumoOS;
+﻿using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
 
 namespace Core.Interfaces.UseCases

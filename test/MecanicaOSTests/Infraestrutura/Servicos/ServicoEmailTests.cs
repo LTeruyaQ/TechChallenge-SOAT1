@@ -1,9 +1,6 @@
 ﻿using FluentAssertions;
 using Infraestrutura.Servicos;
 using Microsoft.Extensions.Configuration;
-using Moq;
-using System.Collections.Generic;
-using Xunit;
 
 namespace MecanicaOSTests.Infraestrutura.Servicos
 {

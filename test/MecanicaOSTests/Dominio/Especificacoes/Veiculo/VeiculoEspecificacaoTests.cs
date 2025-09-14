@@ -1,9 +1,4 @@
-using Dominio.Especificacoes.Veiculo;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using Xunit;
 
 namespace MecanicaOSTests.Dominio.Especificacoes.Veiculo
 {

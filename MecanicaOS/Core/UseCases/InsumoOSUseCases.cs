@@ -1,6 +1,6 @@
-﻿using Core.DTOs.Estoque;
-using Core.DTOs.OrdemServico;
-using Core.DTOs.OrdemServico.InsumoOS;
+﻿using Core.DTOs.UseCases.Estoque;
+using Core.DTOs.UseCases.OrdemServico;
+using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;

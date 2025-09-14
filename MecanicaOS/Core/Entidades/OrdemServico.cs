@@ -15,7 +15,7 @@ public class OrdemServico : Entidade
     public DateTime? DataEnvioOrcamento { get; set; }
     public string? Descricao { get; set; }
     public StatusOrdemServico Status { get; set; }
-    public ICollection<InsumoOS> InsumosOS { get; set; } = [];
+    public IEnumerable<InsumoOS> InsumosOS { get; set; } = [];
 
     public OrdemServico() { }
 

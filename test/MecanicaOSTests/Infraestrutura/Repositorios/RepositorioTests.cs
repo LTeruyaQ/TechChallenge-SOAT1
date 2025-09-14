@@ -1,12 +1,7 @@
-using Dominio.Entidades;
-using Dominio.Especificacoes.Base;
 using Infraestrutura.Dados;
 using Infraestrutura.Repositorios;
 using MecanicaOSTests.Fixtures;
-using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOSTests.Infraestrutura.Repositorios
 {

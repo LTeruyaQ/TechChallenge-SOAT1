@@ -1,11 +1,3 @@
-using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Especificacoes.OrdemServico;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
-
 namespace MecanicaOSTests.Dominio.Especificacoes.OrdemServico
 {
     public class OrdemServicoEspecificacaoTests

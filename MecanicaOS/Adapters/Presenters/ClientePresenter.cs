@@ -2,7 +2,7 @@ using Adapters.DTOs.Requests.Cliente;
 using Adapters.DTOs.Responses.Cliente;
 using Adapters.DTOs.Responses.Veiculo;
 using Adapters.Presenters.Interfaces;
-using Core.DTOs.Cliente;
+using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 
 namespace Adapters.Presenters
@@ -69,7 +69,7 @@ namespace Adapters.Presenters
                 Nome = cliente.Nome,
                 Sexo = cliente.Sexo,
                 Documento = cliente.Documento,
-                DataNascimento = cliente.DataNascimento?.ToString("yyyy-MM-dd"),
+                DataNascimento = cliente.DataNascimento,
                 TipoCliente = cliente.TipoCliente.ToString(),
                 EnderecoId = cliente.Endereco.Id,
                 ContatoId = cliente.Contato.Id,

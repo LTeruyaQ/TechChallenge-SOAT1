@@ -1,6 +1,6 @@
 using Adapters.DTOs.Requests.Servico;
 using Adapters.DTOs.Responses.Servico;
-using Core.DTOs.Servico;
+using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 
 namespace Adapters.Presenters.Interfaces

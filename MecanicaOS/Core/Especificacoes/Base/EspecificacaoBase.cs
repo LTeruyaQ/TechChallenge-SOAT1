@@ -1,9 +1,10 @@
+using Core.DTOs.Repositories.Autenticacao;
 using Core.Especificacoes.Base.Interfaces;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Base
 {
-    public abstract class EspecificacaoBase<T> : IEspecificacao<T> where T : class
+    public abstract class EspecificacaoBase<T> : IEspecificacao<T> where T : RepositoryDto
     {
         private int _pagina = 0;
         public int Pagina => _pagina;

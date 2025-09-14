@@ -1,12 +1,3 @@
-using Aplicacao.DTOs.Requests.Servico;
-using Aplicacao.DTOs.Responses.Servico;
-using Aplicacao.Servicos;
-using AutoMapper;
-using Dominio.Entidades;
-using Dominio.Especificacoes.Base.Interfaces;
-using Dominio.Exceptions;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
 using FluentAssertions;
 using Moq;
 

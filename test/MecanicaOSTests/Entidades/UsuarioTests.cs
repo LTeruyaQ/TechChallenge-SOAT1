@@ -1,5 +1,3 @@
-using Dominio.Entidades;
-using Dominio.Enumeradores;
 using FluentAssertions;
 
 namespace MecanicaOSTests.Entidades

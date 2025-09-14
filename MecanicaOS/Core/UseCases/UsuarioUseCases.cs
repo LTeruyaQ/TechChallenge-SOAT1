@@ -1,4 +1,4 @@
-using Core.DTOs.Usuario;
+using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
@@ -77,11 +77,11 @@ public class UsuarioUseCases : UseCasesAbstrato<UsuarioUseCases, Usuario>, IUsua
 
             await VerificarUsuarioCadastradoAsync(request.Email);
 
-            Usuario usuario = new ()
+            Usuario usuario = new()
             {
                 Email = request.Email,
                 TipoUsuario = request.TipoUsuario,
-                RecebeAlertaEstoque = request.RecebeAlertaEstoque.HasValue ? request.RecebeAlertaEstoque.Value : false,  
+                RecebeAlertaEstoque = request.RecebeAlertaEstoque.HasValue ? request.RecebeAlertaEstoque.Value : false,
             };
 
             usuario.Senha = _servicoSenha.CriptografarSenha(request.Senha);

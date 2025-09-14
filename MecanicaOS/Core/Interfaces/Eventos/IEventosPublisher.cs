@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Eventos;
+﻿using Core.DTOs.UseCases.Eventos;
 
 namespace Core.Interfaces.Eventos
 {

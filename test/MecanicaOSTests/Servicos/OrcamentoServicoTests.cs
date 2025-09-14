@@ -1,8 +1,4 @@
-﻿using Aplicacao.Servicos;
-using Dominio.Entidades;
-using FluentAssertions;
-using System.Collections.Generic;
-using Xunit;
+﻿using FluentAssertions;
 
 namespace MecanicaOSTests.Servicos
 {

@@ -1,14 +1,7 @@
 using API.Controllers;
-using Dominio.Interfaces.Servicos;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Threading.Tasks;
-using Xunit;
-using System.Collections.Generic;
 using System.Security.Claims;
-using Dominio.Entidades;
-using Dominio.Enumeradores;
 
 namespace MecanicaOSTests.API.Controllers
 {

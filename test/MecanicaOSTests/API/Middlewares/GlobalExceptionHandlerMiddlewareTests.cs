@@ -1,14 +1,9 @@
 ﻿using API.Middlewares;
-using Dominio.Exceptions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.IO;
 using System.Net;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOSTests.API.Middlewares
 {

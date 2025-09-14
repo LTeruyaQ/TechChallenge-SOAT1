@@ -1,4 +1,3 @@
-using Dominio.Entidades;
 using FluentAssertions;
 using Moq;
 
@@ -22,7 +21,7 @@ namespace MecanicaOSTests.Entidades
                 Cliente = clienteMock.Object,
                 Email = email,
                 Telefone = telefone
-            };          
+            };
 
             // Assert
             contato.Should().NotBeNull();

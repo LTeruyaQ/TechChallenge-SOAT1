@@ -1,4 +1,4 @@
-﻿using Core.DTOs.OrdemServico;
+﻿using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 

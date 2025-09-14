@@ -1,23 +1,7 @@
-﻿using Aplicacao.DTOs.Requests.OrdemServico;
-using Aplicacao.DTOs.Responses.Servico;
-using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Notificacoes.OS;
-using Aplicacao.Servicos;
-using AutoMapper;
-using Dominio.Entidades;
-using Dominio.Enumeradores;
-using Dominio.Exceptions;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
-using FluentAssertions;
+﻿using FluentAssertions;
+using Infraestrutura.Notificacoes.OS;
 using MediatR;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
-using Dominio.Especificacoes.Base.Interfaces;
-using Infraestrutura.Notificacoes.OS;
 
 namespace MecanicaOSTests.Servicos
 {

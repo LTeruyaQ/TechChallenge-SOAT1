@@ -1,6 +1,3 @@
-using Aplicacao.DTOs.Requests.Veiculo;
-using Dominio.Entidades;
-
 namespace MecanicaOSTests.Fixtures
 {
     public static class VeiculoFixture

@@ -1,8 +1,3 @@
-using Dominio.Entidades;
-using Dominio.Especificacoes.Base;
-using Dominio.Especificacoes.Base.Extensoes;
-using Xunit;
-
 namespace MecanicaOSTests.Dominio.Especificacoes.Base
 {
     public class OuEspecificacaoTests

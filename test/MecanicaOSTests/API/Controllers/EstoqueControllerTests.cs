@@ -1,14 +1,6 @@
 using API.Controllers;
-using Aplicacao.Interfaces.Servicos;
-using Aplicacao.DTOs.Requests.Estoque;
-using Aplicacao.DTOs.Responses.Estoque;
-using MecanicaOSTests.Fixtures;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Threading.Tasks;
-using Xunit;
-using System.Collections.Generic;
 
 namespace MecanicaOSTests.API.Controllers
 {

@@ -1,21 +1,5 @@
-﻿using Aplicacao.DTOs.Requests.OrdemServico.InsumoOS;
-using Aplicacao.DTOs.Responses.OrdemServico;
-using Aplicacao.DTOs.Responses.OrdemServico.InsumoOrdemServico;
-using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Jobs;
-using Aplicacao.Servicos;
-using AutoMapper;
-using Dominio.Entidades;
-using Dominio.Exceptions;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOSTests.Servicos
 {

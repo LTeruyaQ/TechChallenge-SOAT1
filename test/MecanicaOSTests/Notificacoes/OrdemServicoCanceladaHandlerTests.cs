@@ -1,14 +1,5 @@
-﻿using Aplicacao.Interfaces.Servicos;
-using Aplicacao.Notificacoes.OS;
-using Dominio.Entidades;
-using Dominio.Interfaces.Repositorios;
-using Dominio.Interfaces.Servicos;
-using Infraestrutura.Notificacoes.OS;
+﻿using Infraestrutura.Notificacoes.OS;
 using Moq;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOSTests.Notificacoes
 {

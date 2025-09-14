@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Usuario;
+﻿using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 
 namespace Core.Interfaces.UseCases

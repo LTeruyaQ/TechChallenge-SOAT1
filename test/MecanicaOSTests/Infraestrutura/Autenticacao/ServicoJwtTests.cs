@@ -2,11 +2,8 @@
 using Infraestrutura.Autenticacao;
 using Microsoft.Extensions.Options;
 using Moq;
-using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using Xunit;
 
 namespace MecanicaOSTests.Infraestrutura.Autenticacao
 {

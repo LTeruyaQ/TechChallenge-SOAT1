@@ -1,9 +1,10 @@
+using Core.DTOs.Repositories.Veiculo;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Veiculo
 {
-    public class ObterVeiculosResumidosEspecificacao : EspecificacaoBase<Entidades.Veiculo>
+    public class ObterVeiculosResumidosEspecificacao : EspecificacaoBase<VeiculoRepositoryDto>
     {
         private readonly string? _placa;
         private readonly string? _modelo;
@@ -22,7 +23,7 @@ namespace Core.Especificacoes.Veiculo
             });
         }
 
-        public override Expression<Func<Entidades.Veiculo, bool>> Expressao
+        public override Expression<Func<VeiculoRepositoryDto, bool>> Expressao
         {
             get
             {
@@ -31,13 +32,5 @@ namespace Core.Especificacoes.Veiculo
                     (string.IsNullOrEmpty(_modelo) || v.Modelo.Contains(_modelo));
             }
         }
-    }
-
-    public class VeiculoResumidoDto
-    {
-        public Guid Id { get; set; }
-        public string Placa { get; set; } = string.Empty;
-        public string Modelo { get; set; } = string.Empty;
-        public string Ano { get; set; } = string.Empty;
     }
 }

@@ -1,6 +1,5 @@
 using Adapters.DTOs.Requests.OrdemServico.InsumoOS;
 using Adapters.Presenters.Interfaces;
-using Core.DTOs.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.Interfaces.UseCases;
 
@@ -21,7 +20,7 @@ namespace Adapters.Controllers
         {
             // Converter os DTOs de request para UseCaseDto
             var useCaseDtos = requests.Select(r => _ordemServicoPresenter.ParaUseCaseDto(r)).ToList();
-            
+
             // Chamar o use case
             return await _insumoOSUseCases.CadastrarInsumosUseCaseAsync(ordemServicoId, useCaseDtos);
         }

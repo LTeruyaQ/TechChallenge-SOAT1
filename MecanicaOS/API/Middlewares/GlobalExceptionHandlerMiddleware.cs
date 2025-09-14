@@ -1,6 +1,6 @@
-using Dominio.Exceptions;
 using System.Net;
 using System.Text.Json;
+using Core.Exceptions;
 
 namespace API.Middlewares;
 

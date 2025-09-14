@@ -1,7 +1,3 @@
-using Aplicacao.DTOs.Requests.Autenticacao;
-using Dominio.Entidades;
-using Dominio.Enumeradores;
-
 namespace MecanicaOSTests.Fixtures
 {
     public static class AutenticacaoFixture

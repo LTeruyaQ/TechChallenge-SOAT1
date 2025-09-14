@@ -7,7 +7,7 @@ namespace Adapters.DTOs.Requests.Cliente
     [DisplayName("Atualização de Cliente")]
     public class AtualizarClienteRequest
     {
-        
+
         public Guid? Id { get; set; }
 
         [StringLength(100, ErrorMessage = "O Nome deve ter no máximo {1} caracteres")]

@@ -1,5 +1,10 @@
 
-using Core.Entidades;
+using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Repositories.Estoque;
+using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Repositories.Servico;
+using Core.DTOs.Repositories.Usuarios;
+using Core.DTOs.Repositories.Veiculo;
 using Infraestrutura.Dados.Mapeamentos;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,16 +14,16 @@ public class MecanicaContexto : DbContext
 {
     public MecanicaContexto(DbContextOptions<MecanicaContexto> options) : base(options) { }
 
-    public DbSet<Servico> Servicos { get; set; }
-    public DbSet<Estoque> Estoques { get; set; }
-    public DbSet<Veiculo> Veiculos { get; set; }
-    public DbSet<Cliente> Clientes { get; set; }
-    public DbSet<Endereco> Enderecos { get; set; }
-    public DbSet<Contato> Contatos { get; set; }
-    public DbSet<Usuario> Usuarios { get; set; }
-    public DbSet<AlertaEstoque> AlertasEstoque { get; set; }
-    public DbSet<OrdemServico> OrdensSevico { get; set; }
-    public DbSet<InsumoOS> InsumosOrdemServico { get; set; }
+    public DbSet<ServicoRepositoryDto> Servicos { get; set; }
+    public DbSet<EstoqueRepositoryDto> Estoques { get; set; }
+    public DbSet<VeiculoRepositoryDto> Veiculos { get; set; }
+    public DbSet<ClienteRepositoryDTO> Clientes { get; set; }
+    public DbSet<EnderecoRepositoryDto> Enderecos { get; set; }
+    public DbSet<ContatoRepositoryDTO> Contatos { get; set; }
+    public DbSet<UsuarioRepositoryDto> Usuarios { get; set; }
+    public DbSet<AlertaEstoqueRepositoryDto> AlertasEstoque { get; set; }
+    public DbSet<OrdemServicoRepositoryDto> OrdensSevico { get; set; }
+    public DbSet<InsumoOSRepositoryDto> InsumosOrdemServico { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

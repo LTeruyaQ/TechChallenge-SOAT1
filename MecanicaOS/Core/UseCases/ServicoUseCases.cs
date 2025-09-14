@@ -1,4 +1,4 @@
-using Core.DTOs.Servico;
+using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;

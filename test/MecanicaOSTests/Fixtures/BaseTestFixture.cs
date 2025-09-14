@@ -1,5 +1,3 @@
-using Aplicacao.Mapeamentos;
-using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Moq;
 

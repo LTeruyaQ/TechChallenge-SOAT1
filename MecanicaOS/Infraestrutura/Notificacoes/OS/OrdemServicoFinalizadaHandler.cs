@@ -1,4 +1,5 @@
-﻿using Core.Entidades;
+using Core.DTOs.Repositories.OrdemServicos;
+using Core.Entidades;
 using Core.Especificacoes.OrdemServico;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -7,9 +8,9 @@ using System.Text;
 
 namespace Infraestrutura.Notificacoes.OS;
 
-public class OrdemServicoFinalizadaHandler(IRepositorio<OrdemServico> ordemServicoRepositorio, ILogServico<OrdemServicoFinalizadaHandler> logServico, IServicoEmail emailServico) : INotificationHandler<OrdemServicoFinalizadaEvent>
+public class OrdemServicoFinalizadaHandler(IRepositorio<OrdemServicoRepositoryDto> ordemServicoRepositorio, ILogServico<OrdemServicoFinalizadaHandler> logServico, IServicoEmail emailServico) : INotificationHandler<OrdemServicoFinalizadaEvent>
 {
-    private readonly IRepositorio<OrdemServico> _ordemServicoRepositorio = ordemServicoRepositorio;
+    private readonly IRepositorio<OrdemServicoRepositoryDto> _ordemServicoRepositorio = ordemServicoRepositorio;
     private readonly ILogServico<OrdemServicoFinalizadaHandler> _logServico = logServico;
     private readonly IServicoEmail _emailServico = emailServico;
 
@@ -22,14 +23,14 @@ public class OrdemServicoFinalizadaHandler(IRepositorio<OrdemServico> ordemServi
             _logServico.LogInicio(metodo, notification.OrdemServicoId);
 
             var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(notification.OrdemServicoId);
-            var os = await _ordemServicoRepositorio.ObterUmSemRastreamentoAsync(especificacao);
+            var osDto = await _ordemServicoRepositorio.ObterUmSemRastreamentoAsync(especificacao);
 
-            if (os is null) return;
+            if (osDto is null) return;
 
-            string conteudo = await GerarConteudoEmailAsync(os);
+            string conteudo = await GerarConteudoEmailAsync(osDto);
 
             await _emailServico.EnviarAsync(
-                [os.Cliente.Contato.Email],
+                [osDto.Cliente.Contato.Email],
                 "Serviço Finalizado",
                 conteudo);
 
@@ -43,7 +44,7 @@ public class OrdemServicoFinalizadaHandler(IRepositorio<OrdemServico> ordemServi
         }
     }
 
-    private static async Task<string> GerarConteudoEmailAsync(OrdemServico os)
+    private static async Task<string> GerarConteudoEmailAsync(OrdemServicoRepositoryDto os)
     {
         const string templateFileName = "EmailOrdemServicoFinalizada.html";
 

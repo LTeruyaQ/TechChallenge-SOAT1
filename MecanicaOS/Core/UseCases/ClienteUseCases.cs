@@ -1,4 +1,4 @@
-using Core.DTOs.Cliente;
+using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -77,7 +77,7 @@ namespace Core.UseCases
                 endereco.Cidade = enderecoCliente.Cidade;
                 endereco.Complemento = enderecoCliente.Complemento;
                 endereco.Rua = enderecoCliente.Rua;
-                endereco.DataAtualizacao = DateTime.UtcNow;
+                endereco.MarcarComoAtualizada();
 
                 await _enderecoGateway.EditarAsync(endereco);
             }
@@ -97,7 +97,7 @@ namespace Core.UseCases
                 contato.Telefone = contatoCliente.Telefone;
                 contato.IdCliente = contatoCliente.Id.Value;
                 contato.Email = contatoCliente.Email;
-                contato.DataAtualizacao = DateTime.UtcNow;
+                contato.MarcarComoAtualizada();
 
                 await _contatoGateway.EditarAsync(contato);
             }
@@ -123,7 +123,6 @@ namespace Core.UseCases
         {
             Contato contato = new()
             {
-                DataCadastro = DateTime.UtcNow,
                 IdCliente = clienteId,
                 Email = contatoCliente.Email,
                 Telefone = contatoCliente.Telefone
@@ -140,7 +139,8 @@ namespace Core.UseCases
             {
                 LogInicio(metodo, request);
 
-                Cliente cliente = new() {
+                Cliente cliente = new()
+                {
                     Nome = request.Nome,
                     Sexo = request.Sexo,
                     Documento = request.Documento,
