@@ -61,7 +61,12 @@ namespace Core.UseCases
                     DataUltimoAcesso = DateTime.UtcNow
                 });
 
-                var result = new AutenticacaoDto { Token = token };
+                var result = new AutenticacaoDto 
+                { 
+                    Token = token,
+                    Usuario = usuario,
+                    Permissoes = permissoes.ToList()
+                };
 
                 _log.LogFim(metodo, result);
                 return result;

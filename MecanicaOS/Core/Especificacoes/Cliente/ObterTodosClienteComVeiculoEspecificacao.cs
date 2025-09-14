@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Repositories.Cliente;
 using Core.Entidades;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
@@ -36,5 +36,5 @@ public class ObterTodosClienteComVeiculoEspecificacao : EspecificacaoBase<Client
         });
     }
 
-    public override Expression<Func<ClienteRepositoryDTO, bool>> Expressao => null;
+    public override Expression<Func<ClienteRepositoryDTO, bool>> Expressao => c => c.Ativo;
 }

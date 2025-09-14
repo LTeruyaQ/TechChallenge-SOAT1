@@ -28,6 +28,7 @@ namespace Core.Especificacoes.Veiculo
             get
             {
                 return v =>
+                    v.Ativo &&
                     (string.IsNullOrEmpty(_placa) || v.Placa.Contains(_placa)) &&
                     (string.IsNullOrEmpty(_modelo) || v.Modelo.Contains(_modelo));
             }
