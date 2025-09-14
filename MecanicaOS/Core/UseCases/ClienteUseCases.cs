@@ -178,8 +178,13 @@ namespace Core.UseCases
             {
                 LogInicio(metodo, id);
 
-                var clienteComVeiculo = await _clienteGateway.ObterPorIdAsync(id)
-                    ?? throw new DadosNaoEncontradosException($"Cliente com ID {id} não encontrado.");
+                var clienteComVeiculo = await _clienteGateway.ObterPorIdAsync(id);
+
+                if (clienteComVeiculo == null)
+                {
+                    // Tenta buscar o cliente com veículo
+                    clienteComVeiculo = await _clienteGateway.ObterClienteComVeiculoPorIdAsync(id);
+                }
 
                 LogFim(metodo, clienteComVeiculo);
 

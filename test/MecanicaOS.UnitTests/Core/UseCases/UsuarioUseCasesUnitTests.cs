@@ -73,6 +73,7 @@ public class UsuarioUseCasesUnitTests
         _fixture.ConfigurarMockUsuarioGatewayParaCadastro(mockUsuarioGateway, usuarioEsperado);
         _fixture.ConfigurarMockClienteUseCasesParaDocumento(mockClienteUseCases, request.Documento!, clienteExistente);
         _fixture.ConfigurarMockServicoSenha(mockServicoSenha, request.Senha, "senhaHasheada789");
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var usuarioUseCases = _fixture.CriarUsuarioUseCases(
             mockUsuarioGateway, mockClienteUseCases, mockServicoSenha, mockUdt);
@@ -176,6 +177,7 @@ public class UsuarioUseCasesUnitTests
         var request = UsuarioUseCasesFixture.CriarAtualizarUsuarioSemSenhaDto();
 
         _fixture.ConfigurarMockUsuarioGatewayParaAtualizacao(mockUsuarioGateway, usuarioExistente);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var usuarioUseCases = _fixture.CriarUsuarioUseCases(
             mockUsuarioGateway, null, mockServicoSenha, mockUdt);

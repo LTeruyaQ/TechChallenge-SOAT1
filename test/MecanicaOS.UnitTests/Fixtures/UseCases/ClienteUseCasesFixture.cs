@@ -5,34 +5,29 @@ using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases;
+using NSubstitute;
 
 namespace MecanicaOS.UnitTests.Fixtures.UseCases;
 
 public class ClienteUseCasesFixture : UseCasesFixtureBase
 {
-    public ClienteUseCases CriarClienteUseCases(
-        IClienteGateway? mockClienteGateway = null,
-        IEnderecoGateway? mockEnderecoGateway = null,
-        IContatoGateway? mockContatoGateway = null,
-        ILogServico<ClienteUseCases>? mockLogServico = null,
-        IUnidadeDeTrabalho? mockUdt = null,
-        IUsuarioLogadoServico? mockUsuarioLogado = null)
+    // Método simplificado para criar ClienteUseCases com um parâmetro
+    public ClienteUseCases CriarClienteUseCases(IClienteGateway mockClienteGateway)
     {
-        if (mockClienteGateway == null)
-            throw new ArgumentNullException(nameof(mockClienteGateway));
-        if (mockEnderecoGateway == null)
-            throw new ArgumentNullException(nameof(mockEnderecoGateway));
-        if (mockContatoGateway == null)
-            throw new ArgumentNullException(nameof(mockContatoGateway));
-        if (mockLogServico == null)
-            throw new ArgumentNullException(nameof(mockLogServico));
-        if (mockUdt == null)
-            throw new ArgumentNullException(nameof(mockUdt));
-        if (mockUsuarioLogado == null)
-            throw new ArgumentNullException(nameof(mockUsuarioLogado));
-
+        var mockEnderecoGateway = Substitute.For<IEnderecoGateway>();
+        var mockContatoGateway = Substitute.For<IContatoGateway>();
+        var mockLogServico = Substitute.For<ILogServico<ClienteUseCases>>();
+        var mockUdt = Substitute.For<IUnidadeDeTrabalho>();
+        var mockUsuarioLogado = Substitute.For<IUsuarioLogadoServico>();
+        
+        // Configurar comportamentos padrão
         ConfigurarMocksBasicos(mockUdt, mockUsuarioLogado);
-
+        mockUdt.Commit().Returns(Task.FromResult(true));
+        
+        // Configurar comportamentos padrão para gateways
+        ConfigurarMockEnderecoGateway(mockEnderecoGateway);
+        ConfigurarMockContatoGateway(mockContatoGateway);
+        
         return new ClienteUseCases(
             mockClienteGateway,
             mockEnderecoGateway,
@@ -41,7 +36,132 @@ public class ClienteUseCasesFixture : UseCasesFixtureBase
             mockUdt,
             mockUsuarioLogado);
     }
-
+    
+    // Método para criar ClienteUseCases com três parâmetros
+    public ClienteUseCases CriarClienteUseCases(
+        IClienteGateway mockClienteGateway,
+        IEnderecoGateway mockEnderecoGateway,
+        IContatoGateway mockContatoGateway)
+    {
+        var mockLogServico = Substitute.For<ILogServico<ClienteUseCases>>();
+        var mockUdt = Substitute.For<IUnidadeDeTrabalho>();
+        var mockUsuarioLogado = Substitute.For<IUsuarioLogadoServico>();
+        
+        // Configurar comportamentos padrão
+        ConfigurarMocksBasicos(mockUdt, mockUsuarioLogado);
+        mockUdt.Commit().Returns(Task.FromResult(true));
+        
+        return new ClienteUseCases(
+            mockClienteGateway,
+            mockEnderecoGateway,
+            mockContatoGateway,
+            mockLogServico,
+            mockUdt,
+            mockUsuarioLogado);
+    }
+    
+    // Método para criar ClienteUseCases com todos os parâmetros
+    public ClienteUseCases CriarClienteUseCases(
+        IClienteGateway? mockClienteGateway = null,
+        IEnderecoGateway? mockEnderecoGateway = null,
+        IContatoGateway? mockContatoGateway = null,
+        ILogServico<ClienteUseCases>? mockLogServico = null,
+        IUnidadeDeTrabalho? mockUdt = null,
+        IUsuarioLogadoServico? mockUsuarioLogado = null)
+    {
+        // Inicializar todos os mocks necessários
+        if (mockClienteGateway == null || mockEnderecoGateway == null || mockContatoGateway == null)
+        {
+            // Não substituir parâmetros nulos para permitir que o teste de validação do construtor funcione
+            if (mockClienteGateway == null) return new ClienteUseCases(null, mockEnderecoGateway, mockContatoGateway, mockLogServico, mockUdt, mockUsuarioLogado);
+            if (mockEnderecoGateway == null) return new ClienteUseCases(mockClienteGateway, null, mockContatoGateway, mockLogServico, mockUdt, mockUsuarioLogado);
+            if (mockContatoGateway == null) return new ClienteUseCases(mockClienteGateway, mockEnderecoGateway, null, mockLogServico, mockUdt, mockUsuarioLogado);
+        }
+        
+        mockClienteGateway ??= Substitute.For<IClienteGateway>();
+        mockEnderecoGateway ??= Substitute.For<IEnderecoGateway>();
+        mockContatoGateway ??= Substitute.For<IContatoGateway>();
+        mockLogServico ??= Substitute.For<ILogServico<ClienteUseCases>>();
+        mockUdt ??= Substitute.For<IUnidadeDeTrabalho>();
+        mockUsuarioLogado ??= Substitute.For<IUsuarioLogadoServico>();
+        
+        // Configurar comportamentos padrão
+        ConfigurarMocksBasicos(mockUdt, mockUsuarioLogado);
+        mockUdt.Commit().Returns(Task.FromResult(true));
+        
+        // Configurar comportamentos padrão para gateways
+        ConfigurarMockEnderecoGateway(mockEnderecoGateway);
+        ConfigurarMockContatoGateway(mockContatoGateway);
+        
+        return new ClienteUseCases(
+            mockClienteGateway,
+            mockEnderecoGateway,
+            mockContatoGateway,
+            mockLogServico,
+            mockUdt,
+            mockUsuarioLogado);
+    }
+    
+    // Método para configurar mock de EnderecoGateway
+    public void ConfigurarMockEnderecoGateway(
+        IEnderecoGateway mockEnderecoGateway,
+        Endereco? enderecoRetorno = null)
+    {
+        enderecoRetorno ??= EnderecoFixture.CriarEnderecoValido();
+        mockEnderecoGateway.CadastrarAsync(Arg.Any<Endereco>()).Returns(Task.FromResult(enderecoRetorno));
+        mockEnderecoGateway.ObterPorIdAsync(Arg.Any<Guid>()).Returns(enderecoRetorno);
+        mockEnderecoGateway.EditarAsync(Arg.Any<Endereco>()).Returns(Task.CompletedTask);
+    }
+    
+    // Método para configurar mock de ContatoGateway
+    public void ConfigurarMockContatoGateway(
+        IContatoGateway mockContatoGateway,
+        Contato? contatoRetorno = null)
+    {
+        contatoRetorno ??= ContatoFixture.CriarContatoValido();
+        mockContatoGateway.CadastrarAsync(Arg.Any<Contato>()).Returns(Task.FromResult(contatoRetorno));
+        mockContatoGateway.ObterPorIdAsync(Arg.Any<Guid>()).Returns(contatoRetorno);
+        mockContatoGateway.EditarAsync(Arg.Any<Contato>()).Returns(Task.CompletedTask);
+    }
+    
+    // Método para configurar mock de ClienteGateway para cadastro
+    public void ConfigurarMockClienteGatewayParaCadastro(
+        IClienteGateway mockClienteGateway,
+        Cliente? clienteRetorno = null)
+    {
+        clienteRetorno ??= CriarClienteValido();
+        mockClienteGateway.CadastrarAsync(Arg.Any<Cliente>()).Returns(Task.FromResult(clienteRetorno));
+        mockClienteGateway.ObterClientePorDocumentoAsync(Arg.Any<string>()).Returns(Task.FromResult<Cliente?>(null));
+    }
+    
+    // Método para configurar mock de ClienteGateway para atualização
+    public void ConfigurarMockClienteGatewayParaAtualizacao(
+        IClienteGateway mockClienteGateway,
+        Cliente clienteExistente)
+    {
+        mockClienteGateway.ObterPorIdAsync(clienteExistente.Id).Returns(Task.FromResult(clienteExistente));
+        mockClienteGateway.EditarAsync(Arg.Any<Cliente>()).Returns(Task.CompletedTask);
+    }
+    
+    // Método para configurar mock de ClienteGateway para cliente não encontrado
+    public void ConfigurarMockClienteGatewayParaClienteNaoEncontrado(
+        IClienteGateway mockClienteGateway,
+        Guid clienteId)
+    {
+        mockClienteGateway.ObterPorIdAsync(clienteId).Returns(Task.FromResult<Cliente?>(null));
+    }
+    
+    // Método para configurar mock de ClienteGateway para documento já cadastrado
+    public void ConfigurarMockClienteGatewayParaDocumentoJaCadastrado(
+        IClienteGateway mockClienteGateway,
+        string documento)
+    {
+        var clienteExistente = CriarClienteValido();
+        clienteExistente.Documento = documento;
+        mockClienteGateway.ObterClientePorDocumentoAsync(documento).Returns(Task.FromResult<Cliente?>(clienteExistente));
+    }
+    
+    // Métodos para criar entidades de teste
     public static Cliente CriarClienteValido()
     {
         return new Cliente
@@ -57,7 +177,7 @@ public class ClienteUseCasesFixture : UseCasesFixtureBase
             Veiculos = new List<Veiculo> { VeiculoFixture.CriarVeiculoValido() }
         };
     }
-
+    
     public static Cliente CriarClientePessoaJuridica()
     {
         return new Cliente
@@ -72,22 +192,7 @@ public class ClienteUseCasesFixture : UseCasesFixtureBase
             Endereco = EnderecoFixture.CriarEnderecoValido()
         };
     }
-
-    public static Cliente CriarClienteInativo()
-    {
-        return new Cliente
-        {
-            Id = Guid.NewGuid(),
-            Nome = "Maria Oliveira",
-            Documento = "98765432100",
-            TipoCliente = TipoCliente.PessoaFisica,
-            DataNascimento = DateTime.UtcNow.AddYears(-25).ToString("yyyy-MM-dd"),
-            Ativo = false,
-            DataCadastro = DateTime.UtcNow.AddDays(-90),
-            DataAtualizacao = DateTime.UtcNow.AddDays(-30)
-        };
-    }
-
+    
     public static CadastrarClienteUseCaseDto CriarCadastrarClienteUseCaseDtoValido()
     {
         return new CadastrarClienteUseCaseDto
@@ -106,7 +211,7 @@ public class ClienteUseCasesFixture : UseCasesFixtureBase
             Telefone = "11999888777"
         };
     }
-
+    
     public static CadastrarClienteUseCaseDto CriarCadastrarClienteUseCaseDtoPessoaJuridica()
     {
         return new CadastrarClienteUseCaseDto
@@ -125,7 +230,7 @@ public class ClienteUseCasesFixture : UseCasesFixtureBase
             Telefone = "1144556677"
         };
     }
-
+    
     public static AtualizarClienteUseCaseDto CriarAtualizarClienteUseCaseDtoValido()
     {
         return new AtualizarClienteUseCaseDto
@@ -137,59 +242,5 @@ public class ClienteUseCasesFixture : UseCasesFixtureBase
             ContatoId = Guid.NewGuid(),
             Email = "joao.atualizado@email.com"
         };
-    }
-
-
-    public void ConfigurarMockClienteGatewayParaCadastro(
-        IClienteGateway mockClienteGateway,
-        Cliente? clienteRetorno = null)
-    {
-        clienteRetorno ??= CriarClienteValido();
-        mockClienteGateway.CadastrarAsync(Arg.Any<Cliente>()).Returns(clienteRetorno);
-        mockClienteGateway.ObterClientePorDocumentoAsync(Arg.Any<string>()).Returns(Task.FromResult<Cliente?>(null));
-    }
-
-    public void ConfigurarMockClienteGatewayParaAtualizacao(
-        IClienteGateway mockClienteGateway,
-        Cliente clienteExistente)
-    {
-        mockClienteGateway.ObterPorIdAsync(clienteExistente.Id).Returns(clienteExistente);
-        mockClienteGateway.EditarAsync(Arg.Any<Cliente>()).Returns(Task.CompletedTask);
-    }
-
-    public void ConfigurarMockClienteGatewayParaClienteNaoEncontrado(
-        IClienteGateway mockClienteGateway,
-        Guid clienteId)
-    {
-        mockClienteGateway.ObterPorIdAsync(clienteId).Returns((Cliente?)null);
-    }
-
-    public void ConfigurarMockClienteGatewayParaDocumentoJaCadastrado(
-        IClienteGateway mockClienteGateway,
-        string documento)
-    {
-        var clienteExistente = CriarClienteValido();
-        clienteExistente.Documento = documento;
-        mockClienteGateway.ObterClientePorDocumentoAsync(documento).Returns(clienteExistente);
-    }
-
-    public void ConfigurarMockEnderecoGateway(
-        IEnderecoGateway mockEnderecoGateway,
-        Endereco? enderecoRetorno = null)
-    {
-        enderecoRetorno ??= EnderecoFixture.CriarEnderecoValido();
-        mockEnderecoGateway.CadastrarAsync(Arg.Any<Endereco>()).Returns(Task.FromResult(enderecoRetorno));
-        mockEnderecoGateway.ObterPorIdAsync(Arg.Any<Guid>()).Returns(enderecoRetorno);
-        mockEnderecoGateway.EditarAsync(Arg.Any<Endereco>()).Returns(Task.CompletedTask);
-    }
-
-    public void ConfigurarMockContatoGateway(
-        IContatoGateway mockContatoGateway,
-        Contato? contatoRetorno = null)
-    {
-        contatoRetorno ??= ContatoFixture.CriarContatoValido();
-        mockContatoGateway.CadastrarAsync(Arg.Any<Contato>()).Returns(Task.FromResult(contatoRetorno));
-        mockContatoGateway.ObterPorIdAsync(Arg.Any<Guid>()).Returns(contatoRetorno);
-        mockContatoGateway.EditarAsync(Arg.Any<Contato>()).Returns(Task.CompletedTask);
     }
 }

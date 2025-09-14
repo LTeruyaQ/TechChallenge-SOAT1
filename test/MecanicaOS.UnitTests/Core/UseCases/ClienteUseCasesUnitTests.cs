@@ -92,8 +92,7 @@ public class ClienteUseCasesUnitTests
         _fixture.ConfigurarMockEnderecoGateway(mockEnderecoGateway);
         _fixture.ConfigurarMockContatoGateway(mockContatoGateway);
 
-        var clienteUseCases = _fixture.CriarClienteUseCases(
-            mockClienteGateway, mockEnderecoGateway, mockContatoGateway);
+        var clienteUseCases = _fixture.CriarClienteUseCases(mockClienteGateway);
 
         // Act
         var resultado = await clienteUseCases.CadastrarUseCaseAsync(request);
@@ -114,13 +113,13 @@ public class ClienteUseCasesUnitTests
 
         var clienteExistente = ClienteUseCasesFixture.CriarClienteValido();
         var request = ClienteUseCasesFixture.CriarAtualizarClienteUseCaseDtoValido();
+        request.Id = clienteExistente.Id; // Garantir que o Id está definido
 
         _fixture.ConfigurarMockClienteGatewayParaAtualizacao(mockClienteGateway, clienteExistente);
         _fixture.ConfigurarMockEnderecoGateway(mockEnderecoGateway);
         _fixture.ConfigurarMockContatoGateway(mockContatoGateway);
 
-        var clienteUseCases = _fixture.CriarClienteUseCases(
-            mockClienteGateway, mockEnderecoGateway, mockContatoGateway);
+        var clienteUseCases = _fixture.CriarClienteUseCases(mockClienteGateway);
 
         // Act
         var resultado = await clienteUseCases.AtualizarUseCaseAsync(clienteExistente.Id, request);
@@ -154,7 +153,7 @@ public class ClienteUseCasesUnitTests
             .WithMessage("cliente não encontrado");
 
         await mockClienteGateway.Received(1).ObterPorIdAsync(clienteId);
-        await mockClienteGateway.Received(1).EditarAsync(Arg.Any<Cliente>());
+        await mockClienteGateway.DidNotReceive().EditarAsync(Arg.Any<Cliente>());
     }
 
     [Fact]
@@ -188,6 +187,7 @@ public class ClienteUseCasesUnitTests
         var clienteId = Guid.NewGuid();
 
         mockClienteGateway.ObterPorIdAsync(clienteId).Returns(Task.FromResult((Cliente?)null));
+        mockClienteGateway.ObterClienteComVeiculoPorIdAsync(clienteId).Returns(Task.FromResult((Cliente?)null));
 
         var clienteUseCases = _fixture.CriarClienteUseCases(mockClienteGateway);
 
@@ -196,7 +196,8 @@ public class ClienteUseCasesUnitTests
 
         // Assert
         resultado.Should().BeNull();
-        mockClienteGateway.Received(1).ObterPorIdAsync(clienteId);
+        await mockClienteGateway.Received(1).ObterPorIdAsync(clienteId);
+        await mockClienteGateway.Received(1).ObterClienteComVeiculoPorIdAsync(clienteId);
     }
 
     [Fact]
@@ -207,6 +208,7 @@ public class ClienteUseCasesUnitTests
         var clienteId = Guid.NewGuid();
 
         mockClienteGateway.ObterPorIdAsync(clienteId).Returns(Task.FromResult((Cliente?)null));
+        mockClienteGateway.ObterClienteComVeiculoPorIdAsync(clienteId).Returns(Task.FromResult((Cliente?)null));
 
         var clienteUseCases = _fixture.CriarClienteUseCases(mockClienteGateway);
 
@@ -215,7 +217,8 @@ public class ClienteUseCasesUnitTests
 
         // Assert
         resultado.Should().BeNull();
-        mockClienteGateway.Received(1).ObterClienteComVeiculoPorIdAsync(clienteId);
+        await mockClienteGateway.Received(1).ObterPorIdAsync(clienteId);
+        await mockClienteGateway.Received(1).ObterClienteComVeiculoPorIdAsync(clienteId);
     }
 
     [Fact]
@@ -326,8 +329,7 @@ public class ClienteUseCasesUnitTests
         _fixture.ConfigurarMockEnderecoGateway(mockEnderecoGateway);
         _fixture.ConfigurarMockContatoGateway(mockContatoGateway);
 
-        var clienteUseCases = _fixture.CriarClienteUseCases(
-            mockClienteGateway, mockEnderecoGateway, mockContatoGateway);
+        var clienteUseCases = _fixture.CriarClienteUseCases(mockClienteGateway);
 
         // Act
         var resultado = await clienteUseCases.CadastrarUseCaseAsync(request);

@@ -54,12 +54,14 @@ public class VeiculoUseCasesUnitTests
     {
         // Arrange
         var mockVeiculoGateway = _fixture.CriarMockVeiculoGateway();
+        var mockUdt = _fixture.CriarMockUnidadeDeTrabalho();
         var request = VeiculoUseCasesFixture.CriarCadastrarVeiculoSemAnotacoes();
         var veiculoEsperado = VeiculoUseCasesFixture.CriarVeiculoSemAnotacoes();
 
         _fixture.ConfigurarMockVeiculoGatewayParaCadastro(mockVeiculoGateway, veiculoEsperado);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
-        var veiculoUseCases = _fixture.CriarVeiculoUseCases(mockVeiculoGateway);
+        var veiculoUseCases = _fixture.CriarVeiculoUseCases(mockVeiculoGateway, mockUdt);
 
         // Act
         var resultado = await veiculoUseCases.CadastrarUseCaseAsync(request);
@@ -69,6 +71,9 @@ public class VeiculoUseCasesUnitTests
         resultado.Anotacoes.Should().BeNull();
         resultado.Marca.Should().Be(request.Marca);
         resultado.Modelo.Should().Be(request.Modelo);
+        
+        // Verificar se o método Commit foi chamado
+        await mockUdt.Received(1).Commit();
     }
 
     [Fact]
@@ -82,6 +87,7 @@ public class VeiculoUseCasesUnitTests
         var request = VeiculoUseCasesFixture.CriarAtualizarVeiculoUseCaseDtoValido();
 
         _fixture.ConfigurarMockVeiculoGatewayParaAtualizacao(mockVeiculoGateway, veiculoExistente);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var veiculoUseCases = _fixture.CriarVeiculoUseCases(mockVeiculoGateway, mockUdt);
 
@@ -98,6 +104,9 @@ public class VeiculoUseCasesUnitTests
         resultado.Placa.Should().Be(request.Placa);
         resultado.Cor.Should().Be(request.Cor);
         resultado.Anotacoes.Should().Be(request.Anotacoes);
+        
+        // Verificar se o método Commit foi chamado
+        await mockUdt.Received(1).Commit();
 
         mockVeiculoGateway.Received(1).ObterPorIdAsync(veiculoExistente.Id);
         mockVeiculoGateway.Received(1).EditarAsync(Arg.Any<Veiculo>());
