@@ -221,6 +221,6 @@ public class VeiculoUseCasesFixture : UseCasesFixtureBase
         Veiculo veiculo)
     {
         mockGateway.ObterPorIdAsync(veiculo.Id).Returns(Task.FromResult(veiculo));
-        mockGateway.DeletarAsync(veiculo).Returns(Task.CompletedTask);
+        mockGateway.DeletarAsync(veiculo).Returns(Task.FromResult(true));
     }
 }

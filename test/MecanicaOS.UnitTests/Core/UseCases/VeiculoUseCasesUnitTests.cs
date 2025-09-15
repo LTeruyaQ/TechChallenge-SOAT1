@@ -29,6 +29,7 @@ public class VeiculoUseCasesUnitTests
         var veiculoEsperado = VeiculoUseCasesFixture.CriarVeiculoValido();
 
         _fixture.ConfigurarMockVeiculoGatewayParaCadastro(mockVeiculoGateway, veiculoEsperado);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var veiculoUseCases = _fixture.CriarVeiculoUseCases(mockVeiculoGateway, mockUdt);
 
@@ -126,6 +127,7 @@ public class VeiculoUseCasesUnitTests
         var request = VeiculoUseCasesFixture.CriarAtualizarVeiculoParcial();
 
         _fixture.ConfigurarMockVeiculoGatewayParaAtualizacao(mockVeiculoGateway, veiculoExistente);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var veiculoUseCases = _fixture.CriarVeiculoUseCases(mockVeiculoGateway, mockUdt);
 
@@ -305,6 +307,7 @@ public class VeiculoUseCasesUnitTests
         var veiculoExistente = VeiculoUseCasesFixture.CriarVeiculoValido();
 
         _fixture.ConfigurarMockVeiculoGatewayParaDelecao(mockVeiculoGateway, veiculoExistente);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var veiculoUseCases = _fixture.CriarVeiculoUseCases(mockVeiculoGateway, mockUdt);
 
@@ -342,30 +345,32 @@ public class VeiculoUseCasesUnitTests
     }
 
     [Theory]
-    [InlineData(2020)]
-    [InlineData(2015)]
-    [InlineData(2023)]
-    [InlineData(1990)]
-    public async Task CadastrarUseCaseAsync_ComDiferentesAnos_DeveCadastrarCorretamente(int ano)
+    [InlineData("2020")]
+    [InlineData("2015")]
+    [InlineData("2023")]
+    [InlineData("1990")]
+    public async Task CadastrarUseCaseAsync_ComDiferentesAnos_DeveCadastrarCorretamente(string ano)
     {
         // Arrange
         var mockVeiculoGateway = _fixture.CriarMockVeiculoGateway();
+        var mockUdt = _fixture.CriarMockUnidadeDeTrabalho();
         var request = VeiculoUseCasesFixture.CriarCadastrarVeiculoUseCaseDtoValido();
-        request.Ano = ano.ToString();
+        request.Ano = ano;
 
         var veiculoEsperado = VeiculoUseCasesFixture.CriarVeiculoValido();
-        veiculoEsperado.Ano = ano.ToString();
+        veiculoEsperado.Ano = ano;
 
         _fixture.ConfigurarMockVeiculoGatewayParaCadastro(mockVeiculoGateway, veiculoEsperado);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
-        var veiculoUseCases = _fixture.CriarVeiculoUseCases(mockVeiculoGateway);
+        var veiculoUseCases = _fixture.CriarVeiculoUseCases(mockVeiculoGateway, mockUdt);
 
         // Act
         var resultado = await veiculoUseCases.CadastrarUseCaseAsync(request);
 
         // Assert
         resultado.Should().NotBeNull();
-        resultado.Ano.Should().Be(ano.ToString());
+        resultado.Ano.Should().Be(ano);
     }
 
     [Theory]
@@ -377,6 +382,7 @@ public class VeiculoUseCasesUnitTests
     {
         // Arrange
         var mockVeiculoGateway = _fixture.CriarMockVeiculoGateway();
+        var mockUdt = _fixture.CriarMockUnidadeDeTrabalho();
         var request = VeiculoUseCasesFixture.CriarCadastrarVeiculoUseCaseDtoValido();
         request.Placa = placa;
 
@@ -384,8 +390,9 @@ public class VeiculoUseCasesUnitTests
         veiculoEsperado.Placa = placa;
 
         _fixture.ConfigurarMockVeiculoGatewayParaCadastro(mockVeiculoGateway, veiculoEsperado);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
-        var veiculoUseCases = _fixture.CriarVeiculoUseCases(mockVeiculoGateway);
+        var veiculoUseCases = _fixture.CriarVeiculoUseCases(mockVeiculoGateway, mockUdt);
 
         // Act
         var resultado = await veiculoUseCases.CadastrarUseCaseAsync(request);
@@ -407,6 +414,7 @@ public class VeiculoUseCasesUnitTests
         var request = VeiculoUseCasesFixture.CriarAtualizarVeiculoUseCaseDtoValido();
 
         _fixture.ConfigurarMockVeiculoGatewayParaAtualizacao(mockVeiculoGateway, veiculoExistente);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var veiculoUseCases = _fixture.CriarVeiculoUseCases(mockVeiculoGateway, mockUdt);
 

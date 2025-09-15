@@ -139,10 +139,17 @@ namespace Core.UseCases
             {
                 LogInicio(metodo, request);
 
+                // Verificar se o cliente já existe com o documento informado
+                var clienteExistente = await _clienteGateway.ObterClientePorDocumentoAsync(request.Documento);
+                if (clienteExistente != null)
+                {
+                    throw new DadosJaCadastradosException("Cliente já cadastrado");
+                }
+
                 Cliente cliente = new()
                 {
                     Nome = request.Nome,
-                    Sexo = request.Sexo,
+                    Sexo = request.Sexo ?? (request.TipoCliente == Core.Enumeradores.TipoCliente.PessoaFisica ? "Não informado" : null),
                     Documento = request.Documento,
                     DataNascimento = request.DataNascimento,
                     TipoCliente = request.TipoCliente

@@ -19,6 +19,19 @@ public class UsuarioUseCasesFixture
         IServicoSenha? mockServicoSenha = null,
         IUnidadeDeTrabalho? mockUdt = null)
     {
+        // Se mockUsuarioGateway for explicitamente nulo, não substitua para permitir teste do construtor
+        if (mockUsuarioGateway == null && mockClienteUseCases == null && 
+            mockServicoSenha == null && mockUdt == null)
+        {
+            return new UsuarioUseCases(
+                CriarMockLogServico<UsuarioUseCases>(),
+                CriarMockUnidadeDeTrabalho(),
+                CriarMockClienteUseCases(),
+                CriarMockServicoSenha(),
+                CriarMockUsuarioLogadoServico(),
+                null!);
+        }
+        
         return new UsuarioUseCases(
             CriarMockLogServico<UsuarioUseCases>(),
             mockUdt ?? CriarMockUnidadeDeTrabalho(),
@@ -255,8 +268,8 @@ public class UsuarioUseCasesFixture
         IUsuarioGateway mockGateway,
         Usuario usuario)
     {
-        mockGateway.ObterPorIdAsync(usuario.Id).Returns(usuario);
-        mockGateway.DeletarAsync(usuario).Returns(Task.CompletedTask);
+        mockGateway.ObterPorIdAsync(usuario.Id).Returns(Task.FromResult(usuario));
+        mockGateway.DeletarAsync(usuario).Returns(Task.FromResult(true));
     }
 
     public void ConfigurarMockServicoSenha(

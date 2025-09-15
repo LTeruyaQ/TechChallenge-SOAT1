@@ -274,8 +274,9 @@ public class ClienteUseCasesUnitTests
         var mockUdt = _fixture.CriarMockUnidadeDeTrabalho();
         var clienteExistente = ClienteUseCasesFixture.CriarClienteValido();
 
-        mockClienteGateway.ObterPorIdAsync(clienteExistente.Id).Returns(clienteExistente);
-        mockClienteGateway.DeletarAsync(Arg.Any<Cliente>()).Returns(Task.CompletedTask);
+        mockClienteGateway.ObterPorIdAsync(clienteExistente.Id).Returns(Task.FromResult(clienteExistente));
+        mockClienteGateway.DeletarAsync(Arg.Any<Cliente>()).Returns(Task.FromResult(true));
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var clienteUseCases = _fixture.CriarClienteUseCases(
             mockClienteGateway, null, null, null, mockUdt);

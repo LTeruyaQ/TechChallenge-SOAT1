@@ -144,6 +144,7 @@ public class UsuarioUseCasesUnitTests
 
         _fixture.ConfigurarMockUsuarioGatewayParaAtualizacao(mockUsuarioGateway, usuarioExistente);
         _fixture.ConfigurarMockServicoSenha(mockServicoSenha, request.Senha!, "novaSenhaHasheada");
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var usuarioUseCases = _fixture.CriarUsuarioUseCases(
             mockUsuarioGateway, null, mockServicoSenha, mockUdt);
@@ -310,6 +311,7 @@ public class UsuarioUseCasesUnitTests
         var usuarioExistente = UsuarioUseCasesFixture.CriarUsuarioFuncionarioValido();
 
         _fixture.ConfigurarMockUsuarioGatewayParaDelecao(mockUsuarioGateway, usuarioExistente);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var usuarioUseCases = _fixture.CriarUsuarioUseCases(
             mockUsuarioGateway, null, null, mockUdt);
@@ -356,6 +358,7 @@ public class UsuarioUseCasesUnitTests
         var mockUsuarioGateway = UsuarioUseCasesFixture.CriarMockUsuarioGateway();
         var mockClienteUseCases = UsuarioUseCasesFixture.CriarMockClienteUseCases();
         var mockServicoSenha = UsuarioUseCasesFixture.CriarMockServicoSenha();
+        var mockUdt = UsuarioUseCasesFixture.CriarMockUnidadeDeTrabalho();
 
         var request = UsuarioUseCasesFixture.CriarCadastrarUsuarioAdministradorDto();
         request.TipoUsuario = tipoUsuario;
@@ -370,9 +373,10 @@ public class UsuarioUseCasesUnitTests
         _fixture.ConfigurarMockUsuarioGatewayParaEmailNaoEncontrado(mockUsuarioGateway, request.Email);
         _fixture.ConfigurarMockUsuarioGatewayParaCadastro(mockUsuarioGateway);
         _fixture.ConfigurarMockServicoSenha(mockServicoSenha);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var usuarioUseCases = _fixture.CriarUsuarioUseCases(
-            mockUsuarioGateway, mockClienteUseCases, mockServicoSenha);
+            mockUsuarioGateway, mockClienteUseCases, mockServicoSenha, mockUdt);
 
         // Act
         var resultado = await usuarioUseCases.CadastrarUseCaseAsync(request);
@@ -391,6 +395,7 @@ public class UsuarioUseCasesUnitTests
         // Arrange
         var mockUsuarioGateway = UsuarioUseCasesFixture.CriarMockUsuarioGateway();
         var mockServicoSenha = UsuarioUseCasesFixture.CriarMockServicoSenha();
+        var mockUdt = UsuarioUseCasesFixture.CriarMockUnidadeDeTrabalho();
 
         var request = UsuarioUseCasesFixture.CriarCadastrarUsuarioAdministradorDto();
         request.RecebeAlertaEstoque = recebeAlerta;
@@ -398,9 +403,10 @@ public class UsuarioUseCasesUnitTests
         _fixture.ConfigurarMockUsuarioGatewayParaEmailNaoEncontrado(mockUsuarioGateway, request.Email);
         _fixture.ConfigurarMockUsuarioGatewayParaCadastro(mockUsuarioGateway);
         _fixture.ConfigurarMockServicoSenha(mockServicoSenha);
+        mockUdt.Commit().Returns(Task.FromResult(true));
 
         var usuarioUseCases = _fixture.CriarUsuarioUseCases(
-            mockUsuarioGateway, null, mockServicoSenha);
+            mockUsuarioGateway, null, mockServicoSenha, mockUdt);
 
         // Act
         var resultado = await usuarioUseCases.CadastrarUseCaseAsync(request);
