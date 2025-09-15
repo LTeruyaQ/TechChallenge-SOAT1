@@ -4,6 +4,7 @@ using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
 using NSubstitute;
@@ -271,6 +272,8 @@ public class ClienteUseCasesUnitTests
     {
         // Arrange
         var mockClienteGateway = _fixture.CriarMockClienteGateway();
+        var mockEnderecoGateway = _fixture.CriarMockEnderecoGateway();
+        var mockContatoGateway = _fixture.CriarMockContatoGateway();
         var mockUdt = _fixture.CriarMockUnidadeDeTrabalho();
         var clienteExistente = ClienteUseCasesFixture.CriarClienteValido();
 
@@ -279,7 +282,7 @@ public class ClienteUseCasesUnitTests
         mockUdt.Commit().Returns(Task.FromResult(true));
 
         var clienteUseCases = _fixture.CriarClienteUseCases(
-            mockClienteGateway, null, null, null, mockUdt);
+            mockClienteGateway, mockEnderecoGateway, mockContatoGateway, null, mockUdt);
 
         // Act
         await clienteUseCases.RemoverUseCaseAsync(clienteExistente.Id);
