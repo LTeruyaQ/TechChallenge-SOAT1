@@ -1,8 +1,6 @@
 using Core.DTOs.Entidades.Cliente;
 using Core.Especificacoes.Cliente;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.Especificacoes.Cliente;
 
@@ -12,15 +10,15 @@ public class ClienteEspecificacaoTests
     {
         var cliente1 = ClienteFixture.CriarClienteEntityDtoValido();
         var cliente2 = ClienteFixture.CriarClienteEntityDtoValido();
-        
+
         // Ensure unique documents
         cliente1.Documento = "12345678901";
         cliente2.Documento = "98765432100";
-        
+
         // Ensure unique IDs
         cliente1.Id = Guid.NewGuid();
         cliente2.Id = Guid.NewGuid();
-        
+
         return new List<ClienteEntityDto> { cliente1, cliente2 };
     }
 
@@ -63,7 +61,7 @@ public class ClienteEspecificacaoTests
 
         // Assert
         especificacao.Inclusoes.Should().NotBeEmpty("deve ter inclusões definidas");
-        especificacao.Inclusoes.Should().Contain(i => i.ToString().Contains("Veiculos"), 
+        especificacao.Inclusoes.Should().Contain(i => i.ToString().Contains("Veiculos"),
             "deve incluir a propriedade Veiculos");
     }
 
@@ -138,7 +136,7 @@ public class ClienteEspecificacaoTests
 
         // Assert
         especificacao.Inclusoes.Should().NotBeEmpty("deve ter inclusões definidas");
-        especificacao.Inclusoes.Should().Contain(i => i.ToString().Contains("Veiculos"), 
+        especificacao.Inclusoes.Should().Contain(i => i.ToString().Contains("Veiculos"),
             "deve incluir a propriedade Veiculos");
     }
 

@@ -1,8 +1,6 @@
 using Core.DTOs.UseCases.Autenticacao;
-using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Enumeradores;
-using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
@@ -159,7 +157,7 @@ public class AutenticacaoUseCasesFixture : UseCasesFixtureBase
     {
         mockServicoJwt.GerarToken(Arg.Any<Guid>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IEnumerable<string>>()).Returns(token);
     }
-    
+
     public void ConfigurarMockClienteUseCasesParaClienteValido(
         IClienteUseCases mockClienteUseCases,
         Guid clienteId,
@@ -173,7 +171,7 @@ public class AutenticacaoUseCasesFixture : UseCasesFixtureBase
             DataCadastro = DateTime.UtcNow.AddDays(-10),
             TipoCliente = TipoCliente.PessoaFisica
         };
-        
+
         mockClienteUseCases.ObterPorIdUseCaseAsync(clienteId).Returns(cliente);
     }
 }

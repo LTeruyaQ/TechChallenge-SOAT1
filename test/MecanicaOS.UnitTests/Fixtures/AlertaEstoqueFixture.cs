@@ -1,5 +1,5 @@
-using Core.Entidades;
 using Core.DTOs.Entidades.Estoque;
+using Core.Entidades;
 
 namespace MecanicaOS.UnitTests.Fixtures;
 
@@ -8,7 +8,7 @@ public static class AlertaEstoqueFixture
     public static AlertaEstoque CriarAlertaEstoqueValido()
     {
         var estoque = EstoqueFixture.CriarEstoqueComEstoqueBaixo();
-        
+
         return new AlertaEstoque
         {
             EstoqueId = estoque.Id,
@@ -19,7 +19,7 @@ public static class AlertaEstoqueFixture
     public static AlertaEstoque CriarAlertaEstoqueComEstoqueZerado()
     {
         var estoque = EstoqueFixture.CriarEstoqueComEstoqueZerado();
-        
+
         return new AlertaEstoque
         {
             EstoqueId = estoque.Id,
@@ -46,7 +46,7 @@ public static class AlertaEstoqueFixture
     public static AlertaEstoqueEntityDto CriarAlertaEstoqueEntityDtoValido()
     {
         var estoqueDto = EstoqueFixture.CriarEstoqueEntityDtoValido();
-        
+
         return new AlertaEstoqueEntityDto
         {
             Id = Guid.NewGuid(),
@@ -81,7 +81,7 @@ public static class AlertaEstoqueFixture
     {
         var estoque1 = EstoqueFixture.CriarEstoqueEntityDtoValido();
         var estoque2 = EstoqueFixture.CriarEstoqueEntityDtoSemDescricao();
-        
+
         return new List<AlertaEstoqueEntityDto>
         {
             new AlertaEstoqueEntityDto
@@ -115,7 +115,7 @@ public static class AlertaEstoqueFixture
             QuantidadeDisponivel = 1,
             QuantidadeMinima = 10
         };
-        
+
         return new AlertaEstoque
         {
             EstoqueId = estoque.Id,

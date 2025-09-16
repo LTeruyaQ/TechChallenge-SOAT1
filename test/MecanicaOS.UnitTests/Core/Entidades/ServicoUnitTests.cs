@@ -1,5 +1,3 @@
-using Xunit;
-using FluentAssertions;
 using Core.Entidades;
 using Core.Entidades.Abstratos;
 
@@ -102,9 +100,9 @@ public class ServicoUnitTests
     public void Servico_QuandoAtualizadoComParametrosNulos_NaoDeveAlterarValoresExistentes()
     {
         // Arrange
-        var servico = new Servico 
-        { 
-            Nome = "Nome Original", 
+        var servico = new Servico
+        {
+            Nome = "Nome Original",
             Descricao = "Descrição Original",
             Valor = 100.00m,
             Disponivel = false
@@ -132,9 +130,9 @@ public class ServicoUnitTests
     public void Servico_QuandoAtualizadoComStringVazia_NaoDeveAlterarValoresExistentes()
     {
         // Arrange
-        var servico = new Servico 
-        { 
-            Nome = "Nome Original", 
+        var servico = new Servico
+        {
+            Nome = "Nome Original",
             Descricao = "Descrição Original"
         };
 

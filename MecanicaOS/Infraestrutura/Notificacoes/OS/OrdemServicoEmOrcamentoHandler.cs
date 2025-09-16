@@ -39,7 +39,7 @@ public class OrdemServicoEmOrcamentoHandler(
 
             // Converter DTO para entidade para usar no UseCase
             var os = ConvertToEntity(osDto);
-            
+
             var orcamento = _orcamentoUseCases.GerarOrcamentoUseCase(os);
             os.Orcamento = orcamento;
             os.Status = StatusOrdemServico.AguardandoAprovação;
@@ -51,7 +51,7 @@ public class OrdemServicoEmOrcamentoHandler(
             osDto.Orcamento = os.Orcamento;
             osDto.Status = os.Status;
             osDto.DataEnvioOrcamento = os.DataEnvioOrcamento;
-            
+
             await _ordemServicoRepositorio.EditarAsync(osDto);
             await _uot.Commit();
 

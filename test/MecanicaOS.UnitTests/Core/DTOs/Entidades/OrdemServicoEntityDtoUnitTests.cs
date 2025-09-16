@@ -1,8 +1,6 @@
-using Xunit;
-using FluentAssertions;
-using Core.DTOs.Entidades.OrdemServicos;
 using Core.DTOs.Entidades.Autenticacao;
 using Core.DTOs.Entidades.Cliente;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.DTOs.Entidades.Servico;
 using Core.DTOs.Entidades.Veiculo;
 using Core.Enumeradores;

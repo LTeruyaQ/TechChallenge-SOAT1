@@ -1,7 +1,5 @@
-using Xunit;
-using FluentAssertions;
-using Core.DTOs.Entidades.Veiculo;
 using Core.DTOs.Entidades.Autenticacao;
+using Core.DTOs.Entidades.Veiculo;
 
 namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;
 

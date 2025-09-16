@@ -1,14 +1,7 @@
-using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using NSubstitute;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;
 
@@ -420,7 +413,7 @@ public class UsuarioUseCasesUnitTests
     public void Constructor_ComParametrosNulos_DeveLancarArgumentNullException()
     {
         // Arrange & Act & Assert
-        Assert.Throws<ArgumentNullException>(() => 
+        Assert.Throws<ArgumentNullException>(() =>
             _fixture.CriarUsuarioUseCases(null));
     }
 }

@@ -2,25 +2,10 @@ using Adapters.Controllers;
 using Adapters.DTOs.Requests.OrdemServico;
 using Adapters.DTOs.Requests.OrdemServico.InsumoOS;
 using Adapters.DTOs.Responses.OrdemServico;
-using Adapters.Gateways;
-using Adapters.Presenters;
-using Adapters.Presenters.Interfaces;
 using API.Models;
-using Core.Entidades;
-using Core.DTOs.Entidades.OrdemServicos;
-using Core.DTOs.Entidades.Estoque;
-using Core.DTOs.Entidades.Cliente;
-using Core.DTOs.Entidades.Servico;
 using Core.Enumeradores;
-using Core.Interfaces.Eventos;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.Jobs;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
-using Core.UseCases;
-using Infraestrutura.Logs;
-using Infraestrutura.Notificacoes;
+using Infraestrutura.Dados;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,77 +18,12 @@ namespace API.Controllers
         private readonly Adapters.Controllers.OrdemServicoController _ordemServicoController;
         private readonly InsumoOSController _insumoOSController;
 
-        public OrdemServicoController(
-            IRepositorio<OrdemServicoEntityDto> repositorioOrdemServico,
-            IRepositorio<InsumoOSEntityDto> repositorioInsumoOS,
-            IRepositorio<EstoqueEntityDto> repositorioEstoque,
-            IRepositorio<ClienteEntityDto> repositorioCliente,
-            IRepositorio<ServicoEntityDto> repositorioServico,
-            IUnidadeDeTrabalho unidadeDeTrabalho,
-            IUsuarioLogadoServico usuarioLogadoServico,
-            IVerificarEstoqueJob verificarEstoqueJob,
-            IIdCorrelacionalService idCorrelacionalService,
-            ILogger<OrdemServicoUseCases> loggerOrdemServicoUseCases,
-            ILogger<EstoqueUseCases> loggerEstoqueUseCases,
-            ILogger<InsumoOSUseCases> loggerInsumoOSUseCases,
-            ILogger<ServicoUseCases> loggerServicoUseCases,
-            IMediator mediator)
+        public OrdemServicoController(MecanicaContexto contexto, Mediator mediator, IServicoEmail servicoEmail, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext)
         {
-            // Criando logs
-            ILogServico<OrdemServicoUseCases> logOrdemServicoUseCases = new LogServico<OrdemServicoUseCases>(idCorrelacionalService, loggerOrdemServicoUseCases, usuarioLogadoServico);
-            ILogServico<EstoqueUseCases> logEstoqueUseCases = new LogServico<EstoqueUseCases>(idCorrelacionalService, loggerEstoqueUseCases, usuarioLogadoServico);
-            ILogServico<InsumoOSUseCases> logInsumoOSUseCases = new LogServico<InsumoOSUseCases>(idCorrelacionalService, loggerInsumoOSUseCases, usuarioLogadoServico);
-            ILogServico<ServicoUseCases> logServicoUseCases = new LogServico<ServicoUseCases>(idCorrelacionalService, loggerServicoUseCases, usuarioLogadoServico);
-
-            IEventosPublisher eventosPublisher = new EventoPublisher(mediator);
-
-            // Criando gateways
-            IEventosGateway eventosGateway = new EventosGateway(eventosPublisher);
-            IOrdemServicoGateway ordemServicoGateway = new OrdemServicoGateway(repositorioOrdemServico);
-            IInsumosGateway insumosGateway = new InsumosGateway(repositorioInsumoOS);
-            IEstoqueGateway estoqueGateway = new EstoqueGateway(repositorioEstoque);
-            IVerificarEstoqueJobGateway verificarEstoqueJobGateway = new VerificarEstoqueJobGateway(verificarEstoqueJob);
-            IClienteGateway clienteGateway = new ClienteGateway(repositorioCliente);
-            IServicoGateway servicoGateway = new ServicoGateway(repositorioServico); // Supondo que exista um repositorioServico
-
-            // Criando presenter
-            IOrdemServicoPresenter ordemServicoPresenter = new OrdemServicoPresenter();
-
-            // Criando use cases
-            IServicoUseCases servicoUseCases = new ServicoUseCases(
-                logServicoUseCases,
-                unidadeDeTrabalho,
-                usuarioLogadoServico,
-                servicoGateway
-            );
-
-            IEstoqueUseCases estoqueUseCases = new EstoqueUseCases(
-                estoqueGateway,
-                logEstoqueUseCases,
-                unidadeDeTrabalho,
-                usuarioLogadoServico);
-
-            IOrdemServicoUseCases ordemServicoUseCases = new OrdemServicoUseCases(
-                logOrdemServicoUseCases,
-                unidadeDeTrabalho,
-                clienteGateway,
-                servicoUseCases,
-                usuarioLogadoServico,
-                ordemServicoGateway,
-                eventosGateway);
-
-            IInsumoOSUseCases insumoOSUseCases = new InsumoOSUseCases(
-                ordemServicoUseCases,
-                estoqueUseCases,
-                insumosGateway,
-                logInsumoOSUseCases,
-                unidadeDeTrabalho,
-                usuarioLogadoServico,
-                verificarEstoqueJobGateway);
-
-            // Criando controllers
-            _ordemServicoController = new Adapters.Controllers.OrdemServicoController(ordemServicoUseCases, ordemServicoPresenter);
-            _insumoOSController = new InsumoOSController(insumoOSUseCases, ordemServicoPresenter);
+            // Usando o CompositionRoot para criar os controllers com dependências externas
+            var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+            _ordemServicoController = compositionRoot.CreateOrdemServicoController();
+            _insumoOSController = compositionRoot.CreateInsumoOSController();
         }
 
         [HttpGet]

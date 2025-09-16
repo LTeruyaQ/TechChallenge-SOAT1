@@ -4,9 +4,8 @@ using Core.Enumeradores;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
-using Core.UseCases;
-using NSubstitute;
 using Core.Interfaces.UseCases;
+using Core.UseCases;
 
 namespace MecanicaOS.UnitTests.Fixtures.UseCases;
 
@@ -20,7 +19,7 @@ public class UsuarioUseCasesFixture
         IUnidadeDeTrabalho? mockUdt = null)
     {
         // Se mockUsuarioGateway for explicitamente nulo, não substitua para permitir teste do construtor
-        if (mockUsuarioGateway == null && mockClienteUseCases == null && 
+        if (mockUsuarioGateway == null && mockClienteUseCases == null &&
             mockServicoSenha == null && mockUdt == null)
         {
             return new UsuarioUseCases(
@@ -31,7 +30,7 @@ public class UsuarioUseCasesFixture
                 CriarMockUsuarioLogadoServico(),
                 null!);
         }
-        
+
         return new UsuarioUseCases(
             CriarMockLogServico<UsuarioUseCases>(),
             mockUdt ?? CriarMockUnidadeDeTrabalho(),

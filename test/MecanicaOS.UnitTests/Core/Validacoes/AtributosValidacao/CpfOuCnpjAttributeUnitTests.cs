@@ -1,6 +1,4 @@
 using Core.Validacoes.AtributosValidacao;
-using FluentAssertions;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.Validacoes.AtributosValidacao;
 
@@ -116,7 +114,7 @@ public class CpfOuCnpjAttributeUnitTests
         var resultadoLimpo = _attribute.IsValid(documentoLimpo);
 
         // Assert
-        resultadoFormatado.Should().Be(resultadoLimpo, 
+        resultadoFormatado.Should().Be(resultadoLimpo,
             "Documento formatado e limpo deveriam ter o mesmo resultado de validação");
         resultadoFormatado.Should().BeTrue("Ambos os documentos deveriam ser válidos");
     }

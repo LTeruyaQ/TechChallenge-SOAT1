@@ -1,9 +1,7 @@
 using Core.DTOs.UseCases.OrdemServico;
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Enumeradores;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.DTOs.UseCases;
 
@@ -20,7 +18,7 @@ public class OrdemServicoUseCaseDtoUnitTests
         dto.ClienteId.Should().NotBeEmpty("deve ter um ClienteId válido");
         dto.VeiculoId.Should().NotBeEmpty("deve ter um VeiculoId válido");
         dto.ServicoId.Should().NotBeEmpty("deve ter um ServicoId válido");
-        dto.Descricao.Should().Be("Troca de óleo e filtro - manutenção preventiva", 
+        dto.Descricao.Should().Be("Troca de óleo e filtro - manutenção preventiva",
             "a descrição deve ser armazenada corretamente");
     }
 
@@ -79,7 +77,7 @@ public class OrdemServicoUseCaseDtoUnitTests
         dto.ClienteId.Should().NotBeEmpty("deve ter um ClienteId válido");
         dto.VeiculoId.Should().NotBeEmpty("deve ter um VeiculoId válido");
         dto.ServicoId.Should().NotBeEmpty("deve ter um ServicoId válido");
-        dto.Descricao.Should().Be("Descrição atualizada do serviço", 
+        dto.Descricao.Should().Be("Descrição atualizada do serviço",
             "a descrição deve ser armazenada corretamente");
         dto.Status.Should().Be(StatusOrdemServico.EmExecucao, "o status deve ser armazenado corretamente");
     }
@@ -188,11 +186,11 @@ public class OrdemServicoUseCaseDtoUnitTests
         // Assert
         lista.Should().NotBeNull("a lista deve ser criada");
         lista.Should().HaveCount(3, "deve conter todos os DTOs da fixture");
-        lista.Should().OnlyContain(dto => dto.ClienteId != Guid.Empty, 
+        lista.Should().OnlyContain(dto => dto.ClienteId != Guid.Empty,
             "todos os DTOs devem ter ClienteId válido");
-        lista.Should().OnlyContain(dto => dto.VeiculoId != Guid.Empty, 
+        lista.Should().OnlyContain(dto => dto.VeiculoId != Guid.Empty,
             "todos os DTOs devem ter VeiculoId válido");
-        lista.Should().OnlyContain(dto => dto.ServicoId != Guid.Empty, 
+        lista.Should().OnlyContain(dto => dto.ServicoId != Guid.Empty,
             "todos os DTOs devem ter ServicoId válido");
     }
 
@@ -216,9 +214,9 @@ public class OrdemServicoUseCaseDtoUnitTests
         // Assert
         lista.Should().NotBeNull("a lista deve ser criada");
         lista.Should().HaveCount(3, "deve conter todos os DTOs da fixture");
-        lista.Should().OnlyContain(dto => dto.EstoqueId != Guid.Empty, 
+        lista.Should().OnlyContain(dto => dto.EstoqueId != Guid.Empty,
             "todos os DTOs devem ter EstoqueId válido");
-        lista.Should().OnlyContain(dto => dto.Quantidade > 0, 
+        lista.Should().OnlyContain(dto => dto.Quantidade > 0,
             "todos os DTOs devem ter quantidade positiva");
     }
 

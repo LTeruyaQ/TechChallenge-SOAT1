@@ -1,9 +1,5 @@
-using Core.Entidades;
-using Core.Entidades.Abstratos;
 using Core.DTOs.Entidades.Autenticacao;
-using Core.DTOs.Entidades.Cliente;
-using Core.DTOs.Entidades.Veiculo;
-using Core.Enumeradores;
+using Core.Entidades.Abstratos;
 
 namespace MecanicaOS.UnitTests.Fixtures;
 
@@ -12,7 +8,7 @@ public abstract class BaseFixture
     protected static readonly Guid ValidGuid = Guid.NewGuid();
     protected static readonly DateTime ValidDateTime = DateTime.Now;
     protected static readonly string ValidString = "Texto válido";
-    
+
     protected static T CriarEntidadeComCamposObrigatorios<T>() where T : Entidade, new()
     {
         var entidade = new T
@@ -22,10 +18,10 @@ public abstract class BaseFixture
             DataCadastro = ValidDateTime,
             DataAtualizacao = ValidDateTime
         };
-        
+
         return entidade;
     }
-    
+
     protected static T CriarRepositoryDtoComCamposObrigatorios<T>() where T : EntityDto, new()
     {
         var dto = new T
@@ -35,7 +31,7 @@ public abstract class BaseFixture
             DataCadastro = ValidDateTime,
             DataAtualizacao = ValidDateTime
         };
-        
+
         return dto;
     }
 }

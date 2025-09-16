@@ -1,14 +1,7 @@
-using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 using Core.Exceptions;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using NSubstitute;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;
 
@@ -408,13 +401,13 @@ public class ServicoUseCasesUnitTests
         var mockLogServico = _fixture.CriarMockLogServico<ServicoUseCases>();
 
         // Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() => 
+        var exception = Assert.Throws<ArgumentNullException>(() =>
             new ServicoUseCases(
                 null!,
                 mockUdt,
                 mockUsuarioLogado,
                 mockServicoGateway));
-                
+
         Assert.Equal("logServico", exception.ParamName);
     }
 }

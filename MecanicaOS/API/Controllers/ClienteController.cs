@@ -1,17 +1,9 @@
 using Adapters.DTOs.Requests.Cliente;
 using Adapters.DTOs.Responses.Cliente;
-using Adapters.Gateways;
-using Adapters.Presenters;
-using Adapters.Presenters.Interfaces;
 using API.Models;
-using Core.Entidades;
-using Core.DTOs.Entidades.Cliente;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
-using Core.UseCases;
-using Infraestrutura.Logs;
+using Infraestrutura.Dados;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,37 +14,11 @@ namespace API.Controllers
     {
         private readonly Adapters.Controllers.ClienteController _clienteController;
 
-        public ClienteController(
-            IRepositorio<ClienteEntityDto> repositorioCliente,
-            IRepositorio<EnderecoEntityDto> repositorioEndereco,
-            IRepositorio<ContatoEntityDto> repositorioContato,
-            IUnidadeDeTrabalho unidadeDeTrabalho,
-            IUsuarioLogadoServico usuarioLogadoServico,
-            IdCorrelacionalService idCorrelacionalService,
-            ILogger<ClienteUseCases> loggerClienteUseCases)
+        public ClienteController(MecanicaContexto contexto, Mediator mediator, IServicoEmail servicoEmail, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext)
         {
-            // Criando gateways
-            IClienteGateway clienteGateway = new ClienteGateway(repositorioCliente);
-            IEnderecoGateway enderecoGateway = new EnderecoGateway(repositorioEndereco);
-            IContatoGateway contatoGateway = new ContatoGateway(repositorioContato);
-
-            // Criando logs
-            ILogServico<ClienteUseCases> logClienteUseCases = new LogServico<ClienteUseCases>(idCorrelacionalService, loggerClienteUseCases, usuarioLogadoServico);
-
-            // Criando use cases
-            IClienteUseCases clienteUseCases = new ClienteUseCases(
-                clienteGateway,
-                enderecoGateway,
-                contatoGateway,
-                logClienteUseCases,
-                unidadeDeTrabalho,
-                usuarioLogadoServico);
-
-            // Criando presenter
-            IClientePresenter clientePresenter = new ClientePresenter();
-
-            // Criando controller
-            _clienteController = new Adapters.Controllers.ClienteController(clienteUseCases, clientePresenter);
+            // Usando o CompositionRoot para criar o controller com dependências externas
+            var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+            _clienteController = compositionRoot.CreateClienteController();
         }
 
         [HttpGet]

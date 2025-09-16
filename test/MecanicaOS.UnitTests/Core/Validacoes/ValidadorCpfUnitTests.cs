@@ -1,6 +1,4 @@
 using Core.Validacoes;
-using FluentAssertions;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.Validacoes;
 
@@ -95,7 +93,7 @@ public class ValidadorCpfUnitTests
         var resultadoLimpo = ValidadorCpf.Valido(cpfLimpo);
 
         // Assert
-        resultadoFormatado.Should().Be(resultadoLimpo, 
+        resultadoFormatado.Should().Be(resultadoLimpo,
             "CPF com formatação deveria ter o mesmo resultado que CPF limpo");
         resultadoFormatado.Should().BeTrue("CPF deveria ser válido após limpeza");
     }

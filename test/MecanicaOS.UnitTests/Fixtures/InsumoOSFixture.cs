@@ -1,6 +1,5 @@
-using Core.Entidades;
 using Core.DTOs.Entidades.OrdemServicos;
-using Core.DTOs.Entidades.Estoque;
+using Core.Entidades;
 
 namespace MecanicaOS.UnitTests.Fixtures;
 
@@ -10,7 +9,7 @@ public static class InsumoOSFixture
     {
         var ordemServico = OrdemServicoFixture.CriarOrdemServicoValida();
         var estoque = EstoqueFixture.CriarEstoqueValido();
-        
+
         return new InsumoOS
         {
             OrdemServicoId = ordemServico.Id,
@@ -25,7 +24,7 @@ public static class InsumoOSFixture
     {
         var ordemServico = OrdemServicoFixture.CriarOrdemServicoValida();
         var estoque = EstoqueFixture.CriarEstoqueValido();
-        
+
         return new InsumoOS
         {
             OrdemServicoId = ordemServico.Id,
@@ -40,7 +39,7 @@ public static class InsumoOSFixture
     {
         var ordemServico = OrdemServicoFixture.CriarOrdemServicoValida();
         var estoque = EstoqueFixture.CriarEstoqueCaroPremium();
-        
+
         return new InsumoOS
         {
             OrdemServicoId = ordemServico.Id,
@@ -65,7 +64,7 @@ public static class InsumoOSFixture
     {
         var ordemServicoDto = OrdemServicoFixture.CriarOrdemServicoEntityDtoValido();
         var estoqueDto = EstoqueFixture.CriarEstoqueEntityDtoValido();
-        
+
         return new InsumoOSEntityDto
         {
             Id = Guid.NewGuid(),
@@ -108,7 +107,7 @@ public static class InsumoOSFixture
         var ordemServico2 = OrdemServicoFixture.CriarOrdemServicoEntityDtoComValoresPadrao();
         var estoque1 = EstoqueFixture.CriarEstoqueEntityDtoValido();
         var estoque2 = EstoqueFixture.CriarEstoqueEntityDtoSemDescricao();
-        
+
         return new List<InsumoOSEntityDto>
         {
             new InsumoOSEntityDto
@@ -149,7 +148,7 @@ public static class InsumoOSFixture
             QuantidadeDisponivel = 20,
             QuantidadeMinima = 5
         };
-        
+
         return new InsumoOS
         {
             OrdemServicoId = ordemServico.Id,
@@ -164,7 +163,7 @@ public static class InsumoOSFixture
     {
         var estoque1 = EstoqueFixture.CriarEstoqueValido();
         var estoque2 = EstoqueFixture.CriarEstoqueComEstoqueBaixo();
-        
+
         return new List<InsumoOS>
         {
             new InsumoOS

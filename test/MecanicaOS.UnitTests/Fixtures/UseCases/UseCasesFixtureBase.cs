@@ -2,7 +2,6 @@ using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
-using NSubstitute;
 
 namespace MecanicaOS.UnitTests.Fixtures.UseCases;
 

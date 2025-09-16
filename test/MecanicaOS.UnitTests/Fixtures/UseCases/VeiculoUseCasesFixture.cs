@@ -2,7 +2,6 @@ using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases;
 
 namespace MecanicaOS.UnitTests.Fixtures.UseCases;

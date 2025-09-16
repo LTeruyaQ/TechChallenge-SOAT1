@@ -1,5 +1,4 @@
 using Core.DTOs.Entidades.OrdemServicos;
-using Core.Entidades;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 

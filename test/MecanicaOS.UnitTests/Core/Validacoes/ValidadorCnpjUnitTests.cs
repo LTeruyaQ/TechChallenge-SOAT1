@@ -1,6 +1,4 @@
 using Core.Validacoes;
-using FluentAssertions;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.Validacoes;
 
@@ -95,7 +93,7 @@ public class ValidadorCnpjUnitTests
         var resultadoLimpo = ValidadorCnpj.Valido(cnpjLimpo);
 
         // Assert
-        resultadoFormatado.Should().Be(resultadoLimpo, 
+        resultadoFormatado.Should().Be(resultadoLimpo,
             "CNPJ com formatação deveria ter o mesmo resultado que CNPJ limpo");
         resultadoFormatado.Should().BeTrue("CNPJ deveria ser válido após limpeza");
     }

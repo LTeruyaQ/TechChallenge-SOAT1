@@ -2,20 +2,11 @@ using Adapters.Controllers;
 using Adapters.DTOs.Requests.Autenticacao;
 using Adapters.DTOs.Requests.Usuario;
 using Adapters.DTOs.Responses.Autenticacao;
-using Adapters.Gateways;
-using Adapters.Presenters;
-using Adapters.Presenters.Interfaces;
 using API.Models;
-using Core.Entidades;
-using Core.DTOs.Entidades.Usuarios;
-using Core.DTOs.Entidades.Cliente;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
-using Core.UseCases;
 using Infraestrutura.Autenticacao;
-using Infraestrutura.Logs;
+using Infraestrutura.Dados;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -28,64 +19,18 @@ namespace API.Controllers
         private readonly IUsuarioController _usuarioController;
 
         public AutenticacaoController(
-            IRepositorio<UsuarioEntityDto> repositorioUsuario,
-            IRepositorio<ClienteEntityDto> repositorioCliente,
-            IRepositorio<EnderecoEntityDto> repositorioEndereco,
-            IRepositorio<ContatoEntityDto> repositorioContato,
-            IOptions<ConfiguracaoJwt> configuracaoJwt,
-            IUnidadeDeTrabalho unidadeDeTrabalho,
-            IUsuarioLogadoServico usuarioLogadoServico,
+            MecanicaContexto contexto,
+            Mediator mediator,
+            IServicoEmail servicoEmail,
             IIdCorrelacionalService idCorrelacionalService,
-            ILogger<ClienteUseCases> loggerClienteUseCases,
-            ILogger<UsuarioUseCases> loggerUsuarioUseCases,
-            ILogger<AutenticacaoUseCases> loggerAutenticacaoUseCases)
+            HttpContextAccessor httpContext,
+            IOptions<ConfiguracaoJwt> configuracaoJwt)
         {
-            // Criando gateways
-            IUsuarioGateway usuarioGateway = new UsuarioGateway(repositorioUsuario);
-            IClienteGateway clienteGateway = new ClienteGateway(repositorioCliente);
-            IEnderecoGateway enderecoGateway = new EnderecoGateway(repositorioEndereco);
-            IContatoGateway contatoGateway = new ContatoGateway(repositorioContato);
+            // Usando o CompositionRoot para criar os controllers com dependências externas
+            var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
 
-            // Criando serviços
-            IServicoSenha servicoSenha = new ServicoSenha();
-            IServicoJwt servicoJwt = new ServicoJwt(configuracaoJwt);
-
-            // Criando logs
-            ILogServico<ClienteUseCases> logClienteUseCases = new LogServico<ClienteUseCases>(idCorrelacionalService, loggerClienteUseCases, usuarioLogadoServico);
-            ILogServico<UsuarioUseCases> logUsuarioUseCases = new LogServico<UsuarioUseCases>(idCorrelacionalService, loggerUsuarioUseCases, usuarioLogadoServico);
-            ILogServico<AutenticacaoUseCases> logAutenticacaoUseCases = new LogServico<AutenticacaoUseCases>(idCorrelacionalService, loggerAutenticacaoUseCases, usuarioLogadoServico);
-
-            // Criando use cases
-            IClienteUseCases clienteUseCases = new ClienteUseCases(
-                clienteGateway,
-                enderecoGateway,
-                contatoGateway,
-                logClienteUseCases,
-                unidadeDeTrabalho,
-                usuarioLogadoServico);
-
-            IUsuarioUseCases usuarioUseCases = new UsuarioUseCases(
-                logUsuarioUseCases,
-                unidadeDeTrabalho,
-                clienteUseCases,
-                servicoSenha,
-                usuarioLogadoServico,
-                usuarioGateway);
-
-            IAutenticacaoUseCases autenticacaoUseCases = new AutenticacaoUseCases(
-                usuarioUseCases,
-                servicoSenha,
-                servicoJwt,
-                logAutenticacaoUseCases,
-                clienteUseCases);
-
-            // Criando presenters
-            IAutenticacaoPresenter autenticacaoPresenter = new AutenticacaoPresenter();
-            IUsuarioPresenter usuarioPresenter = new UsuarioPresenter();
-
-            // Criando controllers
-            _autenticacaoController = new Adapters.Controllers.AutenticacaoController(autenticacaoUseCases, autenticacaoPresenter);
-            _usuarioController = new Adapters.Controllers.UsuarioController(usuarioUseCases, usuarioPresenter);
+            _autenticacaoController = compositionRoot.CreateAutenticacaoController();
+            _usuarioController = compositionRoot.CreateUsuarioController();
         }
 
         [HttpPost("Login")]

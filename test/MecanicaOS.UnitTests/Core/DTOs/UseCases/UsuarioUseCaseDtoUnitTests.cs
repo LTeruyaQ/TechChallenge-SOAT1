@@ -1,8 +1,6 @@
 using Core.DTOs.UseCases.Usuario;
 using Core.Enumeradores;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.DTOs.UseCases;
 
@@ -149,9 +147,9 @@ public class UsuarioUseCaseDtoUnitTests
         // Assert
         lista.Should().NotBeNull("a lista deve ser criada");
         lista.Should().HaveCount(4, "deve conter todos os DTOs da fixture");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Email), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Email),
             "todos os DTOs devem ter email");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Senha), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Senha),
             "todos os DTOs devem ter senha");
     }
 

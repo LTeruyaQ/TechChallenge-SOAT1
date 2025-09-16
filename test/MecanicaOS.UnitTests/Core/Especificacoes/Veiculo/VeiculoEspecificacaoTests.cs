@@ -1,8 +1,6 @@
 using Core.DTOs.Entidades.Veiculo;
 using Core.Especificacoes.Veiculo;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.Especificacoes.Veiculo;
 
@@ -90,7 +88,7 @@ public class VeiculoEspecificacaoTests
 
         // Assert
         resultado.Should().HaveCount(2, "deve retornar todos os veículos do cliente especificado");
-        resultado.Should().OnlyContain(v => v.ClienteId == clienteId, 
+        resultado.Should().OnlyContain(v => v.ClienteId == clienteId,
             "todos os veículos devem pertencer ao cliente especificado");
     }
 
@@ -134,7 +132,7 @@ public class VeiculoEspecificacaoTests
             VeiculoFixture.CriarVeiculoEntityDtoValido(),
             VeiculoFixture.CriarVeiculoEntityDtoValido()
         };
-        
+
         veiculos.ForEach(v => v.Ativo = true);
         var especificacao = new ObterVeiculosResumidosEspecificacao();
 
@@ -154,7 +152,7 @@ public class VeiculoEspecificacaoTests
             VeiculoFixture.CriarVeiculoEntityDtoValido(),
             VeiculoFixture.CriarVeiculoEntityDtoValido()
         };
-        
+
         veiculos.ForEach(v => v.Ativo = false);
         var especificacao = new ObterVeiculosResumidosEspecificacao();
 
@@ -174,7 +172,7 @@ public class VeiculoEspecificacaoTests
             VeiculoFixture.CriarVeiculoEntityDtoValido()
         };
         veiculos.First().Placa = "ABC-1234";
-        
+
         var especificacao1 = new ObterVeiculoPorPlacaEspecificacao("ABC-1234");
         var especificacao2 = new ObterVeiculoPorPlacaEspecificacao("abc-1234");
 
@@ -196,10 +194,10 @@ public class VeiculoEspecificacaoTests
             VeiculoFixture.CriarVeiculoEntityDtoValido(),
             VeiculoFixture.CriarVeiculoEntityDtoValido()
         };
-        
+
         veiculos[0].Placa = "ABC-1234";
         veiculos[1].Placa = " ABC-1234 ";
-        
+
         var especificacao = new ObterVeiculoPorPlacaEspecificacao("ABC-1234");
 
         // Act
@@ -226,10 +224,10 @@ public class VeiculoEspecificacaoTests
         // Assert
         var esperado = veiculos.Count(v => v.Placa == placa);
         resultado.Should().HaveCount(esperado, $"deve retornar {esperado} veículo(s) com placa {placa}");
-        
+
         if (esperado > 0)
         {
-            resultado.Should().OnlyContain(v => v.Placa == placa, 
+            resultado.Should().OnlyContain(v => v.Placa == placa,
                 "todos os veículos devem ter a placa especificada");
         }
     }

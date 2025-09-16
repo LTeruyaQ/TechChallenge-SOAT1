@@ -1,5 +1,4 @@
 using Core.DTOs.Entidades.OrdemServicos;
-using Core.Entidades;
 using Core.Especificacoes.OrdemServico;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;

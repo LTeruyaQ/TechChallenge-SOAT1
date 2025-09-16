@@ -1,8 +1,5 @@
-using Core.Entidades;
 using Core.DTOs.Entidades.OrdemServicos;
-using Core.DTOs.Entidades.Cliente;
-using Core.DTOs.Entidades.Veiculo;
-using Core.DTOs.Entidades.Servico;
+using Core.Entidades;
 using Core.Enumeradores;
 
 namespace MecanicaOS.UnitTests.Fixtures;
@@ -100,7 +97,7 @@ public static class OrdemServicoFixture
                 Quantidade = 2
             }
         };
-        
+
         ordemServico.InsumosOS = insumos;
         return ordemServico;
     }
@@ -110,7 +107,7 @@ public static class OrdemServicoFixture
         var clienteDto = ClienteFixture.CriarClienteEntityDtoValido();
         var veiculoDto = VeiculoFixture.CriarVeiculoEntityDtoValido();
         var servicoDto = ServicoFixture.CriarServicoEntityDtoValido();
-        
+
         return new OrdemServicoEntityDto
         {
             Id = Guid.NewGuid(),
@@ -163,7 +160,7 @@ public static class OrdemServicoFixture
                 DataAtualizacao = DateTime.Now.AddDays(-1)
             }
         };
-        
+
         ordemServicoDto.InsumosOS = insumosDto;
         return ordemServicoDto;
     }

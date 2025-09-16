@@ -1,14 +1,7 @@
-using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using NSubstitute;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;
 
@@ -358,18 +351,18 @@ public class ClienteUseCasesUnitTests
     public void Constructor_ComParametrosNulos_DeveLancarArgumentNullException()
     {
         // Arrange & Act & Assert
-        Assert.Throws<ArgumentNullException>(() => 
+        Assert.Throws<ArgumentNullException>(() =>
             _fixture.CriarClienteUseCases(null));
-        
-        Assert.Throws<ArgumentNullException>(() => 
+
+        Assert.Throws<ArgumentNullException>(() =>
             _fixture.CriarClienteUseCases(
-                _fixture.CriarMockClienteGateway(), 
+                _fixture.CriarMockClienteGateway(),
                 null));
-        
-        Assert.Throws<ArgumentNullException>(() => 
+
+        Assert.Throws<ArgumentNullException>(() =>
             _fixture.CriarClienteUseCases(
-                _fixture.CriarMockClienteGateway(), 
-                _fixture.CriarMockEnderecoGateway(), 
+                _fixture.CriarMockClienteGateway(),
+                _fixture.CriarMockEnderecoGateway(),
                 null));
     }
 }

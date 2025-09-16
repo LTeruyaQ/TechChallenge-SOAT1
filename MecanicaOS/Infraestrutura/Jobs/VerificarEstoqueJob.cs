@@ -162,8 +162,8 @@ public class VerificarEstoqueJob(
         try
         {
             var alertas = insumosCriticos
-                .Select(insumo => new AlertaEstoque 
-                { 
+                .Select(insumo => new AlertaEstoque
+                {
                     EstoqueId = insumo.Id
                 });
 

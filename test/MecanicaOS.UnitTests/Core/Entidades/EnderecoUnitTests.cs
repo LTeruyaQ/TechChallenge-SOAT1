@@ -1,5 +1,3 @@
-using Xunit;
-using FluentAssertions;
 using Core.Entidades;
 using Core.Entidades.Abstratos;
 

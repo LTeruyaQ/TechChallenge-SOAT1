@@ -1,5 +1,5 @@
-using Core.Entidades;
 using Core.DTOs.Entidades.Cliente;
+using Core.Entidades;
 using Core.Enumeradores;
 
 namespace MecanicaOS.UnitTests.Fixtures;
@@ -17,10 +17,10 @@ public class ClienteFixture : BaseFixture
         cliente.Endereco = EnderecoFixture.CriarEnderecoValido();
         cliente.Contato = ContatoFixture.CriarContatoValido();
         cliente.Veiculos = new List<Veiculo>();
-        
+
         return cliente;
     }
-    
+
     public static Cliente CriarClienteComDadosInvalidos()
     {
         var cliente = CriarEntidadeComCamposObrigatorios<Cliente>();
@@ -31,10 +31,10 @@ public class ClienteFixture : BaseFixture
         cliente.Endereco = EnderecoFixture.CriarEnderecoValido();
         cliente.Contato = ContatoFixture.CriarContatoValido();
         cliente.Veiculos = new List<Veiculo>();
-        
+
         return cliente;
     }
-    
+
     public static ClienteEntityDto CriarClienteEntityDtoValido()
     {
         var dto = CriarRepositoryDtoComCamposObrigatorios<ClienteEntityDto>();
@@ -45,14 +45,14 @@ public class ClienteFixture : BaseFixture
         dto.TipoCliente = TipoCliente.PessoaFisica;
         dto.Endereco = EnderecoFixture.CriarEnderecoEntityDtoValido();
         dto.Contato = ContatoFixture.CriarContatoEntityDtoValido();
-        
+
         return dto;
     }
-    
+
     public static List<Cliente> CriarListaClientesValidos(int quantidade = 3)
     {
         var clientes = new List<Cliente>();
-        
+
         for (int i = 0; i < quantidade; i++)
         {
             var cliente = CriarClienteValido();
@@ -61,14 +61,14 @@ public class ClienteFixture : BaseFixture
             cliente.Documento = $"1234567890{i}";
             clientes.Add(cliente);
         }
-        
+
         return clientes;
     }
-    
+
     public static List<ClienteEntityDto> CriarListaClienteEntityDtosValidos(int quantidade = 3)
     {
         var dtos = new List<ClienteEntityDto>();
-        
+
         for (int i = 0; i < quantidade; i++)
         {
             var dto = CriarClienteEntityDtoValido();
@@ -77,7 +77,7 @@ public class ClienteFixture : BaseFixture
             dto.Documento = $"1234567890{i}";
             dtos.Add(dto);
         }
-        
+
         return dtos;
     }
 }

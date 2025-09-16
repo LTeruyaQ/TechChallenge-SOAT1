@@ -1,6 +1,3 @@
-using FluentAssertions;
-using FluentAssertions.Execution;
-
 namespace MecanicaOS.UnitTests.Helpers;
 
 public static class FluentAssertionsExtensions
@@ -38,7 +35,7 @@ public static class FluentAssertionsExtensions
         public const string TipoClienteDeveSerDefinido = "o tipo de cliente deve ser definido";
         public const string DataNascimentoNaoDeveSerVazia = "a data de nascimento não deve ser vazia ou nula";
     }
-    
+
     public static void ComMensagem<T>(this T valor, string mensagem)
     {
         // Extensão simplificada para mensagens customizadas

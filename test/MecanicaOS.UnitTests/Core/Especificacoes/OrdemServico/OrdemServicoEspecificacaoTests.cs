@@ -1,9 +1,7 @@
 using Core.DTOs.Entidades.OrdemServicos;
 using Core.Enumeradores;
 using Core.Especificacoes.OrdemServico;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.Especificacoes.OrdemServico;
 
@@ -52,7 +50,7 @@ public class OrdemServicoEspecificacaoTests
 
         // Assert
         resultado.Should().HaveCount(1, "deve retornar apenas as ordens de serviço com o status especificado");
-        resultado.Should().OnlyContain(os => os.Status == status, 
+        resultado.Should().OnlyContain(os => os.Status == status,
             "todas as ordens devem ter o status especificado");
     }
 
@@ -74,7 +72,7 @@ public class OrdemServicoEspecificacaoTests
         // Assert
         var esperado = ordensServico.Count(os => os.Status == status);
         resultado.Should().HaveCount(esperado, $"deve retornar {esperado} ordem(ns) com status {status}");
-        resultado.Should().OnlyContain(os => os.Status == status, 
+        resultado.Should().OnlyContain(os => os.Status == status,
             "todas as ordens devem ter o status especificado");
     }
 
@@ -128,7 +126,7 @@ public class OrdemServicoEspecificacaoTests
 
         // Assert
         especificacao.Inclusoes.Should().NotBeEmpty("deve ter inclusões definidas");
-        especificacao.Inclusoes.Should().Contain(i => i.ToString().Contains("Insumos"), 
+        especificacao.Inclusoes.Should().Contain(i => i.ToString().Contains("Insumos"),
             "deve incluir a propriedade Insumos");
     }
 
@@ -156,7 +154,7 @@ public class OrdemServicoEspecificacaoTests
 
         // Assert
         resultado.Should().HaveCount(1, "deve retornar apenas orçamentos expirados");
-        resultado.Should().OnlyContain(os => os.Status == StatusOrdemServico.AguardandoAprovação, 
+        resultado.Should().OnlyContain(os => os.Status == StatusOrdemServico.AguardandoAprovação,
             "deve conter apenas ordens com status AguardandoAprovação");
     }
 

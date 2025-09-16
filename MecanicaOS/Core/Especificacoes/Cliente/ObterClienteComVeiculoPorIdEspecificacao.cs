@@ -1,6 +1,5 @@
 using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
-using Core.Entidades.Abstratos;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 

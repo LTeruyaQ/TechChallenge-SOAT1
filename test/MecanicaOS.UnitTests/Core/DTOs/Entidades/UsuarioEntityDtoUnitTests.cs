@@ -1,8 +1,6 @@
-using Xunit;
-using FluentAssertions;
-using Core.DTOs.Entidades.Usuarios;
 using Core.DTOs.Entidades.Autenticacao;
 using Core.DTOs.Entidades.Cliente;
+using Core.DTOs.Entidades.Usuarios;
 using Core.Enumeradores;
 
 namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;

@@ -1,11 +1,7 @@
-using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
 using Core.Exceptions;
-using Core.Interfaces.Gateways;
 using Core.UseCases;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;
 
@@ -72,7 +68,7 @@ public class VeiculoUseCasesUnitTests
         resultado.Anotacoes.Should().BeNull();
         resultado.Marca.Should().Be(request.Marca);
         resultado.Modelo.Should().Be(request.Modelo);
-        
+
         // Verificar se o método Commit foi chamado
         await mockUdt.Received(1).Commit();
     }
@@ -105,7 +101,7 @@ public class VeiculoUseCasesUnitTests
         resultado.Placa.Should().Be(request.Placa);
         resultado.Cor.Should().Be(request.Cor);
         resultado.Anotacoes.Should().Be(request.Anotacoes);
-        
+
         // Verificar se o método Commit foi chamado
         await mockUdt.Received(1).Commit();
 
@@ -437,13 +433,13 @@ public class VeiculoUseCasesUnitTests
         var mockLogServico = _fixture.CriarMockLogServico<VeiculoUseCases>();
 
         // Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() => 
+        var exception = Assert.Throws<ArgumentNullException>(() =>
             new VeiculoUseCases(
                 null!,
                 mockUdt,
                 mockUsuarioLogado,
                 mockVeiculoGateway));
-                
+
         Assert.Equal("logServico", exception.ParamName);
     }
 }

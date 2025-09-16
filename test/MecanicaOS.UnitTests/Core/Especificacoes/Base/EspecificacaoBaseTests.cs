@@ -1,10 +1,8 @@
 using Core.DTOs.Entidades.Cliente;
 using Core.Especificacoes.Base;
 using Core.Especificacoes.Base.Extensoes;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
 using System.Linq.Expressions;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.Especificacoes.Base;
 
@@ -19,7 +17,7 @@ public class EspecificacaoBaseTests
             _nome = nome;
         }
 
-        public override Expression<Func<ClienteEntityDto, bool>> Expressao => 
+        public override Expression<Func<ClienteEntityDto, bool>> Expressao =>
             c => c.Nome.Contains(_nome);
     }
 
@@ -32,7 +30,7 @@ public class EspecificacaoBaseTests
             _ativo = ativo;
         }
 
-        public override Expression<Func<ClienteEntityDto, bool>> Expressao => 
+        public override Expression<Func<ClienteEntityDto, bool>> Expressao =>
             c => c.Ativo == _ativo;
     }
 
@@ -57,10 +55,10 @@ public class EspecificacaoBaseTests
             ClienteFixture.CriarClienteEntityDtoValido(),
             ClienteFixture.CriarClienteEntityDtoValido()
         };
-        
+
         clientes[0].Nome = "João Silva";
         clientes[1].Nome = "Maria Santos";
-        
+
         var especificacao = new EspecificacaoTeste("João");
 
         // Act
@@ -81,16 +79,16 @@ public class EspecificacaoBaseTests
             ClienteFixture.CriarClienteEntityDtoValido(),
             ClienteFixture.CriarClienteEntityDtoValido()
         };
-        
+
         clientes[0].Nome = "João Silva";
         clientes[0].Ativo = true;
-        
+
         clientes[1].Nome = "João Santos";
         clientes[1].Ativo = false;
-        
+
         clientes[2].Nome = "Maria Silva";
         clientes[2].Ativo = true;
-        
+
         var especificacao1 = new EspecificacaoTeste("João");
         var especificacao2 = new EspecificacaoTeste2(true);
 
@@ -114,11 +112,11 @@ public class EspecificacaoBaseTests
             ClienteFixture.CriarClienteEntityDtoValido(),
             ClienteFixture.CriarClienteEntityDtoValido()
         };
-        
+
         clientes[0].Nome = "João Silva";
         clientes[1].Nome = "Maria Santos";
         clientes[2].Nome = "Pedro Costa";
-        
+
         var especificacao1 = new EspecificacaoTeste("João");
         var especificacao2 = new EspecificacaoTeste("Maria");
 
@@ -155,11 +153,11 @@ public class EspecificacaoBaseTests
             ClienteFixture.CriarClienteEntityDtoValido(),
             ClienteFixture.CriarClienteEntityDtoValido()
         };
-        
+
         clientes[0].Nome = "João Silva";
         clientes[1].Nome = "Maria Santos";
         clientes[2].Nome = "Pedro Costa";
-        
+
         var especificacao = new EspecificacaoTeste(nome);
 
         // Act

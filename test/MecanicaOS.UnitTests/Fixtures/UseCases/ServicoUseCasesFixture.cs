@@ -166,8 +166,8 @@ public class ServicoUseCasesFixture : UseCasesFixtureBase
         Servico? servicoRetorno = null)
     {
         mockServicoGateway.ObterServicosDisponiveisPorNomeAsync(Arg.Any<string>()).Returns(Task.FromResult((Servico?)null));
-        
-        mockServicoGateway.CadastrarAsync(Arg.Any<Servico>()).Returns(callInfo => 
+
+        mockServicoGateway.CadastrarAsync(Arg.Any<Servico>()).Returns(callInfo =>
         {
             var servico = callInfo.Arg<Servico>();
             if (servicoRetorno != null)

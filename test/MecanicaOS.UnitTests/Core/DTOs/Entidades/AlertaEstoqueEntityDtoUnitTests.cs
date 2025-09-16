@@ -1,7 +1,5 @@
-using Xunit;
-using FluentAssertions;
-using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.Entidades.Autenticacao;
+using Core.DTOs.Entidades.Estoque;
 
 namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;
 
@@ -92,8 +90,8 @@ public class AlertaEstoqueEntityDtoUnitTests
     {
         // Arrange
         var dto = new AlertaEstoqueEntityDto();
-        var estoqueDto = new EstoqueEntityDto 
-        { 
+        var estoqueDto = new EstoqueEntityDto
+        {
             Insumo = insumo,
             Preco = 50.00m,
             QuantidadeDisponivel = 5

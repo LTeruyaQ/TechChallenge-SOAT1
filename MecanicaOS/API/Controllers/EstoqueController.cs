@@ -1,17 +1,9 @@
 using Adapters.DTOs.Requests.Estoque;
 using Adapters.DTOs.Responses.Estoque;
-using Adapters.Gateways;
-using Adapters.Presenters;
-using Adapters.Presenters.Interfaces;
 using API.Models;
-using Core.Entidades;
-using Core.DTOs.Entidades.Estoque;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
-using Core.UseCases;
-using Infraestrutura.Logs;
+using Infraestrutura.Dados;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,32 +14,11 @@ namespace API.Controllers
     {
         private readonly Adapters.Controllers.EstoqueController _estoqueController;
 
-        public EstoqueController(
-            IRepositorio<EstoqueEntityDto> repositorioEstoque,
-            IUnidadeDeTrabalho unidadeDeTrabalho,
-            IUsuarioLogadoServico usuarioLogadoServico,
-            IdCorrelacionalService idCorrelacionalService,
-            ILogger<EstoqueUseCases> loggerEstoqueUseCases)
+        public EstoqueController(MecanicaContexto contexto, Mediator mediator, IServicoEmail servicoEmail, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext)
         {
-
-            // Criando gateways
-            IEstoqueGateway estoqueGateway = new EstoqueGateway(repositorioEstoque);
-
-            // Criando logs
-            ILogServico<EstoqueUseCases> logEstoqueUseCases = new LogServico<EstoqueUseCases>(idCorrelacionalService, loggerEstoqueUseCases, usuarioLogadoServico);
-
-            // Criando use cases
-            IEstoqueUseCases estoqueUseCases = new EstoqueUseCases(
-                estoqueGateway,
-                logEstoqueUseCases,
-                unidadeDeTrabalho,
-                usuarioLogadoServico);
-
-            // Criando presenter
-            IEstoquePresenter estoquePresenter = new EstoquePresenter();
-
-            // Criando controller
-            _estoqueController = new Adapters.Controllers.EstoqueController(estoqueUseCases, estoquePresenter);
+            // Usando o CompositionRoot para criar o controller com dependências externas
+            var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+            _estoqueController = compositionRoot.CreateEstoqueController();
         }
 
         [HttpGet]

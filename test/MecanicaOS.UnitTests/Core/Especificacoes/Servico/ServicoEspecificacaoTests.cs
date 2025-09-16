@@ -1,8 +1,6 @@
 using Core.DTOs.Entidades.Servico;
 using Core.Especificacoes.Servico;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.Especificacoes.Servico;
 
@@ -52,7 +50,7 @@ public class ServicoEspecificacaoTests
             ServicoFixture.CriarServicoEntityDtoValido(),
             ServicoFixture.CriarServicoEntityDtoValido()
         };
-        
+
         servicos.ForEach(s => s.Disponivel = true);
         var especificacao = new ObterServicoDisponivelEspecificacao();
 
@@ -72,7 +70,7 @@ public class ServicoEspecificacaoTests
             ServicoFixture.CriarServicoEntityDtoValido(),
             ServicoFixture.CriarServicoEntityDtoValido()
         };
-        
+
         servicos.ForEach(s => s.Disponivel = false);
         var especificacao = new ObterServicoDisponivelEspecificacao();
 
@@ -140,7 +138,7 @@ public class ServicoEspecificacaoTests
             ServicoFixture.CriarServicoEntityDtoValido()
         };
         servicos.First().Nome = "Troca de Óleo";
-        
+
         var especificacao1 = new ObterServicoPorNomeEspecificacao("Troca de Óleo");
         var especificacao2 = new ObterServicoPorNomeEspecificacao("troca de óleo");
 
@@ -162,10 +160,10 @@ public class ServicoEspecificacaoTests
             ServicoFixture.CriarServicoEntityDtoValido(),
             ServicoFixture.CriarServicoEntityDtoValido()
         };
-        
+
         servicos[0].Nome = "Troca de Óleo";
         servicos[1].Nome = " Troca de Óleo ";
-        
+
         var especificacao = new ObterServicoPorNomeEspecificacao("Troca de Óleo");
 
         // Act

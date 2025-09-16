@@ -1,12 +1,7 @@
-using Core.DTOs.UseCases.Autenticacao;
-using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
-using Core.Interfaces.Servicos;
 using Core.UseCases;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;
 
@@ -26,7 +21,7 @@ public class AutenticacaoUseCasesUnitTests
         var mockUsuarioUseCases = _fixture.CriarMockUsuarioUseCases();
         var mockServicoSenha = _fixture.CriarMockServicoSenha();
         var mockServicoJwt = _fixture.CriarMockServicoJwt();
-        
+
         var usuario = AutenticacaoUseCasesFixture.CriarUsuarioAtivoValido();
         var request = AutenticacaoUseCasesFixture.CriarAutenticacaoUseCaseDtoValido();
         var tokenEsperado = "token_jwt_gerado";
@@ -102,7 +97,7 @@ public class AutenticacaoUseCasesUnitTests
         // Arrange
         var mockUsuarioUseCases = _fixture.CriarMockUsuarioUseCases();
         var mockServicoSenha = _fixture.CriarMockServicoSenha();
-        
+
         var usuario = AutenticacaoUseCasesFixture.CriarUsuarioAtivoValido();
         var request = AutenticacaoUseCasesFixture.CriarAutenticacaoUseCaseDtoComSenhaInvalida();
 
@@ -132,17 +127,17 @@ public class AutenticacaoUseCasesUnitTests
         var mockServicoSenha = _fixture.CriarMockServicoSenha();
         var mockServicoJwt = _fixture.CriarMockServicoJwt();
         var mockClienteUseCases = _fixture.CriarMockClienteUseCases();
-        
+
         var usuario = AutenticacaoUseCasesFixture.CriarUsuarioAtivoValido();
         usuario.TipoUsuario = tipoUsuario;
-        
+
         // Adicionar ClienteId se for usuário do tipo Cliente
         if (tipoUsuario == TipoUsuario.Cliente)
         {
             usuario.ClienteId = Guid.NewGuid();
             _fixture.ConfigurarMockClienteUseCasesParaClienteValido(mockClienteUseCases, usuario.ClienteId.Value);
         }
-        
+
         var request = AutenticacaoUseCasesFixture.CriarAutenticacaoUseCaseDtoValido();
 
         _fixture.ConfigurarMockUsuarioUseCasesParaAutenticacaoValida(mockUsuarioUseCases, usuario);
@@ -159,7 +154,7 @@ public class AutenticacaoUseCasesUnitTests
         resultado.Should().NotBeNull();
         resultado.Usuario.TipoUsuario.Should().Be(tipoUsuario);
         resultado.Permissoes.Should().NotBeEmpty();
-        
+
         // Verificar permissões específicas por tipo de usuário
         switch (tipoUsuario)
         {
@@ -177,43 +172,43 @@ public class AutenticacaoUseCasesUnitTests
     public void Constructor_ComParametrosNulos_DeveLancarArgumentNullException()
     {
         // Arrange & Act & Assert
-        Assert.Throws<ArgumentNullException>(() => 
+        Assert.Throws<ArgumentNullException>(() =>
             new AutenticacaoUseCases(
-                null!, 
-                _fixture.CriarMockServicoSenha(), 
-                _fixture.CriarMockServicoJwt(), 
+                null!,
+                _fixture.CriarMockServicoSenha(),
+                _fixture.CriarMockServicoJwt(),
                 _fixture.CriarMockLogServico<AutenticacaoUseCases>(),
                 _fixture.CriarMockClienteUseCases()));
-        
-        Assert.Throws<ArgumentNullException>(() => 
+
+        Assert.Throws<ArgumentNullException>(() =>
             new AutenticacaoUseCases(
-                _fixture.CriarMockUsuarioUseCases(), 
-                null!, 
-                _fixture.CriarMockServicoJwt(), 
+                _fixture.CriarMockUsuarioUseCases(),
+                null!,
+                _fixture.CriarMockServicoJwt(),
                 _fixture.CriarMockLogServico<AutenticacaoUseCases>(),
                 _fixture.CriarMockClienteUseCases()));
-        
-        Assert.Throws<ArgumentNullException>(() => 
+
+        Assert.Throws<ArgumentNullException>(() =>
             new AutenticacaoUseCases(
-                _fixture.CriarMockUsuarioUseCases(), 
-                _fixture.CriarMockServicoSenha(), 
-                null!, 
+                _fixture.CriarMockUsuarioUseCases(),
+                _fixture.CriarMockServicoSenha(),
+                null!,
                 _fixture.CriarMockLogServico<AutenticacaoUseCases>(),
                 _fixture.CriarMockClienteUseCases()));
-                
-        Assert.Throws<ArgumentNullException>(() => 
+
+        Assert.Throws<ArgumentNullException>(() =>
             new AutenticacaoUseCases(
-                _fixture.CriarMockUsuarioUseCases(), 
-                _fixture.CriarMockServicoSenha(), 
-                _fixture.CriarMockServicoJwt(), 
+                _fixture.CriarMockUsuarioUseCases(),
+                _fixture.CriarMockServicoSenha(),
+                _fixture.CriarMockServicoJwt(),
                 null!,
                 _fixture.CriarMockClienteUseCases()));
-                
-        Assert.Throws<ArgumentNullException>(() => 
+
+        Assert.Throws<ArgumentNullException>(() =>
             new AutenticacaoUseCases(
-                _fixture.CriarMockUsuarioUseCases(), 
-                _fixture.CriarMockServicoSenha(), 
-                _fixture.CriarMockServicoJwt(), 
+                _fixture.CriarMockUsuarioUseCases(),
+                _fixture.CriarMockServicoSenha(),
+                _fixture.CriarMockServicoJwt(),
                 _fixture.CriarMockLogServico<AutenticacaoUseCases>(),
                 null!));
     }
@@ -225,7 +220,7 @@ public class AutenticacaoUseCasesUnitTests
         var mockUsuarioUseCases = _fixture.CriarMockUsuarioUseCases();
         var mockServicoSenha = _fixture.CriarMockServicoSenha();
         var mockServicoJwt = _fixture.CriarMockServicoJwt();
-        
+
         var usuario = AutenticacaoUseCasesFixture.CriarUsuarioFuncionario();
         var request = AutenticacaoUseCasesFixture.CriarAutenticacaoUseCaseDtoValido();
 
@@ -253,7 +248,7 @@ public class AutenticacaoUseCasesUnitTests
         var mockServicoSenha = _fixture.CriarMockServicoSenha();
         var mockServicoJwt = _fixture.CriarMockServicoJwt();
         var mockClienteUseCases = _fixture.CriarMockClienteUseCases();
-        
+
         var usuario = AutenticacaoUseCasesFixture.CriarUsuarioCliente();
         var request = AutenticacaoUseCasesFixture.CriarAutenticacaoUseCaseDtoValido();
 

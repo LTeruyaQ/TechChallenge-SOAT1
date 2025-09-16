@@ -4,7 +4,6 @@ using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases;
 
@@ -25,13 +24,13 @@ public class OrdemServicoUseCasesFixture : UseCasesFixtureBase
         mockServicoUseCases ??= CriarMockServicoUseCases();
         mockEventosGateway ??= CriarMockEventosGateway();
         mockUdt ??= CriarMockUnidadeDeTrabalho();
-        
+
         var mockUsuarioLogado = CriarMockUsuarioLogadoServico();
         var mockLogServico = CriarMockLogServico<OrdemServicoUseCases>();
-        
+
         // Configure mocks
         ConfigurarMocksBasicos(mockUdt, mockUsuarioLogado);
-        
+
         return new OrdemServicoUseCases(
             mockLogServico,
             mockUdt,

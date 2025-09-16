@@ -1,6 +1,5 @@
-using Core.Entidades;
 using Core.DTOs.Entidades.Usuarios;
-using Core.DTOs.Entidades.Cliente;
+using Core.Entidades;
 using Core.Enumeradores;
 
 namespace MecanicaOS.UnitTests.Fixtures;
@@ -81,7 +80,7 @@ public static class UsuarioFixture
     public static UsuarioEntityDto CriarUsuarioEntityDtoCliente()
     {
         var clienteDto = ClienteFixture.CriarClienteEntityDtoValido();
-        
+
         return new UsuarioEntityDto
         {
             Id = Guid.NewGuid(),

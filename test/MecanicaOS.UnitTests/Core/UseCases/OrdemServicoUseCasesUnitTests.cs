@@ -1,16 +1,9 @@
 using Core.DTOs.UseCases.Eventos;
-using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
 using Core.UseCases;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using NSubstitute;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;
 
@@ -391,7 +384,7 @@ public class OrdemServicoUseCasesUnitTests
         // Arrange
         var mockOrdemServicoGateway = _fixture.CriarMockOrdemServicoGateway();
         var mockUdt = _fixture.CriarMockUnidadeDeTrabalho();
-        
+
         var ordemServicoParaExpirar = new OrdemServico
         {
             Id = Guid.NewGuid(),
@@ -432,7 +425,7 @@ public class OrdemServicoUseCasesUnitTests
         var mockLogServico = _fixture.CriarMockLogServico<OrdemServicoUseCases>();
 
         // Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() => 
+        var exception = Assert.Throws<ArgumentNullException>(() =>
             new OrdemServicoUseCases(
                 null!,
                 mockUdt,
@@ -441,7 +434,7 @@ public class OrdemServicoUseCasesUnitTests
                 mockUsuarioLogado,
                 mockOrdemServicoGateway,
                 mockEventosGateway));
-                
+
         Assert.Equal("logServico", exception.ParamName);
     }
 }

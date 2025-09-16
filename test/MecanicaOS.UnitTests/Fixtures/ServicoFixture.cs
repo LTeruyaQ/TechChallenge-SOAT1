@@ -1,5 +1,5 @@
-using Core.Entidades;
 using Core.DTOs.Entidades.Servico;
+using Core.Entidades;
 
 namespace MecanicaOS.UnitTests.Fixtures;
 

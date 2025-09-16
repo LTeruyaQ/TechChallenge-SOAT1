@@ -13,13 +13,13 @@ public class EstoqueUseCasesFixture : UseCasesFixtureBase
     {
         if (mockEstoqueGateway == null)
             throw new ArgumentNullException(nameof(mockEstoqueGateway));
-        
+
         var mockLogServico = CriarMockLogServico<EstoqueUseCases>();
         var mockUdt = CriarMockUnidadeDeTrabalho();
         var mockUsuarioLogado = CriarMockUsuarioLogadoServico();
-        
+
         ConfigurarMocksBasicos(mockUdt, mockUsuarioLogado);
-        
+
         return new EstoqueUseCases(mockEstoqueGateway, mockLogServico, mockUdt, mockUsuarioLogado);
     }
 
@@ -30,13 +30,13 @@ public class EstoqueUseCasesFixture : UseCasesFixtureBase
     {
         if (mockEstoqueGateway == null)
             throw new ArgumentNullException(nameof(mockEstoqueGateway));
-        
+
         mockLogServico ??= CriarMockLogServico<EstoqueUseCases>();
         mockUdt ??= CriarMockUnidadeDeTrabalho();
         var mockUsuarioLogado = CriarMockUsuarioLogadoServico();
-        
+
         ConfigurarMocksBasicos(mockUdt, mockUsuarioLogado);
-        
+
         return new EstoqueUseCases(mockEstoqueGateway, mockLogServico, mockUdt, mockUsuarioLogado);
     }
 

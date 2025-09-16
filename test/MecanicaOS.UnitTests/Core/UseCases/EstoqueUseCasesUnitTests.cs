@@ -1,12 +1,7 @@
 using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 using Core.Exceptions;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.Repositorios;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using NSubstitute;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;
 
@@ -321,7 +316,7 @@ public class EstoqueUseCasesUnitTests
     public void Constructor_ComParametrosNulos_DeveLancarArgumentNullException()
     {
         // Arrange & Act & Assert
-        Assert.Throws<ArgumentNullException>(() => 
+        Assert.Throws<ArgumentNullException>(() =>
             _fixture.CriarEstoqueUseCases(null));
     }
 }

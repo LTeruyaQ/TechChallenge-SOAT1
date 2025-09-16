@@ -1,18 +1,10 @@
 using Adapters.Controllers;
 using Adapters.DTOs.Requests.Servico;
 using Adapters.DTOs.Responses.Servico;
-using Adapters.Gateways;
-using Adapters.Presenters;
-using Adapters.Presenters.Interfaces;
 using API.Models;
-using Core.Entidades;
-using Core.DTOs.Entidades.Servico;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
-using Core.UseCases;
-using Infraestrutura.Logs;
+using Infraestrutura.Dados;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,36 +15,10 @@ namespace API.Controllers
     {
         private readonly ServicoController _servicoController;
 
-        public ServicosController(
-            IRepositorio<ServicoEntityDto> repositorioServico,
-            IUnidadeDeTrabalho unidadeDeTrabalho,
-            IUsuarioLogadoServico usuarioLogadoServico,
-            IIdCorrelacionalService idCorrelacionalService,
-            ILogger<ServicoUseCases> logger)
+        public ServicosController(MecanicaContexto contexto, Mediator mediator, IServicoEmail servicoEmail, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext)
         {
-            // Criando gateways
-            IServicoGateway servicoGateway = new ServicoGateway(repositorioServico);
-
-            // Criando logs
-            ILogServico<ServicoUseCases> logServicoUseCases = new LogServico<ServicoUseCases>(
-                idCorrelacionalService,
-                logger,
-                usuarioLogadoServico
-            );
-
-            // Criando use cases
-            IServicoUseCases servicoUseCases = new ServicoUseCases(
-                logServicoUseCases,
-                unidadeDeTrabalho,
-                usuarioLogadoServico,
-                servicoGateway
-            );
-
-            // Criando presenter
-            IServicoPresenter servicoPresenter = new ServicoPresenter();
-
-            // Criando controller
-            _servicoController = new ServicoController(servicoUseCases, servicoPresenter);
+            var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+            _servicoController = compositionRoot.CreateServicoController();
         }
 
         [HttpGet]

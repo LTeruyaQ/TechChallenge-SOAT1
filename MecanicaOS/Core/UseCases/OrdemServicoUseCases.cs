@@ -98,7 +98,7 @@ public class OrdemServicoUseCases : UseCasesAbstrato<OrdemServicoUseCases, Ordem
                 VeiculoId = request.VeiculoId,
                 ServicoId = request.ServicoId,
                 Descricao = request.Descricao,
-                Status = StatusOrdemServico.Recebida  
+                Status = StatusOrdemServico.Recebida
             };
 
             var entidade = await _ordemServicoGateway.CadastrarAsync(ordemServico);

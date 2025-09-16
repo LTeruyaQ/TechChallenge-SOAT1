@@ -1,9 +1,7 @@
 using Core.DTOs.Entidades.Usuarios;
 using Core.Enumeradores;
 using Core.Especificacoes.Usuario;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.Especificacoes.Usuario;
 
@@ -115,9 +113,9 @@ public class UsuarioEspecificacaoTests
 
         // Assert
         resultado.Should().HaveCount(2, "deve retornar apenas usuários administradores ativos");
-        resultado.Should().OnlyContain(u => u.TipoUsuario == TipoUsuario.Admin, 
+        resultado.Should().OnlyContain(u => u.TipoUsuario == TipoUsuario.Admin,
             "todos os usuários devem ser administradores");
-        resultado.Should().OnlyContain(u => u.Ativo, 
+        resultado.Should().OnlyContain(u => u.Ativo,
             "todos os usuários devem estar ativos");
     }
 
@@ -133,7 +131,7 @@ public class UsuarioEspecificacaoTests
 
         // Assert
         resultado.Should().HaveCount(2, "deve retornar apenas usuários que recebem alerta de estoque");
-        resultado.Should().OnlyContain(u => u.RecebeAlertaEstoque, 
+        resultado.Should().OnlyContain(u => u.RecebeAlertaEstoque,
             "todos os usuários devem ter RecebeAlertaEstoque = true");
     }
 
@@ -146,7 +144,7 @@ public class UsuarioEspecificacaoTests
             UsuarioFixture.CriarUsuarioEntityDtoValido(),
             UsuarioFixture.CriarUsuarioEntityDtoValido()
         };
-        
+
         usuarios.ForEach(u => u.RecebeAlertaEstoque = false);
         var especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
 
@@ -166,13 +164,13 @@ public class UsuarioEspecificacaoTests
             UsuarioFixture.CriarUsuarioEntityDtoValido(),
             UsuarioFixture.CriarUsuarioEntityDtoValido()
         };
-        
+
         usuarios[0].RecebeAlertaEstoque = true;
         usuarios[0].Ativo = true;
-        
+
         usuarios[1].RecebeAlertaEstoque = false;
         usuarios[1].Ativo = false;
-        
+
         var especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
 
         // Act
@@ -192,7 +190,7 @@ public class UsuarioEspecificacaoTests
         // Arrange
         var usuario = UsuarioFixture.CriarUsuarioEntityDtoValido();
         usuario.RecebeAlertaEstoque = recebeAlertaEstoque;
-        
+
         var usuarios = new List<UsuarioEntityDto> { usuario };
         var especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
 
@@ -220,10 +218,10 @@ public class UsuarioEspecificacaoTests
             UsuarioFixture.CriarUsuarioEntityDtoValido(),
             UsuarioFixture.CriarUsuarioEntityDtoValido()
         };
-        
+
         usuarios[0].Email = "teste@email.com";
         usuarios[1].Email = " teste@email.com ";
-        
+
         var especificacao = new ObterUsuarioPorEmailEspecificacao("teste@email.com");
 
         // Act

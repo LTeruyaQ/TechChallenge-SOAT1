@@ -43,10 +43,10 @@ namespace Core.Entidades.Abstratos
         {
             if (ReferenceEquals(e1, null) && ReferenceEquals(e2, null))
                 return true;
-            
+
             if (ReferenceEquals(e1, null) || ReferenceEquals(e2, null))
                 return false;
-            
+
             return e1.Id.Equals(e2.Id);
         }
 

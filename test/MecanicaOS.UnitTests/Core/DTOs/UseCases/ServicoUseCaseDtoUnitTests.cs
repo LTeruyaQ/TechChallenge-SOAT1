@@ -1,7 +1,5 @@
 using Core.DTOs.UseCases.Servico;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.DTOs.UseCases;
 
@@ -16,7 +14,7 @@ public class ServicoUseCaseDtoUnitTests
         // Assert
         dto.Should().NotBeNull("o DTO deve ser criado corretamente");
         dto.Nome.Should().Be("Troca de Óleo Completa", "o nome deve ser armazenado corretamente");
-        dto.Descricao.Should().Be("Troca de óleo do motor com filtro e verificação de fluidos", 
+        dto.Descricao.Should().Be("Troca de óleo do motor com filtro e verificação de fluidos",
             "a descrição deve ser armazenada corretamente");
         dto.Valor.Should().Be(120.00m, "o valor deve ser armazenado corretamente");
         dto.Disponivel.Should().BeTrue("deve estar disponível");
@@ -93,7 +91,7 @@ public class ServicoUseCaseDtoUnitTests
         // Assert
         dto.Should().NotBeNull("o DTO deve ser criado corretamente");
         dto.Nome.Should().Be("Alinhamento e Balanceamento", "o nome deve ser armazenado corretamente");
-        dto.Descricao.Should().Be("Alinhamento e balanceamento das quatro rodas", 
+        dto.Descricao.Should().Be("Alinhamento e balanceamento das quatro rodas",
             "a descrição deve ser armazenada corretamente");
         dto.Valor.Should().Be(80.00m, "o valor deve ser armazenado corretamente");
         dto.Disponivel.Should().BeTrue("deve estar disponível");
@@ -119,7 +117,7 @@ public class ServicoUseCaseDtoUnitTests
         var dto = ServicoUseCaseFixture.CriarEditarServicoUseCaseDtoIndisponivel();
 
         // Assert
-        dto.Nome.Should().Be("Serviço Temporariamente Indisponível", 
+        dto.Nome.Should().Be("Serviço Temporariamente Indisponível",
             "deve aceitar nome indicando indisponibilidade");
         dto.Disponivel.Should().BeFalse("deve permitir marcar como indisponível");
         dto.Valor.Should().Be(150.00m, "deve manter valor mesmo indisponível");
@@ -134,11 +132,11 @@ public class ServicoUseCaseDtoUnitTests
         // Assert
         lista.Should().NotBeNull("a lista deve ser criada");
         lista.Should().HaveCount(3, "deve conter todos os DTOs da fixture");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Nome), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Nome),
             "todos os DTOs devem ter nome");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Descricao), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Descricao),
             "todos os DTOs devem ter descrição");
-        lista.Should().OnlyContain(dto => dto.Valor >= 0, 
+        lista.Should().OnlyContain(dto => dto.Valor >= 0,
             "todos os valores devem ser não negativos");
     }
 
@@ -151,9 +149,9 @@ public class ServicoUseCaseDtoUnitTests
         // Assert
         lista.Should().NotBeNull("a lista deve ser criada");
         lista.Should().HaveCount(3, "deve conter todos os DTOs da fixture");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Nome), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Nome),
             "todos os DTOs devem ter nome");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Descricao), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Descricao),
             "todos os DTOs devem ter descrição");
     }
 

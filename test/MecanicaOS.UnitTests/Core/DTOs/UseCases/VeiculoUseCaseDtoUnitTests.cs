@@ -1,7 +1,5 @@
 using Core.DTOs.UseCases.Veiculo;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.DTOs.UseCases;
 
@@ -164,7 +162,7 @@ public class VeiculoUseCaseDtoUnitTests
         var dto = VeiculoUseCaseFixture.CriarAtualizarVeiculoUseCaseDtoApenasAnotacoes();
 
         // Assert
-        dto.Anotacoes.Should().Be("Novas anotações importantes sobre o veículo", 
+        dto.Anotacoes.Should().Be("Novas anotações importantes sobre o veículo",
             "deve permitir atualização apenas das anotações");
         dto.Placa.Should().BeNull("outros campos podem permanecer nulos");
         dto.Cor.Should().BeNull("outros campos podem permanecer nulos");
@@ -179,13 +177,13 @@ public class VeiculoUseCaseDtoUnitTests
         // Assert
         lista.Should().NotBeNull("a lista deve ser criada");
         lista.Should().HaveCount(4, "deve conter todos os DTOs da fixture");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Placa), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Placa),
             "todos os DTOs devem ter placa");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Marca), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Marca),
             "todos os DTOs devem ter marca");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Modelo), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Modelo),
             "todos os DTOs devem ter modelo");
-        lista.Should().OnlyContain(dto => dto.ClienteId != Guid.Empty, 
+        lista.Should().OnlyContain(dto => dto.ClienteId != Guid.Empty,
             "todos os DTOs devem ter ClienteId válido");
     }
 

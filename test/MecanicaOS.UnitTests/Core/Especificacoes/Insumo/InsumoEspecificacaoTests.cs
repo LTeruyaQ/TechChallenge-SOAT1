@@ -1,9 +1,6 @@
-using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.Entidades.OrdemServicos;
 using Core.Especificacoes.Insumo;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.Especificacoes.Insumo;
 
@@ -69,9 +66,9 @@ public class InsumoEspecificacaoTests
 
         // Assert
         resultado.Should().HaveCount(2, "deve retornar apenas os insumos da OS especificada com os IDs corretos");
-        resultado.Should().OnlyContain(i => i.OrdemServicoId == osId, 
+        resultado.Should().OnlyContain(i => i.OrdemServicoId == osId,
             "todos os insumos devem pertencer à ordem de serviço especificada");
-        resultado.Should().OnlyContain(i => idsInsumos.Contains(i.Id), 
+        resultado.Should().OnlyContain(i => idsInsumos.Contains(i.Id),
             "todos os insumos devem ter IDs que estão na lista especificada");
     }
 
@@ -120,7 +117,7 @@ public class InsumoEspecificacaoTests
 
         // Assert
         resultado.Should().HaveCount(2, "deve retornar todos os insumos da OS especificada");
-        resultado.Should().OnlyContain(i => i.OrdemServicoId == osId, 
+        resultado.Should().OnlyContain(i => i.OrdemServicoId == osId,
             "todos os insumos devem pertencer à ordem de serviço especificada");
     }
 
@@ -147,7 +144,7 @@ public class InsumoEspecificacaoTests
 
         // Assert
         especificacao.Inclusoes.Should().NotBeEmpty("deve ter inclusões definidas");
-        especificacao.Inclusoes.Should().Contain(i => i.ToString().Contains("Estoque"), 
+        especificacao.Inclusoes.Should().Contain(i => i.ToString().Contains("Estoque"),
             "deve incluir a propriedade Estoque");
     }
 
@@ -170,7 +167,7 @@ public class InsumoEspecificacaoTests
         var resultado = insumos.Where(especificacao.Expressao.Compile()).ToList();
 
         // Assert
-        resultado.Should().HaveCount(Math.Min(quantidadeIds, 2), 
+        resultado.Should().HaveCount(Math.Min(quantidadeIds, 2),
             "deve retornar a quantidade correta de insumos baseada nos IDs fornecidos");
     }
 

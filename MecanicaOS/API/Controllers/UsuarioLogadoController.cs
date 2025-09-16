@@ -1,5 +1,7 @@
 using API.Filters;
 using Core.Interfaces.Servicos;
+using Infraestrutura.Dados;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +13,17 @@ public class UsuarioLogadoController : BaseApiController
     private readonly IUsuarioLogadoServico _usuarioLogadoServico;
 
     public UsuarioLogadoController(
-        IUsuarioLogadoServico usuarioLogadoServico)
+        MecanicaContexto contexto,
+        Mediator mediator,
+        IServicoEmail servicoEmail,
+        IIdCorrelacionalService idCorrelacionalService,
+        HttpContextAccessor httpContext)
     {
-        _usuarioLogadoServico = usuarioLogadoServico;
+        // Usando o CompositionRoot para obter o serviço de usuário logado
+        var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+        _usuarioLogadoServico = httpContext.HttpContext?.User.Identity?.IsAuthenticated == true
+            ? compositionRoot.CreateUsuarioLogadoServico()
+            : null;
     }
 
     [HttpGet("dados")]

@@ -1,7 +1,5 @@
 using Core.DTOs.UseCases.Autenticacao;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.DTOs.UseCases;
 
@@ -37,7 +35,7 @@ public class AutenticacaoUseCaseDtoUnitTests
         var dto = AutenticacaoUseCaseFixture.CriarAutenticacaoUseCaseDtoEmailLongo();
 
         // Assert
-        dto.Email.Should().Be("usuario.com.nome.muito.longo@empresa.exemplo.com.br", 
+        dto.Email.Should().Be("usuario.com.nome.muito.longo@empresa.exemplo.com.br",
             "deve aceitar emails longos");
         dto.Senha.Should().NotBeNullOrEmpty("senha deve estar presente");
     }
@@ -49,7 +47,7 @@ public class AutenticacaoUseCaseDtoUnitTests
         var dto = AutenticacaoUseCaseFixture.CriarAutenticacaoUseCaseDtoSenhaCompleta();
 
         // Assert
-        dto.Senha.Should().Be("MinhaSenh@Muito$egura123!@#", 
+        dto.Senha.Should().Be("MinhaSenh@Muito$egura123!@#",
             "deve aceitar senhas com caracteres especiais");
         dto.Email.Should().NotBeNullOrEmpty("email deve estar presente");
     }
@@ -99,9 +97,9 @@ public class AutenticacaoUseCaseDtoUnitTests
         // Assert
         lista.Should().NotBeNull("a lista deve ser criada");
         lista.Should().HaveCount(4, "deve conter todos os DTOs da fixture");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Email), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Email),
             "todos os DTOs devem ter email");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Senha), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Senha),
             "todos os DTOs devem ter senha");
     }
 

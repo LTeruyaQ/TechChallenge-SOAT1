@@ -1,16 +1,9 @@
 using Adapters.DTOs.Requests.Veiculo;
 using Adapters.DTOs.Responses.Veiculo;
-using Adapters.Gateways;
-using Adapters.Presenters;
-using Adapters.Presenters.Interfaces;
 using API.Models;
-using Core.Interfaces.Gateways;
-using Core.DTOs.Entidades.Veiculo;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
-using Core.UseCases;
-using Infraestrutura.Logs;
+using Infraestrutura.Dados;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,38 +16,18 @@ namespace API.Controllers
         private readonly ILogger<VeiculoController> _logger;
 
         public VeiculoController(
-            IRepositorio<VeiculoEntityDto> repositorioVeiculo,
-            IUnidadeDeTrabalho unidadeDeTrabalho,
-            IUsuarioLogadoServico usuarioLogadoServico,
-            ILogger<VeiculoController> logger,
-            ILogger<VeiculoUseCases> loggerVeiculoUseCase,
-            IIdCorrelacionalService idCorrelacionalService)
+            MecanicaContexto contexto,
+            Mediator mediator,
+            IServicoEmail servicoEmail,
+            IIdCorrelacionalService idCorrelacionalService,
+            HttpContextAccessor httpContext,
+            ILogger<VeiculoController> logger)
         {
             _logger = logger;
 
-            // Criando gateways
-            IVeiculoGateway veiculoGateway = new VeiculoGateway(repositorioVeiculo);
-
-            // Criando logs
-            ILogServico<VeiculoUseCases> logVeiculoUseCases = new LogServico<VeiculoUseCases>(
-                idCorrelacionalService,
-                loggerVeiculoUseCase,
-                usuarioLogadoServico
-            );
-
-            // Criando use cases
-            IVeiculoUseCases veiculoUseCases = new VeiculoUseCases(
-                logVeiculoUseCases,
-                unidadeDeTrabalho,
-                usuarioLogadoServico,
-                veiculoGateway
-            );
-
-            // Criando presenter
-            IVeiculoPresenter veiculoPresenter = new VeiculoPresenter();
-
-            // Criando controller
-            _veiculoController = new Adapters.Controllers.VeiculoController(veiculoUseCases, veiculoPresenter);
+            // Usando o CompositionRoot para criar o controller com dependências externas
+            var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+            _veiculoController = compositionRoot.CreateVeiculoController();
         }
 
         [HttpPost]

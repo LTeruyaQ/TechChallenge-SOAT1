@@ -1,8 +1,6 @@
 using Core.DTOs.UseCases.Cliente;
 using Core.Enumeradores;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.DTOs.UseCases;
 
@@ -143,9 +141,9 @@ public class ClienteUseCaseDtoUnitTests
         // Assert
         lista.Should().NotBeNull("a lista deve ser criada");
         lista.Should().HaveCount(3, "deve conter todos os DTOs da fixture");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Nome), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Nome),
             "todos os DTOs devem ter nome");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Email), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Email),
             "todos os DTOs devem ter email");
     }
 
@@ -158,11 +156,11 @@ public class ClienteUseCaseDtoUnitTests
         // Assert
         lista.Should().NotBeNull("a lista deve ser criada");
         lista.Should().HaveCount(3, "deve conter todos os DTOs da fixture");
-        lista.Should().OnlyContain(dto => dto.Id != Guid.Empty, 
+        lista.Should().OnlyContain(dto => dto.Id != Guid.Empty,
             "todos os DTOs devem ter ID válido");
-        lista.Should().OnlyContain(dto => dto.EnderecoId != Guid.Empty, 
+        lista.Should().OnlyContain(dto => dto.EnderecoId != Guid.Empty,
             "todos os DTOs devem ter EnderecoId válido");
-        lista.Should().OnlyContain(dto => dto.ContatoId != Guid.Empty, 
+        lista.Should().OnlyContain(dto => dto.ContatoId != Guid.Empty,
             "todos os DTOs devem ter ContatoId válido");
     }
 

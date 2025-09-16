@@ -1,8 +1,6 @@
 using Core.DTOs.Entidades.Estoque;
 using Core.Especificacoes.Estoque;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.Especificacoes.Estoque;
 
@@ -41,7 +39,7 @@ public class EstoqueEspecificacaoTests
 
         // Assert
         resultado.Should().HaveCount(2, "deve retornar estoques com quantidade menor ou igual à mínima");
-        resultado.Should().OnlyContain(e => e.QuantidadeDisponivel <= e.QuantidadeMinima, 
+        resultado.Should().OnlyContain(e => e.QuantidadeDisponivel <= e.QuantidadeMinima,
             "todos os estoques devem ter quantidade disponível menor ou igual à mínima");
     }
 
@@ -56,7 +54,7 @@ public class EstoqueEspecificacaoTests
         var resultado = estoques.Where(especificacao.Expressao.Compile()).ToList();
 
         // Assert
-        resultado.Should().Contain(e => e.QuantidadeDisponivel == 0, 
+        resultado.Should().Contain(e => e.QuantidadeDisponivel == 0,
             "deve incluir estoques com quantidade zerada");
     }
 
@@ -70,7 +68,7 @@ public class EstoqueEspecificacaoTests
         };
         estoques.First().QuantidadeDisponivel = 50;
         estoques.First().QuantidadeMinima = 10;
-        
+
         var especificacao = new ObterEstoqueCriticoEspecificacao();
 
         // Act
@@ -90,7 +88,7 @@ public class EstoqueEspecificacaoTests
         };
         estoques.First().QuantidadeDisponivel = 10;
         estoques.First().QuantidadeMinima = 10;
-        
+
         var especificacao = new ObterEstoqueCriticoEspecificacao();
 
         // Act
@@ -112,7 +110,7 @@ public class EstoqueEspecificacaoTests
         var estoque = EstoqueFixture.CriarEstoqueEntityDtoValido();
         estoque.QuantidadeDisponivel = quantidadeDisponivel;
         estoque.QuantidadeMinima = quantidadeMinima;
-        
+
         var estoques = new List<EstoqueEntityDto> { estoque };
         var especificacao = new ObterEstoqueCriticoEspecificacao();
 
@@ -122,7 +120,7 @@ public class EstoqueEspecificacaoTests
         // Assert
         if (quantidadeDisponivel <= quantidadeMinima)
         {
-            resultado.Should().HaveCount(1, 
+            resultado.Should().HaveCount(1,
                 $"deve retornar estoque crítico (disponível: {quantidadeDisponivel}, mínima: {quantidadeMinima})");
         }
         else

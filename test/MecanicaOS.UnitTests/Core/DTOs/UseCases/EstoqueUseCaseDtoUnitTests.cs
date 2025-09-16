@@ -1,7 +1,5 @@
 using Core.DTOs.UseCases.Estoque;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.DTOs.UseCases;
 
@@ -16,7 +14,7 @@ public class EstoqueUseCaseDtoUnitTests
         // Assert
         dto.Should().NotBeNull("o DTO deve ser criado corretamente");
         dto.Insumo.Should().Be("Óleo Motor 5W30", "o insumo deve ser armazenado corretamente");
-        dto.Descricao.Should().Be("Óleo sintético para motor 5W30 - 1 litro", 
+        dto.Descricao.Should().Be("Óleo sintético para motor 5W30 - 1 litro",
             "a descrição deve ser armazenada corretamente");
         dto.Preco.Should().Be(45.90m, "o preço deve ser armazenado corretamente");
         dto.QuantidadeDisponivel.Should().Be(50, "a quantidade disponível deve ser armazenada corretamente");
@@ -46,7 +44,7 @@ public class EstoqueUseCaseDtoUnitTests
         // Assert
         dto.QuantidadeDisponivel.Should().Be(3, "deve aceitar quantidade baixa");
         dto.QuantidadeMinima.Should().Be(5, "quantidade mínima pode ser maior que disponível");
-        dto.QuantidadeDisponivel.Should().BeLessThan(dto.QuantidadeMinima, 
+        dto.QuantidadeDisponivel.Should().BeLessThan(dto.QuantidadeMinima,
             "deve permitir estoque abaixo do mínimo");
         dto.Insumo.Should().Be("Pastilha de Freio", "deve manter insumo");
         dto.Preco.Should().Be(120.00m, "deve manter preço");
@@ -117,7 +115,7 @@ public class EstoqueUseCaseDtoUnitTests
         // Assert
         dto.Should().NotBeNull("o DTO deve ser criado corretamente");
         dto.Insumo.Should().Be("Óleo Motor 10W40 Atualizado", "o insumo deve ser armazenado corretamente");
-        dto.Descricao.Should().Be("Óleo mineral para motor 10W40 - 1 litro", 
+        dto.Descricao.Should().Be("Óleo mineral para motor 10W40 - 1 litro",
             "a descrição deve ser armazenada corretamente");
         dto.Preco.Should().Be(35.50m, "o preço deve ser armazenado corretamente");
         dto.QuantidadeDisponivel.Should().Be(75, "a quantidade disponível deve ser armazenada corretamente");
@@ -171,13 +169,13 @@ public class EstoqueUseCaseDtoUnitTests
         // Assert
         lista.Should().NotBeNull("a lista deve ser criada");
         lista.Should().HaveCount(4, "deve conter todos os DTOs da fixture");
-        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Insumo), 
+        lista.Should().OnlyContain(dto => !string.IsNullOrEmpty(dto.Insumo),
             "todos os DTOs devem ter insumo");
-        lista.Should().OnlyContain(dto => dto.Preco >= 0, 
+        lista.Should().OnlyContain(dto => dto.Preco >= 0,
             "todos os preços devem ser não negativos");
-        lista.Should().OnlyContain(dto => dto.QuantidadeDisponivel >= 0, 
+        lista.Should().OnlyContain(dto => dto.QuantidadeDisponivel >= 0,
             "todas as quantidades disponíveis devem ser não negativas");
-        lista.Should().OnlyContain(dto => dto.QuantidadeMinima >= 0, 
+        lista.Should().OnlyContain(dto => dto.QuantidadeMinima >= 0,
             "todas as quantidades mínimas devem ser não negativas");
     }
 
@@ -220,7 +218,7 @@ public class EstoqueUseCaseDtoUnitTests
         dto1.Should().NotBeSameAs(dto2, "devem ser instâncias diferentes");
         dto1.Insumo.Should().NotBe(dto2.Insumo, "devem ter insumos diferentes");
         dto1.Preco.Should().NotBe(dto2.Preco, "devem ter preços diferentes");
-        dto1.QuantidadeDisponivel.Should().NotBe(dto2.QuantidadeDisponivel, 
+        dto1.QuantidadeDisponivel.Should().NotBe(dto2.QuantidadeDisponivel,
             "devem ter quantidades disponíveis diferentes");
     }
 }

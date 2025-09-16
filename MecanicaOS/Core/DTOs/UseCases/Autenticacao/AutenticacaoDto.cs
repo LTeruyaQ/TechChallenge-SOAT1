@@ -1,5 +1,3 @@
-using Core.Entidades;
-
 namespace Core.DTOs.UseCases.Autenticacao
 {
     public class AutenticacaoDto

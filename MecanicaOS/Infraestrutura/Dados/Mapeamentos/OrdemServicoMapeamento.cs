@@ -1,5 +1,4 @@
 ﻿using Core.DTOs.Entidades.OrdemServicos;
-using Core.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
