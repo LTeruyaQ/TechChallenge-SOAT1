@@ -15,12 +15,12 @@ public class UsuarioLogadoController : BaseApiController
     public UsuarioLogadoController(
         MecanicaContexto contexto,
         Mediator mediator,
-        IServicoEmail servicoEmail,
         IIdCorrelacionalService idCorrelacionalService,
-        HttpContextAccessor httpContext)
+        HttpContextAccessor httpContext,
+        IConfiguration configuration)
     {
         // Usando o CompositionRoot para obter o serviço de usuário logado
-        var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+        var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
         _usuarioLogadoServico = httpContext.HttpContext?.User.Identity?.IsAuthenticated == true
             ? compositionRoot.CreateUsuarioLogadoServico()
             : null;

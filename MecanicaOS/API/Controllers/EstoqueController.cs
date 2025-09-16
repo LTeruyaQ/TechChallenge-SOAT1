@@ -14,10 +14,10 @@ namespace API.Controllers
     {
         private readonly Adapters.Controllers.EstoqueController _estoqueController;
 
-        public EstoqueController(MecanicaContexto contexto, Mediator mediator, IServicoEmail servicoEmail, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext)
+        public EstoqueController(MecanicaContexto contexto, Mediator mediator, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext, IConfiguration configuration)
         {
             // Usando o CompositionRoot para criar o controller com dependências externas
-            var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
             _estoqueController = compositionRoot.CreateEstoqueController();
         }
 

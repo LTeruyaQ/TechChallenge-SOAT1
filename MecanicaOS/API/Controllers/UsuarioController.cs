@@ -17,12 +17,12 @@ namespace API.Controllers
         public UsuarioController(
             MecanicaContexto contexto,
             Mediator mediator,
-            IServicoEmail servicoEmail,
             IIdCorrelacionalService idCorrelacionalService,
-            HttpContextAccessor httpContext)
+            HttpContextAccessor httpContext,
+            IConfiguration configuration)
         {
             // Usando o CompositionRoot para criar o controller com dependências externas
-            var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
             _usuarioController = compositionRoot.CreateUsuarioController();
         }
 

@@ -22,6 +22,7 @@ using Infraestrutura.Jobs;
 using Infraestrutura.Logs;
 using Infraestrutura.Notificacoes;
 using Infraestrutura.Repositorios;
+using Infraestrutura.Servicos;
 using MediatR;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -50,6 +51,7 @@ namespace API
         private readonly IUsuarioLogadoServico _usuarioLogadoServico;
         private readonly IIdCorrelacionalService _idCorrelacionalService;
         private readonly IVerificarEstoqueJob _verificarEstoqueJob;
+        private readonly IServicoEmail _servicoEmail;
         private readonly IMediator _mediator;
 
         // Loggers
@@ -66,9 +68,9 @@ namespace API
         // Construtor
         public CompositionRoot(MecanicaContexto contexto,
             Mediator mediator,
-            IServicoEmail servicoEmail,
             IIdCorrelacionalService idCorrelacionalService,
-            HttpContextAccessor httpContext)
+            HttpContextAccessor httpContext,
+            IConfiguration configuration)
         {
             _dbContext = contexto;
             _mediator = mediator;
@@ -115,10 +117,12 @@ namespace API
                 _loggerVerificarEstoqueJob,
                 _usuarioLogadoServico);
 
+            _servicoEmail = new ServicoEmail(configuration);
+
             // Criando o job real
             _verificarEstoqueJob = new VerificarEstoqueJob(
                 alertaEstoqueGateway,
-                servicoEmail,
+                _servicoEmail,
                 logServicoVerificarEstoqueJob,
                 _unidadeDeTrabalho,
                 estoqueGateway,

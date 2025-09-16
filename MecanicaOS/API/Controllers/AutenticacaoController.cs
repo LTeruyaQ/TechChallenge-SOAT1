@@ -21,13 +21,13 @@ namespace API.Controllers
         public AutenticacaoController(
             MecanicaContexto contexto,
             Mediator mediator,
-            IServicoEmail servicoEmail,
             IIdCorrelacionalService idCorrelacionalService,
             HttpContextAccessor httpContext,
-            IOptions<ConfiguracaoJwt> configuracaoJwt)
+            IOptions<ConfiguracaoJwt> configuracaoJwt,
+            IConfiguration configuration)
         {
             // Usando o CompositionRoot para criar os controllers com dependências externas
-            var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
 
             _autenticacaoController = compositionRoot.CreateAutenticacaoController();
             _usuarioController = compositionRoot.CreateUsuarioController();

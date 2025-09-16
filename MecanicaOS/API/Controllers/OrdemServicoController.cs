@@ -18,10 +18,10 @@ namespace API.Controllers
         private readonly Adapters.Controllers.OrdemServicoController _ordemServicoController;
         private readonly InsumoOSController _insumoOSController;
 
-        public OrdemServicoController(MecanicaContexto contexto, Mediator mediator, IServicoEmail servicoEmail, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext)
+        public OrdemServicoController(MecanicaContexto contexto, Mediator mediator, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext, IConfiguration configuration)
         {
             // Usando o CompositionRoot para criar os controllers com dependências externas
-            var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
             _ordemServicoController = compositionRoot.CreateOrdemServicoController();
             _insumoOSController = compositionRoot.CreateInsumoOSController();
         }

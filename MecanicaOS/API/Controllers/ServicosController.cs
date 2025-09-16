@@ -15,9 +15,9 @@ namespace API.Controllers
     {
         private readonly ServicoController _servicoController;
 
-        public ServicosController(MecanicaContexto contexto, Mediator mediator, IServicoEmail servicoEmail, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext)
+        public ServicosController(MecanicaContexto contexto, Mediator mediator, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext, IConfiguration configuration)
         {
-            var compositionRoot = new CompositionRoot(contexto, mediator, servicoEmail, idCorrelacionalService, httpContext);
+            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
             _servicoController = compositionRoot.CreateServicoController();
         }
 
