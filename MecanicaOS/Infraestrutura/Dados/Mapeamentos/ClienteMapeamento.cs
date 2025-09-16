@@ -1,12 +1,13 @@
-﻿using Core.Entidades;
+﻿using Core.DTOs.Entidades.Cliente;
+using Core.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infraestrutura.Dados.Mapeamentos;
 
-public class ClienteMapeamento : IEntityTypeConfiguration<Cliente>
+public class ClienteMapeamento : IEntityTypeConfiguration<ClienteEntityDto>
 {
-    public void Configure(EntityTypeBuilder<Cliente> builder)
+    public void Configure(EntityTypeBuilder<ClienteEntityDto> builder)
     {
         builder.ToTable("Clientes");
 

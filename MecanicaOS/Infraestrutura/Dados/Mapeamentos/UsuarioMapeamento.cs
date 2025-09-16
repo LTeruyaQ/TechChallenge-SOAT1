@@ -1,12 +1,13 @@
-﻿using Core.Entidades;
+﻿using Core.DTOs.Entidades.Usuarios;
+using Core.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infraestrutura.Dados.Mapeamentos;
 
-public class UsuarioMapeamento : IEntityTypeConfiguration<Usuario>
+public class UsuarioMapeamento : IEntityTypeConfiguration<UsuarioEntityDto>
 {
-    public void Configure(EntityTypeBuilder<Usuario> builder)
+    public void Configure(EntityTypeBuilder<UsuarioEntityDto> builder)
     {
         builder.HasKey(c => c.Id);
         builder.Property(c => c.DataCadastro).IsRequired();

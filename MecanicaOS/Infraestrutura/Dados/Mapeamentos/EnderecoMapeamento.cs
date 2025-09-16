@@ -1,12 +1,13 @@
-﻿using Core.Entidades;
+﻿using Core.DTOs.Entidades.Cliente;
+using Core.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infraestrutura.Dados.Mapeamentos;
 
-public class EnderecoMapeamento : IEntityTypeConfiguration<Endereco>
+public class EnderecoMapeamento : IEntityTypeConfiguration<EnderecoEntityDto>
 {
-    public void Configure(EntityTypeBuilder<Endereco> builder)
+    public void Configure(EntityTypeBuilder<EnderecoEntityDto> builder)
     {
         builder.HasKey(c => c.Id);
         builder.Property(e => e.DataCadastro).IsRequired();

@@ -1,12 +1,13 @@
+using Core.DTOs.Entidades.Veiculo;
 using Core.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infraestrutura.Dados.Mapeamentos;
 
-public class VeiculoMapeamento : IEntityTypeConfiguration<Veiculo>
+public class VeiculoMapeamento : IEntityTypeConfiguration<VeiculoEntityDto>
 {
-    public void Configure(EntityTypeBuilder<Veiculo> builder)
+    public void Configure(EntityTypeBuilder<VeiculoEntityDto> builder)
     {
         builder.ToTable("Veiculos");
 

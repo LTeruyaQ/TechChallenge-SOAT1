@@ -1,12 +1,13 @@
-﻿using Core.Entidades;
+﻿using Core.DTOs.Entidades.OrdemServicos;
+using Core.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infraestrutura.Dados.Mapeamentos;
 
-public class OrdemServicoMapeamento : IEntityTypeConfiguration<OrdemServico>
+public class OrdemServicoMapeamento : IEntityTypeConfiguration<OrdemServicoEntityDto>
 {
-    public void Configure(EntityTypeBuilder<OrdemServico> builder)
+    public void Configure(EntityTypeBuilder<OrdemServicoEntityDto> builder)
     {
         builder.Property(o => o.Descricao).HasMaxLength(1000);
 
