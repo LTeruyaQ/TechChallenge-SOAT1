@@ -1,6 +1,8 @@
 using Adapters.DTOs.Requests.Usuario;
 using Adapters.DTOs.Responses.Usuario;
 using Adapters.Presenters.Interfaces;
+using Core.DTOs.UseCases.Usuario;
+using Core.Enumeradores;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
@@ -33,16 +35,46 @@ namespace Adapters.Controllers
 
         public async Task<UsuarioResponse> CadastrarAsync(CadastrarUsuarioRequest request)
         {
-            return _usuarioPresenter.ParaResponse(
-                await _usuarioUseCases.CadastrarUseCaseAsync(
-                    _usuarioPresenter.ParaUseCaseDto(request)));
+            var useCaseDto = MapearParaCadastrarUsuarioUseCaseDto(request);
+            var resultado = await _usuarioUseCases.CadastrarUseCaseAsync(useCaseDto);
+            return _usuarioPresenter.ParaResponse(resultado);
+        }
+        
+        internal CadastrarUsuarioUseCaseDto MapearParaCadastrarUsuarioUseCaseDto(CadastrarUsuarioRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new CadastrarUsuarioUseCaseDto
+            {
+                Email = request.Email,
+                Senha = request.Senha,
+                TipoUsuario = request.TipoUsuario,
+                RecebeAlertaEstoque = request.RecebeAlertaEstoque,
+                Documento = request.Documento
+            };
         }
 
         public async Task<UsuarioResponse> AtualizarAsync(Guid id, AtualizarUsuarioRequest request)
         {
-            return _usuarioPresenter.ParaResponse(
-                await _usuarioUseCases.AtualizarUseCaseAsync(id,
-                    _usuarioPresenter.ParaUseCaseDto(request)));
+            var useCaseDto = MapearParaAtualizarUsuarioUseCaseDto(request);
+            var resultado = await _usuarioUseCases.AtualizarUseCaseAsync(id, useCaseDto);
+            return _usuarioPresenter.ParaResponse(resultado);
+        }
+        
+        internal AtualizarUsuarioUseCaseDto MapearParaAtualizarUsuarioUseCaseDto(AtualizarUsuarioRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new AtualizarUsuarioUseCaseDto
+            {
+                Email = request.Email,
+                Senha = request.Senha,
+                DataUltimoAcesso = request.DataUltimoAcesso,
+                TipoUsuario = request.TipoUsuario,
+                RecebeAlertaEstoque = request.RecebeAlertaEstoque
+            };
         }
 
         public async Task<bool> DeletarAsync(Guid id)

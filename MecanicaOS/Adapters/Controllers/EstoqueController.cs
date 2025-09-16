@@ -1,6 +1,7 @@
 using Adapters.DTOs.Requests.Estoque;
 using Adapters.DTOs.Responses.Estoque;
 using Adapters.Presenters.Interfaces;
+using Core.DTOs.UseCases.Estoque;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
@@ -28,16 +29,46 @@ namespace Adapters.Controllers
 
         public async Task<EstoqueResponse> Cadastrar(CadastrarEstoqueRequest request)
         {
-            return _estoquePresenter.ParaResponse(
-                await _estoqueUseCases.CadastrarUseCaseAsync(
-                    _estoquePresenter.ParaUseCaseDto(request)));
+            var useCaseDto = MapearParaCadastrarEstoqueUseCaseDto(request);
+            var resultado = await _estoqueUseCases.CadastrarUseCaseAsync(useCaseDto);
+            return _estoquePresenter.ParaResponse(resultado);
+        }
+        
+        internal CadastrarEstoqueUseCaseDto MapearParaCadastrarEstoqueUseCaseDto(CadastrarEstoqueRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new CadastrarEstoqueUseCaseDto
+            {
+                Insumo = request.Insumo,
+                Descricao = request.Descricao,
+                Preco = Convert.ToDecimal(request.Preco),
+                QuantidadeDisponivel = request.QuantidadeDisponivel,
+                QuantidadeMinima = request.QuantidadeMinima
+            };
         }
 
         public async Task<EstoqueResponse> Atualizar(Guid id, AtualizarEstoqueRequest request)
         {
-            return _estoquePresenter.ParaResponse(
-                await _estoqueUseCases.AtualizarUseCaseAsync(id,
-                    _estoquePresenter.ParaUseCaseDto(request)));
+            var useCaseDto = MapearParaAtualizarEstoqueUseCaseDto(request);
+            var resultado = await _estoqueUseCases.AtualizarUseCaseAsync(id, useCaseDto);
+            return _estoquePresenter.ParaResponse(resultado);
+        }
+        
+        internal AtualizarEstoqueUseCaseDto MapearParaAtualizarEstoqueUseCaseDto(AtualizarEstoqueRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new AtualizarEstoqueUseCaseDto
+            {
+                Insumo = request.Insumo,
+                Descricao = request.Descricao,
+                Preco = request.Preco,
+                QuantidadeDisponivel = request.QuantidadeDisponivel,
+                QuantidadeMinima = request.QuantidadeMinima
+            };
         }
 
         public async Task<bool> Deletar(Guid id)

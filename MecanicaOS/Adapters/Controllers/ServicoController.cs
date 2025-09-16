@@ -1,6 +1,7 @@
-﻿using Adapters.DTOs.Requests.Servico;
+using Adapters.DTOs.Requests.Servico;
 using Adapters.DTOs.Responses.Servico;
 using Adapters.Presenters.Interfaces;
+using Core.DTOs.UseCases.Servico;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
@@ -33,16 +34,44 @@ namespace Adapters.Controllers
 
         public async Task<ServicoResponse> Criar(CadastrarServicoRequest cadastrarServicoRequest)
         {
-            return _servicoPresenter.ParaResponse(
-                await _servicoUseCases.CadastrarServicoUseCaseAsync(
-                    _servicoPresenter.ParaUseCaseDto(cadastrarServicoRequest)));
+            var useCaseDto = MapearParaCadastrarServicoUseCaseDto(cadastrarServicoRequest);
+            var resultado = await _servicoUseCases.CadastrarServicoUseCaseAsync(useCaseDto);
+            return _servicoPresenter.ParaResponse(resultado);
+        }
+        
+        internal CadastrarServicoUseCaseDto MapearParaCadastrarServicoUseCaseDto(CadastrarServicoRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new CadastrarServicoUseCaseDto
+            {
+                Nome = request.Nome,
+                Descricao = request.Descricao,
+                Valor = request.Valor,
+                Disponivel = request.Disponivel
+            };
         }
 
         public async Task<ServicoResponse> Atualizar(Guid id, EditarServicoRequest atualizarServicoRequest)
         {
-            return _servicoPresenter.ParaResponse(
-                await _servicoUseCases.EditarServicoUseCaseAsync(id,
-                    _servicoPresenter.ParaUseCaseDto(atualizarServicoRequest)));
+            var useCaseDto = MapearParaEditarServicoUseCaseDto(atualizarServicoRequest);
+            var resultado = await _servicoUseCases.EditarServicoUseCaseAsync(id, useCaseDto);
+            return _servicoPresenter.ParaResponse(resultado);
+        }
+        
+        internal EditarServicoUseCaseDto MapearParaEditarServicoUseCaseDto(EditarServicoRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new EditarServicoUseCaseDto
+            {
+                Nome = request.Nome,
+                Descricao = request.Descricao,
+                Valor = request.Valor,
+                Disponivel = request.Disponivel
+            };
         }
 
         public async Task Deletar(Guid id)

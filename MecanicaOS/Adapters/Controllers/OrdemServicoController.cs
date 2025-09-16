@@ -1,6 +1,7 @@
 using Adapters.DTOs.Requests.OrdemServico;
 using Adapters.DTOs.Responses.OrdemServico;
 using Adapters.Presenters.Interfaces;
+using Core.DTOs.UseCases.OrdemServico;
 using Core.Enumeradores;
 using Core.Interfaces.UseCases;
 
@@ -34,16 +35,45 @@ namespace Adapters.Controllers
 
         public async Task<OrdemServicoResponse> Cadastrar(CadastrarOrdemServicoRequest request)
         {
-            return _ordemServicoPresenter.ParaResponse(
-                await _ordemServicoUseCases.CadastrarUseCaseAsync(
-                    _ordemServicoPresenter.ParaUseCaseDto(request)));
+            var useCaseDto = MapearParaCadastrarOrdemServicoUseCaseDto(request);
+            var resultado = await _ordemServicoUseCases.CadastrarUseCaseAsync(useCaseDto);
+            return _ordemServicoPresenter.ParaResponse(resultado);
+        }
+        
+        internal CadastrarOrdemServicoUseCaseDto MapearParaCadastrarOrdemServicoUseCaseDto(CadastrarOrdemServicoRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new CadastrarOrdemServicoUseCaseDto
+            {
+                ClienteId = request.ClienteId,
+                VeiculoId = request.VeiculoId,
+                ServicoId = request.ServicoId,
+                Descricao = request.Descricao
+            };
         }
 
         public async Task<OrdemServicoResponse> Atualizar(Guid id, AtualizarOrdemServicoRequest request)
         {
-            return _ordemServicoPresenter.ParaResponse(
-                await _ordemServicoUseCases.AtualizarUseCaseAsync(id,
-                    _ordemServicoPresenter.ParaUseCaseDto(request)));
+            var useCaseDto = MapearParaAtualizarOrdemServicoUseCaseDto(request);
+            var resultado = await _ordemServicoUseCases.AtualizarUseCaseAsync(id, useCaseDto);
+            return _ordemServicoPresenter.ParaResponse(resultado);
+        }
+        
+        internal AtualizarOrdemServicoUseCaseDto MapearParaAtualizarOrdemServicoUseCaseDto(AtualizarOrdemServicoRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new AtualizarOrdemServicoUseCaseDto
+            {
+                ClienteId = request.ClienteId,
+                VeiculoId = request.VeiculoId,
+                ServicoId = request.ServicoId,
+                Descricao = request.Descricao,
+                Status = request.Status
+            };
         }
 
         public async Task AceitarOrcamento(Guid id)

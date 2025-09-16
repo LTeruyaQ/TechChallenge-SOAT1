@@ -1,6 +1,7 @@
 using Adapters.DTOs.Requests.Veiculo;
 using Adapters.DTOs.Responses.Veiculo;
 using Adapters.Presenters.Interfaces;
+using Core.DTOs.UseCases.Veiculo;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
@@ -38,16 +39,50 @@ namespace Adapters.Controllers
 
         public async Task<VeiculoResponse> Cadastrar(CadastrarVeiculoRequest request)
         {
-            return _veiculoPresenter.ParaResponse(
-                await _veiculoUseCases.CadastrarUseCaseAsync(
-                    _veiculoPresenter.ParaUseCaseDto(request)));
+            var useCaseDto = MapearParaCadastrarVeiculoUseCaseDto(request);
+            var resultado = await _veiculoUseCases.CadastrarUseCaseAsync(useCaseDto);
+            return _veiculoPresenter.ParaResponse(resultado);
+        }
+        
+        internal CadastrarVeiculoUseCaseDto MapearParaCadastrarVeiculoUseCaseDto(CadastrarVeiculoRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new CadastrarVeiculoUseCaseDto
+            {
+                Placa = request.Placa,
+                Marca = request.Marca,
+                Modelo = request.Modelo,
+                Cor = request.Cor,
+                Ano = request.Ano,
+                Anotacoes = request.Anotacoes,
+                ClienteId = request.ClienteId
+            };
         }
 
         public async Task<VeiculoResponse> Atualizar(Guid id, AtualizarVeiculoRequest request)
         {
-            return _veiculoPresenter.ParaResponse(
-                await _veiculoUseCases.AtualizarUseCaseAsync(id,
-                    _veiculoPresenter.ParaUseCaseDto(request)));
+            var useCaseDto = MapearParaAtualizarVeiculoUseCaseDto(request);
+            var resultado = await _veiculoUseCases.AtualizarUseCaseAsync(id, useCaseDto);
+            return _veiculoPresenter.ParaResponse(resultado);
+        }
+        
+        internal AtualizarVeiculoUseCaseDto MapearParaAtualizarVeiculoUseCaseDto(AtualizarVeiculoRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new AtualizarVeiculoUseCaseDto
+            {
+                Placa = request.Placa,
+                Marca = request.Marca,
+                Modelo = request.Modelo,
+                Cor = request.Cor,
+                Ano = request.Ano,
+                Anotacoes = request.Anotacoes,
+                ClienteId = request.ClienteId
+            };
         }
 
         public async Task<bool> Deletar(Guid id)

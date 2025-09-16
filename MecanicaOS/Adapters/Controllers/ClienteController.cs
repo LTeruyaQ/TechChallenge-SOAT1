@@ -1,6 +1,7 @@
 using Adapters.DTOs.Requests.Cliente;
 using Adapters.DTOs.Responses.Cliente;
 using Adapters.Presenters.Interfaces;
+using Core.DTOs.UseCases.Cliente;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
@@ -33,16 +34,65 @@ namespace Adapters.Controllers
 
         public async Task<ClienteResponse> Cadastrar(CadastrarClienteRequest request)
         {
-            return _clientePresenter.ParaResponse(
-                await _clienteUseCases.CadastrarUseCaseAsync(
-                    _clientePresenter.ParaUseCaseDto(request)));
+            var useCaseDto = MapearParaCadastrarClienteUseCaseDto(request);
+            var resultado = await _clienteUseCases.CadastrarUseCaseAsync(useCaseDto);
+            return _clientePresenter.ParaResponse(resultado);
+        }
+        
+        internal CadastrarClienteUseCaseDto MapearParaCadastrarClienteUseCaseDto(CadastrarClienteRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new CadastrarClienteUseCaseDto
+            {
+                Nome = request.Nome,
+                Sexo = request.Sexo,
+                Documento = request.Documento,
+                DataNascimento = request.DataNascimento,
+                TipoCliente = request.TipoCliente,
+                Rua = request.Rua,
+                Bairro = request.Bairro,
+                Cidade = request.Cidade,
+                Numero = request.Numero,
+                CEP = request.CEP,
+                Complemento = request.Complemento,
+                Email = request.Email,
+                Telefone = request.Telefone
+            };
         }
 
         public async Task<ClienteResponse> Atualizar(Guid id, AtualizarClienteRequest request)
         {
-            return _clientePresenter.ParaResponse(
-                await _clienteUseCases.AtualizarUseCaseAsync(id,
-                    _clientePresenter.ParaUseCaseDto(request)));
+            var useCaseDto = MapearParaAtualizarClienteUseCaseDto(request);
+            var resultado = await _clienteUseCases.AtualizarUseCaseAsync(id, useCaseDto);
+            return _clientePresenter.ParaResponse(resultado);
+        }
+        
+        internal AtualizarClienteUseCaseDto MapearParaAtualizarClienteUseCaseDto(AtualizarClienteRequest request)
+        {
+            if (request is null)
+                return null;
+
+            return new AtualizarClienteUseCaseDto
+            {
+                Id = request.Id,
+                Nome = request.Nome,
+                Sexo = request.Sexo,
+                Documento = request.Documento,
+                DataNascimento = request.DataNascimento,
+                TipoCliente = request.TipoCliente,
+                EnderecoId = request.EnderecoId,
+                Rua = request.Rua,
+                Bairro = request.Bairro,
+                Cidade = request.Cidade,
+                Numero = request.Numero,
+                CEP = request.CEP,
+                Complemento = request.Complemento,
+                ContatoId = request.ContatoId,
+                Email = request.Email,
+                Telefone = request.Telefone
+            };
         }
 
         public async Task<bool> Remover(Guid id)
