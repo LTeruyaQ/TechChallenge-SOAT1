@@ -23,7 +23,7 @@ public class EnderecoMapeamento : IEntityTypeConfiguration<EnderecoEntityDto>
 
         builder.HasOne(e => e.Cliente)
                .WithOne(c => c.Endereco)
-               .HasForeignKey<Cliente>(e => e.Endereco)
+               .HasForeignKey<ClienteEntityDto>(e => e.Endereco)
                .OnDelete(DeleteBehavior.Cascade);
     }
 }

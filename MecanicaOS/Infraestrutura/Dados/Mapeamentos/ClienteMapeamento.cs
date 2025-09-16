@@ -32,13 +32,13 @@ public class ClienteMapeamento : IEntityTypeConfiguration<ClienteEntityDto>
         // Relacionamento 1:1 com Contato
         builder.HasOne(c => c.Contato)
             .WithOne(c => c.Cliente)
-            .HasForeignKey<Contato>(c => c.IdCliente)
+            .HasForeignKey<ContatoEntityDto>(c => c.IdCliente)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Relacionamento 1:1 com Endereco
         builder.HasOne(c => c.Endereco)
             .WithOne(e => e.Cliente)
-            .HasForeignKey<Endereco>(e => e.IdCliente)
+            .HasForeignKey<EnderecoEntityDto>(e => e.IdCliente)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Relacionamento 1:N com Veiculos

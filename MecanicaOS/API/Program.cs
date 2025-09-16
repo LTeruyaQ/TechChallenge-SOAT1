@@ -1,7 +1,21 @@
+using API;
 using API.Middlewares;
+using Adapters.Gateways;
+using Core.DTOs.Entidades.Cliente;
+using Core.DTOs.Entidades.Estoque;
+using Core.DTOs.Entidades.OrdemServicos;
+using Core.DTOs.Entidades.Servico;
+using Core.DTOs.Entidades.Usuarios;
+using Core.DTOs.Entidades.Veiculo;
+using Core.Interfaces.Eventos;
+using Core.Interfaces.Gateways;
 using Core.Interfaces.Jobs;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
+using Core.Interfaces.UseCases;
+using Core.UseCases;
+using Infraestrutura.Notificacoes;
+using MediatR;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Infraestrutura.Autenticacao;
@@ -119,6 +133,33 @@ builder.Services.AddHangfire(config => config
 
 builder.Services.AddHangfireServer();
 
+// Registrar gateways
+builder.Services.AddScoped<IAlertaEstoqueGateway, AlertaEstoqueGateway>();
+builder.Services.AddScoped<IOrdemServicoGateway, OrdemServicoGateway>();
+builder.Services.AddScoped<IInsumosGateway, InsumosGateway>();
+builder.Services.AddScoped<IEstoqueGateway, EstoqueGateway>();
+builder.Services.AddScoped<IVerificarEstoqueJobGateway, VerificarEstoqueJobGateway>();
+builder.Services.AddScoped<IUsuarioGateway, UsuarioGateway>();
+builder.Services.AddScoped<IEventosGateway, EventosGateway>();
+builder.Services.AddScoped<IEventosPublisher, EventoPublisher>();
+builder.Services.AddScoped<IClienteGateway, ClienteGateway>();
+builder.Services.AddScoped<IEnderecoGateway, EnderecoGateway>();
+builder.Services.AddScoped<IContatoGateway, ContatoGateway>();
+builder.Services.AddScoped<IVeiculoGateway, VeiculoGateway>();
+builder.Services.AddScoped<IServicoGateway, ServicoGateway>();
+
+// Registrar UseCases
+builder.Services.AddScoped<IInsumoOSUseCases, InsumoOSUseCases>();
+builder.Services.AddScoped<IOrcamentoUseCases, OrcamentoUseCases>();
+builder.Services.AddScoped<IEstoqueUseCases, EstoqueUseCases>();
+builder.Services.AddScoped<IOrdemServicoUseCases, OrdemServicoUseCases>();
+builder.Services.AddScoped<IClienteUseCases, ClienteUseCases>();
+builder.Services.AddScoped<IServicoUseCases, ServicoUseCases>();
+builder.Services.AddScoped<IUsuarioUseCases, UsuarioUseCases>();
+builder.Services.AddScoped<IVeiculoUseCases, VeiculoUseCases>();
+builder.Services.AddScoped<IAutenticacaoUseCases, AutenticacaoUseCases>();
+
+// Registrar Jobs
 builder.Services.AddScoped<IVerificarEstoqueJob, VerificarEstoqueJob>();
 builder.Services.AddScoped<VerificarEstoqueJob>();
 builder.Services.AddScoped<VerificarOrcamentoExpiradoJob>();

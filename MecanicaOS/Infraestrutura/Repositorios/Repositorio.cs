@@ -54,7 +54,12 @@ namespace Infraestrutura.Repositorios
 
         public virtual async Task EditarAsync(T entidade)
         {
-            await Task.Run(() => _dbContext.Entry(entidade).State = EntityState.Modified);
+            var entidadeExistente = await _dbSet.FindAsync(entidade.Id);
+            if (entidadeExistente != null)
+            {
+                _dbContext.Entry(entidadeExistente).State = EntityState.Detached;
+            }
+            _dbContext.Entry(entidade).State = EntityState.Modified;
         }
 
         public virtual async Task EditarVariosAsync(IEnumerable<T> entidades)
@@ -64,7 +69,12 @@ namespace Infraestrutura.Repositorios
 
             foreach (var entidade in entidades)
             {
-                await Task.Run(() => _dbContext.Entry(entidade).State = EntityState.Modified);
+                var entidadeExistente = await _dbSet.FindAsync(entidade.Id);
+                if (entidadeExistente != null)
+                {
+                    _dbContext.Entry(entidadeExistente).State = EntityState.Detached;
+                }
+                _dbContext.Entry(entidade).State = EntityState.Modified;
             }
         }
 

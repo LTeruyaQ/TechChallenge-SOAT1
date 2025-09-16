@@ -164,6 +164,11 @@ namespace API
             return new EstoqueGateway(_repositorioEstoque);
         }
 
+        public IAlertaEstoqueGateway CreateAlertaEstoqueGateway()
+        {
+            return new AlertaEstoqueGateway(_repositorioAlertaEstoque);
+        }
+
         public IVerificarEstoqueJobGateway CreateVerificarEstoqueJobGateway()
         {
             return new VerificarEstoqueJobGateway(_verificarEstoqueJob);
@@ -356,6 +361,12 @@ namespace API
                 _unidadeDeTrabalho,
                 _usuarioLogadoServico,
                 veiculoGateway);
+        }
+        
+        // Orçamento
+        public IOrcamentoUseCases CreateOrcamentoUseCases()
+        {
+            return new OrcamentoUseCases();
         }
 
         // Serviços de autenticação
