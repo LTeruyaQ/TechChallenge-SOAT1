@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Entidades;
 using Core.Especificacoes.Insumo;
 using Core.Interfaces.Gateways;
@@ -8,9 +8,9 @@ namespace Adapters.Gateways
 {
     public class InsumosGateway : IInsumosGateway
     {
-        private readonly IRepositorio<InsumoOSRepositoryDto> _repositorioInsumoOS;
+        private readonly IRepositorio<InsumoOSEntityDto> _repositorioInsumoOS;
 
-        public InsumosGateway(IRepositorio<InsumoOSRepositoryDto> repositorioInsumoOS)
+        public InsumosGateway(IRepositorio<InsumoOSEntityDto> repositorioInsumoOS)
         {
             _repositorioInsumoOS = repositorioInsumoOS;
         }
@@ -21,9 +21,9 @@ namespace Adapters.Gateways
             return insumosCadastrados.Select(FromDto);
         }
 
-        private static InsumoOSRepositoryDto ToDto(InsumoOS insumo)
+        private static InsumoOSEntityDto ToDto(InsumoOS insumo)
         {
-            return new InsumoOSRepositoryDto
+            return new InsumoOSEntityDto
             {
                 Id = insumo.Id,
                 Ativo = insumo.Ativo,
@@ -35,7 +35,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static InsumoOS FromDto(InsumoOSRepositoryDto dto)
+        private static InsumoOS FromDto(InsumoOSEntityDto dto)
         {
             return new InsumoOS
             {

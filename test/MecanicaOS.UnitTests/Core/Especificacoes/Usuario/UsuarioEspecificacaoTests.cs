@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Usuarios;
+using Core.DTOs.Entidades.Usuarios;
 using Core.Enumeradores;
 using Core.Especificacoes.Usuario;
 using FluentAssertions;
@@ -9,33 +9,33 @@ namespace MecanicaOS.UnitTests.Core.Especificacoes.Usuario;
 
 public class UsuarioEspecificacaoTests
 {
-    private List<UsuarioRepositoryDto> GetUsuariosDeTeste()
+    private List<UsuarioEntityDto> GetUsuariosDeTeste()
     {
-        var usuario1 = UsuarioFixture.CriarUsuarioRepositoryDtoValido();
+        var usuario1 = UsuarioFixture.CriarUsuarioEntityDtoValido();
         usuario1.Email = "admin@mecanicaos.com";
         usuario1.TipoUsuario = TipoUsuario.Admin;
         usuario1.RecebeAlertaEstoque = true;
         usuario1.Id = Guid.NewGuid();
 
-        var usuario2 = UsuarioFixture.CriarUsuarioRepositoryDtoValido();
+        var usuario2 = UsuarioFixture.CriarUsuarioEntityDtoValido();
         usuario2.Email = "funcionario@mecanicaos.com";
         usuario2.TipoUsuario = TipoUsuario.Cliente;
         usuario2.RecebeAlertaEstoque = false;
         usuario2.Id = Guid.NewGuid();
 
-        var usuario3 = UsuarioFixture.CriarUsuarioRepositoryDtoValido();
+        var usuario3 = UsuarioFixture.CriarUsuarioEntityDtoValido();
         usuario3.Email = "gerente@mecanicaos.com";
         usuario3.TipoUsuario = TipoUsuario.Admin;
         usuario3.RecebeAlertaEstoque = true;
         usuario3.Id = Guid.NewGuid();
 
-        var usuario4 = UsuarioFixture.CriarUsuarioRepositoryDtoValido();
+        var usuario4 = UsuarioFixture.CriarUsuarioEntityDtoValido();
         usuario4.Email = "inativo@mecanicaos.com";
         usuario4.Ativo = false;
         usuario4.RecebeAlertaEstoque = false;
         usuario4.Id = Guid.NewGuid();
 
-        return new List<UsuarioRepositoryDto> { usuario1, usuario2, usuario3, usuario4 };
+        return new List<UsuarioEntityDto> { usuario1, usuario2, usuario3, usuario4 };
     }
 
     [Fact]
@@ -141,10 +141,10 @@ public class UsuarioEspecificacaoTests
     public void ObterUsuarioParaAlertaEstoqueEspecificacao_ComUsuariosQueNaoRecebemAlerta_DeveRetornarListaVazia()
     {
         // Arrange
-        var usuarios = new List<UsuarioRepositoryDto>
+        var usuarios = new List<UsuarioEntityDto>
         {
-            UsuarioFixture.CriarUsuarioRepositoryDtoValido(),
-            UsuarioFixture.CriarUsuarioRepositoryDtoValido()
+            UsuarioFixture.CriarUsuarioEntityDtoValido(),
+            UsuarioFixture.CriarUsuarioEntityDtoValido()
         };
         
         usuarios.ForEach(u => u.RecebeAlertaEstoque = false);
@@ -161,10 +161,10 @@ public class UsuarioEspecificacaoTests
     public void ObterUsuarioParaAlertaEstoqueEspecificacao_ComUsuariosComDiferentesConfiguracoes_DeveRetornarApenasQueRecebemAlerta()
     {
         // Arrange
-        var usuarios = new List<UsuarioRepositoryDto>
+        var usuarios = new List<UsuarioEntityDto>
         {
-            UsuarioFixture.CriarUsuarioRepositoryDtoValido(),
-            UsuarioFixture.CriarUsuarioRepositoryDtoValido()
+            UsuarioFixture.CriarUsuarioEntityDtoValido(),
+            UsuarioFixture.CriarUsuarioEntityDtoValido()
         };
         
         usuarios[0].RecebeAlertaEstoque = true;
@@ -190,10 +190,10 @@ public class UsuarioEspecificacaoTests
         bool recebeAlertaEstoque, bool deveRetornar)
     {
         // Arrange
-        var usuario = UsuarioFixture.CriarUsuarioRepositoryDtoValido();
+        var usuario = UsuarioFixture.CriarUsuarioEntityDtoValido();
         usuario.RecebeAlertaEstoque = recebeAlertaEstoque;
         
-        var usuarios = new List<UsuarioRepositoryDto> { usuario };
+        var usuarios = new List<UsuarioEntityDto> { usuario };
         var especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
 
         // Act
@@ -215,10 +215,10 @@ public class UsuarioEspecificacaoTests
     public void ObterUsuarioPorEmailEspecificacao_ComEmailsComEspacos_DeveFuncionarCorretamente()
     {
         // Arrange
-        var usuarios = new List<UsuarioRepositoryDto>
+        var usuarios = new List<UsuarioEntityDto>
         {
-            UsuarioFixture.CriarUsuarioRepositoryDtoValido(),
-            UsuarioFixture.CriarUsuarioRepositoryDtoValido()
+            UsuarioFixture.CriarUsuarioEntityDtoValido(),
+            UsuarioFixture.CriarUsuarioEntityDtoValido()
         };
         
         usuarios[0].Email = "teste@email.com";

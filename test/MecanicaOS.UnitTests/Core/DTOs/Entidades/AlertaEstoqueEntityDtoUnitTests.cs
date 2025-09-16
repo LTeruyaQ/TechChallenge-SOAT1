@@ -1,29 +1,29 @@
 using Xunit;
 using FluentAssertions;
-using Core.DTOs.Repositories.Estoque;
-using Core.DTOs.Repositories.Autenticacao;
+using Core.DTOs.Entidades.Estoque;
+using Core.DTOs.Entidades.Autenticacao;
 
-namespace MecanicaOS.UnitTests.Core.DTOs.Repositories;
+namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;
 
-public class AlertaEstoqueRepositoryDtoUnitTests
+public class AlertaEstoqueEntityDtoUnitTests
 {
     [Fact]
-    public void AlertaEstoqueRepositoryDto_QuandoCriado_DeveHerdarDeRepositoryDto()
+    public void AlertaEstoqueEntityDto_QuandoCriado_DeveHerdarDeEntityDto()
     {
         // Arrange & Act
-        var dto = new AlertaEstoqueRepositoryDto();
+        var dto = new AlertaEstoqueEntityDto();
 
         // Assert
-        dto.Should().BeAssignableTo<RepositoryDto>("AlertaEstoqueRepositoryDto deve herdar de RepositoryDto");
+        dto.Should().BeAssignableTo<EntityDto>("AlertaEstoqueEntityDto deve herdar de EntityDto");
         dto.Id.Should().Be(Guid.Empty, "Id deve ser vazio por padrão no DTO");
         dto.Ativo.Should().BeFalse("Ativo deve ser false por padrão no DTO");
     }
 
     [Fact]
-    public void AlertaEstoqueRepositoryDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
+    public void AlertaEstoqueEntityDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
     {
         // Arrange
-        var dto = new AlertaEstoqueRepositoryDto();
+        var dto = new AlertaEstoqueEntityDto();
         var id = Guid.NewGuid();
         var dataCadastro = DateTime.Now;
         var dataAtualizacao = DateTime.Now.AddMinutes(5);
@@ -42,10 +42,10 @@ public class AlertaEstoqueRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void AlertaEstoqueRepositoryDto_QuandoDefinidoEstoqueId_DeveArmazenarCorretamente()
+    public void AlertaEstoqueEntityDto_QuandoDefinidoEstoqueId_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new AlertaEstoqueRepositoryDto();
+        var dto = new AlertaEstoqueEntityDto();
         var estoqueIdEsperado = Guid.NewGuid();
 
         // Act
@@ -56,11 +56,11 @@ public class AlertaEstoqueRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void AlertaEstoqueRepositoryDto_QuandoDefinidoEstoque_DeveArmazenarReferencia()
+    public void AlertaEstoqueEntityDto_QuandoDefinidoEstoque_DeveArmazenarReferencia()
     {
         // Arrange
-        var dto = new AlertaEstoqueRepositoryDto();
-        var estoqueDto = new EstoqueRepositoryDto { Insumo = "Óleo Motor" };
+        var dto = new AlertaEstoqueEntityDto();
+        var estoqueDto = new EstoqueEntityDto { Insumo = "Óleo Motor" };
 
         // Act
         dto.Estoque = estoqueDto;
@@ -71,10 +71,10 @@ public class AlertaEstoqueRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void AlertaEstoqueRepositoryDto_QuandoDefinidoEstoqueIdVazio_DeveArmazenarCorretamente()
+    public void AlertaEstoqueEntityDto_QuandoDefinidoEstoqueIdVazio_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new AlertaEstoqueRepositoryDto();
+        var dto = new AlertaEstoqueEntityDto();
         var estoqueIdVazio = Guid.Empty;
 
         // Act
@@ -88,11 +88,11 @@ public class AlertaEstoqueRepositoryDtoUnitTests
     [InlineData("Óleo Motor 5W30")]
     [InlineData("Filtro de Ar")]
     [InlineData("Pastilha de Freio")]
-    public void AlertaEstoqueRepositoryDto_QuandoDefinidoEstoqueComDiferentesInsumos_DevePreservarPropriedades(string insumo)
+    public void AlertaEstoqueEntityDto_QuandoDefinidoEstoqueComDiferentesInsumos_DevePreservarPropriedades(string insumo)
     {
         // Arrange
-        var dto = new AlertaEstoqueRepositoryDto();
-        var estoqueDto = new EstoqueRepositoryDto 
+        var dto = new AlertaEstoqueEntityDto();
+        var estoqueDto = new EstoqueEntityDto 
         { 
             Insumo = insumo,
             Preco = 50.00m,

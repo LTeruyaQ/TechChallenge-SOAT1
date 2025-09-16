@@ -1,29 +1,29 @@
 using Xunit;
 using FluentAssertions;
-using Core.DTOs.Repositories.Cliente;
-using Core.DTOs.Repositories.Autenticacao;
+using Core.DTOs.Entidades.Cliente;
+using Core.DTOs.Entidades.Autenticacao;
 
-namespace MecanicaOS.UnitTests.Core.DTOs.Repositories;
+namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;
 
-public class ContatoRepositoryDtoUnitTests
+public class ContatoEntityDtoUnitTests
 {
     [Fact]
-    public void ContatoRepositoryDTO_QuandoCriado_DeveHerdarDeRepositoryDto()
+    public void ContatoEntityDto_QuandoCriado_DeveHerdarDeEntityDto()
     {
         // Arrange & Act
-        var dto = new ContatoRepositoryDTO();
+        var dto = new ContatoEntityDto();
 
         // Assert
-        dto.Should().BeAssignableTo<RepositoryDto>("ContatoRepositoryDTO deve herdar de RepositoryDto");
+        dto.Should().BeAssignableTo<EntityDto>("ContatoEntityDto deve herdar de EntityDto");
         dto.Id.Should().Be(Guid.Empty, "Id deve ser vazio por padrão no DTO");
         dto.Ativo.Should().BeFalse("Ativo deve ser false por padrão no DTO");
     }
 
     [Fact]
-    public void ContatoRepositoryDTO_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
+    public void ContatoEntityDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
     {
         // Arrange
-        var dto = new ContatoRepositoryDTO();
+        var dto = new ContatoEntityDto();
         var id = Guid.NewGuid();
         var dataCadastro = DateTime.Now;
         var dataAtualizacao = DateTime.Now.AddMinutes(5);
@@ -42,10 +42,10 @@ public class ContatoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void ContatoRepositoryDTO_QuandoDefinidoTelefone_DeveArmazenarCorretamente()
+    public void ContatoEntityDto_QuandoDefinidoTelefone_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new ContatoRepositoryDTO();
+        var dto = new ContatoEntityDto();
         var telefoneEsperado = "(11) 99999-9999";
 
         // Act
@@ -56,10 +56,10 @@ public class ContatoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void ContatoRepositoryDTO_QuandoDefinidoEmail_DeveArmazenarCorretamente()
+    public void ContatoEntityDto_QuandoDefinidoEmail_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new ContatoRepositoryDTO();
+        var dto = new ContatoEntityDto();
         var emailEsperado = "cliente@exemplo.com";
 
         // Act
@@ -70,10 +70,10 @@ public class ContatoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void ContatoRepositoryDTO_QuandoDefinidoIdCliente_DeveArmazenarCorretamente()
+    public void ContatoEntityDto_QuandoDefinidoIdCliente_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new ContatoRepositoryDTO();
+        var dto = new ContatoEntityDto();
         var idClienteEsperado = Guid.NewGuid();
 
         // Act
@@ -87,10 +87,10 @@ public class ContatoRepositoryDtoUnitTests
     [InlineData("(11) 99999-9999")]
     [InlineData("11999999999")]
     [InlineData("+55 11 99999-9999")]
-    public void ContatoRepositoryDTO_QuandoDefinidoTelefoneComFormatosDiferentes_DeveArmazenarCorretamente(string telefone)
+    public void ContatoEntityDto_QuandoDefinidoTelefoneComFormatosDiferentes_DeveArmazenarCorretamente(string telefone)
     {
         // Arrange
-        var dto = new ContatoRepositoryDTO();
+        var dto = new ContatoEntityDto();
 
         // Act
         dto.Telefone = telefone;
@@ -103,10 +103,10 @@ public class ContatoRepositoryDtoUnitTests
     [InlineData("usuario@dominio.com")]
     [InlineData("teste.email@empresa.com.br")]
     [InlineData("contato+tag@exemplo.org")]
-    public void ContatoRepositoryDTO_QuandoDefinidoEmailComFormatosDiferentes_DeveArmazenarCorretamente(string email)
+    public void ContatoEntityDto_QuandoDefinidoEmailComFormatosDiferentes_DeveArmazenarCorretamente(string email)
     {
         // Arrange
-        var dto = new ContatoRepositoryDTO();
+        var dto = new ContatoEntityDto();
 
         // Act
         dto.Email = email;
@@ -116,11 +116,11 @@ public class ContatoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void ContatoRepositoryDTO_QuandoDefinidoClienteReferencia_DeveArmazenarCorretamente()
+    public void ContatoEntityDto_QuandoDefinidoClienteReferencia_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new ContatoRepositoryDTO();
-        var clienteDto = new ClienteRepositoryDTO { Nome = "João Silva" };
+        var dto = new ContatoEntityDto();
+        var clienteDto = new ClienteEntityDto { Nome = "João Silva" };
 
         // Act
         dto.Cliente = clienteDto;
@@ -134,10 +134,10 @@ public class ContatoRepositoryDtoUnitTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void ContatoRepositoryDTO_QuandoDefinidoTelefoneVazioOuNulo_DeveArmazenarCorretamente(string? telefone)
+    public void ContatoEntityDto_QuandoDefinidoTelefoneVazioOuNulo_DeveArmazenarCorretamente(string? telefone)
     {
         // Arrange
-        var dto = new ContatoRepositoryDTO();
+        var dto = new ContatoEntityDto();
 
         // Act
         dto.Telefone = telefone;
@@ -150,10 +150,10 @@ public class ContatoRepositoryDtoUnitTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void ContatoRepositoryDTO_QuandoDefinidoEmailVazioOuNulo_DeveArmazenarCorretamente(string? email)
+    public void ContatoEntityDto_QuandoDefinidoEmailVazioOuNulo_DeveArmazenarCorretamente(string? email)
     {
         // Arrange
-        var dto = new ContatoRepositoryDTO();
+        var dto = new ContatoEntityDto();
 
         // Act
         dto.Email = email;

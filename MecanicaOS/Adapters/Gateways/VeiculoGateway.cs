@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Veiculo;
+using Core.DTOs.Entidades.Veiculo;
 using Core.Entidades;
 using Core.Especificacoes.Veiculo;
 using Core.Interfaces.Gateways;
@@ -8,9 +8,9 @@ namespace Adapters.Gateways
 {
     public class VeiculoGateway : IVeiculoGateway
     {
-        private readonly IRepositorio<VeiculoRepositoryDto> _repositorioVeiculo;
+        private readonly IRepositorio<VeiculoEntityDto> _repositorioVeiculo;
 
-        public VeiculoGateway(IRepositorio<VeiculoRepositoryDto> repositorioVeiculo)
+        public VeiculoGateway(IRepositorio<VeiculoEntityDto> repositorioVeiculo)
         {
             _repositorioVeiculo = repositorioVeiculo;
         }
@@ -56,9 +56,9 @@ namespace Adapters.Gateways
             return dtos.Select(FromDto);
         }
 
-        private static VeiculoRepositoryDto ToDto(Veiculo veiculo)
+        private static VeiculoEntityDto ToDto(Veiculo veiculo)
         {
-            return new VeiculoRepositoryDto
+            return new VeiculoEntityDto
             {
                 Id = veiculo.Id,
                 Ativo = veiculo.Ativo,
@@ -74,7 +74,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Veiculo FromDto(VeiculoRepositoryDto dto)
+        private static Veiculo FromDto(VeiculoEntityDto dto)
         {
             return new Veiculo
             {

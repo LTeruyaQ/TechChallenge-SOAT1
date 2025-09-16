@@ -1,5 +1,5 @@
 using Core.Entidades;
-using Core.DTOs.Repositories.Estoque;
+using Core.DTOs.Entidades.Estoque;
 
 namespace MecanicaOS.UnitTests.Fixtures;
 
@@ -65,9 +65,9 @@ public static class EstoqueFixture
         };
     }
 
-    public static EstoqueRepositoryDto CriarEstoqueRepositoryDtoValido()
+    public static EstoqueEntityDto CriarEstoqueEntityDtoValido()
     {
-        return new EstoqueRepositoryDto
+        return new EstoqueEntityDto
         {
             Id = Guid.NewGuid(),
             Insumo = "Vela de Ignição",
@@ -81,9 +81,9 @@ public static class EstoqueFixture
         };
     }
 
-    public static EstoqueRepositoryDto CriarEstoqueRepositoryDtoSemDescricao()
+    public static EstoqueEntityDto CriarEstoqueEntityDtoSemDescricao()
     {
-        return new EstoqueRepositoryDto
+        return new EstoqueEntityDto
         {
             Id = Guid.NewGuid(),
             Insumo = "Abraçadeira Universal",
@@ -97,9 +97,9 @@ public static class EstoqueFixture
         };
     }
 
-    public static EstoqueRepositoryDto CriarEstoqueRepositoryDtoComValoresPadrao()
+    public static EstoqueEntityDto CriarEstoqueEntityDtoComValoresPadrao()
     {
-        return new EstoqueRepositoryDto
+        return new EstoqueEntityDto
         {
             Insumo = "Insumo Teste"
         };
@@ -117,13 +117,13 @@ public static class EstoqueFixture
         };
     }
 
-    public static List<EstoqueRepositoryDto> CriarListaEstoqueRepositoryDto()
+    public static List<EstoqueEntityDto> CriarListaEstoqueEntityDto()
     {
-        return new List<EstoqueRepositoryDto>
+        return new List<EstoqueEntityDto>
         {
-            CriarEstoqueRepositoryDtoValido(),
-            CriarEstoqueRepositoryDtoSemDescricao(),
-            new EstoqueRepositoryDto
+            CriarEstoqueEntityDtoValido(),
+            CriarEstoqueEntityDtoSemDescricao(),
+            new EstoqueEntityDto
             {
                 Id = Guid.NewGuid(),
                 Insumo = "Correia Dentada",

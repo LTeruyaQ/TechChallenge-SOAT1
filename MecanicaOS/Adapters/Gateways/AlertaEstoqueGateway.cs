@@ -1,5 +1,4 @@
-using Core.DTOs.Repositories.Estoque;
-using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.Estoque;
 using Core.Entidades;
 using Core.Especificacoes.Estoque;
 using Core.Interfaces.Gateways;
@@ -9,9 +8,9 @@ namespace Adapters.Gateways
 {
     public class AlertaEstoqueGateway : IAlertaEstoqueGateway
     {
-        private readonly IRepositorio<AlertaEstoqueRepositoryDto> _repositorioAlertaEstoque;
+        private readonly IRepositorio<AlertaEstoqueEntityDto> _repositorioAlertaEstoque;
 
-        public AlertaEstoqueGateway(IRepositorio<AlertaEstoqueRepositoryDto> repositorioAlertaEstoque)
+        public AlertaEstoqueGateway(IRepositorio<AlertaEstoqueEntityDto> repositorioAlertaEstoque)
         {
             _repositorioAlertaEstoque = repositorioAlertaEstoque;
         }
@@ -21,16 +20,16 @@ namespace Adapters.Gateways
             await _repositorioAlertaEstoque.CadastrarVariosAsync(alertas.Select(ToDto));
         }
 
-        private static AlertaEstoqueRepositoryDto ToDto(AlertaEstoque alerta)
+        private static AlertaEstoqueEntityDto ToDto(AlertaEstoque alerta)
         {
-            return new AlertaEstoqueRepositoryDto
+            return new AlertaEstoqueEntityDto
             {
                 Id = alerta.Id,
                 Ativo = alerta.Ativo,
                 DataCadastro = alerta.DataCadastro,
                 DataAtualizacao = alerta.DataAtualizacao,
                 EstoqueId = alerta.EstoqueId,
-                Estoque = alerta.Estoque == null ? null : new EstoqueRepositoryDto
+                Estoque = alerta.Estoque == null ? null : new EstoqueEntityDto
                 {
                     Id = alerta.Estoque.Id,
                     Ativo = alerta.Estoque.Ativo,

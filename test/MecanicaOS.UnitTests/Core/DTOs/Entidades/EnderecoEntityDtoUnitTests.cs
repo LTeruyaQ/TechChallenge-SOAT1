@@ -1,29 +1,29 @@
 using Xunit;
 using FluentAssertions;
-using Core.DTOs.Repositories.Cliente;
-using Core.DTOs.Repositories.Autenticacao;
+using Core.DTOs.Entidades.Cliente;
+using Core.DTOs.Entidades.Autenticacao;
 
-namespace MecanicaOS.UnitTests.Core.DTOs.Repositories;
+namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;
 
-public class EnderecoRepositoryDtoUnitTests
+public class EnderecoEntityDtoUnitTests
 {
     [Fact]
-    public void EnderecoRepositoryDto_QuandoCriado_DeveHerdarDeRepositoryDto()
+    public void EnderecoEntityDto_QuandoCriado_DeveHerdarDeEntityDto()
     {
         // Arrange & Act
-        var dto = new EnderecoRepositoryDto();
+        var dto = new EnderecoEntityDto();
 
         // Assert
-        dto.Should().BeAssignableTo<RepositoryDto>("EnderecoRepositoryDto deve herdar de RepositoryDto");
+        dto.Should().BeAssignableTo<EntityDto>("EnderecoEntityDto deve herdar de EntityDto");
         dto.Id.Should().Be(Guid.Empty, "Id deve ser vazio por padrão no DTO");
         dto.Ativo.Should().BeFalse("Ativo deve ser false por padrão no DTO");
     }
 
     [Fact]
-    public void EnderecoRepositoryDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
+    public void EnderecoEntityDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
     {
         // Arrange
-        var dto = new EnderecoRepositoryDto();
+        var dto = new EnderecoEntityDto();
         var id = Guid.NewGuid();
         var dataCadastro = DateTime.Now;
         var dataAtualizacao = DateTime.Now.AddMinutes(5);
@@ -42,10 +42,10 @@ public class EnderecoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EnderecoRepositoryDto_QuandoDefinidaRua_DeveArmazenarCorretamente()
+    public void EnderecoEntityDto_QuandoDefinidaRua_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EnderecoRepositoryDto();
+        var dto = new EnderecoEntityDto();
         var ruaEsperada = "Rua das Flores, 123";
 
         // Act
@@ -56,10 +56,10 @@ public class EnderecoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EnderecoRepositoryDto_QuandoDefinidoBairro_DeveArmazenarCorretamente()
+    public void EnderecoEntityDto_QuandoDefinidoBairro_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EnderecoRepositoryDto();
+        var dto = new EnderecoEntityDto();
         var bairroEsperado = "Centro";
 
         // Act
@@ -70,10 +70,10 @@ public class EnderecoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EnderecoRepositoryDto_QuandoDefinidaCidade_DeveArmazenarCorretamente()
+    public void EnderecoEntityDto_QuandoDefinidaCidade_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EnderecoRepositoryDto();
+        var dto = new EnderecoEntityDto();
         var cidadeEsperada = "São Paulo";
 
         // Act
@@ -84,10 +84,10 @@ public class EnderecoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EnderecoRepositoryDto_QuandoDefinidoNumero_DeveArmazenarCorretamente()
+    public void EnderecoEntityDto_QuandoDefinidoNumero_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EnderecoRepositoryDto();
+        var dto = new EnderecoEntityDto();
         var numeroEsperado = "123";
 
         // Act
@@ -98,10 +98,10 @@ public class EnderecoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EnderecoRepositoryDto_QuandoDefinidoCEP_DeveArmazenarCorretamente()
+    public void EnderecoEntityDto_QuandoDefinidoCEP_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EnderecoRepositoryDto();
+        var dto = new EnderecoEntityDto();
         var cepEsperado = "01234-567";
 
         // Act
@@ -112,10 +112,10 @@ public class EnderecoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EnderecoRepositoryDto_QuandoDefinidoComplemento_DeveArmazenarCorretamente()
+    public void EnderecoEntityDto_QuandoDefinidoComplemento_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EnderecoRepositoryDto();
+        var dto = new EnderecoEntityDto();
         var complementoEsperado = "Apto 101";
 
         // Act
@@ -126,10 +126,10 @@ public class EnderecoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EnderecoRepositoryDto_QuandoDefinidoIdCliente_DeveArmazenarCorretamente()
+    public void EnderecoEntityDto_QuandoDefinidoIdCliente_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EnderecoRepositoryDto();
+        var dto = new EnderecoEntityDto();
         var idClienteEsperado = Guid.NewGuid();
 
         // Act
@@ -143,10 +143,10 @@ public class EnderecoRepositoryDtoUnitTests
     [InlineData("01234-567")]
     [InlineData("12345678")]
     [InlineData("98765-432")]
-    public void EnderecoRepositoryDto_QuandoDefinidoCEPComFormatosDiferentes_DeveArmazenarCorretamente(string cep)
+    public void EnderecoEntityDto_QuandoDefinidoCEPComFormatosDiferentes_DeveArmazenarCorretamente(string cep)
     {
         // Arrange
-        var dto = new EnderecoRepositoryDto();
+        var dto = new EnderecoEntityDto();
 
         // Act
         dto.CEP = cep;
@@ -159,10 +159,10 @@ public class EnderecoRepositoryDtoUnitTests
     [InlineData("123")]
     [InlineData("456A")]
     [InlineData("S/N")]
-    public void EnderecoRepositoryDto_QuandoDefinidoNumeroComFormatosDiferentes_DeveArmazenarCorretamente(string numero)
+    public void EnderecoEntityDto_QuandoDefinidoNumeroComFormatosDiferentes_DeveArmazenarCorretamente(string numero)
     {
         // Arrange
-        var dto = new EnderecoRepositoryDto();
+        var dto = new EnderecoEntityDto();
 
         // Act
         dto.Numero = numero;

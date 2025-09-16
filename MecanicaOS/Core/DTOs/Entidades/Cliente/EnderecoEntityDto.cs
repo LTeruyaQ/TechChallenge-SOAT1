@@ -1,8 +1,8 @@
-﻿using Core.DTOs.Repositories.Autenticacao;
+using Core.DTOs.Entidades.Autenticacao;
 
-namespace Core.DTOs.Repositories.Cliente;
+namespace Core.DTOs.Entidades.Cliente;
 
-public class EnderecoRepositoryDto : RepositoryDto
+public class EnderecoEntityDto : EntityDto
 {
     public string? Rua { get; set; }
     public string? Bairro { get; set; }
@@ -11,5 +11,5 @@ public class EnderecoRepositoryDto : RepositoryDto
     public string? CEP { get; set; }
     public string? Complemento { get; set; }
     public Guid IdCliente { get; set; }
-    public ClienteRepositoryDTO Cliente { get; set; } = default!;
+    public ClienteEntityDto Cliente { get; set; } = default!;
 }

@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
@@ -7,9 +7,9 @@ namespace Adapters.Gateways
 {
     public class EnderecoGateway : IEnderecoGateway
     {
-        private readonly IRepositorio<EnderecoRepositoryDto> _repositorioEndereco;
+        private readonly IRepositorio<EnderecoEntityDto> _repositorioEndereco;
 
-        public EnderecoGateway(IRepositorio<EnderecoRepositoryDto> repositorioEndereco)
+        public EnderecoGateway(IRepositorio<EnderecoEntityDto> repositorioEndereco)
         {
             _repositorioEndereco = repositorioEndereco;
         }
@@ -30,9 +30,9 @@ namespace Adapters.Gateways
             return enderecoDto != null ? FromDto(enderecoDto) : null;
         }
 
-        private static EnderecoRepositoryDto ToDto(Endereco endereco)
+        private static EnderecoEntityDto ToDto(Endereco endereco)
         {
-            return new EnderecoRepositoryDto
+            return new EnderecoEntityDto
             {
                 Id = endereco.Id,
                 Ativo = endereco.Ativo,
@@ -48,7 +48,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Endereco FromDto(EnderecoRepositoryDto dto)
+        private static Endereco FromDto(EnderecoEntityDto dto)
         {
             return new Endereco
             {

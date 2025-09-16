@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Cliente;
 using Core.Especificacoes.Cliente;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
@@ -8,10 +8,10 @@ namespace MecanicaOS.UnitTests.Core.Especificacoes.Cliente;
 
 public class ClienteEspecificacaoTests
 {
-    private List<ClienteRepositoryDTO> GetClientesDeTeste()
+    private List<ClienteEntityDto> GetClientesDeTeste()
     {
-        var cliente1 = ClienteFixture.CriarClienteRepositoryDtoValido();
-        var cliente2 = ClienteFixture.CriarClienteRepositoryDtoValido();
+        var cliente1 = ClienteFixture.CriarClienteEntityDtoValido();
+        var cliente2 = ClienteFixture.CriarClienteEntityDtoValido();
         
         // Ensure unique documents
         cliente1.Documento = "12345678901";
@@ -21,7 +21,7 @@ public class ClienteEspecificacaoTests
         cliente1.Id = Guid.NewGuid();
         cliente2.Id = Guid.NewGuid();
         
-        return new List<ClienteRepositoryDTO> { cliente1, cliente2 };
+        return new List<ClienteEntityDto> { cliente1, cliente2 };
     }
 
     [Fact]

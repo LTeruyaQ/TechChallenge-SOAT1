@@ -1,6 +1,6 @@
-﻿namespace Core.DTOs.Repositories.Autenticacao
+namespace Core.DTOs.Entidades.Autenticacao
 {
-    public abstract class RepositoryDto
+    public abstract class EntityDto
     {
         public Guid Id { get; set; }
         public DateTime DataCadastro { get; set; }

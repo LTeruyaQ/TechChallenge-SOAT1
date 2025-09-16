@@ -6,7 +6,7 @@ using Adapters.Presenters;
 using Adapters.Presenters.Interfaces;
 using API.Models;
 using Core.Entidades;
-using Core.DTOs.Repositories.Servico;
+using Core.DTOs.Entidades.Servico;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -24,7 +24,7 @@ namespace API.Controllers
         private readonly ServicoController _servicoController;
 
         public ServicosController(
-            IRepositorio<ServicoRepositoryDto> repositorioServico,
+            IRepositorio<ServicoEntityDto> repositorioServico,
             IUnidadeDeTrabalho unidadeDeTrabalho,
             IUsuarioLogadoServico usuarioLogadoServico,
             IIdCorrelacionalService idCorrelacionalService,

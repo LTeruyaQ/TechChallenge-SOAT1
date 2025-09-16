@@ -1,8 +1,8 @@
-﻿using Core.DTOs.Repositories.Autenticacao;
+using Core.DTOs.Entidades.Autenticacao;
 
-namespace Core.DTOs.Repositories.Servico;
+namespace Core.DTOs.Entidades.Servico;
 
-public class ServicoRepositoryDto : RepositoryDto
+public class ServicoEntityDto : EntityDto
 {
     public required string Nome { get; set; }
     public required string Descricao { get; set; }

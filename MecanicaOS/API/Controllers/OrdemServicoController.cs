@@ -7,10 +7,10 @@ using Adapters.Presenters;
 using Adapters.Presenters.Interfaces;
 using API.Models;
 using Core.Entidades;
-using Core.DTOs.Repositories.OrdemServicos;
-using Core.DTOs.Repositories.Estoque;
-using Core.DTOs.Repositories.Cliente;
-using Core.DTOs.Repositories.Servico;
+using Core.DTOs.Entidades.OrdemServicos;
+using Core.DTOs.Entidades.Estoque;
+using Core.DTOs.Entidades.Cliente;
+using Core.DTOs.Entidades.Servico;
 using Core.Enumeradores;
 using Core.Interfaces.Eventos;
 using Core.Interfaces.Gateways;
@@ -34,11 +34,11 @@ namespace API.Controllers
         private readonly InsumoOSController _insumoOSController;
 
         public OrdemServicoController(
-            IRepositorio<OrdemServicoRepositoryDto> repositorioOrdemServico,
-            IRepositorio<InsumoOSRepositoryDto> repositorioInsumoOS,
-            IRepositorio<EstoqueRepositoryDto> repositorioEstoque,
-            IRepositorio<ClienteRepositoryDTO> repositorioCliente,
-            IRepositorio<ServicoRepositoryDto> repositorioServico,
+            IRepositorio<OrdemServicoEntityDto> repositorioOrdemServico,
+            IRepositorio<InsumoOSEntityDto> repositorioInsumoOS,
+            IRepositorio<EstoqueEntityDto> repositorioEstoque,
+            IRepositorio<ClienteEntityDto> repositorioCliente,
+            IRepositorio<ServicoEntityDto> repositorioServico,
             IUnidadeDeTrabalho unidadeDeTrabalho,
             IUsuarioLogadoServico usuarioLogadoServico,
             IVerificarEstoqueJob verificarEstoqueJob,
@@ -171,7 +171,7 @@ namespace API.Controllers
 
         [HttpPost("{ordemServicoId}/insumos")]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(IEnumerable<Core.DTOs.Repositories.OrdemServicos.InsumoOSRepositoryDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<Core.DTOs.Entidades.OrdemServicos.InsumoOSEntityDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]

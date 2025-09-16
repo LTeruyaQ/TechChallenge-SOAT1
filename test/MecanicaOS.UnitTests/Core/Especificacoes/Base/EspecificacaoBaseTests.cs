@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Cliente;
 using Core.Especificacoes.Base;
 using Core.Especificacoes.Base.Extensoes;
 using FluentAssertions;
@@ -10,7 +10,7 @@ namespace MecanicaOS.UnitTests.Core.Especificacoes.Base;
 
 public class EspecificacaoBaseTests
 {
-    private class EspecificacaoTeste : EspecificacaoBase<ClienteRepositoryDTO>
+    private class EspecificacaoTeste : EspecificacaoBase<ClienteEntityDto>
     {
         private readonly string _nome;
 
@@ -19,11 +19,11 @@ public class EspecificacaoBaseTests
             _nome = nome;
         }
 
-        public override Expression<Func<ClienteRepositoryDTO, bool>> Expressao => 
+        public override Expression<Func<ClienteEntityDto, bool>> Expressao => 
             c => c.Nome.Contains(_nome);
     }
 
-    private class EspecificacaoTeste2 : EspecificacaoBase<ClienteRepositoryDTO>
+    private class EspecificacaoTeste2 : EspecificacaoBase<ClienteEntityDto>
     {
         private readonly bool _ativo;
 
@@ -32,7 +32,7 @@ public class EspecificacaoBaseTests
             _ativo = ativo;
         }
 
-        public override Expression<Func<ClienteRepositoryDTO, bool>> Expressao => 
+        public override Expression<Func<ClienteEntityDto, bool>> Expressao => 
             c => c.Ativo == _ativo;
     }
 
@@ -52,10 +52,10 @@ public class EspecificacaoBaseTests
     public void EspecificacaoBase_ExpressaoCompilada_DeveFiltrarCorretamente()
     {
         // Arrange
-        var clientes = new List<ClienteRepositoryDTO>
+        var clientes = new List<ClienteEntityDto>
         {
-            ClienteFixture.CriarClienteRepositoryDtoValido(),
-            ClienteFixture.CriarClienteRepositoryDtoValido()
+            ClienteFixture.CriarClienteEntityDtoValido(),
+            ClienteFixture.CriarClienteEntityDtoValido()
         };
         
         clientes[0].Nome = "João Silva";
@@ -75,11 +75,11 @@ public class EspecificacaoBaseTests
     public void EExtensao_DevePermitirCombinacaoComE()
     {
         // Arrange
-        var clientes = new List<ClienteRepositoryDTO>
+        var clientes = new List<ClienteEntityDto>
         {
-            ClienteFixture.CriarClienteRepositoryDtoValido(),
-            ClienteFixture.CriarClienteRepositoryDtoValido(),
-            ClienteFixture.CriarClienteRepositoryDtoValido()
+            ClienteFixture.CriarClienteEntityDtoValido(),
+            ClienteFixture.CriarClienteEntityDtoValido(),
+            ClienteFixture.CriarClienteEntityDtoValido()
         };
         
         clientes[0].Nome = "João Silva";
@@ -108,11 +108,11 @@ public class EspecificacaoBaseTests
     public void OuExtensao_DevePermitirCombinacaoComOu()
     {
         // Arrange
-        var clientes = new List<ClienteRepositoryDTO>
+        var clientes = new List<ClienteEntityDto>
         {
-            ClienteFixture.CriarClienteRepositoryDtoValido(),
-            ClienteFixture.CriarClienteRepositoryDtoValido(),
-            ClienteFixture.CriarClienteRepositoryDtoValido()
+            ClienteFixture.CriarClienteEntityDtoValido(),
+            ClienteFixture.CriarClienteEntityDtoValido(),
+            ClienteFixture.CriarClienteEntityDtoValido()
         };
         
         clientes[0].Nome = "João Silva";
@@ -149,11 +149,11 @@ public class EspecificacaoBaseTests
     public void EspecificacaoTeste_ComDiferentesNomes_DeveFiltrarCorretamente(string nome)
     {
         // Arrange
-        var clientes = new List<ClienteRepositoryDTO>
+        var clientes = new List<ClienteEntityDto>
         {
-            ClienteFixture.CriarClienteRepositoryDtoValido(),
-            ClienteFixture.CriarClienteRepositoryDtoValido(),
-            ClienteFixture.CriarClienteRepositoryDtoValido()
+            ClienteFixture.CriarClienteEntityDtoValido(),
+            ClienteFixture.CriarClienteEntityDtoValido(),
+            ClienteFixture.CriarClienteEntityDtoValido()
         };
         
         clientes[0].Nome = "João Silva";

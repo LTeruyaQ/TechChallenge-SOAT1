@@ -1,31 +1,31 @@
 using Xunit;
 using FluentAssertions;
-using Core.DTOs.Repositories.Usuarios;
-using Core.DTOs.Repositories.Autenticacao;
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Usuarios;
+using Core.DTOs.Entidades.Autenticacao;
+using Core.DTOs.Entidades.Cliente;
 using Core.Enumeradores;
 
-namespace MecanicaOS.UnitTests.Core.DTOs.Repositories;
+namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;
 
-public class UsuarioRepositoryDtoUnitTests
+public class UsuarioEntityDtoUnitTests
 {
     [Fact]
-    public void UsuarioRepositoryDto_QuandoCriado_DeveHerdarDeRepositoryDto()
+    public void UsuarioEntityDto_QuandoCriado_DeveHerdarDeEntityDto()
     {
         // Arrange & Act
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
 
         // Assert
-        dto.Should().BeAssignableTo<RepositoryDto>("UsuarioRepositoryDto deve herdar de RepositoryDto");
+        dto.Should().BeAssignableTo<EntityDto>("UsuarioEntityDto deve herdar de EntityDto");
         dto.Id.Should().Be(Guid.Empty, "Id deve ser vazio por padrão no DTO");
         dto.Ativo.Should().BeFalse("Ativo deve ser false por padrão no DTO");
     }
 
     [Fact]
-    public void UsuarioRepositoryDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
+    public void UsuarioEntityDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
         var id = Guid.NewGuid();
         var dataCadastro = DateTime.Now;
         var dataAtualizacao = DateTime.Now.AddMinutes(5);
@@ -44,10 +44,10 @@ public class UsuarioRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void UsuarioRepositoryDto_QuandoDefinidoEmail_DeveArmazenarCorretamente()
+    public void UsuarioEntityDto_QuandoDefinidoEmail_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
         var emailEsperado = "usuario@teste.com";
 
         // Act
@@ -58,10 +58,10 @@ public class UsuarioRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void UsuarioRepositoryDto_QuandoDefinidaSenha_DeveArmazenarCorretamente()
+    public void UsuarioEntityDto_QuandoDefinidaSenha_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
         var senhaEsperada = "senha123";
 
         // Act
@@ -74,10 +74,10 @@ public class UsuarioRepositoryDtoUnitTests
     [Theory]
     [InlineData(TipoUsuario.Admin)]
     [InlineData(TipoUsuario.Cliente)]
-    public void UsuarioRepositoryDto_QuandoDefinidoTipoUsuario_DeveArmazenarCorretamente(TipoUsuario tipoUsuario)
+    public void UsuarioEntityDto_QuandoDefinidoTipoUsuario_DeveArmazenarCorretamente(TipoUsuario tipoUsuario)
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
 
         // Act
         dto.TipoUsuario = tipoUsuario;
@@ -89,10 +89,10 @@ public class UsuarioRepositoryDtoUnitTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void UsuarioRepositoryDto_QuandoDefinidoRecebeAlertaEstoque_DeveArmazenarCorretamente(bool recebeAlerta)
+    public void UsuarioEntityDto_QuandoDefinidoRecebeAlertaEstoque_DeveArmazenarCorretamente(bool recebeAlerta)
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
 
         // Act
         dto.RecebeAlertaEstoque = recebeAlerta;
@@ -102,10 +102,10 @@ public class UsuarioRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void UsuarioRepositoryDto_QuandoDefinidaDataUltimoAcesso_DeveArmazenarCorretamente()
+    public void UsuarioEntityDto_QuandoDefinidaDataUltimoAcesso_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
         var dataEsperada = DateTime.Now;
 
         // Act
@@ -116,10 +116,10 @@ public class UsuarioRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void UsuarioRepositoryDto_QuandoDefinidoClienteId_DeveArmazenarCorretamente()
+    public void UsuarioEntityDto_QuandoDefinidoClienteId_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
         var clienteIdEsperado = Guid.NewGuid();
 
         // Act
@@ -130,11 +130,11 @@ public class UsuarioRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void UsuarioRepositoryDto_QuandoDefinidoCliente_DeveArmazenarReferencia()
+    public void UsuarioEntityDto_QuandoDefinidoCliente_DeveArmazenarReferencia()
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
-        var clienteDto = new ClienteRepositoryDTO { Nome = "João Silva" };
+        var dto = new UsuarioEntityDto();
+        var clienteDto = new ClienteEntityDto { Nome = "João Silva" };
 
         // Act
         dto.Cliente = clienteDto;
@@ -145,10 +145,10 @@ public class UsuarioRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void UsuarioRepositoryDto_QuandoClienteIdNulo_DevePermitirValorNulo()
+    public void UsuarioEntityDto_QuandoClienteIdNulo_DevePermitirValorNulo()
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
 
         // Act
         dto.ClienteId = null;
@@ -158,10 +158,10 @@ public class UsuarioRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void UsuarioRepositoryDto_QuandoClienteNulo_DevePermitirValorNulo()
+    public void UsuarioEntityDto_QuandoClienteNulo_DevePermitirValorNulo()
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
 
         // Act
         dto.Cliente = null;
@@ -171,10 +171,10 @@ public class UsuarioRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void UsuarioRepositoryDto_QuandoDataUltimoAcessoNula_DevePermitirValorNulo()
+    public void UsuarioEntityDto_QuandoDataUltimoAcessoNula_DevePermitirValorNulo()
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
 
         // Act
         dto.DataUltimoAcesso = null;
@@ -187,10 +187,10 @@ public class UsuarioRepositoryDtoUnitTests
     [InlineData("admin@empresa.com")]
     [InlineData("cliente@teste.com")]
     [InlineData("funcionario@mecanica.com")]
-    public void UsuarioRepositoryDto_QuandoDefinidoEmailComValoresDiferentes_DeveArmazenarCorretamente(string email)
+    public void UsuarioEntityDto_QuandoDefinidoEmailComValoresDiferentes_DeveArmazenarCorretamente(string email)
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
 
         // Act
         dto.Email = email;
@@ -203,10 +203,10 @@ public class UsuarioRepositoryDtoUnitTests
     [InlineData("senha123")]
     [InlineData("senhaCompleta@123")]
     [InlineData("minhasenha")]
-    public void UsuarioRepositoryDto_QuandoDefinidaSenhaComValoresDiferentes_DeveArmazenarCorretamente(string senha)
+    public void UsuarioEntityDto_QuandoDefinidaSenhaComValoresDiferentes_DeveArmazenarCorretamente(string senha)
     {
         // Arrange
-        var dto = new UsuarioRepositoryDto();
+        var dto = new UsuarioEntityDto();
 
         // Act
         dto.Senha = senha;

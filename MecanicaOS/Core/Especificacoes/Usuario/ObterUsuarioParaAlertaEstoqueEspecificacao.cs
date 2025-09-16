@@ -1,11 +1,11 @@
-﻿using Core.DTOs.Repositories.Usuarios;
+using Core.DTOs.Entidades.Usuarios;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Usuario;
 
-public class ObterUsuarioParaAlertaEstoqueEspecificacao : EspecificacaoBase<UsuarioRepositoryDto>
+public class ObterUsuarioParaAlertaEstoqueEspecificacao : EspecificacaoBase<UsuarioEntityDto>
 {
-    public override Expression<Func<UsuarioRepositoryDto, bool>> Expressao =>
+    public override Expression<Func<UsuarioEntityDto, bool>> Expressao =>
      u => u.RecebeAlertaEstoque;
 }

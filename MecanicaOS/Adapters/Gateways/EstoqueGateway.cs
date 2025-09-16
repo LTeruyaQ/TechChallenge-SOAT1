@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Estoque;
+using Core.DTOs.Entidades.Estoque;
 using Core.Entidades;
 using Core.Especificacoes.Estoque;
 using Core.Interfaces.Gateways;
@@ -8,9 +8,9 @@ namespace Adapters.Gateways
 {
     public class EstoqueGateway : IEstoqueGateway
     {
-        private readonly IRepositorio<EstoqueRepositoryDto> _repositorioEstoque;
+        private readonly IRepositorio<EstoqueEntityDto> _repositorioEstoque;
 
-        public EstoqueGateway(IRepositorio<EstoqueRepositoryDto> repositorioEstoque)
+        public EstoqueGateway(IRepositorio<EstoqueEntityDto> repositorioEstoque)
         {
             _repositorioEstoque = repositorioEstoque;
         }
@@ -48,9 +48,9 @@ namespace Adapters.Gateways
             return estoquesDto.Select(FromDto);
         }
 
-        private static EstoqueRepositoryDto ToDto(Estoque estoque)
+        private static EstoqueEntityDto ToDto(Estoque estoque)
         {
-            return new EstoqueRepositoryDto
+            return new EstoqueEntityDto
             {
                 Id = estoque.Id,
                 Ativo = estoque.Ativo,
@@ -64,7 +64,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Estoque FromDto(EstoqueRepositoryDto dto)
+        private static Estoque FromDto(EstoqueEntityDto dto)
         {
             return new Estoque
             {

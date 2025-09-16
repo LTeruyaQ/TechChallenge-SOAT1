@@ -1,5 +1,5 @@
-using Core.DTOs.Repositories.Estoque;
-using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.Estoque;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Especificacoes.Insumo;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
@@ -9,17 +9,17 @@ namespace MecanicaOS.UnitTests.Core.Especificacoes.Insumo;
 
 public class InsumoEspecificacaoTests
 {
-    private List<InsumoOSRepositoryDto> GetInsumosOSDeTeste()
+    private List<InsumoOSEntityDto> GetInsumosOSDeTeste()
     {
         var osId1 = Guid.NewGuid();
         var osId2 = Guid.NewGuid();
-        var estoque1 = EstoqueFixture.CriarEstoqueRepositoryDtoValido();
-        var estoque2 = EstoqueFixture.CriarEstoqueRepositoryDtoValido();
-        var estoque3 = EstoqueFixture.CriarEstoqueRepositoryDtoSemDescricao();
+        var estoque1 = EstoqueFixture.CriarEstoqueEntityDtoValido();
+        var estoque2 = EstoqueFixture.CriarEstoqueEntityDtoValido();
+        var estoque3 = EstoqueFixture.CriarEstoqueEntityDtoSemDescricao();
 
-        return new List<InsumoOSRepositoryDto>
+        return new List<InsumoOSEntityDto>
         {
-            new InsumoOSRepositoryDto
+            new InsumoOSEntityDto
             {
                 Id = Guid.NewGuid(),
                 OrdemServicoId = osId1,
@@ -30,7 +30,7 @@ public class InsumoEspecificacaoTests
                 DataAtualizacao = DateTime.Now,
                 Estoque = estoque1
             },
-            new InsumoOSRepositoryDto
+            new InsumoOSEntityDto
             {
                 Id = Guid.NewGuid(),
                 OrdemServicoId = osId1,
@@ -41,7 +41,7 @@ public class InsumoEspecificacaoTests
                 DataAtualizacao = DateTime.Now,
                 Estoque = estoque2
             },
-            new InsumoOSRepositoryDto
+            new InsumoOSEntityDto
             {
                 Id = Guid.NewGuid(),
                 OrdemServicoId = osId2,

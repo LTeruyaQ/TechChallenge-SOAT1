@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
@@ -7,9 +7,9 @@ namespace Adapters.Gateways
 {
     public class ContatoGateway : IContatoGateway
     {
-        private readonly IRepositorio<ContatoRepositoryDTO> _repositorioContato;
+        private readonly IRepositorio<ContatoEntityDto> _repositorioContato;
 
-        public ContatoGateway(IRepositorio<ContatoRepositoryDTO> repositorioContato)
+        public ContatoGateway(IRepositorio<ContatoEntityDto> repositorioContato)
         {
             _repositorioContato = repositorioContato;
         }
@@ -30,9 +30,9 @@ namespace Adapters.Gateways
             return contatoDto != null ? FromDto(contatoDto) : null;
         }
 
-        private static ContatoRepositoryDTO ToDto(Contato contato)
+        private static ContatoEntityDto ToDto(Contato contato)
         {
-            return new ContatoRepositoryDTO
+            return new ContatoEntityDto
             {
                 Id = contato.Id,
                 Ativo = contato.Ativo,
@@ -44,7 +44,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Contato FromDto(ContatoRepositoryDTO dto)
+        private static Contato FromDto(ContatoEntityDto dto)
         {
             return new Contato
             {

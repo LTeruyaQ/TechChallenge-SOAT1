@@ -1,11 +1,11 @@
-﻿using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Entidades;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Insumo;
 
-public class ObterInsumosPorIdsEOSEspecificacao : EspecificacaoBase<InsumoOSRepositoryDto>
+public class ObterInsumosPorIdsEOSEspecificacao : EspecificacaoBase<InsumoOSEntityDto>
 {
     private readonly List<Guid> _ids;
     private readonly Guid _ordemServidoId;
@@ -17,6 +17,6 @@ public class ObterInsumosPorIdsEOSEspecificacao : EspecificacaoBase<InsumoOSRepo
         AdicionarInclusao(i => i.Estoque);
     }
 
-    public override Expression<Func<InsumoOSRepositoryDto, bool>> Expressao =>
+    public override Expression<Func<InsumoOSEntityDto, bool>> Expressao =>
             i => _ids.Contains(i.Id) && i.OrdemServicoId == _ordemServidoId;
 }

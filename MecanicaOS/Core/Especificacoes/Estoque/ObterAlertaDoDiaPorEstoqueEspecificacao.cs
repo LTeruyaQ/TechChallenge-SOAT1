@@ -1,11 +1,11 @@
-﻿using Core.DTOs.Repositories.Estoque;
+using Core.DTOs.Entidades.Estoque;
 using Core.Entidades;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Estoque;
 
-public class ObterAlertaDoDiaPorEstoqueEspecificacao : EspecificacaoBase<AlertaEstoqueRepositoryDto>
+public class ObterAlertaDoDiaPorEstoqueEspecificacao : EspecificacaoBase<AlertaEstoqueEntityDto>
 {
     private readonly Guid _estoqueId;
     private readonly DateTime _data;
@@ -34,6 +34,6 @@ public class ObterAlertaDoDiaPorEstoqueEspecificacao : EspecificacaoBase<AlertaE
         });
     }
 
-    public override Expression<Func<AlertaEstoqueRepositoryDto, bool>> Expressao =>
+    public override Expression<Func<AlertaEstoqueEntityDto, bool>> Expressao =>
        a => a.EstoqueId == _estoqueId && a.DataCadastro.Date == _data.Date;
 }

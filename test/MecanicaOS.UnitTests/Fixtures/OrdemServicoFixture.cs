@@ -1,8 +1,8 @@
 using Core.Entidades;
-using Core.DTOs.Repositories.OrdemServicos;
-using Core.DTOs.Repositories.Cliente;
-using Core.DTOs.Repositories.Veiculo;
-using Core.DTOs.Repositories.Servico;
+using Core.DTOs.Entidades.OrdemServicos;
+using Core.DTOs.Entidades.Cliente;
+using Core.DTOs.Entidades.Veiculo;
+using Core.DTOs.Entidades.Servico;
 using Core.Enumeradores;
 
 namespace MecanicaOS.UnitTests.Fixtures;
@@ -105,13 +105,13 @@ public static class OrdemServicoFixture
         return ordemServico;
     }
 
-    public static OrdemServicoRepositoryDto CriarOrdemServicoRepositoryDtoValido()
+    public static OrdemServicoEntityDto CriarOrdemServicoEntityDtoValido()
     {
-        var clienteDto = ClienteFixture.CriarClienteRepositoryDtoValido();
-        var veiculoDto = VeiculoFixture.CriarVeiculoRepositoryDtoValido();
-        var servicoDto = ServicoFixture.CriarServicoRepositoryDtoValido();
+        var clienteDto = ClienteFixture.CriarClienteEntityDtoValido();
+        var veiculoDto = VeiculoFixture.CriarVeiculoEntityDtoValido();
+        var servicoDto = ServicoFixture.CriarServicoEntityDtoValido();
         
-        return new OrdemServicoRepositoryDto
+        return new OrdemServicoEntityDto
         {
             Id = Guid.NewGuid(),
             ClienteId = clienteDto.Id,
@@ -124,39 +124,39 @@ public static class OrdemServicoFixture
             Status = StatusOrdemServico.AguardandoAprovação,
             Orcamento = 450.00m,
             DataEnvioOrcamento = DateTime.Now.AddDays(-3),
-            InsumosOS = new List<InsumoOSRepositoryDto>(),
+            InsumosOS = new List<InsumoOSEntityDto>(),
             Ativo = true,
             DataCadastro = DateTime.Now.AddDays(-15),
             DataAtualizacao = DateTime.Now.AddDays(-1)
         };
     }
 
-    public static OrdemServicoRepositoryDto CriarOrdemServicoRepositoryDtoComValoresPadrao()
+    public static OrdemServicoEntityDto CriarOrdemServicoEntityDtoComValoresPadrao()
     {
-        return new OrdemServicoRepositoryDto
+        return new OrdemServicoEntityDto
         {
             ClienteId = Guid.NewGuid(),
-            Cliente = ClienteFixture.CriarClienteRepositoryDtoValido(),
+            Cliente = ClienteFixture.CriarClienteEntityDtoValido(),
             VeiculoId = Guid.NewGuid(),
-            Veiculo = VeiculoFixture.CriarVeiculoRepositoryDtoValido(),
+            Veiculo = VeiculoFixture.CriarVeiculoEntityDtoValido(),
             ServicoId = Guid.NewGuid(),
-            Servico = ServicoFixture.CriarServicoRepositoryDtoComValoresPadrao(),
+            Servico = ServicoFixture.CriarServicoEntityDtoComValoresPadrao(),
             Status = StatusOrdemServico.Recebida,
-            InsumosOS = new List<InsumoOSRepositoryDto>()
+            InsumosOS = new List<InsumoOSEntityDto>()
         };
     }
 
-    public static OrdemServicoRepositoryDto CriarOrdemServicoRepositoryDtoComInsumos()
+    public static OrdemServicoEntityDto CriarOrdemServicoEntityDtoComInsumos()
     {
-        var ordemServicoDto = CriarOrdemServicoRepositoryDtoValido();
-        var insumosDto = new List<InsumoOSRepositoryDto>
+        var ordemServicoDto = CriarOrdemServicoEntityDtoValido();
+        var insumosDto = new List<InsumoOSEntityDto>
         {
-            new InsumoOSRepositoryDto
+            new InsumoOSEntityDto
             {
                 Id = Guid.NewGuid(),
                 OrdemServicoId = ordemServicoDto.Id,
                 EstoqueId = Guid.NewGuid(),
-                Estoque = EstoqueFixture.CriarEstoqueRepositoryDtoValido(),
+                Estoque = EstoqueFixture.CriarEstoqueEntityDtoValido(),
                 Quantidade = 2,
                 Ativo = true,
                 DataCadastro = DateTime.Now.AddDays(-5),
@@ -180,26 +180,26 @@ public static class OrdemServicoFixture
         };
     }
 
-    public static List<OrdemServicoRepositoryDto> CriarListaOrdemServicoRepositoryDto()
+    public static List<OrdemServicoEntityDto> CriarListaOrdemServicoEntityDto()
     {
-        return new List<OrdemServicoRepositoryDto>
+        return new List<OrdemServicoEntityDto>
         {
-            CriarOrdemServicoRepositoryDtoValido(),
-            CriarOrdemServicoRepositoryDtoComInsumos(),
-            new OrdemServicoRepositoryDto
+            CriarOrdemServicoEntityDtoValido(),
+            CriarOrdemServicoEntityDtoComInsumos(),
+            new OrdemServicoEntityDto
             {
                 Id = Guid.NewGuid(),
                 ClienteId = Guid.NewGuid(),
-                Cliente = ClienteFixture.CriarClienteRepositoryDtoValido(),
+                Cliente = ClienteFixture.CriarClienteEntityDtoValido(),
                 VeiculoId = Guid.NewGuid(),
-                Veiculo = VeiculoFixture.CriarVeiculoRepositoryDtoValido(),
+                Veiculo = VeiculoFixture.CriarVeiculoEntityDtoValido(),
                 ServicoId = Guid.NewGuid(),
-                Servico = ServicoFixture.CriarServicoRepositoryDtoValido(),
+                Servico = ServicoFixture.CriarServicoEntityDtoValido(),
                 Descricao = "Troca de pneus",
                 Status = StatusOrdemServico.Entregue,
                 Orcamento = 400.00m,
                 DataEnvioOrcamento = DateTime.Now.AddDays(-7),
-                InsumosOS = new List<InsumoOSRepositoryDto>(),
+                InsumosOS = new List<InsumoOSEntityDto>(),
                 Ativo = true,
                 DataCadastro = DateTime.Now.AddDays(-20),
                 DataAtualizacao = DateTime.Now.AddDays(-3)

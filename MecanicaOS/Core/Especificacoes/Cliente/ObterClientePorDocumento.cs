@@ -1,11 +1,11 @@
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Cliente
 {
-    public class ObterClientePorDocumento : EspecificacaoBase<ClienteRepositoryDTO>
+    public class ObterClientePorDocumento : EspecificacaoBase<ClienteEntityDto>
     {
         private string documento;
 
@@ -56,6 +56,6 @@ namespace Core.Especificacoes.Cliente
             });
         }
 
-        public override Expression<Func<ClienteRepositoryDTO, bool>> Expressao => c => c.Documento == documento;
+        public override Expression<Func<ClienteEntityDto, bool>> Expressao => c => c.Documento == documento;
     }
 }

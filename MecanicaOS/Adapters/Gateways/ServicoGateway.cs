@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Servico;
+using Core.DTOs.Entidades.Servico;
 using Core.Entidades;
 using Core.Especificacoes.Base.Extensoes;
 using Core.Especificacoes.Servico;
@@ -9,9 +9,9 @@ namespace Adapters.Gateways
 {
     public class ServicoGateway : IServicoGateway
     {
-        private readonly IRepositorio<ServicoRepositoryDto> _repositorioServico;
+        private readonly IRepositorio<ServicoEntityDto> _repositorioServico;
 
-        public ServicoGateway(IRepositorio<ServicoRepositoryDto> repositorioServico)
+        public ServicoGateway(IRepositorio<ServicoEntityDto> repositorioServico)
         {
             _repositorioServico = repositorioServico;
         }
@@ -59,9 +59,9 @@ namespace Adapters.Gateways
             return dtos.Select(FromDto);
         }
 
-        private static ServicoRepositoryDto ToDto(Servico servico)
+        private static ServicoEntityDto ToDto(Servico servico)
         {
-            return new ServicoRepositoryDto
+            return new ServicoEntityDto
             {
                 Id = servico.Id,
                 Ativo = servico.Ativo,
@@ -74,7 +74,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Servico FromDto(ServicoRepositoryDto dto)
+        private static Servico FromDto(ServicoEntityDto dto)
         {
             return new Servico
             {

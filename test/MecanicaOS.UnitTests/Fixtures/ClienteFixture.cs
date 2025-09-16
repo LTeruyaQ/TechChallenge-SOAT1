@@ -1,5 +1,5 @@
 using Core.Entidades;
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Cliente;
 using Core.Enumeradores;
 
 namespace MecanicaOS.UnitTests.Fixtures;
@@ -35,16 +35,16 @@ public class ClienteFixture : BaseFixture
         return cliente;
     }
     
-    public static ClienteRepositoryDTO CriarClienteRepositoryDtoValido()
+    public static ClienteEntityDto CriarClienteEntityDtoValido()
     {
-        var dto = CriarRepositoryDtoComCamposObrigatorios<ClienteRepositoryDTO>();
+        var dto = CriarRepositoryDtoComCamposObrigatorios<ClienteEntityDto>();
         dto.Nome = "João Silva";
         dto.Documento = "12345678901";
         dto.DataNascimento = "1990-01-01";
         dto.Sexo = "M";
         dto.TipoCliente = TipoCliente.PessoaFisica;
-        dto.Endereco = EnderecoFixture.CriarEnderecoRepositoryDtoValido();
-        dto.Contato = ContatoFixture.CriarContatoRepositoryDtoValido();
+        dto.Endereco = EnderecoFixture.CriarEnderecoEntityDtoValido();
+        dto.Contato = ContatoFixture.CriarContatoEntityDtoValido();
         
         return dto;
     }
@@ -65,13 +65,13 @@ public class ClienteFixture : BaseFixture
         return clientes;
     }
     
-    public static List<ClienteRepositoryDTO> CriarListaClienteRepositoryDtosValidos(int quantidade = 3)
+    public static List<ClienteEntityDto> CriarListaClienteEntityDtosValidos(int quantidade = 3)
     {
-        var dtos = new List<ClienteRepositoryDTO>();
+        var dtos = new List<ClienteEntityDto>();
         
         for (int i = 0; i < quantidade; i++)
         {
-            var dto = CriarClienteRepositoryDtoValido();
+            var dto = CriarClienteEntityDtoValido();
             dto.Id = Guid.NewGuid();
             dto.Nome = $"Cliente {i + 1}";
             dto.Documento = $"1234567890{i}";

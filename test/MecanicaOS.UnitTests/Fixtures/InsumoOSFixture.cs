@@ -1,6 +1,6 @@
 using Core.Entidades;
-using Core.DTOs.Repositories.OrdemServicos;
-using Core.DTOs.Repositories.Estoque;
+using Core.DTOs.Entidades.OrdemServicos;
+using Core.DTOs.Entidades.Estoque;
 
 namespace MecanicaOS.UnitTests.Fixtures;
 
@@ -61,12 +61,12 @@ public static class InsumoOSFixture
         };
     }
 
-    public static InsumoOSRepositoryDto CriarInsumoOSRepositoryDtoValido()
+    public static InsumoOSEntityDto CriarInsumoOSEntityDtoValido()
     {
-        var ordemServicoDto = OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido();
-        var estoqueDto = EstoqueFixture.CriarEstoqueRepositoryDtoValido();
+        var ordemServicoDto = OrdemServicoFixture.CriarOrdemServicoEntityDtoValido();
+        var estoqueDto = EstoqueFixture.CriarEstoqueEntityDtoValido();
         
-        return new InsumoOSRepositoryDto
+        return new InsumoOSEntityDto
         {
             Id = Guid.NewGuid(),
             OrdemServicoId = ordemServicoDto.Id,
@@ -80,14 +80,14 @@ public static class InsumoOSFixture
         };
     }
 
-    public static InsumoOSRepositoryDto CriarInsumoOSRepositoryDtoComValoresPadrao()
+    public static InsumoOSEntityDto CriarInsumoOSEntityDtoComValoresPadrao()
     {
-        return new InsumoOSRepositoryDto
+        return new InsumoOSEntityDto
         {
             OrdemServicoId = Guid.NewGuid(),
-            OrdemServico = OrdemServicoFixture.CriarOrdemServicoRepositoryDtoComValoresPadrao(),
+            OrdemServico = OrdemServicoFixture.CriarOrdemServicoEntityDtoComValoresPadrao(),
             EstoqueId = Guid.NewGuid(),
-            Estoque = EstoqueFixture.CriarEstoqueRepositoryDtoComValoresPadrao(),
+            Estoque = EstoqueFixture.CriarEstoqueEntityDtoComValoresPadrao(),
             Quantidade = 1
         };
     }
@@ -102,16 +102,16 @@ public static class InsumoOSFixture
         };
     }
 
-    public static List<InsumoOSRepositoryDto> CriarListaInsumoOSRepositoryDto()
+    public static List<InsumoOSEntityDto> CriarListaInsumoOSEntityDto()
     {
-        var ordemServico1 = OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido();
-        var ordemServico2 = OrdemServicoFixture.CriarOrdemServicoRepositoryDtoComValoresPadrao();
-        var estoque1 = EstoqueFixture.CriarEstoqueRepositoryDtoValido();
-        var estoque2 = EstoqueFixture.CriarEstoqueRepositoryDtoSemDescricao();
+        var ordemServico1 = OrdemServicoFixture.CriarOrdemServicoEntityDtoValido();
+        var ordemServico2 = OrdemServicoFixture.CriarOrdemServicoEntityDtoComValoresPadrao();
+        var estoque1 = EstoqueFixture.CriarEstoqueEntityDtoValido();
+        var estoque2 = EstoqueFixture.CriarEstoqueEntityDtoSemDescricao();
         
-        return new List<InsumoOSRepositoryDto>
+        return new List<InsumoOSEntityDto>
         {
-            new InsumoOSRepositoryDto
+            new InsumoOSEntityDto
             {
                 Id = Guid.NewGuid(),
                 OrdemServicoId = ordemServico1.Id,
@@ -123,7 +123,7 @@ public static class InsumoOSFixture
                 DataCadastro = DateTime.Now.AddDays(-5),
                 DataAtualizacao = DateTime.Now.AddDays(-2)
             },
-            new InsumoOSRepositoryDto
+            new InsumoOSEntityDto
             {
                 Id = Guid.NewGuid(),
                 OrdemServicoId = ordemServico2.Id,

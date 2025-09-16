@@ -1,5 +1,5 @@
 using Core.Entidades;
-using Core.DTOs.Repositories.Estoque;
+using Core.DTOs.Entidades.Estoque;
 
 namespace MecanicaOS.UnitTests.Fixtures;
 
@@ -43,11 +43,11 @@ public static class AlertaEstoqueFixture
         };
     }
 
-    public static AlertaEstoqueRepositoryDto CriarAlertaEstoqueRepositoryDtoValido()
+    public static AlertaEstoqueEntityDto CriarAlertaEstoqueEntityDtoValido()
     {
-        var estoqueDto = EstoqueFixture.CriarEstoqueRepositoryDtoValido();
+        var estoqueDto = EstoqueFixture.CriarEstoqueEntityDtoValido();
         
-        return new AlertaEstoqueRepositoryDto
+        return new AlertaEstoqueEntityDto
         {
             Id = Guid.NewGuid(),
             EstoqueId = estoqueDto.Id,
@@ -58,12 +58,12 @@ public static class AlertaEstoqueFixture
         };
     }
 
-    public static AlertaEstoqueRepositoryDto CriarAlertaEstoqueRepositoryDtoComValoresPadrao()
+    public static AlertaEstoqueEntityDto CriarAlertaEstoqueEntityDtoComValoresPadrao()
     {
-        return new AlertaEstoqueRepositoryDto
+        return new AlertaEstoqueEntityDto
         {
             EstoqueId = Guid.NewGuid(),
-            Estoque = EstoqueFixture.CriarEstoqueRepositoryDtoComValoresPadrao()
+            Estoque = EstoqueFixture.CriarEstoqueEntityDtoComValoresPadrao()
         };
     }
 
@@ -77,14 +77,14 @@ public static class AlertaEstoqueFixture
         };
     }
 
-    public static List<AlertaEstoqueRepositoryDto> CriarListaAlertaEstoqueRepositoryDto()
+    public static List<AlertaEstoqueEntityDto> CriarListaAlertaEstoqueEntityDto()
     {
-        var estoque1 = EstoqueFixture.CriarEstoqueRepositoryDtoValido();
-        var estoque2 = EstoqueFixture.CriarEstoqueRepositoryDtoSemDescricao();
+        var estoque1 = EstoqueFixture.CriarEstoqueEntityDtoValido();
+        var estoque2 = EstoqueFixture.CriarEstoqueEntityDtoSemDescricao();
         
-        return new List<AlertaEstoqueRepositoryDto>
+        return new List<AlertaEstoqueEntityDto>
         {
-            new AlertaEstoqueRepositoryDto
+            new AlertaEstoqueEntityDto
             {
                 Id = Guid.NewGuid(),
                 EstoqueId = estoque1.Id,
@@ -93,7 +93,7 @@ public static class AlertaEstoqueFixture
                 DataCadastro = DateTime.Now.AddDays(-3),
                 DataAtualizacao = DateTime.Now.AddHours(-2)
             },
-            new AlertaEstoqueRepositoryDto
+            new AlertaEstoqueEntityDto
             {
                 Id = Guid.NewGuid(),
                 EstoqueId = estoque2.Id,

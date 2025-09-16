@@ -1,10 +1,10 @@
-using Core.DTOs.Repositories.Veiculo;
+using Core.DTOs.Entidades.Veiculo;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Veiculo
 {
-    public class ObterVeiculosResumidosEspecificacao : EspecificacaoBase<VeiculoRepositoryDto>
+    public class ObterVeiculosResumidosEspecificacao : EspecificacaoBase<VeiculoEntityDto>
     {
         private readonly string? _placa;
         private readonly string? _modelo;
@@ -23,7 +23,7 @@ namespace Core.Especificacoes.Veiculo
             });
         }
 
-        public override Expression<Func<VeiculoRepositoryDto, bool>> Expressao
+        public override Expression<Func<VeiculoEntityDto, bool>> Expressao
         {
             get
             {

@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Entidades;
 using Core.Especificacoes.OrdemServico;
 using Core.Interfaces.Repositorios;
@@ -8,9 +8,9 @@ using System.Text;
 
 namespace Infraestrutura.Notificacoes.OS;
 
-public class OrdemServicoFinalizadaHandler(IRepositorio<OrdemServicoRepositoryDto> ordemServicoRepositorio, ILogServico<OrdemServicoFinalizadaHandler> logServico, IServicoEmail emailServico) : INotificationHandler<OrdemServicoFinalizadaEvent>
+public class OrdemServicoFinalizadaHandler(IRepositorio<OrdemServicoEntityDto> ordemServicoRepositorio, ILogServico<OrdemServicoFinalizadaHandler> logServico, IServicoEmail emailServico) : INotificationHandler<OrdemServicoFinalizadaEvent>
 {
-    private readonly IRepositorio<OrdemServicoRepositoryDto> _ordemServicoRepositorio = ordemServicoRepositorio;
+    private readonly IRepositorio<OrdemServicoEntityDto> _ordemServicoRepositorio = ordemServicoRepositorio;
     private readonly ILogServico<OrdemServicoFinalizadaHandler> _logServico = logServico;
     private readonly IServicoEmail _emailServico = emailServico;
 
@@ -44,7 +44,7 @@ public class OrdemServicoFinalizadaHandler(IRepositorio<OrdemServicoRepositoryDt
         }
     }
 
-    private static async Task<string> GerarConteudoEmailAsync(OrdemServicoRepositoryDto os)
+    private static async Task<string> GerarConteudoEmailAsync(OrdemServicoEntityDto os)
     {
         const string templateFileName = "EmailOrdemServicoFinalizada.html";
 

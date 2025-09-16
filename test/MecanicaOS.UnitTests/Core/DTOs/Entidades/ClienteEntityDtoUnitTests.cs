@@ -1,31 +1,31 @@
 using Xunit;
 using FluentAssertions;
-using Core.DTOs.Repositories.Cliente;
-using Core.DTOs.Repositories.Autenticacao;
-using Core.DTOs.Repositories.Veiculo;
+using Core.DTOs.Entidades.Cliente;
+using Core.DTOs.Entidades.Autenticacao;
+using Core.DTOs.Entidades.Veiculo;
 using Core.Enumeradores;
 
-namespace MecanicaOS.UnitTests.Core.DTOs.Repositories;
+namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;
 
-public class ClienteRepositoryDtoUnitTests
+public class ClienteEntityDtoUnitTests
 {
     [Fact]
-    public void ClienteRepositoryDTO_QuandoCriado_DeveHerdarDeRepositoryDto()
+    public void ClienteEntityDto_QuandoCriado_DeveHerdarDeRepositoryDto()
     {
         // Arrange & Act
-        var dto = new ClienteRepositoryDTO();
+        var dto = new ClienteEntityDto();
 
         // Assert
-        dto.Should().BeAssignableTo<RepositoryDto>("ClienteRepositoryDTO deve herdar de RepositoryDto");
+        dto.Should().BeAssignableTo<EntityDto>("ClienteEntityDto deve herdar de EntityDto");
         dto.Id.Should().Be(Guid.Empty, "Id deve ser vazio por padrão no DTO");
         dto.Ativo.Should().BeFalse("Ativo deve ser false por padrão no DTO");
     }
 
     [Fact]
-    public void ClienteRepositoryDTO_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
+    public void ClienteEntityDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
     {
         // Arrange
-        var dto = new ClienteRepositoryDTO();
+        var dto = new ClienteEntityDto();
         var id = Guid.NewGuid();
         var dataCadastro = DateTime.Now;
         var dataAtualizacao = DateTime.Now.AddMinutes(5);
@@ -44,10 +44,10 @@ public class ClienteRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void ClienteRepositoryDTO_QuandoDefinidoNome_DeveArmazenarCorretamente()
+    public void ClienteEntityDto_QuandoDefinidoNome_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new ClienteRepositoryDTO();
+        var dto = new ClienteEntityDto();
         var nomeEsperado = "João Silva";
 
         // Act
@@ -58,10 +58,10 @@ public class ClienteRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void ClienteRepositoryDTO_QuandoDefinidoDocumento_DeveArmazenarCorretamente()
+    public void ClienteEntityDto_QuandoDefinidoDocumento_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new ClienteRepositoryDTO();
+        var dto = new ClienteEntityDto();
         var documentoEsperado = "12345678901";
 
         // Act
@@ -74,10 +74,10 @@ public class ClienteRepositoryDtoUnitTests
     [Theory]
     [InlineData(TipoCliente.PessoaFisica)]
     [InlineData(TipoCliente.PessoaJuridico)]
-    public void ClienteRepositoryDTO_QuandoDefinidoTipoCliente_DeveArmazenarCorretamente(TipoCliente tipo)
+    public void ClienteEntityDto_QuandoDefinidoTipoCliente_DeveArmazenarCorretamente(TipoCliente tipo)
     {
         // Arrange
-        var dto = new ClienteRepositoryDTO();
+        var dto = new ClienteEntityDto();
 
         // Act
         dto.TipoCliente = tipo;
@@ -87,10 +87,10 @@ public class ClienteRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void ClienteRepositoryDTO_QuandoDefinidaDataNascimento_DeveArmazenarCorretamente()
+    public void ClienteEntityDto_QuandoDefinidaDataNascimento_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new ClienteRepositoryDTO();
+        var dto = new ClienteEntityDto();
         var dataNascimento = "1990-01-01";
 
         // Act
@@ -104,10 +104,10 @@ public class ClienteRepositoryDtoUnitTests
     [InlineData("M")]
     [InlineData("F")]
     [InlineData(null)]
-    public void ClienteRepositoryDTO_QuandoDefinidoSexo_DeveArmazenarCorretamente(string? sexo)
+    public void ClienteEntityDto_QuandoDefinidoSexo_DeveArmazenarCorretamente(string? sexo)
     {
         // Arrange
-        var dto = new ClienteRepositoryDTO();
+        var dto = new ClienteEntityDto();
 
         // Act
         dto.Sexo = sexo;
@@ -117,12 +117,12 @@ public class ClienteRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void ClienteRepositoryDTO_QuandoDefinidoEnderecoEContato_DeveArmazenarReferencias()
+    public void ClienteEntityDto_QuandoDefinidoEnderecoEContato_DeveArmazenarReferencias()
     {
         // Arrange
-        var dto = new ClienteRepositoryDTO();
-        var endereco = new EnderecoRepositoryDto();
-        var contato = new ContatoRepositoryDTO();
+        var dto = new ClienteEntityDto();
+        var endereco = new EnderecoEntityDto();
+        var contato = new ContatoEntityDto();
 
         // Act
         dto.Endereco = endereco;
@@ -134,14 +134,14 @@ public class ClienteRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void ClienteRepositoryDTO_QuandoDefinidaListaVeiculos_DeveArmazenarCorretamente()
+    public void ClienteEntityDto_QuandoDefinidaListaVeiculos_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new ClienteRepositoryDTO();
-        var veiculos = new List<VeiculoRepositoryDto>
+        var dto = new ClienteEntityDto();
+        var veiculos = new List<VeiculoEntityDto>
         {
-            new VeiculoRepositoryDto { Placa = "ABC-1234" },
-            new VeiculoRepositoryDto { Placa = "XYZ-5678" }
+            new VeiculoEntityDto { Placa = "ABC-1234" },
+            new VeiculoEntityDto { Placa = "XYZ-5678" }
         };
 
         // Act

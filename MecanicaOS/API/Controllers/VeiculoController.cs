@@ -5,7 +5,7 @@ using Adapters.Presenters;
 using Adapters.Presenters.Interfaces;
 using API.Models;
 using Core.Interfaces.Gateways;
-using Core.DTOs.Repositories.Veiculo;
+using Core.DTOs.Entidades.Veiculo;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
@@ -23,7 +23,7 @@ namespace API.Controllers
         private readonly ILogger<VeiculoController> _logger;
 
         public VeiculoController(
-            IRepositorio<VeiculoRepositoryDto> repositorioVeiculo,
+            IRepositorio<VeiculoEntityDto> repositorioVeiculo,
             IUnidadeDeTrabalho unidadeDeTrabalho,
             IUsuarioLogadoServico usuarioLogadoServico,
             ILogger<VeiculoController> logger,

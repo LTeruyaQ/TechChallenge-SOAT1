@@ -1,11 +1,11 @@
-﻿using Core.DTOs.Repositories.Servico;
+﻿using Core.DTOs.Entidades.Servico;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Servico
 {
-    public class ObterServicoDisponivelEspecificacao : EspecificacaoBase<ServicoRepositoryDto>
+    public class ObterServicoDisponivelEspecificacao : EspecificacaoBase<ServicoEntityDto>
     {
-        public override Expression<Func<ServicoRepositoryDto, bool>> Expressao => s => s.Disponivel;
+        public override Expression<Func<ServicoEntityDto, bool>> Expressao => s => s.Disponivel;
     }
 }

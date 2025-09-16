@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Especificacoes.OrdemServico;
@@ -9,9 +9,9 @@ namespace Adapters.Gateways
 {
     public class OrdemServicoGateway : IOrdemServicoGateway
     {
-        private readonly IRepositorio<OrdemServicoRepositoryDto> _repositorioOrdemServico;
+        private readonly IRepositorio<OrdemServicoEntityDto> _repositorioOrdemServico;
 
-        public OrdemServicoGateway(IRepositorio<OrdemServicoRepositoryDto> repositorioOrdemServico)
+        public OrdemServicoGateway(IRepositorio<OrdemServicoEntityDto> repositorioOrdemServico)
         {
             _repositorioOrdemServico = repositorioOrdemServico;
         }
@@ -64,9 +64,9 @@ namespace Adapters.Gateways
             return dtos.Select(FromDto);
         }
 
-        private static OrdemServicoRepositoryDto ToDto(OrdemServico ordemServico)
+        private static OrdemServicoEntityDto ToDto(OrdemServico ordemServico)
         {
-            return new OrdemServicoRepositoryDto
+            return new OrdemServicoEntityDto
             {
                 Id = ordemServico.Id,
                 Ativo = ordemServico.Ativo,
@@ -79,7 +79,7 @@ namespace Adapters.Gateways
                 DataEnvioOrcamento = ordemServico.DataEnvioOrcamento,
                 Descricao = ordemServico.Descricao,
                 Status = ordemServico.Status,
-                InsumosOS = ordemServico.InsumosOS.Select(insumo => new InsumoOSRepositoryDto
+                InsumosOS = ordemServico.InsumosOS.Select(insumo => new InsumoOSEntityDto
                 {
                     Id = insumo.Id,
                     Ativo = insumo.Ativo,
@@ -92,7 +92,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static OrdemServico FromDto(OrdemServicoRepositoryDto dto)
+        private static OrdemServico FromDto(OrdemServicoEntityDto dto)
         {
             return new OrdemServico
             {

@@ -1,10 +1,10 @@
-using Core.DTOs.Repositories.Autenticacao;
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Autenticacao;
+using Core.DTOs.Entidades.Cliente;
 using Core.Enumeradores;
 
-namespace Core.DTOs.Repositories.Usuarios;
+namespace Core.DTOs.Entidades.Usuarios;
 
-public class UsuarioRepositoryDto : RepositoryDto
+public class UsuarioEntityDto : EntityDto
 {
     public string Email { get; set; } = default!;
     public string Senha { get; set; } = default!;
@@ -13,5 +13,5 @@ public class UsuarioRepositoryDto : RepositoryDto
     public bool RecebeAlertaEstoque { get; set; }
 
     public Guid? ClienteId { get; set; }
-    public ClienteRepositoryDTO? Cliente { get; set; }
+    public ClienteEntityDto? Cliente { get; set; }
 }

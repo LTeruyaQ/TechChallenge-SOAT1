@@ -1,10 +1,10 @@
-﻿using Core.DTOs.Repositories.Servico;
+using Core.DTOs.Entidades.Servico;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Servico
 {
-    public class ObterServicoPorNomeEspecificacao : EspecificacaoBase<ServicoRepositoryDto>
+    public class ObterServicoPorNomeEspecificacao : EspecificacaoBase<ServicoEntityDto>
     {
         private string nome;
 
@@ -13,6 +13,6 @@ namespace Core.Especificacoes.Servico
             this.nome = nome;
         }
 
-        public override Expression<Func<ServicoRepositoryDto, bool>> Expressao => s => s.Nome == nome;
+        public override Expression<Func<ServicoEntityDto, bool>> Expressao => s => s.Nome == nome;
     }
 }

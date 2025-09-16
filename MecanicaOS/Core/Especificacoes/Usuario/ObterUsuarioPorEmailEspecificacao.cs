@@ -1,10 +1,10 @@
-﻿using Core.DTOs.Repositories.Usuarios;
+using Core.DTOs.Entidades.Usuarios;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Usuario;
 
-public class ObterUsuarioPorEmailEspecificacao : EspecificacaoBase<UsuarioRepositoryDto>
+public class ObterUsuarioPorEmailEspecificacao : EspecificacaoBase<UsuarioEntityDto>
 {
     private string email;
 
@@ -13,5 +13,5 @@ public class ObterUsuarioPorEmailEspecificacao : EspecificacaoBase<UsuarioReposi
         this.email = email;
     }
 
-    public override Expression<Func<UsuarioRepositoryDto, bool>> Expressao => u => u.Email == email;
+    public override Expression<Func<UsuarioEntityDto, bool>> Expressao => u => u.Email == email;
 }

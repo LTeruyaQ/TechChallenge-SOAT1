@@ -1,8 +1,8 @@
-﻿using Core.DTOs.Repositories.Autenticacao;
+using Core.DTOs.Entidades.Autenticacao;
 
-namespace Core.DTOs.Repositories.Estoque;
+namespace Core.DTOs.Entidades.Estoque;
 
-public class EstoqueRepositoryDto : RepositoryDto
+public class EstoqueEntityDto : EntityDto
 {
     public string Insumo { get; set; } = default!;
     public string? Descricao { get; set; }

@@ -1,24 +1,24 @@
 using Xunit;
 using FluentAssertions;
-using Core.DTOs.Repositories.OrdemServicos;
-using Core.DTOs.Repositories.Autenticacao;
-using Core.DTOs.Repositories.Cliente;
-using Core.DTOs.Repositories.Servico;
-using Core.DTOs.Repositories.Veiculo;
+using Core.DTOs.Entidades.OrdemServicos;
+using Core.DTOs.Entidades.Autenticacao;
+using Core.DTOs.Entidades.Cliente;
+using Core.DTOs.Entidades.Servico;
+using Core.DTOs.Entidades.Veiculo;
 using Core.Enumeradores;
 
-namespace MecanicaOS.UnitTests.Core.DTOs.Repositories;
+namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;
 
-public class OrdemServicoRepositoryDtoUnitTests
+public class OrdemServicoEntityDtoUnitTests
 {
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoCriado_DeveHerdarDeRepositoryDto()
+    public void OrdemServicoEntityDto_QuandoCriado_DeveHerdarDeEntityDto()
     {
         // Arrange & Act
-        var dto = new OrdemServicoRepositoryDto();
+        var dto = new OrdemServicoEntityDto();
 
         // Assert
-        dto.Should().BeAssignableTo<RepositoryDto>("OrdemServicoRepositoryDto deve herdar de RepositoryDto");
+        dto.Should().BeAssignableTo<EntityDto>("OrdemServicoEntityDto deve herdar de EntityDto");
         dto.Id.Should().Be(Guid.Empty, "Id deve ser vazio por padrão no DTO");
         dto.Ativo.Should().BeFalse("Ativo deve ser false por padrão no DTO");
         dto.InsumosOS.Should().NotBeNull("InsumosOS deve ser inicializada");
@@ -26,10 +26,10 @@ public class OrdemServicoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
+    public void OrdemServicoEntityDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
+        var dto = new OrdemServicoEntityDto();
         var id = Guid.NewGuid();
         var dataCadastro = DateTime.Now;
         var dataAtualizacao = DateTime.Now.AddMinutes(5);
@@ -48,10 +48,10 @@ public class OrdemServicoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoDefinidoClienteId_DeveArmazenarCorretamente()
+    public void OrdemServicoEntityDto_QuandoDefinidoClienteId_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
+        var dto = new OrdemServicoEntityDto();
         var clienteIdEsperado = Guid.NewGuid();
 
         // Act
@@ -62,10 +62,10 @@ public class OrdemServicoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoDefinidoVeiculoId_DeveArmazenarCorretamente()
+    public void OrdemServicoEntityDto_QuandoDefinidoVeiculoId_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
+        var dto = new OrdemServicoEntityDto();
         var veiculoIdEsperado = Guid.NewGuid();
 
         // Act
@@ -76,10 +76,10 @@ public class OrdemServicoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoDefinidoServicoId_DeveArmazenarCorretamente()
+    public void OrdemServicoEntityDto_QuandoDefinidoServicoId_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
+        var dto = new OrdemServicoEntityDto();
         var servicoIdEsperado = Guid.NewGuid();
 
         // Act
@@ -90,10 +90,10 @@ public class OrdemServicoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoDefinidoOrcamento_DeveArmazenarCorretamente()
+    public void OrdemServicoEntityDto_QuandoDefinidoOrcamento_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
+        var dto = new OrdemServicoEntityDto();
         var orcamentoEsperado = 1500.50m;
 
         // Act
@@ -104,10 +104,10 @@ public class OrdemServicoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoDefinidaDescricao_DeveArmazenarCorretamente()
+    public void OrdemServicoEntityDto_QuandoDefinidaDescricao_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
+        var dto = new OrdemServicoEntityDto();
         var descricaoEsperada = "Troca de óleo e filtros";
 
         // Act
@@ -122,10 +122,10 @@ public class OrdemServicoRepositoryDtoUnitTests
     [InlineData(StatusOrdemServico.EmExecucao)]
     [InlineData(StatusOrdemServico.Finalizada)]
     [InlineData(StatusOrdemServico.Cancelada)]
-    public void OrdemServicoRepositoryDto_QuandoDefinidoStatus_DeveArmazenarCorretamente(StatusOrdemServico status)
+    public void OrdemServicoEntityDto_QuandoDefinidoStatus_DeveArmazenarCorretamente(StatusOrdemServico status)
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
+        var dto = new OrdemServicoEntityDto();
 
         // Act
         dto.Status = status;
@@ -135,10 +135,10 @@ public class OrdemServicoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoDefinidaDataEnvioOrcamento_DeveArmazenarCorretamente()
+    public void OrdemServicoEntityDto_QuandoDefinidaDataEnvioOrcamento_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
+        var dto = new OrdemServicoEntityDto();
         var dataEsperada = DateTime.Now;
 
         // Act
@@ -149,11 +149,11 @@ public class OrdemServicoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoDefinidoCliente_DeveArmazenarReferencia()
+    public void OrdemServicoEntityDto_QuandoDefinidoCliente_DeveArmazenarReferencia()
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
-        var clienteDto = new ClienteRepositoryDTO { Nome = "João Silva" };
+        var dto = new OrdemServicoEntityDto();
+        var clienteDto = new ClienteEntityDto { Nome = "João Silva" };
 
         // Act
         dto.Cliente = clienteDto;
@@ -164,11 +164,11 @@ public class OrdemServicoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoDefinidoVeiculo_DeveArmazenarReferencia()
+    public void OrdemServicoEntityDto_QuandoDefinidoVeiculo_DeveArmazenarReferencia()
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
-        var veiculoDto = new VeiculoRepositoryDto { Placa = "ABC-1234" };
+        var dto = new OrdemServicoEntityDto();
+        var veiculoDto = new VeiculoEntityDto { Placa = "ABC-1234" };
 
         // Act
         dto.Veiculo = veiculoDto;
@@ -179,11 +179,11 @@ public class OrdemServicoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoDefinidoServico_DeveArmazenarReferencia()
+    public void OrdemServicoEntityDto_QuandoDefinidoServico_DeveArmazenarReferencia()
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
-        var servicoDto = new ServicoRepositoryDto { Nome = "Troca de Óleo", Descricao = "Serviço de troca de óleo" };
+        var dto = new OrdemServicoEntityDto();
+        var servicoDto = new ServicoEntityDto { Nome = "Troca de Óleo", Descricao = "Serviço de troca de óleo" };
 
         // Act
         dto.Servico = servicoDto;
@@ -194,14 +194,14 @@ public class OrdemServicoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void OrdemServicoRepositoryDto_QuandoDefinidaListaInsumosOS_DeveArmazenarCorretamente()
+    public void OrdemServicoEntityDto_QuandoDefinidaListaInsumosOS_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new OrdemServicoRepositoryDto();
-        var insumosOS = new List<InsumoOSRepositoryDto>
+        var dto = new OrdemServicoEntityDto();
+        var insumosOS = new List<InsumoOSEntityDto>
         {
-            new InsumoOSRepositoryDto { Quantidade = 2 },
-            new InsumoOSRepositoryDto { Quantidade = 1 }
+            new InsumoOSEntityDto { Quantidade = 2 },
+            new InsumoOSEntityDto { Quantidade = 1 }
         };
 
         // Act

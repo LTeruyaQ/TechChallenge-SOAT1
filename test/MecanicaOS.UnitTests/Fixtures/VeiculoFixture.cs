@@ -1,5 +1,5 @@
 using Core.Entidades;
-using Core.DTOs.Repositories.Veiculo;
+using Core.DTOs.Entidades.Veiculo;
 
 namespace MecanicaOS.UnitTests.Fixtures;
 
@@ -31,9 +31,9 @@ public class VeiculoFixture : BaseFixture
         return veiculo;
     }
     
-    public static VeiculoRepositoryDto CriarVeiculoRepositoryDtoValido()
+    public static VeiculoEntityDto CriarVeiculoEntityDtoValido()
     {
-        var dto = CriarRepositoryDtoComCamposObrigatorios<VeiculoRepositoryDto>();
+        var dto = CriarRepositoryDtoComCamposObrigatorios<VeiculoEntityDto>();
         dto.Placa = "ABC-1234";
         dto.Marca = "Toyota";
         dto.Modelo = "Corolla";

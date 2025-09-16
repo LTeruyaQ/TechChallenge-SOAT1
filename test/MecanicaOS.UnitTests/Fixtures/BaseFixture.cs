@@ -1,8 +1,8 @@
 using Core.Entidades;
 using Core.Entidades.Abstratos;
-using Core.DTOs.Repositories.Autenticacao;
-using Core.DTOs.Repositories.Cliente;
-using Core.DTOs.Repositories.Veiculo;
+using Core.DTOs.Entidades.Autenticacao;
+using Core.DTOs.Entidades.Cliente;
+using Core.DTOs.Entidades.Veiculo;
 using Core.Enumeradores;
 
 namespace MecanicaOS.UnitTests.Fixtures;
@@ -26,7 +26,7 @@ public abstract class BaseFixture
         return entidade;
     }
     
-    protected static T CriarRepositoryDtoComCamposObrigatorios<T>() where T : RepositoryDto, new()
+    protected static T CriarRepositoryDtoComCamposObrigatorios<T>() where T : EntityDto, new()
     {
         var dto = new T
         {

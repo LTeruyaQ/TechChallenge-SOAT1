@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Veiculo;
+using Core.DTOs.Entidades.Veiculo;
 using Core.Especificacoes.Veiculo;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
@@ -8,25 +8,25 @@ namespace MecanicaOS.UnitTests.Core.Especificacoes.Veiculo;
 
 public class VeiculoEspecificacaoTests
 {
-    private List<VeiculoRepositoryDto> GetVeiculosDeTeste()
+    private List<VeiculoEntityDto> GetVeiculosDeTeste()
     {
-        var veiculo1 = VeiculoFixture.CriarVeiculoRepositoryDtoValido();
+        var veiculo1 = VeiculoFixture.CriarVeiculoEntityDtoValido();
         veiculo1.Placa = "ABC-1234";
         veiculo1.ClienteId = Guid.NewGuid();
 
-        var veiculo2 = VeiculoFixture.CriarVeiculoRepositoryDtoValido();
+        var veiculo2 = VeiculoFixture.CriarVeiculoEntityDtoValido();
         veiculo2.Placa = "XYZ-5678";
         veiculo2.ClienteId = veiculo1.ClienteId; // Mesmo cliente
 
-        var veiculo3 = VeiculoFixture.CriarVeiculoRepositoryDtoValido();
+        var veiculo3 = VeiculoFixture.CriarVeiculoEntityDtoValido();
         veiculo3.Placa = "DEF-9012";
         veiculo3.ClienteId = Guid.NewGuid(); // Cliente diferente
 
-        var veiculo4 = VeiculoFixture.CriarVeiculoRepositoryDtoValido();
+        var veiculo4 = VeiculoFixture.CriarVeiculoEntityDtoValido();
         veiculo4.Placa = "GHI-3456";
         veiculo4.Ativo = false; // Inativo
 
-        return new List<VeiculoRepositoryDto> { veiculo1, veiculo2, veiculo3, veiculo4 };
+        return new List<VeiculoEntityDto> { veiculo1, veiculo2, veiculo3, veiculo4 };
     }
 
     [Fact]
@@ -128,11 +128,11 @@ public class VeiculoEspecificacaoTests
     public void ObterVeiculosResumidosEspecificacao_ComTodosVeiculosAtivos_DeveRetornarTodos()
     {
         // Arrange
-        var veiculos = new List<VeiculoRepositoryDto>
+        var veiculos = new List<VeiculoEntityDto>
         {
-            VeiculoFixture.CriarVeiculoRepositoryDtoValido(),
-            VeiculoFixture.CriarVeiculoRepositoryDtoValido(),
-            VeiculoFixture.CriarVeiculoRepositoryDtoValido()
+            VeiculoFixture.CriarVeiculoEntityDtoValido(),
+            VeiculoFixture.CriarVeiculoEntityDtoValido(),
+            VeiculoFixture.CriarVeiculoEntityDtoValido()
         };
         
         veiculos.ForEach(v => v.Ativo = true);
@@ -149,10 +149,10 @@ public class VeiculoEspecificacaoTests
     public void ObterVeiculosResumidosEspecificacao_ComTodosVeiculosInativos_DeveRetornarListaVazia()
     {
         // Arrange
-        var veiculos = new List<VeiculoRepositoryDto>
+        var veiculos = new List<VeiculoEntityDto>
         {
-            VeiculoFixture.CriarVeiculoRepositoryDtoValido(),
-            VeiculoFixture.CriarVeiculoRepositoryDtoValido()
+            VeiculoFixture.CriarVeiculoEntityDtoValido(),
+            VeiculoFixture.CriarVeiculoEntityDtoValido()
         };
         
         veiculos.ForEach(v => v.Ativo = false);
@@ -169,9 +169,9 @@ public class VeiculoEspecificacaoTests
     public void ObterVeiculoPorPlacaEspecificacao_ComBuscaCaseSensitive_DeveFuncionarCorretamente()
     {
         // Arrange
-        var veiculos = new List<VeiculoRepositoryDto>
+        var veiculos = new List<VeiculoEntityDto>
         {
-            VeiculoFixture.CriarVeiculoRepositoryDtoValido()
+            VeiculoFixture.CriarVeiculoEntityDtoValido()
         };
         veiculos.First().Placa = "ABC-1234";
         
@@ -191,10 +191,10 @@ public class VeiculoEspecificacaoTests
     public void ObterVeiculoPorPlacaEspecificacao_ComPlacasComEspacos_DeveFuncionarCorretamente()
     {
         // Arrange
-        var veiculos = new List<VeiculoRepositoryDto>
+        var veiculos = new List<VeiculoEntityDto>
         {
-            VeiculoFixture.CriarVeiculoRepositoryDtoValido(),
-            VeiculoFixture.CriarVeiculoRepositoryDtoValido()
+            VeiculoFixture.CriarVeiculoEntityDtoValido(),
+            VeiculoFixture.CriarVeiculoEntityDtoValido()
         };
         
         veiculos[0].Placa = "ABC-1234";

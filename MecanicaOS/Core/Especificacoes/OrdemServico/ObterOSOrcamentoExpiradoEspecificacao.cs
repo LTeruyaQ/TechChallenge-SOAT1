@@ -1,11 +1,11 @@
-﻿using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Enumeradores;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.OrdemServico;
 
-public class ObterOSOrcamentoExpiradoEspecificacao : EspecificacaoBase<OrdemServicoRepositoryDto>
+public class ObterOSOrcamentoExpiradoEspecificacao : EspecificacaoBase<OrdemServicoEntityDto>
 {
     public ObterOSOrcamentoExpiradoEspecificacao()
     {
@@ -45,7 +45,7 @@ public class ObterOSOrcamentoExpiradoEspecificacao : EspecificacaoBase<OrdemServ
         });
     }
 
-    public override Expression<Func<OrdemServicoRepositoryDto, bool>> Expressao =>
+    public override Expression<Func<OrdemServicoEntityDto, bool>> Expressao =>
         o => o.Status == StatusOrdemServico.AguardandoAprovação &&
              o.DataEnvioOrcamento.HasValue &&
              o.DataEnvioOrcamento.Value.AddDays(3) <= DateTime.UtcNow;

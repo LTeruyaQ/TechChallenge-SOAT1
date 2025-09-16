@@ -1,29 +1,29 @@
 using Xunit;
 using FluentAssertions;
-using Core.DTOs.Repositories.Veiculo;
-using Core.DTOs.Repositories.Autenticacao;
+using Core.DTOs.Entidades.Veiculo;
+using Core.DTOs.Entidades.Autenticacao;
 
-namespace MecanicaOS.UnitTests.Core.DTOs.Repositories;
+namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;
 
-public class VeiculoRepositoryDtoUnitTests
+public class VeiculoEntityDtoUnitTests
 {
     [Fact]
-    public void VeiculoRepositoryDto_QuandoCriado_DeveHerdarDeRepositoryDto()
+    public void VeiculoEntityDto_QuandoCriado_DeveHerdarDeEntityDto()
     {
         // Arrange & Act
-        var dto = new VeiculoRepositoryDto();
+        var dto = new VeiculoEntityDto();
 
         // Assert
-        dto.Should().BeAssignableTo<RepositoryDto>("VeiculoRepositoryDto deve herdar de RepositoryDto");
+        dto.Should().BeAssignableTo<EntityDto>("VeiculoEntityDto deve herdar de EntityDto");
         dto.Id.Should().Be(Guid.Empty, "Id deve ser vazio por padrão no DTO");
         dto.Ativo.Should().BeFalse("Ativo deve ser false por padrão no DTO");
     }
 
     [Fact]
-    public void VeiculoRepositoryDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
+    public void VeiculoEntityDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
     {
         // Arrange
-        var dto = new VeiculoRepositoryDto();
+        var dto = new VeiculoEntityDto();
         var id = Guid.NewGuid();
         var dataCadastro = DateTime.Now;
         var dataAtualizacao = DateTime.Now.AddMinutes(5);
@@ -42,10 +42,10 @@ public class VeiculoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void VeiculoRepositoryDto_QuandoDefinidaPlaca_DeveArmazenarCorretamente()
+    public void VeiculoEntityDto_QuandoDefinidaPlaca_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new VeiculoRepositoryDto();
+        var dto = new VeiculoEntityDto();
         var placaEsperada = "ABC-1234";
 
         // Act
@@ -56,10 +56,10 @@ public class VeiculoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void VeiculoRepositoryDto_QuandoDefinidaMarca_DeveArmazenarCorretamente()
+    public void VeiculoEntityDto_QuandoDefinidaMarca_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new VeiculoRepositoryDto();
+        var dto = new VeiculoEntityDto();
         var marcaEsperada = "Toyota";
 
         // Act
@@ -70,10 +70,10 @@ public class VeiculoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void VeiculoRepositoryDto_QuandoDefinidoModelo_DeveArmazenarCorretamente()
+    public void VeiculoEntityDto_QuandoDefinidoModelo_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new VeiculoRepositoryDto();
+        var dto = new VeiculoEntityDto();
         var modeloEsperado = "Corolla";
 
         // Act
@@ -84,10 +84,10 @@ public class VeiculoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void VeiculoRepositoryDto_QuandoDefinidoAno_DeveArmazenarCorretamente()
+    public void VeiculoEntityDto_QuandoDefinidoAno_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new VeiculoRepositoryDto();
+        var dto = new VeiculoEntityDto();
         var anoEsperado = "2020";
 
         // Act
@@ -98,10 +98,10 @@ public class VeiculoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void VeiculoRepositoryDto_QuandoDefinidaCor_DeveArmazenarCorretamente()
+    public void VeiculoEntityDto_QuandoDefinidaCor_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new VeiculoRepositoryDto();
+        var dto = new VeiculoEntityDto();
         var corEsperada = "Branco";
 
         // Act
@@ -112,10 +112,10 @@ public class VeiculoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void VeiculoRepositoryDto_QuandoDefinidoClienteId_DeveArmazenarCorretamente()
+    public void VeiculoEntityDto_QuandoDefinidoClienteId_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new VeiculoRepositoryDto();
+        var dto = new VeiculoEntityDto();
         var clienteIdEsperado = Guid.NewGuid();
 
         // Act
@@ -126,10 +126,10 @@ public class VeiculoRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void VeiculoRepositoryDto_QuandoDefinidaAnotacoes_DeveArmazenarCorretamente()
+    public void VeiculoEntityDto_QuandoDefinidaAnotacoes_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new VeiculoRepositoryDto();
+        var dto = new VeiculoEntityDto();
         var anotacoesEsperadas = "Veículo em bom estado";
 
         // Act
@@ -143,10 +143,10 @@ public class VeiculoRepositoryDtoUnitTests
     [InlineData("2020")]
     [InlineData("2021")]
     [InlineData("2022")]
-    public void VeiculoRepositoryDto_QuandoDefinidoAnoComoString_DeveArmazenarCorretamente(string ano)
+    public void VeiculoEntityDto_QuandoDefinidoAnoComoString_DeveArmazenarCorretamente(string ano)
     {
         // Arrange
-        var dto = new VeiculoRepositoryDto();
+        var dto = new VeiculoEntityDto();
 
         // Act
         dto.Ano = ano;
@@ -159,10 +159,10 @@ public class VeiculoRepositoryDtoUnitTests
     [InlineData("ABC-1234")]
     [InlineData("XYZ-5678")]
     [InlineData("BRA2E19")]
-    public void VeiculoRepositoryDto_QuandoDefinidaPlacaComFormatosDiferentes_DeveArmazenarCorretamente(string placa)
+    public void VeiculoEntityDto_QuandoDefinidaPlacaComFormatosDiferentes_DeveArmazenarCorretamente(string placa)
     {
         // Arrange
-        var dto = new VeiculoRepositoryDto();
+        var dto = new VeiculoEntityDto();
 
         // Act
         dto.Placa = placa;

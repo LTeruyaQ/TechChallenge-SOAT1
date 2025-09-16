@@ -1,9 +1,9 @@
-using Core.DTOs.Repositories.Autenticacao;
+using Core.DTOs.Entidades.Autenticacao;
 using Core.Especificacoes.Base.Interfaces;
 
 namespace Core.Interfaces.Repositorios;
 
-public interface IRepositorio<T> where T : RepositoryDto
+public interface IRepositorio<T> where T : EntityDto
 {
     Task<T?> ObterPorIdAsync(Guid id);
     Task<T> CadastrarAsync(T entidade);

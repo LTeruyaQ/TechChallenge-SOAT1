@@ -1,29 +1,29 @@
 using Xunit;
 using FluentAssertions;
-using Core.DTOs.Repositories.Estoque;
-using Core.DTOs.Repositories.Autenticacao;
+using Core.DTOs.Entidades.Estoque;
+using Core.DTOs.Entidades.Autenticacao;
 
-namespace MecanicaOS.UnitTests.Core.DTOs.Repositories;
+namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;
 
-public class EstoqueRepositoryDtoUnitTests
+public class EstoqueEntityDtoUnitTests
 {
     [Fact]
-    public void EstoqueRepositoryDto_QuandoCriado_DeveHerdarDeRepositoryDto()
+    public void EstoqueEntityDto_QuandoCriado_DeveHerdarDeEntityDto()
     {
         // Arrange & Act
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
 
         // Assert
-        dto.Should().BeAssignableTo<RepositoryDto>("EstoqueRepositoryDto deve herdar de RepositoryDto");
+        dto.Should().BeAssignableTo<EntityDto>("EstoqueEntityDto deve herdar de EntityDto");
         dto.Id.Should().Be(Guid.Empty, "Id deve ser vazio por padrão no DTO");
         dto.Ativo.Should().BeFalse("Ativo deve ser false por padrão no DTO");
     }
 
     [Fact]
-    public void EstoqueRepositoryDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
+    public void EstoqueEntityDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
         var id = Guid.NewGuid();
         var dataCadastro = DateTime.Now;
         var dataAtualizacao = DateTime.Now.AddMinutes(5);
@@ -42,10 +42,10 @@ public class EstoqueRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EstoqueRepositoryDto_QuandoDefinidoInsumo_DeveArmazenarCorretamente()
+    public void EstoqueEntityDto_QuandoDefinidoInsumo_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
         var insumoEsperado = "Óleo Motor 5W30";
 
         // Act
@@ -56,10 +56,10 @@ public class EstoqueRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EstoqueRepositoryDto_QuandoDefinidaDescricao_DeveArmazenarCorretamente()
+    public void EstoqueEntityDto_QuandoDefinidaDescricao_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
         var descricaoEsperada = "Óleo sintético para motores";
 
         // Act
@@ -70,10 +70,10 @@ public class EstoqueRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EstoqueRepositoryDto_QuandoDefinidoPreco_DeveArmazenarCorretamente()
+    public void EstoqueEntityDto_QuandoDefinidoPreco_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
         var precoEsperado = 45.90m;
 
         // Act
@@ -84,10 +84,10 @@ public class EstoqueRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EstoqueRepositoryDto_QuandoDefinidaQuantidadeDisponivel_DeveArmazenarCorretamente()
+    public void EstoqueEntityDto_QuandoDefinidaQuantidadeDisponivel_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
         var quantidadeEsperada = 50;
 
         // Act
@@ -98,10 +98,10 @@ public class EstoqueRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EstoqueRepositoryDto_QuandoDefinidaQuantidadeMinima_DeveArmazenarCorretamente()
+    public void EstoqueEntityDto_QuandoDefinidaQuantidadeMinima_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
         var quantidadeMinimaEsperada = 10;
 
         // Act
@@ -116,10 +116,10 @@ public class EstoqueRepositoryDtoUnitTests
     [InlineData(1)]
     [InlineData(100)]
     [InlineData(1000)]
-    public void EstoqueRepositoryDto_QuandoDefinidaQuantidadeDisponivel_DeveAceitarValoresPositivos(int quantidade)
+    public void EstoqueEntityDto_QuandoDefinidaQuantidadeDisponivel_DeveAceitarValoresPositivos(int quantidade)
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
 
         // Act
         dto.QuantidadeDisponivel = quantidade;
@@ -132,10 +132,10 @@ public class EstoqueRepositoryDtoUnitTests
     [InlineData(0)]
     [InlineData(5)]
     [InlineData(20)]
-    public void EstoqueRepositoryDto_QuandoDefinidaQuantidadeMinima_DeveAceitarValoresPositivos(int quantidadeMinima)
+    public void EstoqueEntityDto_QuandoDefinidaQuantidadeMinima_DeveAceitarValoresPositivos(int quantidadeMinima)
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
 
         // Act
         dto.QuantidadeMinima = quantidadeMinima;
@@ -148,10 +148,10 @@ public class EstoqueRepositoryDtoUnitTests
     [InlineData(0.01)]
     [InlineData(10.50)]
     [InlineData(999.99)]
-    public void EstoqueRepositoryDto_QuandoDefinidoPreco_DeveAceitarValoresPositivos(decimal preco)
+    public void EstoqueEntityDto_QuandoDefinidoPreco_DeveAceitarValoresPositivos(decimal preco)
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
 
         // Act
         dto.Preco = preco;
@@ -161,10 +161,10 @@ public class EstoqueRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void EstoqueRepositoryDto_QuandoDescricaoNula_DevePermitirValorNulo()
+    public void EstoqueEntityDto_QuandoDescricaoNula_DevePermitirValorNulo()
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
 
         // Act
         dto.Descricao = null;
@@ -177,10 +177,10 @@ public class EstoqueRepositoryDtoUnitTests
     [InlineData("Óleo Motor 5W30")]
     [InlineData("Filtro de Ar")]
     [InlineData("Pastilha de Freio")]
-    public void EstoqueRepositoryDto_QuandoDefinidoInsumoComValoresDiferentes_DeveArmazenarCorretamente(string insumo)
+    public void EstoqueEntityDto_QuandoDefinidoInsumoComValoresDiferentes_DeveArmazenarCorretamente(string insumo)
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
 
         // Act
         dto.Insumo = insumo;
@@ -193,10 +193,10 @@ public class EstoqueRepositoryDtoUnitTests
     [InlineData("Óleo sintético de alta qualidade")]
     [InlineData("Filtro original do fabricante")]
     [InlineData("Pastilha cerâmica premium")]
-    public void EstoqueRepositoryDto_QuandoDefinidaDescricaoComValoresDiferentes_DeveArmazenarCorretamente(string descricao)
+    public void EstoqueEntityDto_QuandoDefinidaDescricaoComValoresDiferentes_DeveArmazenarCorretamente(string descricao)
     {
         // Arrange
-        var dto = new EstoqueRepositoryDto();
+        var dto = new EstoqueEntityDto();
 
         // Act
         dto.Descricao = descricao;

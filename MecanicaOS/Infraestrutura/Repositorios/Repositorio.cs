@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Autenticacao;
+using Core.DTOs.Entidades.Autenticacao;
 using Core.Especificacoes.Base.Interfaces;
 using Core.Interfaces.Repositorios;
 using Infraestrutura.Dados;
@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infraestrutura.Repositorios
 {
-    public class Repositorio<T> : IRepositorio<T> where T : RepositoryDto
+    public class Repositorio<T> : IRepositorio<T> where T : EntityDto
     {
         protected readonly MecanicaContexto _dbContext;
         protected readonly DbSet<T> _dbSet;

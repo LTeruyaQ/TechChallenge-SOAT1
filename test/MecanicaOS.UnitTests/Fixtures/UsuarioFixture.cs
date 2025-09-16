@@ -1,6 +1,6 @@
 using Core.Entidades;
-using Core.DTOs.Repositories.Usuarios;
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Usuarios;
+using Core.DTOs.Entidades.Cliente;
 using Core.Enumeradores;
 
 namespace MecanicaOS.UnitTests.Fixtures;
@@ -61,9 +61,9 @@ public static class UsuarioFixture
         return new Usuario(email, senha, tipo, clienteId ?? Guid.Empty);
     }
 
-    public static UsuarioRepositoryDto CriarUsuarioRepositoryDtoValido()
+    public static UsuarioEntityDto CriarUsuarioEntityDtoValido()
     {
-        return new UsuarioRepositoryDto
+        return new UsuarioEntityDto
         {
             Id = Guid.NewGuid(),
             Email = "funcionario@mecanica.com",
@@ -78,11 +78,11 @@ public static class UsuarioFixture
         };
     }
 
-    public static UsuarioRepositoryDto CriarUsuarioRepositoryDtoCliente()
+    public static UsuarioEntityDto CriarUsuarioEntityDtoCliente()
     {
-        var clienteDto = ClienteFixture.CriarClienteRepositoryDtoValido();
+        var clienteDto = ClienteFixture.CriarClienteEntityDtoValido();
         
-        return new UsuarioRepositoryDto
+        return new UsuarioEntityDto
         {
             Id = Guid.NewGuid(),
             Email = "cliente.usuario@email.com",
@@ -98,9 +98,9 @@ public static class UsuarioFixture
         };
     }
 
-    public static UsuarioRepositoryDto CriarUsuarioRepositoryDtoSemCliente()
+    public static UsuarioEntityDto CriarUsuarioEntityDtoSemCliente()
     {
-        return new UsuarioRepositoryDto
+        return new UsuarioEntityDto
         {
             Id = Guid.NewGuid(),
             Email = "admin.sistema@mecanica.com",
@@ -126,13 +126,13 @@ public static class UsuarioFixture
         };
     }
 
-    public static List<UsuarioRepositoryDto> CriarListaUsuarioRepositoryDto()
+    public static List<UsuarioEntityDto> CriarListaUsuarioEntityDto()
     {
-        return new List<UsuarioRepositoryDto>
+        return new List<UsuarioEntityDto>
         {
-            CriarUsuarioRepositoryDtoValido(),
-            CriarUsuarioRepositoryDtoCliente(),
-            CriarUsuarioRepositoryDtoSemCliente()
+            CriarUsuarioEntityDtoValido(),
+            CriarUsuarioEntityDtoCliente(),
+            CriarUsuarioEntityDtoSemCliente()
         };
     }
 

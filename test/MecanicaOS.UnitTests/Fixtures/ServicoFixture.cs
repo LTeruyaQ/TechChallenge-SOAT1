@@ -1,5 +1,5 @@
 using Core.Entidades;
-using Core.DTOs.Repositories.Servico;
+using Core.DTOs.Entidades.Servico;
 
 namespace MecanicaOS.UnitTests.Fixtures;
 
@@ -49,9 +49,9 @@ public static class ServicoFixture
         };
     }
 
-    public static ServicoRepositoryDto CriarServicoRepositoryDtoValido()
+    public static ServicoEntityDto CriarServicoEntityDtoValido()
     {
-        return new ServicoRepositoryDto
+        return new ServicoEntityDto
         {
             Id = Guid.NewGuid(),
             Nome = "Alinhamento e Balanceamento",
@@ -64,9 +64,9 @@ public static class ServicoFixture
         };
     }
 
-    public static ServicoRepositoryDto CriarServicoRepositoryDtoComValoresPadrao()
+    public static ServicoEntityDto CriarServicoEntityDtoComValoresPadrao()
     {
-        return new ServicoRepositoryDto
+        return new ServicoEntityDto
         {
             Nome = "Serviço Teste",
             Descricao = "Descrição de teste"
@@ -84,12 +84,12 @@ public static class ServicoFixture
         };
     }
 
-    public static List<ServicoRepositoryDto> CriarListaServicoRepositoryDto()
+    public static List<ServicoEntityDto> CriarListaServicoEntityDto()
     {
-        return new List<ServicoRepositoryDto>
+        return new List<ServicoEntityDto>
         {
-            CriarServicoRepositoryDtoValido(),
-            new ServicoRepositoryDto
+            CriarServicoEntityDtoValido(),
+            new ServicoEntityDto
             {
                 Id = Guid.NewGuid(),
                 Nome = "Troca de Pneus",

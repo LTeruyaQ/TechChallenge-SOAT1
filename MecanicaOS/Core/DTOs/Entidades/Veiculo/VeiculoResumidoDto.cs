@@ -1,4 +1,4 @@
-namespace Core.DTOs.Repositories.Veiculo
+namespace Core.DTOs.Entidades.Veiculo
 {
     public class VeiculoResumidoDto
     {

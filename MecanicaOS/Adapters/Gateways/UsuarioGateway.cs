@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Usuarios;
+using Core.DTOs.Entidades.Usuarios;
 using Core.Entidades;
 using Core.Especificacoes.Usuario;
 using Core.Interfaces.Gateways;
@@ -8,9 +8,9 @@ namespace Adapters.Gateways
 {
     public class UsuarioGateway : IUsuarioGateway
     {
-        private readonly IRepositorio<UsuarioRepositoryDto> _repositorioUsuario;
+        private readonly IRepositorio<UsuarioEntityDto> _repositorioUsuario;
 
-        public UsuarioGateway(IRepositorio<UsuarioRepositoryDto> repositorioUsuario)
+        public UsuarioGateway(IRepositorio<UsuarioEntityDto> repositorioUsuario)
         {
             _repositorioUsuario = repositorioUsuario;
         }
@@ -56,9 +56,9 @@ namespace Adapters.Gateways
             return await _repositorioUsuario.ListarProjetadoAsync<Usuario>(especificacao);
         }
 
-        private static UsuarioRepositoryDto ToDto(Usuario usuario)
+        private static UsuarioEntityDto ToDto(Usuario usuario)
         {
-            return new UsuarioRepositoryDto
+            return new UsuarioEntityDto
             {
                 Id = usuario.Id,
                 Ativo = usuario.Ativo,
@@ -73,7 +73,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Usuario FromDto(UsuarioRepositoryDto dto)
+        private static Usuario FromDto(UsuarioEntityDto dto)
         {
             return new Usuario
             {

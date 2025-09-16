@@ -5,8 +5,8 @@ using Adapters.Presenters;
 using Adapters.Presenters.Interfaces;
 using API.Models;
 using Core.Entidades;
-using Core.DTOs.Repositories.Usuarios;
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Usuarios;
+using Core.DTOs.Entidades.Cliente;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -24,10 +24,10 @@ namespace API.Controllers
         private readonly Adapters.Controllers.UsuarioController _usuarioController;
 
         public UsuarioController(
-            IRepositorio<UsuarioRepositoryDto> repositorioUsuario,
-            IRepositorio<ClienteRepositoryDTO> repositorioCliente,
-            IRepositorio<EnderecoRepositoryDto> repositorioEndereco,
-            IRepositorio<ContatoRepositoryDTO> repositorioContato,
+            IRepositorio<UsuarioEntityDto> repositorioUsuario,
+            IRepositorio<ClienteEntityDto> repositorioCliente,
+            IRepositorio<EnderecoEntityDto> repositorioEndereco,
+            IRepositorio<ContatoEntityDto> repositorioContato,
             IUnidadeDeTrabalho unidadeDeTrabalho,
             IUsuarioLogadoServico usuarioLogadoServico,
             IServicoSenha servicoSenha,

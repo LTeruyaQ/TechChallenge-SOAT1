@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Usuarios;
+using Core.DTOs.Entidades.Usuarios;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Repositorios;
@@ -11,11 +11,11 @@ namespace Infraestrutura.Autenticacao;
 public class UsuarioLogadoServico : IUsuarioLogadoServico
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IRepositorio<UsuarioRepositoryDto> _usuarioRepositorio;
+    private readonly IRepositorio<UsuarioEntityDto> _usuarioRepositorio;
 
     public UsuarioLogadoServico(
         IHttpContextAccessor httpContextAccessor,
-        IRepositorio<UsuarioRepositoryDto> usuarioRepositorio)
+        IRepositorio<UsuarioEntityDto> usuarioRepositorio)
     {
         _httpContextAccessor = httpContextAccessor;
         _usuarioRepositorio = usuarioRepositorio;

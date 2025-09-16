@@ -1,10 +1,10 @@
-﻿using Core.DTOs.Repositories.Estoque;
+using Core.DTOs.Entidades.Estoque;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Estoque;
 
-public class ObterEstoqueCriticoEspecificacao : EspecificacaoBase<EstoqueRepositoryDto>
+public class ObterEstoqueCriticoEspecificacao : EspecificacaoBase<EstoqueEntityDto>
 {
     public ObterEstoqueCriticoEspecificacao()
     {
@@ -20,6 +20,6 @@ public class ObterEstoqueCriticoEspecificacao : EspecificacaoBase<EstoqueReposit
         });
     }
 
-    public override Expression<Func<EstoqueRepositoryDto, bool>> Expressao =>
+    public override Expression<Func<EstoqueEntityDto, bool>> Expressao =>
          e => e.QuantidadeDisponivel <= e.QuantidadeMinima;
 }

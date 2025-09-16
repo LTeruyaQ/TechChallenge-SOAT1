@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Estoque;
+using Core.DTOs.Entidades.Estoque;
 using Core.Especificacoes.Estoque;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
@@ -8,25 +8,25 @@ namespace MecanicaOS.UnitTests.Core.Especificacoes.Estoque;
 
 public class EstoqueEspecificacaoTests
 {
-    private List<EstoqueRepositoryDto> GetEstoquesDeTeste()
+    private List<EstoqueEntityDto> GetEstoquesDeTeste()
     {
-        var estoque1 = EstoqueFixture.CriarEstoqueRepositoryDtoValido();
+        var estoque1 = EstoqueFixture.CriarEstoqueEntityDtoValido();
         estoque1.QuantidadeDisponivel = 25;
         estoque1.QuantidadeMinima = 5;
 
-        var estoque2 = EstoqueFixture.CriarEstoqueRepositoryDtoSemDescricao();
+        var estoque2 = EstoqueFixture.CriarEstoqueEntityDtoSemDescricao();
         estoque2.QuantidadeDisponivel = 3; // Estoque crítico
         estoque2.QuantidadeMinima = 10;
 
-        var estoque3 = EstoqueFixture.CriarEstoqueRepositoryDtoValido();
+        var estoque3 = EstoqueFixture.CriarEstoqueEntityDtoValido();
         estoque3.QuantidadeDisponivel = 0; // Estoque zerado
         estoque3.QuantidadeMinima = 4;
 
-        var estoque4 = EstoqueFixture.CriarEstoqueRepositoryDtoValido();
+        var estoque4 = EstoqueFixture.CriarEstoqueEntityDtoValido();
         estoque4.QuantidadeDisponivel = 15; // Estoque normal
         estoque4.QuantidadeMinima = 8;
 
-        return new List<EstoqueRepositoryDto> { estoque1, estoque2, estoque3, estoque4 };
+        return new List<EstoqueEntityDto> { estoque1, estoque2, estoque3, estoque4 };
     }
 
     [Fact]
@@ -64,9 +64,9 @@ public class EstoqueEspecificacaoTests
     public void ObterEstoqueCriticoEspecificacao_ComEstoquesNormais_NaoDeveRetornar()
     {
         // Arrange
-        var estoques = new List<EstoqueRepositoryDto>
+        var estoques = new List<EstoqueEntityDto>
         {
-            EstoqueFixture.CriarEstoqueRepositoryDtoValido()
+            EstoqueFixture.CriarEstoqueEntityDtoValido()
         };
         estoques.First().QuantidadeDisponivel = 50;
         estoques.First().QuantidadeMinima = 10;
@@ -84,9 +84,9 @@ public class EstoqueEspecificacaoTests
     public void ObterEstoqueCriticoEspecificacao_ComQuantidadeIgualMinima_DeveRetornar()
     {
         // Arrange
-        var estoques = new List<EstoqueRepositoryDto>
+        var estoques = new List<EstoqueEntityDto>
         {
-            EstoqueFixture.CriarEstoqueRepositoryDtoValido()
+            EstoqueFixture.CriarEstoqueEntityDtoValido()
         };
         estoques.First().QuantidadeDisponivel = 10;
         estoques.First().QuantidadeMinima = 10;
@@ -109,11 +109,11 @@ public class EstoqueEspecificacaoTests
         int quantidadeDisponivel, int quantidadeMinima)
     {
         // Arrange
-        var estoque = EstoqueFixture.CriarEstoqueRepositoryDtoValido();
+        var estoque = EstoqueFixture.CriarEstoqueEntityDtoValido();
         estoque.QuantidadeDisponivel = quantidadeDisponivel;
         estoque.QuantidadeMinima = quantidadeMinima;
         
-        var estoques = new List<EstoqueRepositoryDto> { estoque };
+        var estoques = new List<EstoqueEntityDto> { estoque };
         var especificacao = new ObterEstoqueCriticoEspecificacao();
 
         // Act

@@ -1,5 +1,5 @@
 using Core.Entidades;
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Cliente;
 
 namespace MecanicaOS.UnitTests.Fixtures;
 
@@ -23,9 +23,9 @@ public class ContatoFixture : BaseFixture
         return contato;
     }
     
-    public static ContatoRepositoryDTO CriarContatoRepositoryDtoValido()
+    public static ContatoEntityDto CriarContatoEntityDtoValido()
     {
-        var dto = CriarRepositoryDtoComCamposObrigatorios<ContatoRepositoryDTO>();
+        var dto = CriarRepositoryDtoComCamposObrigatorios<ContatoEntityDto>();
         dto.Email = "joao.silva@email.com";
         dto.Telefone = "(11) 99999-9999";
         

@@ -1,11 +1,11 @@
-﻿using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Enumeradores;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.OrdemServico;
 
-public class ObterOrdemServicoPorStatusEspecificacao : EspecificacaoBase<OrdemServicoRepositoryDto>
+public class ObterOrdemServicoPorStatusEspecificacao : EspecificacaoBase<OrdemServicoEntityDto>
 {
     private readonly StatusOrdemServico _status;
 
@@ -29,5 +29,5 @@ public class ObterOrdemServicoPorStatusEspecificacao : EspecificacaoBase<OrdemSe
         });
     }
 
-    public override Expression<Func<OrdemServicoRepositoryDto, bool>> Expressao => os => os.Status == _status;
+    public override Expression<Func<OrdemServicoEntityDto, bool>> Expressao => os => os.Status == _status;
 }

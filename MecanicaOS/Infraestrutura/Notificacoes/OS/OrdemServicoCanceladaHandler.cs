@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Entidades;
 using Core.Especificacoes.Insumo;
 using Core.Interfaces.Repositorios;
@@ -8,9 +8,9 @@ using MediatR;
 
 namespace Infraestrutura.Notificacoes.OS;
 
-public class OrdemServicoCanceladaHandler(IRepositorio<InsumoOSRepositoryDto> ordemServicoRepositorio, IInsumoOSUseCases insumoOSUseCases, ILogServico<OrdemServicoCanceladaHandler> logServico) : INotificationHandler<OrdemServicoCanceladaEvent>
+public class OrdemServicoCanceladaHandler(IRepositorio<InsumoOSEntityDto> ordemServicoRepositorio, IInsumoOSUseCases insumoOSUseCases, ILogServico<OrdemServicoCanceladaHandler> logServico) : INotificationHandler<OrdemServicoCanceladaEvent>
 {
-    private readonly IRepositorio<InsumoOSRepositoryDto> _insumoOSRepositorio = ordemServicoRepositorio;
+    private readonly IRepositorio<InsumoOSEntityDto> _insumoOSRepositorio = ordemServicoRepositorio;
     private readonly IInsumoOSUseCases _insumoOSUseCases = insumoOSUseCases;
     private readonly ILogServico<OrdemServicoCanceladaHandler> _logServico = logServico;
 

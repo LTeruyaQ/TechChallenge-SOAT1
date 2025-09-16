@@ -1,30 +1,30 @@
 using Xunit;
 using FluentAssertions;
-using Core.DTOs.Repositories.OrdemServicos;
-using Core.DTOs.Repositories.Autenticacao;
-using Core.DTOs.Repositories.Estoque;
+using Core.DTOs.Entidades.OrdemServicos;
+using Core.DTOs.Entidades.Autenticacao;
+using Core.DTOs.Entidades.Estoque;
 
-namespace MecanicaOS.UnitTests.Core.DTOs.Repositories;
+namespace MecanicaOS.UnitTests.Core.DTOs.Entidades;
 
-public class InsumoOSRepositoryDtoUnitTests
+public class InsumoOSEntityDtoUnitTests
 {
     [Fact]
-    public void InsumoOSRepositoryDto_QuandoCriado_DeveHerdarDeRepositoryDto()
+    public void InsumoOSEntityDto_QuandoCriado_DeveHerdarDeEntityDto()
     {
         // Arrange & Act
-        var dto = new InsumoOSRepositoryDto();
+        var dto = new InsumoOSEntityDto();
 
         // Assert
-        dto.Should().BeAssignableTo<RepositoryDto>("InsumoOSRepositoryDto deve herdar de RepositoryDto");
+        dto.Should().BeAssignableTo<EntityDto>("InsumoOSEntityDto deve herdar de EntityDto");
         dto.Id.Should().Be(Guid.Empty, "Id deve ser vazio por padrão no DTO");
         dto.Ativo.Should().BeFalse("Ativo deve ser false por padrão no DTO");
     }
 
     [Fact]
-    public void InsumoOSRepositoryDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
+    public void InsumoOSEntityDto_QuandoDefinidoCamposTecnicos_DevePreservarAuditoria()
     {
         // Arrange
-        var dto = new InsumoOSRepositoryDto();
+        var dto = new InsumoOSEntityDto();
         var id = Guid.NewGuid();
         var dataCadastro = DateTime.Now;
         var dataAtualizacao = DateTime.Now.AddMinutes(5);
@@ -43,10 +43,10 @@ public class InsumoOSRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void InsumoOSRepositoryDto_QuandoDefinidoOrdemServicoId_DeveArmazenarCorretamente()
+    public void InsumoOSEntityDto_QuandoDefinidoOrdemServicoId_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new InsumoOSRepositoryDto();
+        var dto = new InsumoOSEntityDto();
         var ordemServicoIdEsperado = Guid.NewGuid();
 
         // Act
@@ -57,10 +57,10 @@ public class InsumoOSRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void InsumoOSRepositoryDto_QuandoDefinidoEstoqueId_DeveArmazenarCorretamente()
+    public void InsumoOSEntityDto_QuandoDefinidoEstoqueId_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new InsumoOSRepositoryDto();
+        var dto = new InsumoOSEntityDto();
         var estoqueIdEsperado = Guid.NewGuid();
 
         // Act
@@ -71,10 +71,10 @@ public class InsumoOSRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void InsumoOSRepositoryDto_QuandoDefinidaQuantidade_DeveArmazenarCorretamente()
+    public void InsumoOSEntityDto_QuandoDefinidaQuantidade_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new InsumoOSRepositoryDto();
+        var dto = new InsumoOSEntityDto();
         var quantidadeEsperada = 5;
 
         // Act
@@ -88,10 +88,10 @@ public class InsumoOSRepositoryDtoUnitTests
     [InlineData(1)]
     [InlineData(10)]
     [InlineData(100)]
-    public void InsumoOSRepositoryDto_QuandoDefinidaQuantidadePositiva_DeveArmazenarCorretamente(int quantidade)
+    public void InsumoOSEntityDto_QuandoDefinidaQuantidadePositiva_DeveArmazenarCorretamente(int quantidade)
     {
         // Arrange
-        var dto = new InsumoOSRepositoryDto();
+        var dto = new InsumoOSEntityDto();
 
         // Act
         dto.Quantidade = quantidade;
@@ -101,11 +101,11 @@ public class InsumoOSRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void InsumoOSRepositoryDto_QuandoDefinidoOrdemServico_DeveArmazenarReferencia()
+    public void InsumoOSEntityDto_QuandoDefinidoOrdemServico_DeveArmazenarReferencia()
     {
         // Arrange
-        var dto = new InsumoOSRepositoryDto();
-        var ordemServicoDto = new OrdemServicoRepositoryDto { Descricao = "Troca de óleo" };
+        var dto = new InsumoOSEntityDto();
+        var ordemServicoDto = new OrdemServicoEntityDto { Descricao = "Troca de óleo" };
 
         // Act
         dto.OrdemServico = ordemServicoDto;
@@ -116,11 +116,11 @@ public class InsumoOSRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void InsumoOSRepositoryDto_QuandoDefinidoEstoque_DeveArmazenarReferencia()
+    public void InsumoOSEntityDto_QuandoDefinidoEstoque_DeveArmazenarReferencia()
     {
         // Arrange
-        var dto = new InsumoOSRepositoryDto();
-        var estoqueDto = new EstoqueRepositoryDto { Insumo = "Óleo Motor 5W30" };
+        var dto = new InsumoOSEntityDto();
+        var estoqueDto = new EstoqueEntityDto { Insumo = "Óleo Motor 5W30" };
 
         // Act
         dto.Estoque = estoqueDto;
@@ -131,10 +131,10 @@ public class InsumoOSRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void InsumoOSRepositoryDto_QuandoDefinidoOrdemServicoIdVazio_DeveArmazenarCorretamente()
+    public void InsumoOSEntityDto_QuandoDefinidoOrdemServicoIdVazio_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new InsumoOSRepositoryDto();
+        var dto = new InsumoOSEntityDto();
         var ordemServicoIdVazio = Guid.Empty;
 
         // Act
@@ -145,10 +145,10 @@ public class InsumoOSRepositoryDtoUnitTests
     }
 
     [Fact]
-    public void InsumoOSRepositoryDto_QuandoDefinidoEstoqueIdVazio_DeveArmazenarCorretamente()
+    public void InsumoOSEntityDto_QuandoDefinidoEstoqueIdVazio_DeveArmazenarCorretamente()
     {
         // Arrange
-        var dto = new InsumoOSRepositoryDto();
+        var dto = new InsumoOSEntityDto();
         var estoqueIdVazio = Guid.Empty;
 
         // Act
@@ -162,11 +162,11 @@ public class InsumoOSRepositoryDtoUnitTests
     [InlineData("Óleo Motor 5W30", 2)]
     [InlineData("Filtro de Ar", 1)]
     [InlineData("Pastilha de Freio", 4)]
-    public void InsumoOSRepositoryDto_QuandoDefinidoEstoqueComDiferentesInsumos_DevePreservarPropriedades(string insumo, int quantidade)
+    public void InsumoOSEntityDto_QuandoDefinidoEstoqueComDiferentesInsumos_DevePreservarPropriedades(string insumo, int quantidade)
     {
         // Arrange
-        var dto = new InsumoOSRepositoryDto();
-        var estoqueDto = new EstoqueRepositoryDto 
+        var dto = new InsumoOSEntityDto();
+        var estoqueDto = new EstoqueEntityDto 
         { 
             Insumo = insumo,
             Preco = 50.00m,

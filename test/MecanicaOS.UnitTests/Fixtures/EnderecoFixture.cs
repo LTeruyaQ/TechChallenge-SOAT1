@@ -1,5 +1,5 @@
 using Core.Entidades;
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Cliente;
 
 namespace MecanicaOS.UnitTests.Fixtures;
 
@@ -28,9 +28,9 @@ public class EnderecoFixture : BaseFixture
         return endereco;
     }
     
-    public static EnderecoRepositoryDto CriarEnderecoRepositoryDtoValido()
+    public static EnderecoEntityDto CriarEnderecoEntityDtoValido()
     {
-        var dto = CriarRepositoryDtoComCamposObrigatorios<EnderecoRepositoryDto>();
+        var dto = CriarRepositoryDtoComCamposObrigatorios<EnderecoEntityDto>();
         dto.Rua = "Rua das Flores, 123";
         dto.Bairro = "Centro";
         dto.Cidade = "São Paulo";

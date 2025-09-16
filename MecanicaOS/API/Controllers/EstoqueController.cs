@@ -5,7 +5,7 @@ using Adapters.Presenters;
 using Adapters.Presenters.Interfaces;
 using API.Models;
 using Core.Entidades;
-using Core.DTOs.Repositories.Estoque;
+using Core.DTOs.Entidades.Estoque;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -23,7 +23,7 @@ namespace API.Controllers
         private readonly Adapters.Controllers.EstoqueController _estoqueController;
 
         public EstoqueController(
-            IRepositorio<EstoqueRepositoryDto> repositorioEstoque,
+            IRepositorio<EstoqueEntityDto> repositorioEstoque,
             IUnidadeDeTrabalho unidadeDeTrabalho,
             IUsuarioLogadoServico usuarioLogadoServico,
             IdCorrelacionalService idCorrelacionalService,

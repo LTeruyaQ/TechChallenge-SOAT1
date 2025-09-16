@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
 using Core.Entidades.Abstratos;
 using Core.Especificacoes.Base;
@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace Core.Especificacoes.Cliente;
 
-public class ObterClienteComVeiculoPorIdEspecificacao : EspecificacaoBase<ClienteRepositoryDTO>
+public class ObterClienteComVeiculoPorIdEspecificacao : EspecificacaoBase<ClienteEntityDto>
 {
     private readonly Guid _clienteId;
 
@@ -58,6 +58,6 @@ public class ObterClienteComVeiculoPorIdEspecificacao : EspecificacaoBase<Client
         });
     }
 
-    public override Expression<Func<ClienteRepositoryDTO, bool>> Expressao =>
+    public override Expression<Func<ClienteEntityDto, bool>> Expressao =>
        i => i.Id == _clienteId;
 }

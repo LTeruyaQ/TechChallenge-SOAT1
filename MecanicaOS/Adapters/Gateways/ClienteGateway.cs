@@ -1,6 +1,5 @@
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
-using Core.Entidades.Abstratos;
 using Core.Especificacoes.Cliente;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
@@ -9,9 +8,9 @@ namespace Adapters.Gateways
 {
     public class ClienteGateway : IClienteGateway
     {
-        private readonly IRepositorio<ClienteRepositoryDTO> _repositorioCliente;
+        private readonly IRepositorio<ClienteEntityDto> _repositorioCliente;
 
-        public ClienteGateway(IRepositorio<ClienteRepositoryDTO> repositorioCliente)
+        public ClienteGateway(IRepositorio<ClienteEntityDto> repositorioCliente)
         {
             _repositorioCliente = repositorioCliente;
         }
@@ -56,9 +55,9 @@ namespace Adapters.Gateways
             return await _repositorioCliente.ListarProjetadoAsync<Cliente>(especificacao);
         }
 
-        private static ClienteRepositoryDTO ToDto(Cliente cliente)
+        private static ClienteEntityDto ToDto(Cliente cliente)
         {
-            return new ClienteRepositoryDTO
+            return new ClienteEntityDto
             {
                 Id = cliente.Id,
                 Ativo = cliente.Ativo,
@@ -69,7 +68,7 @@ namespace Adapters.Gateways
                 Sexo = cliente.Sexo,
                 DataNascimento = cliente.DataNascimento,
                 TipoCliente = cliente.TipoCliente,
-                Contato = new ContatoRepositoryDTO
+                Contato = new ContatoEntityDto
                 {
                     Id = cliente.Contato.Id,
                     Ativo = cliente.Contato.Ativo,
@@ -79,7 +78,7 @@ namespace Adapters.Gateways
                     Telefone = cliente.Contato.Telefone,
                     IdCliente = cliente.Id
                 },
-                Endereco = new EnderecoRepositoryDto
+                Endereco = new EnderecoEntityDto
                 {
                     Id = cliente.Endereco.Id,
                     Ativo = cliente.Endereco.Ativo,
@@ -96,7 +95,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Cliente FromDto(ClienteRepositoryDTO dto)
+        private static Cliente FromDto(ClienteEntityDto dto)
         {
             return new Cliente
             {

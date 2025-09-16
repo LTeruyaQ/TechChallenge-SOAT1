@@ -1,10 +1,10 @@
-using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
 namespace Core.Especificacoes.OrdemServico;
 
-public class ObterOrdemServicoPorIdComIncludeEspecificacao : EspecificacaoBase<OrdemServicoRepositoryDto>
+public class ObterOrdemServicoPorIdComIncludeEspecificacao : EspecificacaoBase<OrdemServicoEntityDto>
 {
     private readonly Guid _id;
 
@@ -17,5 +17,5 @@ public class ObterOrdemServicoPorIdComIncludeEspecificacao : EspecificacaoBase<O
         AdicionarInclusao(os => os.InsumosOS, io => io.Estoque);
     }
 
-    public override Expression<Func<OrdemServicoRepositoryDto, bool>> Expressao => os => os.Id == _id;
+    public override Expression<Func<OrdemServicoEntityDto, bool>> Expressao => os => os.Id == _id;
 }

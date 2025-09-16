@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Especificacoes.OrdemServico;
@@ -12,13 +12,13 @@ using System.Text.RegularExpressions;
 namespace Infraestrutura.Notificacoes.OS;
 
 public class OrdemServicoEmOrcamentoHandler(
-    IRepositorio<OrdemServicoRepositoryDto> ordemServicoRepositorio,
+    IRepositorio<OrdemServicoEntityDto> ordemServicoRepositorio,
     IOrcamentoUseCases orcamentoUseCases,
     IServicoEmail emailServico,
     ILogServico<OrdemServicoEmOrcamentoHandler> logServico,
     IUnidadeDeTrabalho udt) : INotificationHandler<OrdemServicoEmOrcamentoEvent>
 {
-    private readonly IRepositorio<OrdemServicoRepositoryDto> _ordemServicoRepositorio = ordemServicoRepositorio;
+    private readonly IRepositorio<OrdemServicoEntityDto> _ordemServicoRepositorio = ordemServicoRepositorio;
     private readonly IOrcamentoUseCases _orcamentoUseCases = orcamentoUseCases;
     private readonly IServicoEmail _emailServico = emailServico;
     private readonly IUnidadeDeTrabalho _uot = udt;
@@ -110,7 +110,7 @@ public class OrdemServicoEmOrcamentoHandler(
         }));
     }
 
-    private static OrdemServico ConvertToEntity(OrdemServicoRepositoryDto dto)
+    private static OrdemServico ConvertToEntity(OrdemServicoEntityDto dto)
     {
         return new OrdemServico
         {

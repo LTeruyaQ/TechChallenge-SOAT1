@@ -1,9 +1,9 @@
-﻿using Core.DTOs.Repositories.Autenticacao;
-using Core.DTOs.Repositories.Cliente;
+using Core.DTOs.Entidades.Autenticacao;
+using Core.DTOs.Entidades.Cliente;
 
-namespace Core.DTOs.Repositories.Veiculo;
+namespace Core.DTOs.Entidades.Veiculo;
 
-public class VeiculoRepositoryDto : RepositoryDto
+public class VeiculoEntityDto : EntityDto
 {
     public string Placa { get; set; } = default!;
     public string Marca { get; set; } = default!;
@@ -13,5 +13,5 @@ public class VeiculoRepositoryDto : RepositoryDto
     public string? Anotacoes { get; set; }
 
     public Guid? ClienteId { get; set; }
-    public ClienteRepositoryDTO Cliente { get; set; } = default!;
+    public ClienteEntityDto Cliente { get; set; } = default!;
 }

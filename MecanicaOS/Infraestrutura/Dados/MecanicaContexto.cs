@@ -1,10 +1,10 @@
 
-using Core.DTOs.Repositories.Cliente;
-using Core.DTOs.Repositories.Estoque;
-using Core.DTOs.Repositories.OrdemServicos;
-using Core.DTOs.Repositories.Servico;
-using Core.DTOs.Repositories.Usuarios;
-using Core.DTOs.Repositories.Veiculo;
+using Core.DTOs.Entidades.Cliente;
+using Core.DTOs.Entidades.Estoque;
+using Core.DTOs.Entidades.OrdemServicos;
+using Core.DTOs.Entidades.Servico;
+using Core.DTOs.Entidades.Usuarios;
+using Core.DTOs.Entidades.Veiculo;
 using Infraestrutura.Dados.Mapeamentos;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,16 +14,16 @@ public class MecanicaContexto : DbContext
 {
     public MecanicaContexto(DbContextOptions<MecanicaContexto> options) : base(options) { }
 
-    public DbSet<ServicoRepositoryDto> Servicos { get; set; }
-    public DbSet<EstoqueRepositoryDto> Estoques { get; set; }
-    public DbSet<VeiculoRepositoryDto> Veiculos { get; set; }
-    public DbSet<ClienteRepositoryDTO> Clientes { get; set; }
-    public DbSet<EnderecoRepositoryDto> Enderecos { get; set; }
-    public DbSet<ContatoRepositoryDTO> Contatos { get; set; }
-    public DbSet<UsuarioRepositoryDto> Usuarios { get; set; }
-    public DbSet<AlertaEstoqueRepositoryDto> AlertasEstoque { get; set; }
-    public DbSet<OrdemServicoRepositoryDto> OrdensSevico { get; set; }
-    public DbSet<InsumoOSRepositoryDto> InsumosOrdemServico { get; set; }
+    public DbSet<ServicoEntityDto> Servicos { get; set; }
+    public DbSet<EstoqueEntityDto> Estoques { get; set; }
+    public DbSet<VeiculoEntityDto> Veiculos { get; set; }
+    public DbSet<ClienteEntityDto> Clientes { get; set; }
+    public DbSet<EnderecoEntityDto> Enderecos { get; set; }
+    public DbSet<ContatoEntityDto> Contatos { get; set; }
+    public DbSet<UsuarioEntityDto> Usuarios { get; set; }
+    public DbSet<AlertaEstoqueEntityDto> AlertasEstoque { get; set; }
+    public DbSet<OrdemServicoEntityDto> OrdensSevico { get; set; }
+    public DbSet<InsumoOSEntityDto> InsumosOrdemServico { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

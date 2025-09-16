@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.OrdemServicos;
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Enumeradores;
 using Core.Especificacoes.OrdemServico;
 using FluentAssertions;
@@ -9,34 +9,34 @@ namespace MecanicaOS.UnitTests.Core.Especificacoes.OrdemServico;
 
 public class OrdemServicoEspecificacaoTests
 {
-    private List<OrdemServicoRepositoryDto> GetOrdensServicoDeTeste()
+    private List<OrdemServicoEntityDto> GetOrdensServicoDeTeste()
     {
-        var os1 = OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido();
+        var os1 = OrdemServicoFixture.CriarOrdemServicoEntityDtoValido();
         os1.Status = StatusOrdemServico.Recebida;
         os1.Id = Guid.NewGuid();
         os1.DataEnvioOrcamento = null;
 
-        var os2 = OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido();
+        var os2 = OrdemServicoFixture.CriarOrdemServicoEntityDtoValido();
         os2.Status = StatusOrdemServico.EmExecucao;
         os2.Id = Guid.NewGuid();
         os2.DataEnvioOrcamento = null;
 
-        var os3 = OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido();
+        var os3 = OrdemServicoFixture.CriarOrdemServicoEntityDtoValido();
         os3.Status = StatusOrdemServico.Finalizada;
         os3.Id = Guid.NewGuid();
         os3.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-10);
 
-        var os4 = OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido();
+        var os4 = OrdemServicoFixture.CriarOrdemServicoEntityDtoValido();
         os4.Status = StatusOrdemServico.AguardandoAprovação;
         os4.Id = Guid.NewGuid();
         os4.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-2); // Not expired
 
-        var os5 = OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido();
+        var os5 = OrdemServicoFixture.CriarOrdemServicoEntityDtoValido();
         os5.Status = StatusOrdemServico.Cancelada;
         os5.Id = Guid.NewGuid();
         os5.DataEnvioOrcamento = null;
 
-        return new List<OrdemServicoRepositoryDto> { os1, os2, os3, os4, os5 };
+        return new List<OrdemServicoEntityDto> { os1, os2, os3, os4, os5 };
     }
 
     [Fact]
@@ -139,10 +139,10 @@ public class OrdemServicoEspecificacaoTests
         var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
 
         // Criar ordens com datas específicas para teste
-        var ordensServico = new List<OrdemServicoRepositoryDto>
+        var ordensServico = new List<OrdemServicoEntityDto>
         {
-            OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido(),
-            OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido()
+            OrdemServicoFixture.CriarOrdemServicoEntityDtoValido(),
+            OrdemServicoFixture.CriarOrdemServicoEntityDtoValido()
         };
 
         ordensServico[0].Status = StatusOrdemServico.AguardandoAprovação;
@@ -166,9 +166,9 @@ public class OrdemServicoEspecificacaoTests
         // Arrange
         var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
 
-        var ordensServico = new List<OrdemServicoRepositoryDto>
+        var ordensServico = new List<OrdemServicoEntityDto>
         {
-            OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido()
+            OrdemServicoFixture.CriarOrdemServicoEntityDtoValido()
         };
 
         ordensServico[0].Status = StatusOrdemServico.AguardandoAprovação;
@@ -187,10 +187,10 @@ public class OrdemServicoEspecificacaoTests
         // Arrange
         var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
 
-        var ordensServico = new List<OrdemServicoRepositoryDto>
+        var ordensServico = new List<OrdemServicoEntityDto>
         {
-            OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido(),
-            OrdemServicoFixture.CriarOrdemServicoRepositoryDtoValido()
+            OrdemServicoFixture.CriarOrdemServicoEntityDtoValido(),
+            OrdemServicoFixture.CriarOrdemServicoEntityDtoValido()
         };
 
         ordensServico[0].Status = StatusOrdemServico.AguardandoAprovação;

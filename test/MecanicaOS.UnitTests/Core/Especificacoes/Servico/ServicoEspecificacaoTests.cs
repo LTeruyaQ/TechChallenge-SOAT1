@@ -1,4 +1,4 @@
-using Core.DTOs.Repositories.Servico;
+using Core.DTOs.Entidades.Servico;
 using Core.Especificacoes.Servico;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures;
@@ -8,23 +8,23 @@ namespace MecanicaOS.UnitTests.Core.Especificacoes.Servico;
 
 public class ServicoEspecificacaoTests
 {
-    private List<ServicoRepositoryDto> GetServicosDeTeste()
+    private List<ServicoEntityDto> GetServicosDeTeste()
     {
-        var servico1 = ServicoFixture.CriarServicoRepositoryDtoValido();
+        var servico1 = ServicoFixture.CriarServicoEntityDtoValido();
         servico1.Disponivel = true;
 
-        var servico2 = ServicoFixture.CriarServicoRepositoryDtoValido();
+        var servico2 = ServicoFixture.CriarServicoEntityDtoValido();
         servico2.Disponivel = false;
 
-        var servico3 = ServicoFixture.CriarServicoRepositoryDtoValido();
+        var servico3 = ServicoFixture.CriarServicoEntityDtoValido();
         servico3.Disponivel = true;
         servico3.Nome = "Troca de Óleo";
 
-        var servico4 = ServicoFixture.CriarServicoRepositoryDtoValido();
+        var servico4 = ServicoFixture.CriarServicoEntityDtoValido();
         servico4.Disponivel = false;
         servico4.Nome = "Alinhamento";
 
-        return new List<ServicoRepositoryDto> { servico1, servico2, servico3, servico4 };
+        return new List<ServicoEntityDto> { servico1, servico2, servico3, servico4 };
     }
 
     [Fact]
@@ -46,11 +46,11 @@ public class ServicoEspecificacaoTests
     public void ObterServicoDisponivelEspecificacao_ComTodosServicosDisponiveis_DeveRetornarTodos()
     {
         // Arrange
-        var servicos = new List<ServicoRepositoryDto>
+        var servicos = new List<ServicoEntityDto>
         {
-            ServicoFixture.CriarServicoRepositoryDtoValido(),
-            ServicoFixture.CriarServicoRepositoryDtoValido(),
-            ServicoFixture.CriarServicoRepositoryDtoValido()
+            ServicoFixture.CriarServicoEntityDtoValido(),
+            ServicoFixture.CriarServicoEntityDtoValido(),
+            ServicoFixture.CriarServicoEntityDtoValido()
         };
         
         servicos.ForEach(s => s.Disponivel = true);
@@ -67,10 +67,10 @@ public class ServicoEspecificacaoTests
     public void ObterServicoDisponivelEspecificacao_ComNenhumServicoDisponivel_DeveRetornarListaVazia()
     {
         // Arrange
-        var servicos = new List<ServicoRepositoryDto>
+        var servicos = new List<ServicoEntityDto>
         {
-            ServicoFixture.CriarServicoRepositoryDtoValido(),
-            ServicoFixture.CriarServicoRepositoryDtoValido()
+            ServicoFixture.CriarServicoEntityDtoValido(),
+            ServicoFixture.CriarServicoEntityDtoValido()
         };
         
         servicos.ForEach(s => s.Disponivel = false);
@@ -135,9 +135,9 @@ public class ServicoEspecificacaoTests
     public void ObterServicoPorNomeEspecificacao_ComBuscaCaseSensitive_DeveFuncionarCorretamente()
     {
         // Arrange
-        var servicos = new List<ServicoRepositoryDto>
+        var servicos = new List<ServicoEntityDto>
         {
-            ServicoFixture.CriarServicoRepositoryDtoValido()
+            ServicoFixture.CriarServicoEntityDtoValido()
         };
         servicos.First().Nome = "Troca de Óleo";
         
@@ -157,10 +157,10 @@ public class ServicoEspecificacaoTests
     public void ObterServicoPorNomeEspecificacao_ComNomesComEspacos_DeveFuncionarCorretamente()
     {
         // Arrange
-        var servicos = new List<ServicoRepositoryDto>
+        var servicos = new List<ServicoEntityDto>
         {
-            ServicoFixture.CriarServicoRepositoryDtoValido(),
-            ServicoFixture.CriarServicoRepositoryDtoValido()
+            ServicoFixture.CriarServicoEntityDtoValido(),
+            ServicoFixture.CriarServicoEntityDtoValido()
         };
         
         servicos[0].Nome = "Troca de Óleo";
