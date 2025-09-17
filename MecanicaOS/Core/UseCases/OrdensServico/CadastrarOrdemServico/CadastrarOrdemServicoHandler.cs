@@ -1,0 +1,76 @@
+using Core.Entidades;
+using Core.Enumeradores;
+using Core.Exceptions;
+using Core.Interfaces.Gateways;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.Interfaces.UseCases;
+using Core.UseCases.Abstrato;
+
+namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
+{
+    public class CadastrarOrdemServicoHandler : UseCasesAbstrato<CadastrarOrdemServicoHandler, OrdemServico>
+    {
+        private readonly IOrdemServicoGateway _ordemServicoGateway;
+        private readonly IClienteUseCases _clienteUseCases;
+        private readonly IServicoUseCases _servicoUseCases;
+
+        public CadastrarOrdemServicoHandler(
+            IOrdemServicoGateway ordemServicoGateway,
+            IClienteUseCases clienteUseCases,
+            IServicoUseCases servicoUseCases,
+            ILogServico<CadastrarOrdemServicoHandler> logServico,
+            IUnidadeDeTrabalho udt,
+            IUsuarioLogadoServico usuarioLogadoServico)
+            : base(logServico, udt, usuarioLogadoServico)
+        {
+            _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
+            _clienteUseCases = clienteUseCases ?? throw new ArgumentNullException(nameof(clienteUseCases));
+            _servicoUseCases = servicoUseCases ?? throw new ArgumentNullException(nameof(servicoUseCases));
+        }
+
+        public async Task<CadastrarOrdemServicoResponse> Handle(CadastrarOrdemServicoCommand command)
+        {
+            string metodo = nameof(Handle);
+
+            try
+            {
+                LogInicio(metodo, command.Request);
+
+                // Validar cliente
+                var cliente = await _clienteUseCases.ObterPorIdUseCaseAsync(command.Request.ClienteId)
+                    ?? throw new DadosNaoEncontradosException("Cliente não encontrado");
+
+                // Validar serviço
+                var servico = await _servicoUseCases.ObterServicoPorIdUseCaseAsync(command.Request.ServicoId)
+                    ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
+
+                var ordemServico = new OrdemServico
+                {
+                    ClienteId = command.Request.ClienteId,
+                    VeiculoId = command.Request.VeiculoId,
+                    ServicoId = command.Request.ServicoId,
+                    Descricao = command.Request.Descricao,
+                    Status = StatusOrdemServico.Recebida,
+                    DataCadastro = DateTime.UtcNow,
+                    Cliente = cliente,
+                    Servico = servico
+                };
+
+                await _ordemServicoGateway.CadastrarAsync(ordemServico);
+
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao cadastrar ordem de serviço");
+
+                LogFim(metodo, ordemServico);
+
+                return new CadastrarOrdemServicoResponse { OrdemServico = ordemServico };
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+    }
+}

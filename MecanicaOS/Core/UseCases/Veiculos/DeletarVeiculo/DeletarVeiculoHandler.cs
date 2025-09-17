@@ -1,0 +1,52 @@
+using Core.Entidades;
+using Core.Exceptions;
+using Core.Interfaces.Gateways;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.UseCases.Abstrato;
+
+namespace Core.UseCases.Veiculos.DeletarVeiculo
+{
+    public class DeletarVeiculoHandler : UseCasesAbstrato<DeletarVeiculoHandler, Veiculo>
+    {
+        private readonly IVeiculoGateway _veiculoGateway;
+
+        public DeletarVeiculoHandler(
+            IVeiculoGateway veiculoGateway,
+            ILogServico<DeletarVeiculoHandler> logServico,
+            IUnidadeDeTrabalho udt,
+            IUsuarioLogadoServico usuarioLogadoServico)
+            : base(logServico, udt, usuarioLogadoServico)
+        {
+            _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
+        }
+
+        public async Task<DeletarVeiculoResponse> Handle(DeletarVeiculoCommand command)
+        {
+            string metodo = nameof(Handle);
+
+            try
+            {
+                LogInicio(metodo, command.Id);
+
+                var veiculo = await _veiculoGateway.ObterPorIdAsync(command.Id)
+                    ?? throw new DadosNaoEncontradosException("Veículo não encontrado");
+
+                await _veiculoGateway.DeletarAsync(veiculo);
+                var sucesso = await Commit();
+
+                if (!sucesso)
+                    throw new PersistirDadosException("Erro ao remover veículo");
+
+                LogFim(metodo, sucesso);
+
+                return new DeletarVeiculoResponse { Sucesso = sucesso };
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+    }
+}

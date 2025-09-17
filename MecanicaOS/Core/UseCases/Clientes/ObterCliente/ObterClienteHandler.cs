@@ -1,0 +1,51 @@
+using Core.Entidades;
+using Core.Exceptions;
+using Core.Interfaces.Gateways;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.UseCases.Abstrato;
+
+namespace Core.UseCases.Clientes.ObterCliente
+{
+    public class ObterClienteHandler : UseCasesAbstrato<ObterClienteHandler, Cliente>
+    {
+        private readonly IClienteGateway _clienteGateway;
+
+        public ObterClienteHandler(
+            IClienteGateway clienteGateway,
+            ILogServico<ObterClienteHandler> logServico,
+            IUnidadeDeTrabalho udt,
+            IUsuarioLogadoServico usuarioLogadoServico)
+            : base(logServico, udt, usuarioLogadoServico)
+        {
+            _clienteGateway = clienteGateway ?? throw new ArgumentNullException(nameof(clienteGateway));
+        }
+
+        public async Task<ObterClienteResponse> Handle(ObterClienteUseCase query)
+        {
+            string metodo = nameof(Handle);
+
+            try
+            {
+                LogInicio(metodo, query.Id);
+
+                var clienteComVeiculo = await _clienteGateway.ObterPorIdAsync(query.Id);
+
+                if (clienteComVeiculo == null)
+                {
+                    // Tenta buscar o cliente com veículo
+                    clienteComVeiculo = await _clienteGateway.ObterClienteComVeiculoPorIdAsync(query.Id);
+                }
+
+                LogFim(metodo, clienteComVeiculo);
+
+                return new ObterClienteResponse { Cliente = clienteComVeiculo };
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+    }
+}

@@ -143,21 +143,8 @@ builder.Services.AddScoped<IUsuarioGateway, UsuarioGateway>();
 builder.Services.AddScoped<IEventosGateway, EventosGateway>();
 builder.Services.AddScoped<IEventosPublisher, EventoPublisher>();
 builder.Services.AddScoped<IClienteGateway, ClienteGateway>();
-builder.Services.AddScoped<IEnderecoGateway, EnderecoGateway>();
-builder.Services.AddScoped<IContatoGateway, ContatoGateway>();
-builder.Services.AddScoped<IVeiculoGateway, VeiculoGateway>();
-builder.Services.AddScoped<IServicoGateway, ServicoGateway>();
 
-// Registrar UseCases
-builder.Services.AddScoped<IInsumoOSUseCases, InsumoOSUseCases>();
-builder.Services.AddScoped<IOrcamentoUseCases, OrcamentoUseCases>();
-builder.Services.AddScoped<IEstoqueUseCases, EstoqueUseCases>();
-builder.Services.AddScoped<IOrdemServicoUseCases, OrdemServicoUseCases>();
-builder.Services.AddScoped<IClienteUseCases, ClienteUseCases>();
-builder.Services.AddScoped<IServicoUseCases, ServicoUseCases>();
-builder.Services.AddScoped<IUsuarioUseCases, UsuarioUseCases>();
-builder.Services.AddScoped<IVeiculoUseCases, VeiculoUseCases>();
-builder.Services.AddScoped<IAutenticacaoUseCases, AutenticacaoUseCases>();
+// UseCases são criados via CompositionRoot
 
 // Registrar Jobs
 builder.Services.AddScoped<IVerificarEstoqueJob, VerificarEstoqueJob>();

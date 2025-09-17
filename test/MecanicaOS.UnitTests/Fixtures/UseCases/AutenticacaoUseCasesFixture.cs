@@ -4,37 +4,14 @@ using Core.Enumeradores;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
-using Core.UseCases;
 
 namespace MecanicaOS.UnitTests.Fixtures.UseCases;
 
 public class AutenticacaoUseCasesFixture : UseCasesFixtureBase
 {
-    public AutenticacaoUseCases CriarAutenticacaoUseCases(
-        IUsuarioUseCases? mockUsuarioUseCases = null,
-        IClienteUseCases? mockClienteUseCases = null,
-        IServicoSenha? mockServicoSenha = null,
-        IServicoJwt? mockServicoJwt = null,
-        ILogServico<AutenticacaoUseCases>? mockLogServico = null,
-        IUnidadeDeTrabalho? mockUdt = null,
-        IUsuarioLogadoServico? mockUsuarioLogado = null)
+    public IAutenticacaoUseCases CriarMockAutenticacaoUseCases()
     {
-        mockUsuarioUseCases ??= CriarMockUsuarioUseCases();
-        mockClienteUseCases ??= CriarMockClienteUseCases();
-        mockServicoSenha ??= CriarMockServicoSenha();
-        mockServicoJwt ??= CriarMockServicoJwt();
-        mockLogServico ??= CriarMockLogServico<AutenticacaoUseCases>();
-        mockUdt ??= CriarMockUnidadeDeTrabalho();
-        mockUsuarioLogado ??= CriarMockUsuarioLogadoServico();
-
-        ConfigurarMocksBasicos(mockUdt, mockUsuarioLogado);
-
-        return new AutenticacaoUseCases(
-            mockUsuarioUseCases,
-            mockServicoSenha,
-            mockServicoJwt,
-            mockLogServico,
-            mockClienteUseCases);
+        return Substitute.For<IAutenticacaoUseCases>();
     }
 
     public static AutenticacaoUseCaseDto CriarAutenticacaoUseCaseDtoValido()

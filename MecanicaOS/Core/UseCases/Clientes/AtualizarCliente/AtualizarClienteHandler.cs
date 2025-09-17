@@ -1,0 +1,105 @@
+using Core.DTOs.UseCases.Cliente;
+using Core.Entidades;
+using Core.Exceptions;
+using Core.Interfaces.Gateways;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.Servicos;
+using Core.UseCases.Abstrato;
+
+namespace Core.UseCases.Clientes.AtualizarCliente
+{
+    public class AtualizarClienteHandler : UseCasesAbstrato<AtualizarClienteHandler, Cliente>
+    {
+        private readonly IClienteGateway _clienteGateway;
+        private readonly IEnderecoGateway _enderecoGateway;
+        private readonly IContatoGateway _contatoGateway;
+
+        public AtualizarClienteHandler(
+            IClienteGateway clienteGateway,
+            IEnderecoGateway enderecoGateway,
+            IContatoGateway contatoGateway,
+            ILogServico<AtualizarClienteHandler> logServico,
+            IUnidadeDeTrabalho udt,
+            IUsuarioLogadoServico usuarioLogadoServico)
+            : base(logServico, udt, usuarioLogadoServico)
+        {
+            _clienteGateway = clienteGateway ?? throw new ArgumentNullException(nameof(clienteGateway));
+            _contatoGateway = contatoGateway ?? throw new ArgumentNullException(nameof(contatoGateway));
+            _enderecoGateway = enderecoGateway ?? throw new ArgumentNullException(nameof(enderecoGateway));
+        }
+
+        public async Task<AtualizarClienteResponse> Handle(AtualizarClienteCommand command)
+        {
+            string metodo = nameof(Handle);
+
+            try
+            {
+                LogInicio(metodo, new { command.Id, command.Request });
+
+                var cliente = await _clienteGateway.ObterPorIdAsync(command.Id)
+                    ?? throw new DadosNaoEncontradosException("cliente não encontrado");
+
+                cliente.Atualizar(command.Request.Nome, command.Request.Sexo, command.Request.TipoCliente, command.Request.DataNascimento);
+
+                await _clienteGateway.EditarAsync(cliente);
+
+                if (!command.Request.EnderecoId.Equals(Guid.Empty))
+                    await AtualizarEnderecoCliente(command.Request);
+
+                if (!command.Request.ContatoId.Equals(Guid.Empty))
+                    await AtualizarContatoCliente(command.Request);
+
+                if (!await Commit())
+                    throw new PersistirDadosException("Erro ao atualizar cliente");
+
+                LogFim(metodo, cliente);
+
+                return new AtualizarClienteResponse { Cliente = cliente };
+            }
+            catch (Exception e)
+            {
+                LogErro(metodo, e);
+                throw;
+            }
+        }
+
+        private async Task AtualizarEnderecoCliente(AtualizarClienteUseCaseDto enderecoCliente)
+        {
+            if (enderecoCliente.EnderecoId.Equals(Guid.Empty))
+                throw new DadosInvalidosException("Deve ser informado o id do endereço a ser editado");
+
+            if (await _enderecoGateway.ObterPorIdAsync(enderecoCliente.EnderecoId) is Endereco endereco)
+            {
+                endereco.Bairro = enderecoCliente.Bairro;
+                endereco.Numero = enderecoCliente.Numero;
+                endereco.CEP = enderecoCliente.CEP;
+                endereco.Cidade = enderecoCliente.Cidade;
+                endereco.Complemento = enderecoCliente.Complemento;
+                endereco.Rua = enderecoCliente.Rua;
+                endereco.MarcarComoAtualizada();
+
+                await _enderecoGateway.EditarAsync(endereco);
+            }
+            else
+            {
+                throw new DadosNaoEncontradosException("Endereço inexistente");
+            }
+        }
+
+        private async Task AtualizarContatoCliente(AtualizarClienteUseCaseDto contatoCliente)
+        {
+            if (contatoCliente.ContatoId.Equals(Guid.Empty))
+                throw new Exception("Contato inexistente");
+
+            if (await _contatoGateway.ObterPorIdAsync(contatoCliente.ContatoId) is Contato contato)
+            {
+                contato.Telefone = contatoCliente.Telefone;
+                contato.IdCliente = contatoCliente.Id.Value;
+                contato.Email = contatoCliente.Email;
+                contato.MarcarComoAtualizada();
+
+                await _contatoGateway.EditarAsync(contato);
+            }
+        }
+    }
+}
