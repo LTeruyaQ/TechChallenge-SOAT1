@@ -20,7 +20,7 @@ namespace Core.UseCases.OrdensServico.ObterTodosOrdensServico
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
         }
 
-        public async Task<ObterTodosOrdensServicoResponse> Handle(ObterTodosOrdensServicoUseCase useCase)
+        public async Task<ObterTodosOrdensServicoResponse> Handle()
         {
             string metodo = nameof(Handle);
 

@@ -21,15 +21,15 @@ namespace Core.UseCases.Estoques.ObterEstoque
             _estoqueGateway = estoqueGateway ?? throw new ArgumentNullException(nameof(estoqueGateway));
         }
 
-        public async Task<ObterEstoqueResponse> Handle(ObterEstoqueCommand command)
+        public async Task<ObterEstoqueResponse> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Id);
+                LogInicio(metodo, id);
 
-                var estoque = await _estoqueGateway.ObterPorIdAsync(command.Id)
+                var estoque = await _estoqueGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Estoque não encontrado");
 
                 LogFim(metodo, estoque);

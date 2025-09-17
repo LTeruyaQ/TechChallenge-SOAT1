@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
@@ -29,27 +30,27 @@ namespace Core.UseCases.Usuarios.CadastrarUsuario
             _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
         }
 
-        public async Task<CadastrarUsuarioResponse> Handle(CadastrarUsuarioCommand command)
+        public async Task<CadastrarUsuarioResponse> Handle(CadastrarUsuarioUseCaseDto request)
         {
             var metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Request);
+                LogInicio(metodo, request);
 
-                await VerificarUsuarioCadastradoAsync(command.Request.Email);
+                await VerificarUsuarioCadastradoAsync(request.Email);
 
                 Usuario usuario = new()
                 {
-                    Email = command.Request.Email,
-                    TipoUsuario = command.Request.TipoUsuario,
-                    RecebeAlertaEstoque = command.Request.RecebeAlertaEstoque.HasValue ? command.Request.RecebeAlertaEstoque.Value : false,
+                    Email = request.Email,
+                    TipoUsuario = request.TipoUsuario,
+                    RecebeAlertaEstoque = request.RecebeAlertaEstoque.HasValue ? request.RecebeAlertaEstoque.Value : false,
                 };
 
-                usuario.Senha = _servicoSenha.CriptografarSenha(command.Request.Senha);
+                usuario.Senha = _servicoSenha.CriptografarSenha(request.Senha);
 
-                if (command.Request.TipoUsuario == TipoUsuario.Cliente)
-                    usuario.ClienteId = await GetClienteIdUseCaseAsync(command.Request.Documento);
+                if (request.TipoUsuario == TipoUsuario.Cliente)
+                    usuario.ClienteId = await GetClienteIdUseCaseAsync(request.Documento);
 
                 var entidade = await _usuarioGateway.CadastrarAsync(usuario);
 

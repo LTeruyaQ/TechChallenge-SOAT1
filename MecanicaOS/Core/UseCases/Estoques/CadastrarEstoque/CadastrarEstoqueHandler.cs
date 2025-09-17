@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -21,28 +22,28 @@ namespace Core.UseCases.Estoques.CadastrarEstoque
             _estoqueGateway = estoqueGateway ?? throw new ArgumentNullException(nameof(estoqueGateway));
         }
 
-        public async Task<CadastrarEstoqueResponse> Handle(CadastrarEstoqueCommand command)
+        public async Task<CadastrarEstoqueResponse> Handle(CadastrarEstoqueUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Request);
+                LogInicio(metodo, request);
 
                 // Verificar se já existe um estoque com o mesmo nome
                 var estoques = await _estoqueGateway.ObterTodosAsync();
-                if (estoques.Any(e => e.Insumo.Equals(command.Request.Insumo, StringComparison.OrdinalIgnoreCase)))
+                if (estoques.Any(e => e.Insumo.Equals(request.Insumo, StringComparison.OrdinalIgnoreCase)))
                 {
                     throw new DadosJaCadastradosException("Produto já cadastrado");
                 }
 
                 Estoque estoque = new()
                 {
-                    Insumo = command.Request.Insumo,
-                    Descricao = command.Request.Descricao,
-                    QuantidadeDisponivel = command.Request.QuantidadeDisponivel,
-                    QuantidadeMinima = command.Request.QuantidadeMinima,
-                    Preco = command.Request.Preco
+                    Insumo = request.Insumo,
+                    Descricao = request.Descricao,
+                    QuantidadeDisponivel = request.QuantidadeDisponivel,
+                    QuantidadeMinima = request.QuantidadeMinima,
+                    Preco = request.Preco
                 };
 
                 await _estoqueGateway.CadastrarAsync(estoque);

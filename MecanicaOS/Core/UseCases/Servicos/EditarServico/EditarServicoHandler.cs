@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -21,21 +22,21 @@ namespace Core.UseCases.Servicos.EditarServico
             _servicoGateway = servicoGateway ?? throw new ArgumentNullException(nameof(servicoGateway));
         }
 
-        public async Task<EditarServicoResponse> Handle(EditarServicoCommand command)
+        public async Task<EditarServicoResponse> Handle(Guid id, EditarServicoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, new { command.Id, command.Request });
+                LogInicio(metodo, new { id, request });
 
-                var servico = await _servicoGateway.ObterPorIdAsync(command.Id)
+                var servico = await _servicoGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
 
-                servico.Nome = command.Request.Nome;
-                servico.Descricao = command.Request.Descricao;
-                servico.Valor = command.Request.Valor.Value;
-                servico.Disponivel = command.Request.Disponivel.Value;
+                servico.Nome = request.Nome;
+                servico.Descricao = request.Descricao;
+                servico.Valor = request.Valor.Value;
+                servico.Disponivel = request.Disponivel.Value;
                 servico.DataAtualizacao = DateTime.UtcNow;
 
                 await _servicoGateway.EditarAsync(servico);

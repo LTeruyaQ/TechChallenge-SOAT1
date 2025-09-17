@@ -20,7 +20,7 @@ namespace Core.UseCases.Usuarios.ObterTodosUsuarios
             _usuarioGateway = usuarioGateway ?? throw new ArgumentNullException(nameof(usuarioGateway));
         }
 
-        public async Task<ObterTodosUsuariosResponse> Handle(ObterTodosUsuariosUseCase query)
+        public async Task<ObterTodosUsuariosResponse> Handle()
         {
             var metodo = nameof(Handle);
 

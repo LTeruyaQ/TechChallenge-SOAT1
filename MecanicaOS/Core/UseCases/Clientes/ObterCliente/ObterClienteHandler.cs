@@ -21,20 +21,20 @@ namespace Core.UseCases.Clientes.ObterCliente
             _clienteGateway = clienteGateway ?? throw new ArgumentNullException(nameof(clienteGateway));
         }
 
-        public async Task<ObterClienteResponse> Handle(ObterClienteUseCase query)
+        public async Task<ObterClienteResponse> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, query.Id);
+                LogInicio(metodo, id);
 
-                var clienteComVeiculo = await _clienteGateway.ObterPorIdAsync(query.Id);
+                var clienteComVeiculo = await _clienteGateway.ObterPorIdAsync(id);
 
                 if (clienteComVeiculo == null)
                 {
                     // Tenta buscar o cliente com veículo
-                    clienteComVeiculo = await _clienteGateway.ObterClienteComVeiculoPorIdAsync(query.Id);
+                    clienteComVeiculo = await _clienteGateway.ObterClienteComVeiculoPorIdAsync(id);
                 }
 
                 LogFim(metodo, clienteComVeiculo);

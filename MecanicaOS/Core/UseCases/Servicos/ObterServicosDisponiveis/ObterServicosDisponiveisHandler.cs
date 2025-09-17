@@ -20,7 +20,7 @@ namespace Core.UseCases.Servicos.ObterServicosDisponiveis
             _servicoGateway = servicoGateway ?? throw new ArgumentNullException(nameof(servicoGateway));
         }
 
-        public async Task<ObterServicosDisponiveisResponse> Handle(ObterServicosDisponiveisUseCase useCase)
+        public async Task<ObterServicosDisponiveisResponse> Handle()
         {
             string metodo = nameof(Handle);
 

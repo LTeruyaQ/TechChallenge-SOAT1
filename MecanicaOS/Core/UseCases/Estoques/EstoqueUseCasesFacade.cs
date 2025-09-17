@@ -41,43 +41,37 @@ namespace Core.UseCases.Estoques
 
         public async Task<Estoque> CadastrarUseCaseAsync(CadastrarEstoqueUseCaseDto request)
         {
-            var command = new CadastrarEstoqueCommand(request);
-            var response = await _cadastrarEstoqueHandler.Handle(command);
+            var response = await _cadastrarEstoqueHandler.Handle(request);
             return response.Estoque;
         }
 
         public async Task<Estoque> AtualizarUseCaseAsync(Guid id, AtualizarEstoqueUseCaseDto request)
         {
-            var command = new AtualizarEstoqueCommand(id, request);
-            var response = await _atualizarEstoqueHandler.Handle(command);
+            var response = await _atualizarEstoqueHandler.Handle(id, request);
             return response.Estoque;
         }
 
         public async Task<bool> DeletarUseCaseAsync(Guid id)
         {
-            var command = new DeletarEstoqueCommand(id);
-            var response = await _deletarEstoqueHandler.Handle(command);
+            var response = await _deletarEstoqueHandler.Handle(id);
             return response.Sucesso;
         }
 
         public async Task<Estoque> ObterPorIdUseCaseAsync(Guid id)
         {
-            var command = new ObterEstoqueCommand(id);
-            var response = await _obterEstoqueHandler.Handle(command);
+            var response = await _obterEstoqueHandler.Handle(id);
             return response.Estoque;
         }
 
         public async Task<IEnumerable<Estoque>> ObterTodosUseCaseAsync()
         {
-            var command = new ObterTodosEstoquesCommand();
-            var response = await _obterTodosEstoquesHandler.Handle(command);
+            var response = await _obterTodosEstoquesHandler.Handle();
             return response.Estoques;
         }
 
         public async Task<IEnumerable<Estoque>> ObterEstoqueCriticoUseCaseAsync()
         {
-            var command = new ObterEstoqueCriticoCommand();
-            var response = await _obterEstoqueCriticoHandler.Handle(command);
+            var response = await _obterEstoqueCriticoHandler.Handle();
             return response.EstoquesCriticos;
         }
     }

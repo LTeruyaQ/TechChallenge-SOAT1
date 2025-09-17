@@ -28,16 +28,16 @@ namespace Core.UseCases.Clientes.CadastrarCliente
             _enderecoGateway = enderecoGateway ?? throw new ArgumentNullException(nameof(enderecoGateway));
         }
 
-        public async Task<CadastrarClienteResponse> Handle(CadastrarClienteCommand command)
+        public async Task<CadastrarClienteResponse> Handle(CadastrarClienteUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Request);
+                LogInicio(metodo, request);
 
                 // Verificar se o cliente já existe com o documento informado
-                var clienteExistente = await _clienteGateway.ObterClientePorDocumentoAsync(command.Request.Documento);
+                var clienteExistente = await _clienteGateway.ObterClientePorDocumentoAsync(request.Documento);
                 if (clienteExistente != null)
                 {
                     throw new DadosJaCadastradosException("Cliente já cadastrado");
@@ -45,19 +45,19 @@ namespace Core.UseCases.Clientes.CadastrarCliente
 
                 Cliente cliente = new()
                 {
-                    Nome = command.Request.Nome,
-                    Sexo = command.Request.Sexo ?? (command.Request.TipoCliente == Core.Enumeradores.TipoCliente.PessoaFisica ? "Não informado" : null),
-                    Documento = command.Request.Documento,
-                    DataNascimento = command.Request.DataNascimento,
-                    TipoCliente = command.Request.TipoCliente
+                    Nome = request.Nome,
+                    Sexo = request.Sexo ?? (request.TipoCliente == Core.Enumeradores.TipoCliente.PessoaFisica ? "Não informado" : null),
+                    Documento = request.Documento,
+                    DataNascimento = request.DataNascimento,
+                    TipoCliente = request.TipoCliente
                 };
 
                 var entityCliente = await _clienteGateway.CadastrarAsync(cliente);
 
                 if (!entityCliente.Id.Equals(Guid.Empty))
                 {
-                    await CadastrarEnderecoCliente(entityCliente.Id, command.Request);
-                    await CadastrarContatoCliente(entityCliente.Id, command.Request);
+                    await CadastrarEnderecoCliente(entityCliente.Id, request);
+                    await CadastrarContatoCliente(entityCliente.Id, request);
                 }
 
                 if (!await Commit())

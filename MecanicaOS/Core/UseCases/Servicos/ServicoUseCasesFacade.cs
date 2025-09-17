@@ -45,49 +45,42 @@ namespace Core.UseCases.Servicos
 
         public async Task<Servico> CadastrarServicoUseCaseAsync(CadastrarServicoUseCaseDto request)
         {
-            var command = new CadastrarServicoCommand(request);
-            var response = await _cadastrarServicoHandler.Handle(command);
+            var response = await _cadastrarServicoHandler.Handle(request);
             return response.Servico;
         }
 
         public async Task DeletarServicoUseCaseAsync(Guid id)
         {
-            var command = new DeletarServicoCommand(id);
-            await _deletarServicoHandler.Handle(command);
+            await _deletarServicoHandler.Handle(id);
         }
 
         public async Task<Servico> EditarServicoUseCaseAsync(Guid id, EditarServicoUseCaseDto request)
         {
-            var command = new EditarServicoCommand(id, request);
-            var response = await _editarServicoHandler.Handle(command);
+            var response = await _editarServicoHandler.Handle(id, request);
             return response.Servico;
         }
 
         public async Task<Servico> ObterServicoPorIdUseCaseAsync(Guid id)
         {
-            var useCase = new ObterServicoUseCase(id);
-            var response = await _obterServicoHandler.Handle(useCase);
+            var response = await _obterServicoHandler.Handle(id);
             return response.Servico!;
         }
 
         public async Task<Servico?> ObterServicoPorNomeUseCaseAsync(string nome)
         {
-            var useCase = new ObterServicoPorNomeUseCase(nome);
-            var response = await _obterServicoPorNomeHandler.Handle(useCase);
+            var response = await _obterServicoPorNomeHandler.Handle(nome);
             return response.Servico;
         }
 
         public async Task<IEnumerable<Servico>> ObterServicosDisponiveisUseCaseAsync()
         {
-            var useCase = new ObterServicosDisponiveisUseCase();
-            var response = await _obterServicosDisponiveisHandler.Handle(useCase);
+            var response = await _obterServicosDisponiveisHandler.Handle();
             return response.Servicos;
         }
 
         public async Task<IEnumerable<Servico>> ObterTodosUseCaseAsync()
         {
-            var useCase = new ObterTodosServicosUseCase();
-            var response = await _obterTodosServicosHandler.Handle(useCase);
+            var response = await _obterTodosServicosHandler.Handle();
             return response.Servicos;
         }
     }

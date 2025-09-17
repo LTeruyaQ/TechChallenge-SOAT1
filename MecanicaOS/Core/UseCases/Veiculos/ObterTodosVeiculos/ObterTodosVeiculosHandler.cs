@@ -20,7 +20,7 @@ namespace Core.UseCases.Veiculos.ObterTodosVeiculos
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<ObterTodosVeiculosResponse> Handle(ObterTodosVeiculosUseCase query)
+        public async Task<ObterTodosVeiculosResponse> Handle()
         {
             string metodo = nameof(Handle);
 

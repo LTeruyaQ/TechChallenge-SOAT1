@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
@@ -29,28 +30,28 @@ namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
             _servicoUseCases = servicoUseCases ?? throw new ArgumentNullException(nameof(servicoUseCases));
         }
 
-        public async Task<CadastrarOrdemServicoResponse> Handle(CadastrarOrdemServicoCommand command)
+        public async Task<CadastrarOrdemServicoResponse> Handle(CadastrarOrdemServicoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Request);
+                LogInicio(metodo, request);
 
                 // Validar cliente
-                var cliente = await _clienteUseCases.ObterPorIdUseCaseAsync(command.Request.ClienteId)
+                var cliente = await _clienteUseCases.ObterPorIdUseCaseAsync(request.ClienteId)
                     ?? throw new DadosNaoEncontradosException("Cliente não encontrado");
 
                 // Validar serviço
-                var servico = await _servicoUseCases.ObterServicoPorIdUseCaseAsync(command.Request.ServicoId)
+                var servico = await _servicoUseCases.ObterServicoPorIdUseCaseAsync(request.ServicoId)
                     ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
 
                 var ordemServico = new OrdemServico
                 {
-                    ClienteId = command.Request.ClienteId,
-                    VeiculoId = command.Request.VeiculoId,
-                    ServicoId = command.Request.ServicoId,
-                    Descricao = command.Request.Descricao,
+                    ClienteId = request.ClienteId,
+                    VeiculoId = request.VeiculoId,
+                    ServicoId = request.ServicoId,
+                    Descricao = request.Descricao,
                     Status = StatusOrdemServico.Recebida,
                     DataCadastro = DateTime.UtcNow,
                     Cliente = cliente,

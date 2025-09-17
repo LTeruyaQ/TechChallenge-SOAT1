@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -21,23 +22,23 @@ namespace Core.UseCases.Veiculos.CadastrarVeiculo
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<CadastrarVeiculoResponse> Handle(CadastrarVeiculoCommand command)
+        public async Task<CadastrarVeiculoResponse> Handle(CadastrarVeiculoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Request);
+                LogInicio(metodo, request);
 
                 Veiculo veiculo = new()
                 {
-                    Ano = command.Request.Ano,
-                    Cor = command.Request.Cor,
-                    Marca = command.Request.Marca,
-                    Modelo = command.Request.Modelo,
-                    Placa = command.Request.Placa,
-                    Anotacoes = command.Request.Anotacoes,
-                    ClienteId = command.Request.ClienteId,
+                    Ano = request.Ano,
+                    Cor = request.Cor,
+                    Marca = request.Marca,
+                    Modelo = request.Modelo,
+                    Placa = request.Placa,
+                    Anotacoes = request.Anotacoes,
+                    ClienteId = request.ClienteId,
                 };
 
                 await _veiculoGateway.CadastrarAsync(veiculo);

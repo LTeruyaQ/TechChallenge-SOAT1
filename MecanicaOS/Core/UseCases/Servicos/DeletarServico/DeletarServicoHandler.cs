@@ -21,15 +21,15 @@ namespace Core.UseCases.Servicos.DeletarServico
             _servicoGateway = servicoGateway ?? throw new ArgumentNullException(nameof(servicoGateway));
         }
 
-        public async Task<DeletarServicoResponse> Handle(DeletarServicoCommand command)
+        public async Task<DeletarServicoResponse> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Id);
+                LogInicio(metodo, id);
 
-                var servico = await _servicoGateway.ObterPorIdAsync(command.Id)
+                var servico = await _servicoGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
 
                 await _servicoGateway.DeletarAsync(servico);

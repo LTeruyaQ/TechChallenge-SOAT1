@@ -20,7 +20,7 @@ namespace Core.UseCases.Clientes.ObterTodosClientes
             _clienteGateway = clienteGateway ?? throw new ArgumentNullException(nameof(clienteGateway));
         }
 
-        public async Task<ObterTodosClientesResponse> Handle(ObterTodosClientesUseCase query)
+        public async Task<ObterTodosClientesResponse> Handle()
         {
             string metodo = nameof(Handle);
 

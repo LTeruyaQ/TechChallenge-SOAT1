@@ -22,15 +22,15 @@ namespace Core.UseCases.OrdensServico.RecusarOrcamento
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
         }
 
-        public async Task<RecusarOrcamentoResponse> Handle(RecusarOrcamentoCommand command)
+        public async Task<RecusarOrcamentoResponse> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Id);
+                LogInicio(metodo, id);
 
-                var ordemServico = await _ordemServicoGateway.ObterPorIdAsync(command.Id)
+                var ordemServico = await _ordemServicoGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
 
                 // Validar se está em status adequado para recusar orçamento

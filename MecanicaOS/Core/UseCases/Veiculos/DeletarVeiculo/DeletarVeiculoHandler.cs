@@ -21,15 +21,15 @@ namespace Core.UseCases.Veiculos.DeletarVeiculo
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<DeletarVeiculoResponse> Handle(DeletarVeiculoCommand command)
+        public async Task<DeletarVeiculoResponse> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Id);
+                LogInicio(metodo, id);
 
-                var veiculo = await _veiculoGateway.ObterPorIdAsync(command.Id)
+                var veiculo = await _veiculoGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Veículo não encontrado");
 
                 await _veiculoGateway.DeletarAsync(veiculo);

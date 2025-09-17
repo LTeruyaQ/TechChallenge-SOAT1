@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -21,24 +22,24 @@ namespace Core.UseCases.Veiculos.AtualizarVeiculo
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<AtualizarVeiculoResponse> Handle(AtualizarVeiculoCommand command)
+        public async Task<AtualizarVeiculoResponse> Handle(Guid id, AtualizarVeiculoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, new { command.Id, command.Request });
+                LogInicio(metodo, new { id, request });
 
-                var veiculo = await _veiculoGateway.ObterPorIdAsync(command.Id)
+                var veiculo = await _veiculoGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Veículo não encontrado");
 
-                if (command.Request.Placa != null) veiculo.Placa = command.Request.Placa;
-                if (command.Request.Marca != null) veiculo.Marca = command.Request.Marca;
-                if (command.Request.Modelo != null) veiculo.Modelo = command.Request.Modelo;
-                if (command.Request.Cor != null) veiculo.Cor = command.Request.Cor;
-                if (command.Request.Ano != null) veiculo.Ano = command.Request.Ano;
-                if (command.Request.Anotacoes != null) veiculo.Anotacoes = command.Request.Anotacoes;
-                if (command.Request.ClienteId.HasValue) veiculo.ClienteId = command.Request.ClienteId.Value;
+                if (request.Placa != null) veiculo.Placa = request.Placa;
+                if (request.Marca != null) veiculo.Marca = request.Marca;
+                if (request.Modelo != null) veiculo.Modelo = request.Modelo;
+                if (request.Cor != null) veiculo.Cor = request.Cor;
+                if (request.Ano != null) veiculo.Ano = request.Ano;
+                if (request.Anotacoes != null) veiculo.Anotacoes = request.Anotacoes;
+                if (request.ClienteId.HasValue) veiculo.ClienteId = request.ClienteId.Value;
 
                 veiculo.DataAtualizacao = DateTime.UtcNow;
 

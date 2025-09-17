@@ -45,50 +45,43 @@ namespace Core.UseCases.Veiculos
 
         public async Task<Veiculo> AtualizarUseCaseAsync(Guid id, AtualizarVeiculoUseCaseDto request)
         {
-            var command = new AtualizarVeiculoCommand(id, request);
-            var response = await _atualizarVeiculoHandler.Handle(command);
+            var response = await _atualizarVeiculoHandler.Handle(id, request);
             return response.Veiculo;
         }
 
         public async Task<Veiculo> CadastrarUseCaseAsync(CadastrarVeiculoUseCaseDto request)
         {
-            var command = new CadastrarVeiculoCommand(request);
-            var response = await _cadastrarVeiculoHandler.Handle(command);
+            var response = await _cadastrarVeiculoHandler.Handle(request);
             return response.Veiculo;
         }
 
         public async Task<Veiculo> ObterPorIdUseCaseAsync(Guid id)
         {
-            var query = new ObterVeiculoUseCase(id);
-            var response = await _obterVeiculoHandler.Handle(query);
+            var response = await _obterVeiculoHandler.Handle(id);
             return response.Veiculo;
         }
 
         public async Task<IEnumerable<Veiculo>> ObterPorClienteUseCaseAsync(Guid clienteId)
         {
-            var query = new ObterVeiculoPorClienteUseCase(clienteId);
-            var response = await _obterVeiculoPorClienteHandler.Handle(query);
+            var response = await _obterVeiculoPorClienteHandler.Handle(clienteId);
             return response.Veiculos;
         }
 
         public async Task<Veiculo?> ObterPorPlacaUseCaseAsync(string placa)
         {
-            var query = new ObterVeiculoPorPlacaUseCase(placa);
-            var response = await _obterVeiculoPorPlacaHandler.Handle(query);
+            var response = await _obterVeiculoPorPlacaHandler.Handle(placa);
             return response.Veiculo;
         }
 
         public async Task<IEnumerable<Veiculo>> ObterTodosUseCaseAsync()
         {
-            var query = new ObterTodosVeiculosUseCase();
-            var response = await _obterTodosVeiculosHandler.Handle(query);
+            var response = await _obterTodosVeiculosHandler.Handle();
             return response.Veiculos;
         }
 
         public async Task<bool> DeletarUseCaseAsync(Guid id)
         {
-            var command = new DeletarVeiculoCommand(id);
-            var response = await _deletarVeiculoHandler.Handle(command);
+            var response = await _deletarVeiculoHandler.Handle(id);
             return response.Sucesso;
         }
     }

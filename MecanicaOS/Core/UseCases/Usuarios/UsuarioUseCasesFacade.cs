@@ -41,43 +41,37 @@ namespace Core.UseCases.Usuarios
 
         public async Task<Usuario> AtualizarUseCaseAsync(Guid id, AtualizarUsuarioUseCaseDto request)
         {
-            var command = new AtualizarUsuarioCommand(id, request);
-            var response = await _atualizarUsuarioHandler.Handle(command);
+            var response = await _atualizarUsuarioHandler.Handle(id, request);
             return response.Usuario;
         }
 
         public async Task<Usuario> CadastrarUseCaseAsync(CadastrarUsuarioUseCaseDto request)
         {
-            var command = new CadastrarUsuarioCommand(request);
-            var response = await _cadastrarUsuarioHandler.Handle(command);
+            var response = await _cadastrarUsuarioHandler.Handle(request);
             return response.Usuario;
         }
 
         public async Task<bool> DeletarUseCaseAsync(Guid id)
         {
-            var command = new DeletarUsuarioCommand(id);
-            var response = await _deletarUsuarioHandler.Handle(command);
+            var response = await _deletarUsuarioHandler.Handle(id);
             return response.Sucesso;
         }
 
         public async Task<Usuario?> ObterPorEmailUseCaseAsync(string email)
         {
-            var query = new ObterUsuarioPorEmailUseCase(email);
-            var response = await _obterUsuarioPorEmailHandler.Handle(query);
+            var response = await _obterUsuarioPorEmailHandler.Handle(email);
             return response.Usuario;
         }
 
         public async Task<Usuario?> ObterPorIdUseCaseAsync(Guid id)
         {
-            var query = new ObterUsuarioUseCase(id);
-            var response = await _obterUsuarioHandler.Handle(query);
+            var response = await _obterUsuarioHandler.Handle(id);
             return response.Usuario;
         }
 
         public async Task<IEnumerable<Usuario>> ObterTodosUseCaseAsync()
         {
-            var query = new ObterTodosUsuariosUseCase();
-            var response = await _obterTodosUsuariosHandler.Handle(query);
+            var response = await _obterTodosUsuariosHandler.Handle();
             return response.Usuarios;
         }
     }

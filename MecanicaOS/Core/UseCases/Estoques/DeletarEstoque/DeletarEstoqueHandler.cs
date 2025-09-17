@@ -21,15 +21,15 @@ namespace Core.UseCases.Estoques.DeletarEstoque
             _estoqueGateway = estoqueGateway ?? throw new ArgumentNullException(nameof(estoqueGateway));
         }
 
-        public async Task<DeletarEstoqueResponse> Handle(DeletarEstoqueCommand command)
+        public async Task<DeletarEstoqueResponse> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Id);
+                LogInicio(metodo, id);
 
-                var estoque = await _estoqueGateway.ObterPorIdAsync(command.Id)
+                var estoque = await _estoqueGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Estoque não encontrado");
 
                 await _estoqueGateway.DeletarAsync(estoque);

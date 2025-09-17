@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -24,26 +25,26 @@ namespace Core.UseCases.Usuarios.AtualizarUsuario
             _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
         }
 
-        public async Task<AtualizarUsuarioResponse> Handle(AtualizarUsuarioCommand command)
+        public async Task<AtualizarUsuarioResponse> Handle(Guid id, AtualizarUsuarioUseCaseDto request)
         {
             var metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, new { command.Id, command.Request });
+                LogInicio(metodo, new { id, request });
 
-                Usuario usuario = await _usuarioGateway.ObterPorIdAsync(command.Id) ?? throw new DadosNaoEncontradosException("Usuário não encontrado");
+                Usuario usuario = await _usuarioGateway.ObterPorIdAsync(id) ?? throw new DadosNaoEncontradosException("Usuário não encontrado");
 
-                string senhaCriptografada = !string.IsNullOrEmpty(command.Request.Senha)
-                    ? _servicoSenha.CriptografarSenha(command.Request.Senha)
+                string senhaCriptografada = !string.IsNullOrEmpty(request.Senha)
+                    ? _servicoSenha.CriptografarSenha(request.Senha)
                     : usuario.Senha;
 
                 usuario.Atualizar(
-                    command.Request.Email,
+                    request.Email,
                     senhaCriptografada,
-                    command.Request.DataUltimoAcesso,
-                    command.Request.TipoUsuario,
-                    command.Request.RecebeAlertaEstoque);
+                    request.DataUltimoAcesso,
+                    request.TipoUsuario,
+                    request.RecebeAlertaEstoque);
 
                 await _usuarioGateway.EditarAsync(usuario);
 

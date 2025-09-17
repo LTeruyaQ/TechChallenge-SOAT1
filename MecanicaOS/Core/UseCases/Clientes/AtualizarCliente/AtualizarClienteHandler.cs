@@ -28,26 +28,26 @@ namespace Core.UseCases.Clientes.AtualizarCliente
             _enderecoGateway = enderecoGateway ?? throw new ArgumentNullException(nameof(enderecoGateway));
         }
 
-        public async Task<AtualizarClienteResponse> Handle(AtualizarClienteCommand command)
+        public async Task<AtualizarClienteResponse> Handle(Guid id, AtualizarClienteUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, new { command.Id, command.Request });
+                LogInicio(metodo, new { id, request });
 
-                var cliente = await _clienteGateway.ObterPorIdAsync(command.Id)
+                var cliente = await _clienteGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("cliente não encontrado");
 
-                cliente.Atualizar(command.Request.Nome, command.Request.Sexo, command.Request.TipoCliente, command.Request.DataNascimento);
+                cliente.Atualizar(request.Nome, request.Sexo, request.TipoCliente, request.DataNascimento);
 
                 await _clienteGateway.EditarAsync(cliente);
 
-                if (!command.Request.EnderecoId.Equals(Guid.Empty))
-                    await AtualizarEnderecoCliente(command.Request);
+                if (!request.EnderecoId.Equals(Guid.Empty))
+                    await AtualizarEnderecoCliente(request);
 
-                if (!command.Request.ContatoId.Equals(Guid.Empty))
-                    await AtualizarContatoCliente(command.Request);
+                if (!request.ContatoId.Equals(Guid.Empty))
+                    await AtualizarContatoCliente(request);
 
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao atualizar cliente");

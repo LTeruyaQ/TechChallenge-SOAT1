@@ -20,15 +20,15 @@ namespace Core.UseCases.Usuarios.ObterUsuario
             _usuarioGateway = usuarioGateway ?? throw new ArgumentNullException(nameof(usuarioGateway));
         }
 
-        public async Task<ObterUsuarioResponse> Handle(ObterUsuarioUseCase query)
+        public async Task<ObterUsuarioResponse> Handle(Guid id)
         {
             var metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, query.Id);
+                LogInicio(metodo, id);
 
-                var usuario = await _usuarioGateway.ObterPorIdAsync(query.Id);
+                var usuario = await _usuarioGateway.ObterPorIdAsync(id);
                 
                 if (usuario is not null)
                     IsNotGetSenha(usuario);

@@ -20,7 +20,7 @@ namespace Core.UseCases.Estoques.ObterTodosEstoques
             _estoqueGateway = estoqueGateway ?? throw new ArgumentNullException(nameof(estoqueGateway));
         }
 
-        public async Task<ObterTodosEstoquesResponse> Handle(ObterTodosEstoquesCommand command)
+        public async Task<ObterTodosEstoquesResponse> Handle()
         {
             string metodo = nameof(Handle);
 

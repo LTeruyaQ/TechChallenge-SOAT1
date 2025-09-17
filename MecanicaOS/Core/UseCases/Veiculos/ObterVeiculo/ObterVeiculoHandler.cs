@@ -21,16 +21,16 @@ namespace Core.UseCases.Veiculos.ObterVeiculo
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<ObterVeiculoResponse> Handle(ObterVeiculoUseCase query)
+        public async Task<ObterVeiculoResponse> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, query.Id);
+                LogInicio(metodo, id);
 
-                var veiculo = await _veiculoGateway.ObterPorIdAsync(query.Id)
-                    ?? throw new DadosNaoEncontradosException($"Veículo com ID {query.Id} não encontrado.");
+                var veiculo = await _veiculoGateway.ObterPorIdAsync(id)
+                    ?? throw new DadosNaoEncontradosException($"Veículo com ID {id} não encontrado.");
 
                 LogFim(metodo, veiculo);
 

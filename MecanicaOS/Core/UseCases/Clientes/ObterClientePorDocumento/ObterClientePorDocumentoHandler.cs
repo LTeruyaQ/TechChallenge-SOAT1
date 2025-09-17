@@ -21,23 +21,23 @@ namespace Core.UseCases.Clientes.ObterClientePorDocumento
             _clienteGateway = clienteGateway ?? throw new ArgumentNullException(nameof(clienteGateway));
         }
 
-        public async Task<ObterClientePorDocumentoResponse> Handle(ObterClientePorDocumentoUseCase query)
+        public async Task<ObterClientePorDocumentoResponse> Handle(string documento)
         {
             const string metodo = nameof(Handle);
-            LogInicio(metodo, query.Documento);
+            LogInicio(metodo, documento);
 
             try
             {
-                if (string.IsNullOrEmpty(query.Documento))
+                if (string.IsNullOrEmpty(documento))
                     throw new DadosInvalidosException("Deve ser informado o documento do usuario do cliente");
 
-                if (await _clienteGateway.ObterClientePorDocumentoAsync(query.Documento) is Cliente cliente)
+                if (await _clienteGateway.ObterClientePorDocumentoAsync(documento) is Cliente cliente)
                 {
                     LogFim(metodo, cliente);
                     return new ObterClientePorDocumentoResponse { Cliente = cliente };
                 }
 
-                throw new DadosNaoEncontradosException($"Cliente de documento {query.Documento} não encontrado");
+                throw new DadosNaoEncontradosException($"Cliente de documento {documento} não encontrado");
             }
             catch (Exception e)
             {

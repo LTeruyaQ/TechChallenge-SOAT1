@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
@@ -25,25 +26,25 @@ namespace Core.UseCases.OrdensServico.AtualizarOrdemServico
             _eventosGateway = eventosGateway ?? throw new ArgumentNullException(nameof(eventosGateway));
         }
 
-        public async Task<AtualizarOrdemServicoResponse> Handle(AtualizarOrdemServicoCommand command)
+        public async Task<AtualizarOrdemServicoResponse> Handle(Guid id, AtualizarOrdemServicoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, new { command.Id, command.Request });
+                LogInicio(metodo, new { id, request });
 
-                var ordemServico = await _ordemServicoGateway.ObterPorIdAsync(command.Id)
+                var ordemServico = await _ordemServicoGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
 
                 var statusAnterior = ordemServico.Status;
 
                 // Atualizar campos
-                if (!string.IsNullOrEmpty(command.Request.Descricao))
-                    ordemServico.Descricao = command.Request.Descricao;
+                if (!string.IsNullOrEmpty(request.Descricao))
+                    ordemServico.Descricao = request.Descricao;
 
-                if (command.Request.Status.HasValue)
-                    ordemServico.Status = command.Request.Status.Value;
+                if (request.Status.HasValue)
+                    ordemServico.Status = request.Status.Value;
 
                 ordemServico.DataAtualizacao = DateTime.UtcNow;
 

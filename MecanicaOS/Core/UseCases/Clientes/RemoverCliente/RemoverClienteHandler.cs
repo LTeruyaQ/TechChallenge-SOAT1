@@ -21,15 +21,15 @@ namespace Core.UseCases.Clientes.RemoverCliente
             _clienteGateway = clienteGateway ?? throw new ArgumentNullException(nameof(clienteGateway));
         }
 
-        public async Task<RemoverClienteResponse> Handle(RemoverClienteCommand command)
+        public async Task<RemoverClienteResponse> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Id);
+                LogInicio(metodo, id);
 
-                var cliente = await _clienteGateway.ObterPorIdAsync(command.Id)
+                var cliente = await _clienteGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Cliente não encontrado");
 
                 await _clienteGateway.DeletarAsync(cliente);

@@ -20,15 +20,15 @@ namespace Core.UseCases.Veiculos.ObterVeiculoPorCliente
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<ObterVeiculoPorClienteResponse> Handle(ObterVeiculoPorClienteUseCase query)
+        public async Task<ObterVeiculoPorClienteResponse> Handle(Guid clienteId)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, query.ClienteId);
+                LogInicio(metodo, clienteId);
 
-                var veiculos = await _veiculoGateway.ObterVeiculoPorClienteAsync(query.ClienteId);
+                var veiculos = await _veiculoGateway.ObterVeiculoPorClienteAsync(clienteId);
                 LogFim(metodo, veiculos);
 
                 return new ObterVeiculoPorClienteResponse { Veiculos = veiculos };

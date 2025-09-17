@@ -20,15 +20,15 @@ namespace Core.UseCases.Veiculos.ObterVeiculoPorPlaca
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<ObterVeiculoPorPlacaResponse> Handle(ObterVeiculoPorPlacaUseCase query)
+        public async Task<ObterVeiculoPorPlacaResponse> Handle(string placa)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, query.Placa);
+                LogInicio(metodo, placa);
 
-                var veiculos = await _veiculoGateway.ObterVeiculoPorPlacaAsync(query.Placa);
+                var veiculos = await _veiculoGateway.ObterVeiculoPorPlacaAsync(placa);
                 var veiculo = veiculos.FirstOrDefault();
 
                 LogFim(metodo, veiculo);

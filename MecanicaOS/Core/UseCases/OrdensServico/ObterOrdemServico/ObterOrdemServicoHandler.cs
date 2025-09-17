@@ -20,15 +20,15 @@ namespace Core.UseCases.OrdensServico.ObterOrdemServico
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
         }
 
-        public async Task<ObterOrdemServicoResponse> Handle(ObterOrdemServicoUseCase useCase)
+        public async Task<ObterOrdemServicoResponse> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, useCase.Id);
+                LogInicio(metodo, id);
 
-                var ordemServico = await _ordemServicoGateway.ObterPorIdAsync(useCase.Id);
+                var ordemServico = await _ordemServicoGateway.ObterPorIdAsync(id);
 
                 LogFim(metodo, ordemServico);
 

@@ -41,43 +41,37 @@ namespace Core.UseCases.Clientes
 
         public async Task<Cliente> AtualizarUseCaseAsync(Guid id, AtualizarClienteUseCaseDto request)
         {
-            var command = new AtualizarClienteCommand(id, request);
-            var response = await _atualizarClienteHandler.Handle(command);
+            var response = await _atualizarClienteHandler.Handle(id, request);
             return response.Cliente;
         }
 
         public async Task<Cliente> CadastrarUseCaseAsync(CadastrarClienteUseCaseDto request)
         {
-            var command = new CadastrarClienteCommand(request);
-            var response = await _cadastrarClienteHandler.Handle(command);
+            var response = await _cadastrarClienteHandler.Handle(request);
             return response.Cliente;
         }
 
         public async Task<Cliente> ObterPorDocumentoUseCaseAsync(string documento)
         {
-            var query = new ObterClientePorDocumentoUseCase(documento);
-            var response = await _obterClientePorDocumentoHandler.Handle(query);
+            var response = await _obterClientePorDocumentoHandler.Handle(documento);
             return response.Cliente;
         }
 
         public async Task<Cliente> ObterPorIdUseCaseAsync(Guid id)
         {
-            var query = new ObterClienteUseCase(id);
-            var response = await _obterClienteHandler.Handle(query);
+            var response = await _obterClienteHandler.Handle(id);
             return response.Cliente;
         }
 
         public async Task<IEnumerable<Cliente>> ObterTodosUseCaseAsync()
         {
-            var query = new ObterTodosClientesUseCase();
-            var response = await _obterTodosClientesHandler.Handle(query);
+            var response = await _obterTodosClientesHandler.Handle();
             return response.Clientes;
         }
 
         public async Task<bool> RemoverUseCaseAsync(Guid id)
         {
-            var command = new RemoverClienteCommand(id);
-            var response = await _removerClienteHandler.Handle(command);
+            var response = await _removerClienteHandler.Handle(id);
             return response.Sucesso;
         }
     }

@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -21,20 +22,20 @@ namespace Core.UseCases.Servicos.CadastrarServico
             _servicoGateway = servicoGateway ?? throw new ArgumentNullException(nameof(servicoGateway));
         }
 
-        public async Task<CadastrarServicoResponse> Handle(CadastrarServicoCommand command)
+        public async Task<CadastrarServicoResponse> Handle(CadastrarServicoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Request);
+                LogInicio(metodo, request);
 
                 Servico servico = new()
                 {
-                    Nome = command.Request.Nome,
-                    Descricao = command.Request.Descricao,
-                    Valor = command.Request.Valor,
-                    Disponivel = command.Request.Disponivel
+                    Nome = request.Nome,
+                    Descricao = request.Descricao,
+                    Valor = request.Valor,
+                    Disponivel = request.Disponivel
                 };
 
                 await _servicoGateway.CadastrarAsync(servico);

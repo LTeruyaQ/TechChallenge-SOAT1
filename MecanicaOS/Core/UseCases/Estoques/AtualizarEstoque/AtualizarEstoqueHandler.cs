@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -21,22 +22,22 @@ namespace Core.UseCases.Estoques.AtualizarEstoque
             _estoqueGateway = estoqueGateway ?? throw new ArgumentNullException(nameof(estoqueGateway));
         }
 
-        public async Task<AtualizarEstoqueResponse> Handle(AtualizarEstoqueCommand command)
+        public async Task<AtualizarEstoqueResponse> Handle(Guid id, AtualizarEstoqueUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, new { command.Id, command.Request });
+                LogInicio(metodo, new { id, request });
 
-                var estoque = await _estoqueGateway.ObterPorIdAsync(command.Id)
+                var estoque = await _estoqueGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Estoque não encontrado");
 
-                if (command.Request.Insumo != null) estoque.Insumo = command.Request.Insumo;
-                if (command.Request.Descricao != null) estoque.Descricao = command.Request.Descricao;
-                if (command.Request.Preco.HasValue) estoque.Preco = command.Request.Preco.Value;
-                if (command.Request.QuantidadeDisponivel.HasValue) estoque.QuantidadeDisponivel = command.Request.QuantidadeDisponivel.Value;
-                if (command.Request.QuantidadeMinima.HasValue) estoque.QuantidadeMinima = command.Request.QuantidadeMinima.Value;
+                if (request.Insumo != null) estoque.Insumo = request.Insumo;
+                if (request.Descricao != null) estoque.Descricao = request.Descricao;
+                if (request.Preco.HasValue) estoque.Preco = request.Preco.Value;
+                if (request.QuantidadeDisponivel.HasValue) estoque.QuantidadeDisponivel = request.QuantidadeDisponivel.Value;
+                if (request.QuantidadeMinima.HasValue) estoque.QuantidadeMinima = request.QuantidadeMinima.Value;
 
                 estoque.DataAtualizacao = DateTime.UtcNow;
 

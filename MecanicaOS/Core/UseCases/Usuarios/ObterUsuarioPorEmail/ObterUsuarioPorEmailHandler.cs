@@ -20,15 +20,15 @@ namespace Core.UseCases.Usuarios.ObterUsuarioPorEmail
             _usuarioGateway = usuarioGateway ?? throw new ArgumentNullException(nameof(usuarioGateway));
         }
 
-        public async Task<ObterUsuarioPorEmailResponse> Handle(ObterUsuarioPorEmailUseCase query)
+        public async Task<ObterUsuarioPorEmailResponse> Handle(string email)
         {
             var metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, query.Email);
+                LogInicio(metodo, email);
 
-                var usuario = await _usuarioGateway.ObterPorEmailAsync(query.Email);
+                var usuario = await _usuarioGateway.ObterPorEmailAsync(email);
                 
                 if (usuario is not null)
                     IsNotGetSenha(usuario);

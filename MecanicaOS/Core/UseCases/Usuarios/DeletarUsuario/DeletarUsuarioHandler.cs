@@ -21,15 +21,15 @@ namespace Core.UseCases.Usuarios.DeletarUsuario
             _usuarioGateway = usuarioGateway ?? throw new ArgumentNullException(nameof(usuarioGateway));
         }
 
-        public async Task<DeletarUsuarioResponse> Handle(DeletarUsuarioCommand command)
+        public async Task<DeletarUsuarioResponse> Handle(Guid id)
         {
             var metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, command.Id);
+                LogInicio(metodo, id);
 
-                var usuario = await _usuarioGateway.ObterPorIdAsync(command.Id)
+                var usuario = await _usuarioGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Usuário não encontrado");
 
                 await _usuarioGateway.DeletarAsync(usuario);
