@@ -1,8 +1,6 @@
 using Core.DTOs.UseCases.Autenticacao;
-using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
-using Core.Interfaces.UseCases;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;
@@ -23,7 +21,7 @@ public class AutenticacaoUseCasesIntegrationTests
         var mockAutenticacaoUseCases = _fixture.CriarMockAutenticacaoUseCases();
         var request = AutenticacaoUseCasesFixture.CriarAutenticacaoUseCaseDtoValido();
         var usuario = AutenticacaoUseCasesFixture.CriarUsuarioAtivoValido();
-        
+
         var autenticacaoEsperada = new AutenticacaoDto
         {
             Token = "token_jwt_valido",

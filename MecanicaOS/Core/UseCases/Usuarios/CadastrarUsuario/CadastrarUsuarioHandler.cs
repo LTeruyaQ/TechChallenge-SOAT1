@@ -10,7 +10,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.CadastrarUsuario
 {
-    public class CadastrarUsuarioHandler : UseCasesAbstrato<CadastrarUsuarioHandler, Usuario>
+    public class CadastrarUsuarioHandler : UseCasesAbstrato<CadastrarUsuarioHandler>
     {
         private readonly IUsuarioGateway _usuarioGateway;
         private readonly IClienteUseCases _clienteUseCases;
@@ -56,7 +56,7 @@ namespace Core.UseCases.Usuarios.CadastrarUsuario
 
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao cadastrar usuário");
-                
+
                 IsNotGetSenha(usuario);
 
                 LogFim(metodo, usuario);

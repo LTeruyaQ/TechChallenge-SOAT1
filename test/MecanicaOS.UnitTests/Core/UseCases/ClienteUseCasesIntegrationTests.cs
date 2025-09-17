@@ -1,8 +1,6 @@
-using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
-using Core.Interfaces.UseCases;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;
@@ -65,8 +63,8 @@ public class ClienteUseCasesIntegrationTests
     {
         // Arrange
         var request = ClienteUseCasesFixture.CriarCadastrarClienteUseCaseDtoValido();
-        var clienteEsperado = tipoCliente == TipoCliente.PessoaJuridico 
-            ? ClienteUseCasesFixture.CriarClientePessoaJuridica() 
+        var clienteEsperado = tipoCliente == TipoCliente.PessoaJuridico
+            ? ClienteUseCasesFixture.CriarClientePessoaJuridica()
             : ClienteUseCasesFixture.CriarClienteValido();
 
         var clienteUseCases = _fixture.CriarClienteUseCases();

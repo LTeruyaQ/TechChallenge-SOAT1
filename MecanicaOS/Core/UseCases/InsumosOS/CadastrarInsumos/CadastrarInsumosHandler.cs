@@ -1,7 +1,6 @@
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.Exceptions;
-using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
@@ -9,27 +8,21 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.InsumosOS.CadastrarInsumos
 {
-    public class CadastrarInsumosHandler : UseCasesAbstrato<CadastrarInsumosHandler, InsumoOS>
+    public class CadastrarInsumosHandler : UseCasesAbstrato<CadastrarInsumosHandler>
     {
         private readonly IOrdemServicoUseCases _ordemServicoUseCases;
         private readonly IEstoqueUseCases _estoqueUseCases;
-        private readonly IInsumosGateway _insumosGateway;
-        private readonly IVerificarEstoqueJobGateway _verificarEstoqueJobGateway;
 
         public CadastrarInsumosHandler(
             IOrdemServicoUseCases ordemServicoUseCases,
             IEstoqueUseCases estoqueUseCases,
-            IInsumosGateway insumosGateway,
             ILogServico<CadastrarInsumosHandler> logServico,
             IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico,
-            IVerificarEstoqueJobGateway verificarEstoqueJobGateway)
+            IUsuarioLogadoServico usuarioLogadoServico)
             : base(logServico, udt, usuarioLogadoServico)
         {
             _ordemServicoUseCases = ordemServicoUseCases ?? throw new ArgumentNullException(nameof(ordemServicoUseCases));
             _estoqueUseCases = estoqueUseCases ?? throw new ArgumentNullException(nameof(estoqueUseCases));
-            _insumosGateway = insumosGateway ?? throw new ArgumentNullException(nameof(insumosGateway));
-            _verificarEstoqueJobGateway = verificarEstoqueJobGateway ?? throw new ArgumentNullException(nameof(verificarEstoqueJobGateway));
         }
 
         public async Task<CadastrarInsumosResponse> Handle(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request)

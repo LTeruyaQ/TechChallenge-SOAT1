@@ -23,7 +23,7 @@ namespace Adapters.Controllers
             var autenticacaoDto = await _autenticacaoUseCases.AutenticarUseCaseAsync(useCaseDto);
             return _autenticacaoPresenter.ParaResponse(autenticacaoDto);
         }
-        
+
         internal AutenticacaoUseCaseDto MapearParaAutenticacaoUseCaseDto(AutenticacaoRequest request)
         {
             if (request is null)

@@ -5,12 +5,6 @@ using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.UseCases;
-using FluentAssertions;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -168,7 +162,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                 dto => dto.Nome == request.Nome &&
                       dto.Documento == request.Documento &&
                       dto.Email == request.Email));
-            
+
             _clientePresenter.Received(1).ParaResponse(cliente);
         }
 
@@ -201,7 +195,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                     dto => dto.Nome == request.Nome &&
                           dto.Documento == request.Documento &&
                           dto.TipoCliente == request.TipoCliente));
-            
+
             _clientePresenter.Received(1).ParaResponse(cliente);
         }
     }

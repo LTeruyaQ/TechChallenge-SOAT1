@@ -1,4 +1,3 @@
-using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -8,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.RecusarOrcamento
 {
-    public class RecusarOrcamentoHandler : UseCasesAbstrato<RecusarOrcamentoHandler, OrdemServico>
+    public class RecusarOrcamentoHandler : UseCasesAbstrato<RecusarOrcamentoHandler>
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
 

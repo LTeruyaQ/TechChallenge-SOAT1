@@ -4,10 +4,6 @@ using Adapters.DTOs.Responses.Autenticacao;
 using Adapters.Presenters.Interfaces;
 using Core.DTOs.UseCases.Autenticacao;
 using Core.Interfaces.UseCases;
-using FluentAssertions;
-using NSubstitute;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -78,9 +74,9 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             // Assert
             await _autenticacaoUseCases.Received(1).AutenticarUseCaseAsync(Arg.Is<AutenticacaoUseCaseDto>(
                 dto => dto.Email == request.Email && dto.Senha == request.Senha));
-            
+
             _autenticacaoPresenter.Received(1).ParaResponse(autenticacaoDto);
-            
+
             result.Should().Be(autenticacaoResponse);
         }
     }

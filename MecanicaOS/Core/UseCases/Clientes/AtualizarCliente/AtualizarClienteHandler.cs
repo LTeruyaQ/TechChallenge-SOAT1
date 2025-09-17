@@ -8,7 +8,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.AtualizarCliente
 {
-    public class AtualizarClienteHandler : UseCasesAbstrato<AtualizarClienteHandler, Cliente>
+    public class AtualizarClienteHandler : UseCasesAbstrato<AtualizarClienteHandler>
     {
         private readonly IClienteGateway _clienteGateway;
         private readonly IEnderecoGateway _enderecoGateway;

@@ -1,13 +1,13 @@
-using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Veiculos;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Veiculos.ObterVeiculo
 {
-    public class ObterVeiculoHandler : UseCasesAbstrato<ObterVeiculoHandler, Veiculo>
+    public class ObterVeiculoHandler : UseCasesAbstrato<ObterVeiculoHandler>, IObterVeiculoHandler
     {
         private readonly IVeiculoGateway _veiculoGateway;
 

@@ -39,7 +39,7 @@ namespace Adapters.Controllers
             var resultado = await _ordemServicoUseCases.CadastrarUseCaseAsync(useCaseDto);
             return _ordemServicoPresenter.ParaResponse(resultado);
         }
-        
+
         internal CadastrarOrdemServicoUseCaseDto MapearParaCadastrarOrdemServicoUseCaseDto(CadastrarOrdemServicoRequest request)
         {
             if (request is null)
@@ -60,7 +60,7 @@ namespace Adapters.Controllers
             var resultado = await _ordemServicoUseCases.AtualizarUseCaseAsync(id, useCaseDto);
             return _ordemServicoPresenter.ParaResponse(resultado);
         }
-        
+
         internal AtualizarOrdemServicoUseCaseDto MapearParaAtualizarOrdemServicoUseCaseDto(AtualizarOrdemServicoRequest request)
         {
             if (request is null)

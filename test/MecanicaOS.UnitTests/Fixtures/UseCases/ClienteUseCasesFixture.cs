@@ -2,10 +2,7 @@ using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Gateways;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
-using Core.UseCases.Clientes;
 
 namespace MecanicaOS.UnitTests.Fixtures.UseCases;
 

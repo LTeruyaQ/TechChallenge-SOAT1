@@ -1,4 +1,3 @@
-using Core.Entidades;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 

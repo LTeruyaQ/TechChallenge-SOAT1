@@ -10,63 +10,63 @@ using Core.DTOs.Entidades.Usuarios;
 using Core.DTOs.Entidades.Veiculo;
 using Core.Interfaces.Eventos;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Veiculos;
 using Core.Interfaces.Jobs;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
-using Core.UseCases;
-using Core.UseCases.Clientes;
-using Core.UseCases.Clientes.CadastrarCliente;
-using Core.UseCases.Clientes.AtualizarCliente;
-using Core.UseCases.Clientes.ObterCliente;
-using Core.UseCases.Clientes.ObterTodosClientes;
-using Core.UseCases.Clientes.RemoverCliente;
-using Core.UseCases.Clientes.ObterClientePorDocumento;
-using Core.UseCases.Veiculos;
-using Core.UseCases.Veiculos.CadastrarVeiculo;
-using Core.UseCases.Veiculos.AtualizarVeiculo;
-using Core.UseCases.Veiculos.ObterVeiculo;
-using Core.UseCases.Veiculos.ObterTodosVeiculos;
-using Core.UseCases.Veiculos.ObterVeiculoPorCliente;
-using Core.UseCases.Veiculos.ObterVeiculoPorPlaca;
-using Core.UseCases.Veiculos.DeletarVeiculo;
-using Core.UseCases.Usuarios;
-using Core.UseCases.Usuarios.CadastrarUsuario;
-using Core.UseCases.Usuarios.AtualizarUsuario;
-using Core.UseCases.Usuarios.ObterUsuario;
-using Core.UseCases.Usuarios.ObterTodosUsuarios;
-using Core.UseCases.Usuarios.DeletarUsuario;
-using Core.UseCases.Usuarios.ObterUsuarioPorEmail;
-using Core.UseCases.Servicos;
-using Core.UseCases.Servicos.CadastrarServico;
-using Core.UseCases.Servicos.EditarServico;
-using Core.UseCases.Servicos.DeletarServico;
-using Core.UseCases.Servicos.ObterServico;
-using Core.UseCases.Servicos.ObterTodosServicos;
-using Core.UseCases.Servicos.ObterServicoPorNome;
-using Core.UseCases.Servicos.ObterServicosDisponiveis;
-using Core.UseCases.Orcamentos;
-using Core.UseCases.Orcamentos.GerarOrcamento;
-using Core.UseCases.Estoques;
-using Core.UseCases.Estoques.CadastrarEstoque;
-using Core.UseCases.Estoques.AtualizarEstoque;
-using Core.UseCases.Estoques.DeletarEstoque;
-using Core.UseCases.Estoques.ObterEstoque;
-using Core.UseCases.Estoques.ObterTodosEstoques;
-using Core.UseCases.Estoques.ObterEstoqueCritico;
 using Core.UseCases.Autenticacao;
 using Core.UseCases.Autenticacao.AutenticarUsuario;
+using Core.UseCases.Clientes;
+using Core.UseCases.Clientes.AtualizarCliente;
+using Core.UseCases.Clientes.CadastrarCliente;
+using Core.UseCases.Clientes.ObterCliente;
+using Core.UseCases.Clientes.ObterClientePorDocumento;
+using Core.UseCases.Clientes.ObterTodosClientes;
+using Core.UseCases.Clientes.RemoverCliente;
+using Core.UseCases.Estoques;
+using Core.UseCases.Estoques.AtualizarEstoque;
+using Core.UseCases.Estoques.CadastrarEstoque;
+using Core.UseCases.Estoques.DeletarEstoque;
+using Core.UseCases.Estoques.ObterEstoque;
+using Core.UseCases.Estoques.ObterEstoqueCritico;
+using Core.UseCases.Estoques.ObterTodosEstoques;
 using Core.UseCases.InsumosOS;
 using Core.UseCases.InsumosOS.CadastrarInsumos;
 using Core.UseCases.InsumosOS.DevolverInsumos;
+using Core.UseCases.Orcamentos;
+using Core.UseCases.Orcamentos.GerarOrcamento;
 using Core.UseCases.OrdensServico;
-using Core.UseCases.OrdensServico.CadastrarOrdemServico;
-using Core.UseCases.OrdensServico.AtualizarOrdemServico;
-using Core.UseCases.OrdensServico.ObterOrdemServico;
-using Core.UseCases.OrdensServico.ObterTodosOrdensServico;
-using Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus;
 using Core.UseCases.OrdensServico.AceitarOrcamento;
+using Core.UseCases.OrdensServico.AtualizarOrdemServico;
+using Core.UseCases.OrdensServico.CadastrarOrdemServico;
+using Core.UseCases.OrdensServico.ObterOrdemServico;
+using Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus;
+using Core.UseCases.OrdensServico.ObterTodosOrdensServico;
 using Core.UseCases.OrdensServico.RecusarOrcamento;
+using Core.UseCases.Servicos;
+using Core.UseCases.Servicos.CadastrarServico;
+using Core.UseCases.Servicos.DeletarServico;
+using Core.UseCases.Servicos.EditarServico;
+using Core.UseCases.Servicos.ObterServico;
+using Core.UseCases.Servicos.ObterServicoPorNome;
+using Core.UseCases.Servicos.ObterServicosDisponiveis;
+using Core.UseCases.Servicos.ObterTodosServicos;
+using Core.UseCases.Usuarios;
+using Core.UseCases.Usuarios.AtualizarUsuario;
+using Core.UseCases.Usuarios.CadastrarUsuario;
+using Core.UseCases.Usuarios.DeletarUsuario;
+using Core.UseCases.Usuarios.ObterTodosUsuarios;
+using Core.UseCases.Usuarios.ObterUsuario;
+using Core.UseCases.Usuarios.ObterUsuarioPorEmail;
+using Core.UseCases.Veiculos;
+using Core.UseCases.Veiculos.AtualizarVeiculo;
+using Core.UseCases.Veiculos.CadastrarVeiculo;
+using Core.UseCases.Veiculos.DeletarVeiculo;
+using Core.UseCases.Veiculos.ObterTodosVeiculos;
+using Core.UseCases.Veiculos.ObterVeiculo;
+using Core.UseCases.Veiculos.ObterVeiculoPorCliente;
+using Core.UseCases.Veiculos.ObterVeiculoPorPlaca;
 using Infraestrutura.Autenticacao;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.UdT;
@@ -332,7 +332,7 @@ namespace API
 
         #region Criação de Handlers Individuais - Veículo
 
-        public CadastrarVeiculoHandler CreateCadastrarVeiculoHandler()
+        public ICadastrarVeiculoHandler CreateCadastrarVeiculoHandler()
         {
             var veiculoGateway = CreateVeiculoGateway();
             var logServico = new LogServico<CadastrarVeiculoHandler>(_idCorrelacionalService, NullLogger<CadastrarVeiculoHandler>.Instance, _usuarioLogadoServico);
@@ -344,7 +344,7 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public AtualizarVeiculoHandler CreateAtualizarVeiculoHandler()
+        public IAtualizarVeiculoHandler CreateAtualizarVeiculoHandler()
         {
             var veiculoGateway = CreateVeiculoGateway();
             var logServico = new LogServico<AtualizarVeiculoHandler>(_idCorrelacionalService, NullLogger<AtualizarVeiculoHandler>.Instance, _usuarioLogadoServico);
@@ -356,7 +356,7 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public ObterVeiculoHandler CreateObterVeiculoHandler()
+        public IObterVeiculoHandler CreateObterVeiculoHandler()
         {
             var veiculoGateway = CreateVeiculoGateway();
             var logServico = new LogServico<ObterVeiculoHandler>(_idCorrelacionalService, NullLogger<ObterVeiculoHandler>.Instance, _usuarioLogadoServico);
@@ -368,7 +368,7 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public ObterTodosVeiculosHandler CreateObterTodosVeiculosHandler()
+        public IObterTodosVeiculosHandler CreateObterTodosVeiculosHandler()
         {
             var veiculoGateway = CreateVeiculoGateway();
             var logServico = new LogServico<ObterTodosVeiculosHandler>(_idCorrelacionalService, NullLogger<ObterTodosVeiculosHandler>.Instance, _usuarioLogadoServico);
@@ -380,7 +380,7 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public ObterVeiculoPorClienteHandler CreateObterVeiculoPorClienteHandler()
+        public IObterVeiculoPorClienteHandler CreateObterVeiculoPorClienteHandler()
         {
             var veiculoGateway = CreateVeiculoGateway();
             var logServico = new LogServico<ObterVeiculoPorClienteHandler>(_idCorrelacionalService, NullLogger<ObterVeiculoPorClienteHandler>.Instance, _usuarioLogadoServico);
@@ -392,7 +392,7 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public ObterVeiculoPorPlacaHandler CreateObterVeiculoPorPlacaHandler()
+        public IObterVeiculoPorPlacaHandler CreateObterVeiculoPorPlacaHandler()
         {
             var veiculoGateway = CreateVeiculoGateway();
             var logServico = new LogServico<ObterVeiculoPorPlacaHandler>(_idCorrelacionalService, NullLogger<ObterVeiculoPorPlacaHandler>.Instance, _usuarioLogadoServico);
@@ -404,7 +404,7 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public DeletarVeiculoHandler CreateDeletarVeiculoHandler()
+        public IDeletarVeiculoHandler CreateDeletarVeiculoHandler()
         {
             var veiculoGateway = CreateVeiculoGateway();
             var logServico = new LogServico<DeletarVeiculoHandler>(_idCorrelacionalService, NullLogger<DeletarVeiculoHandler>.Instance, _usuarioLogadoServico);
@@ -704,18 +704,14 @@ namespace API
         {
             var ordemServicoUseCases = CreateOrdemServicoUseCases();
             var estoqueUseCases = CreateEstoqueUseCases();
-            var insumosGateway = CreateInsumosGateway();
-            var verificarEstoqueJobGateway = CreateVerificarEstoqueJobGateway();
             var logServico = new LogServico<CadastrarInsumosHandler>(_idCorrelacionalService, NullLogger<CadastrarInsumosHandler>.Instance, _usuarioLogadoServico);
 
             return new CadastrarInsumosHandler(
                 ordemServicoUseCases,
                 estoqueUseCases,
-                insumosGateway,
                 logServico,
                 _unidadeDeTrabalho,
-                _usuarioLogadoServico,
-                verificarEstoqueJobGateway);
+                _usuarioLogadoServico);
         }
 
         public DevolverInsumosHandler CreateDevolverInsumosHandler()
@@ -758,7 +754,6 @@ namespace API
 
             return new AtualizarOrdemServicoHandler(
                 ordemServicoGateway,
-                eventosGateway,
                 logServico,
                 _unidadeDeTrabalho,
                 _usuarioLogadoServico);
@@ -958,7 +953,7 @@ namespace API
                 obterVeiculoPorPlacaHandler,
                 deletarVeiculoHandler);
         }
-        
+
         // Orçamento - Usando novo padrão com facade
         public IOrcamentoUseCases CreateOrcamentoUseCases()
         {

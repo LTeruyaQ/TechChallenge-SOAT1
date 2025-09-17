@@ -1,16 +1,9 @@
 using Adapters.Controllers;
 using Adapters.DTOs.Requests.Servico;
-using Adapters.DTOs.Responses.Servico;
 using Adapters.Presenters.Interfaces;
 using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 using Core.Interfaces.UseCases;
-using FluentAssertions;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -118,7 +111,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                       dto.Descricao == request.Descricao &&
                       dto.Valor == request.Valor &&
                       dto.Disponivel == request.Disponivel));
-            
+
             _servicoPresenter.Received(1).ParaResponse(servico);
         }
 
@@ -150,7 +143,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                           dto.Descricao == request.Descricao &&
                           dto.Valor == request.Valor &&
                           dto.Disponivel == request.Disponivel));
-            
+
             _servicoPresenter.Received(1).ParaResponse(servico);
         }
     }

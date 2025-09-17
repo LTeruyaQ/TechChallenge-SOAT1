@@ -1,4 +1,3 @@
-using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -6,7 +5,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Servicos.ObterServicoPorNome
 {
-    public class ObterServicoPorNomeHandler : UseCasesAbstrato<ObterServicoPorNomeHandler, Servico>
+    public class ObterServicoPorNomeHandler : UseCasesAbstrato<ObterServicoPorNomeHandler>
     {
         private readonly IServicoGateway _servicoGateway;
 

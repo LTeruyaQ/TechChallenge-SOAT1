@@ -6,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.ObterUsuario
 {
-    public class ObterUsuarioHandler : UseCasesAbstrato<ObterUsuarioHandler, Usuario>
+    public class ObterUsuarioHandler : UseCasesAbstrato<ObterUsuarioHandler>
     {
         private readonly IUsuarioGateway _usuarioGateway;
 
@@ -29,7 +29,7 @@ namespace Core.UseCases.Usuarios.ObterUsuario
                 LogInicio(metodo, id);
 
                 var usuario = await _usuarioGateway.ObterPorIdAsync(id);
-                
+
                 if (usuario is not null)
                     IsNotGetSenha(usuario);
 

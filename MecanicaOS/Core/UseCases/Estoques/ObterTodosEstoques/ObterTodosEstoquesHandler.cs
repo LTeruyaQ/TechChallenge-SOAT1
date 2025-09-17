@@ -1,4 +1,3 @@
-using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -6,7 +5,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.ObterTodosEstoques
 {
-    public class ObterTodosEstoquesHandler : UseCasesAbstrato<ObterTodosEstoquesHandler, Estoque>
+    public class ObterTodosEstoquesHandler : UseCasesAbstrato<ObterTodosEstoquesHandler>
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

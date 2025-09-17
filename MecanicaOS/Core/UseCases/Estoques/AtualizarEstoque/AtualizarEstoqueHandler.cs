@@ -1,5 +1,4 @@
 using Core.DTOs.UseCases.Estoque;
-using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
@@ -8,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.AtualizarEstoque
 {
-    public class AtualizarEstoqueHandler : UseCasesAbstrato<AtualizarEstoqueHandler, Estoque>
+    public class AtualizarEstoqueHandler : UseCasesAbstrato<AtualizarEstoqueHandler>
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

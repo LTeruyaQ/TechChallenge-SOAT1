@@ -8,7 +8,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.CadastrarCliente
 {
-    public class CadastrarClienteHandler : UseCasesAbstrato<CadastrarClienteHandler, Cliente>
+    public class CadastrarClienteHandler : UseCasesAbstrato<CadastrarClienteHandler>
     {
         private readonly IClienteGateway _clienteGateway;
         private readonly IEnderecoGateway _enderecoGateway;

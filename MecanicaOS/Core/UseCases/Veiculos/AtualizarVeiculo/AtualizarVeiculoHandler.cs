@@ -1,14 +1,14 @@
 using Core.DTOs.UseCases.Veiculo;
-using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Veiculos;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Veiculos.AtualizarVeiculo
 {
-    public class AtualizarVeiculoHandler : UseCasesAbstrato<AtualizarVeiculoHandler, Veiculo>
+    public class AtualizarVeiculoHandler : UseCasesAbstrato<AtualizarVeiculoHandler>, IAtualizarVeiculoHandler
     {
         private readonly IVeiculoGateway _veiculoGateway;
 

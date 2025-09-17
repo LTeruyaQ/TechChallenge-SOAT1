@@ -1,4 +1,3 @@
-using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -6,7 +5,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.ObterOrdemServico
 {
-    public class ObterOrdemServicoHandler : UseCasesAbstrato<ObterOrdemServicoHandler, OrdemServico>
+    public class ObterOrdemServicoHandler : UseCasesAbstrato<ObterOrdemServicoHandler>
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
 

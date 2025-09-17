@@ -1,7 +1,5 @@
-using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
 using Core.Exceptions;
-using Core.Interfaces.UseCases;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;
@@ -187,7 +185,7 @@ public class VeiculoUseCasesIntegrationTests
             VeiculoUseCasesFixture.CriarVeiculoValido(),
             VeiculoUseCasesFixture.CriarVeiculoValido()
         };
-        
+
         // Configurar todos os veículos para terem o mesmo clienteId
         foreach (var veiculo in veiculosEsperados)
         {

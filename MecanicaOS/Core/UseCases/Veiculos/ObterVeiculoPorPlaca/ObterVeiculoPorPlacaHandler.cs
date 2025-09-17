@@ -1,12 +1,12 @@
-using Core.Entidades;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Veiculos;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Veiculos.ObterVeiculoPorPlaca
 {
-    public class ObterVeiculoPorPlacaHandler : UseCasesAbstrato<ObterVeiculoPorPlacaHandler, Veiculo>
+    public class ObterVeiculoPorPlacaHandler : UseCasesAbstrato<ObterVeiculoPorPlacaHandler>, IObterVeiculoPorPlacaHandler
     {
         private readonly IVeiculoGateway _veiculoGateway;
 

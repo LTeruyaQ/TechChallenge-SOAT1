@@ -6,12 +6,6 @@ using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.UseCases;
-using FluentAssertions;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -130,9 +124,9 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                       dto.TipoUsuario == request.TipoUsuario &&
                       dto.RecebeAlertaEstoque == request.RecebeAlertaEstoque &&
                       dto.Documento == request.Documento));
-            
+
             _usuarioPresenter.Received(1).ParaResponse(usuario);
-            
+
             result.Should().Be(usuarioResponse);
         }
 
@@ -171,9 +165,9 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                           dto.DataUltimoAcesso == request.DataUltimoAcesso &&
                           dto.TipoUsuario == request.TipoUsuario &&
                           dto.RecebeAlertaEstoque == request.RecebeAlertaEstoque));
-            
+
             _usuarioPresenter.Received(1).ParaResponse(usuario);
-            
+
             result.Should().Be(usuarioResponse);
         }
     }

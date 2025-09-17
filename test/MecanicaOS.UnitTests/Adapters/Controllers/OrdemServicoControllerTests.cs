@@ -1,17 +1,10 @@
 using Adapters.Controllers;
 using Adapters.DTOs.Requests.OrdemServico;
-using Adapters.DTOs.Responses.OrdemServico;
 using Adapters.Presenters.Interfaces;
 using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.UseCases;
-using FluentAssertions;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -121,7 +114,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                       dto.VeiculoId == request.VeiculoId &&
                       dto.ServicoId == request.ServicoId &&
                       dto.Descricao == request.Descricao));
-            
+
             _ordemServicoPresenter.Received(1).ParaResponse(ordemServico);
         }
 
@@ -155,7 +148,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                           dto.ServicoId == request.ServicoId &&
                           dto.Descricao == request.Descricao &&
                           dto.Status == request.Status));
-            
+
             _ordemServicoPresenter.Received(1).ParaResponse(ordemServico);
         }
     }

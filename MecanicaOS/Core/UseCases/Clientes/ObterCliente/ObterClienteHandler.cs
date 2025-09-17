@@ -1,5 +1,3 @@
-using Core.Entidades;
-using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -7,7 +5,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.ObterCliente
 {
-    public class ObterClienteHandler : UseCasesAbstrato<ObterClienteHandler, Cliente>
+    public class ObterClienteHandler : UseCasesAbstrato<ObterClienteHandler>
     {
         private readonly IClienteGateway _clienteGateway;
 

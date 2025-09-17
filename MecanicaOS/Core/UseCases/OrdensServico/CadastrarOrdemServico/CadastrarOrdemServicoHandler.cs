@@ -10,7 +10,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
 {
-    public class CadastrarOrdemServicoHandler : UseCasesAbstrato<CadastrarOrdemServicoHandler, OrdemServico>
+    public class CadastrarOrdemServicoHandler : UseCasesAbstrato<CadastrarOrdemServicoHandler>
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
         private readonly IClienteUseCases _clienteUseCases;
@@ -38,11 +38,9 @@ namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
             {
                 LogInicio(metodo, request);
 
-                // Validar cliente
                 var cliente = await _clienteUseCases.ObterPorIdUseCaseAsync(request.ClienteId)
                     ?? throw new DadosNaoEncontradosException("Cliente não encontrado");
 
-                // Validar serviço
                 var servico = await _servicoUseCases.ObterServicoPorIdUseCaseAsync(request.ServicoId)
                     ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
 

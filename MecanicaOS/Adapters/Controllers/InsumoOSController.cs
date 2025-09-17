@@ -25,7 +25,7 @@ namespace Adapters.Controllers
             // Chamar o use case
             return await _insumoOSUseCases.CadastrarInsumosUseCaseAsync(ordemServicoId, useCaseDtos);
         }
-        
+
         internal CadastrarInsumoOSUseCaseDto MapearParaCadastrarInsumoOSUseCaseDto(CadastrarInsumoOSRequest request)
         {
             if (request is null)

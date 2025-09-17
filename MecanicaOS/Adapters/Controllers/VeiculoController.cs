@@ -43,7 +43,7 @@ namespace Adapters.Controllers
             var resultado = await _veiculoUseCases.CadastrarUseCaseAsync(useCaseDto);
             return _veiculoPresenter.ParaResponse(resultado);
         }
-        
+
         internal CadastrarVeiculoUseCaseDto MapearParaCadastrarVeiculoUseCaseDto(CadastrarVeiculoRequest request)
         {
             if (request is null)
@@ -67,7 +67,7 @@ namespace Adapters.Controllers
             var resultado = await _veiculoUseCases.AtualizarUseCaseAsync(id, useCaseDto);
             return _veiculoPresenter.ParaResponse(resultado);
         }
-        
+
         internal AtualizarVeiculoUseCaseDto MapearParaAtualizarVeiculoUseCaseDto(AtualizarVeiculoRequest request)
         {
             if (request is null)

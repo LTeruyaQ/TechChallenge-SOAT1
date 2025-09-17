@@ -1,8 +1,6 @@
-using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
-using Core.Interfaces.UseCases;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;
@@ -196,7 +194,7 @@ public class UsuarioUseCasesIntegrationTests
             UsuarioUseCasesFixture.CriarUsuarioAdministradorValido(),
             UsuarioUseCasesFixture.CriarUsuarioClienteValido()
         };
-        
+
         // Garantir que as senhas não sejam retornadas
         foreach (var usuario in usuariosEsperados)
         {

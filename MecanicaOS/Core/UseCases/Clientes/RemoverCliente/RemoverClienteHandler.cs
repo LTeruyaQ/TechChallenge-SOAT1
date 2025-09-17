@@ -1,4 +1,3 @@
-using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
@@ -7,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.RemoverCliente
 {
-    public class RemoverClienteHandler : UseCasesAbstrato<RemoverClienteHandler, Cliente>
+    public class RemoverClienteHandler : UseCasesAbstrato<RemoverClienteHandler>
     {
         private readonly IClienteGateway _clienteGateway;
 

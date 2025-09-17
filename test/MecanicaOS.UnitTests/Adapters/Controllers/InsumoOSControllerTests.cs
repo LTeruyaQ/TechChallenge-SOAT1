@@ -4,13 +4,6 @@ using Adapters.Presenters.Interfaces;
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.Interfaces.UseCases;
-using FluentAssertions;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -92,13 +85,13 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             // Assert
             await _insumoOSUseCases.Received(1).CadastrarInsumosUseCaseAsync(
                 Arg.Is<Guid>(g => g == ordemServicoId),
-                Arg.Is<List<CadastrarInsumoOSUseCaseDto>>(dtos => 
+                Arg.Is<List<CadastrarInsumoOSUseCaseDto>>(dtos =>
                     dtos.Count == requests.Count &&
-                    dtos.All(dto => 
-                        requests.Any(r => 
-                            r.EstoqueId == dto.EstoqueId && 
+                    dtos.All(dto =>
+                        requests.Any(r =>
+                            r.EstoqueId == dto.EstoqueId &&
                             r.Quantidade == dto.Quantidade))));
-            
+
             result.Should().BeEquivalentTo(insumosOS);
         }
 

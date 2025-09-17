@@ -1,5 +1,4 @@
 using Core.DTOs.UseCases.Servico;
-using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
@@ -8,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Servicos.EditarServico
 {
-    public class EditarServicoHandler : UseCasesAbstrato<EditarServicoHandler, Servico>
+    public class EditarServicoHandler : UseCasesAbstrato<EditarServicoHandler>
     {
         private readonly IServicoGateway _servicoGateway;
 

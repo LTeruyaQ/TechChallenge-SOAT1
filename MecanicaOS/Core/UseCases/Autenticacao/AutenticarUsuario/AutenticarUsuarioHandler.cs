@@ -1,11 +1,9 @@
 using Core.DTOs.UseCases.Autenticacao;
-using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
-using Core.Interfaces.Repositorios;
 
 namespace Core.UseCases.Autenticacao.AutenticarUsuario
 {

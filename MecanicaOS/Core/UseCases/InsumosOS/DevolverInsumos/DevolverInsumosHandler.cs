@@ -7,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.InsumosOS.DevolverInsumos
 {
-    public class DevolverInsumosHandler : UseCasesAbstrato<DevolverInsumosHandler, InsumoOS>
+    public class DevolverInsumosHandler : UseCasesAbstrato<DevolverInsumosHandler>
     {
         private readonly IEstoqueUseCases _estoqueUseCases;
 

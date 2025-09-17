@@ -5,8 +5,6 @@ using Core.Enumeradores;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.UseCases;
-using Core.UseCases.OrdensServico;
-using NSubstitute;
 
 namespace MecanicaOS.UnitTests.Fixtures.UseCases;
 

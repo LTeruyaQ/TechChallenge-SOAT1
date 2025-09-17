@@ -1,10 +1,9 @@
-using Core.Entidades.Abstratos;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 
 namespace Core.UseCases.Abstrato
 {
-    public abstract class UseCasesAbstrato<T, R> where T : class where R : Entidade
+    public abstract class UseCasesAbstrato<T> where T : class
     {
         private readonly ILogServico<T> _logServico;
         private readonly IUnidadeDeTrabalho _udt;

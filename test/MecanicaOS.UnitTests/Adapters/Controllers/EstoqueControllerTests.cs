@@ -1,16 +1,9 @@
 using Adapters.Controllers;
 using Adapters.DTOs.Requests.Estoque;
-using Adapters.DTOs.Responses.Estoque;
 using Adapters.Presenters.Interfaces;
 using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 using Core.Interfaces.UseCases;
-using FluentAssertions;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -122,7 +115,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                 dto => dto.Insumo == request.Insumo &&
                       dto.Descricao == request.Descricao &&
                       dto.QuantidadeDisponivel == request.QuantidadeDisponivel));
-            
+
             _estoquePresenter.Received(1).ParaResponse(estoque);
         }
 
@@ -154,7 +147,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                     dto => dto.Insumo == request.Insumo &&
                           dto.Descricao == request.Descricao &&
                           dto.Preco == request.Preco));
-            
+
             _estoquePresenter.Received(1).ParaResponse(estoque);
         }
     }

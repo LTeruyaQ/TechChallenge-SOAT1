@@ -6,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.ObterUsuarioPorEmail
 {
-    public class ObterUsuarioPorEmailHandler : UseCasesAbstrato<ObterUsuarioPorEmailHandler, Usuario>
+    public class ObterUsuarioPorEmailHandler : UseCasesAbstrato<ObterUsuarioPorEmailHandler>
     {
         private readonly IUsuarioGateway _usuarioGateway;
 
@@ -29,7 +29,7 @@ namespace Core.UseCases.Usuarios.ObterUsuarioPorEmail
                 LogInicio(metodo, email);
 
                 var usuario = await _usuarioGateway.ObterPorEmailAsync(email);
-                
+
                 if (usuario is not null)
                     IsNotGetSenha(usuario);
 

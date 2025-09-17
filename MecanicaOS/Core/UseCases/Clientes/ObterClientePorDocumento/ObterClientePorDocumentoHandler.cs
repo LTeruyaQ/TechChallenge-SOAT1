@@ -7,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.ObterClientePorDocumento
 {
-    public class ObterClientePorDocumentoHandler : UseCasesAbstrato<ObterClientePorDocumentoHandler, Cliente>
+    public class ObterClientePorDocumentoHandler : UseCasesAbstrato<ObterClientePorDocumentoHandler>
     {
         private readonly IClienteGateway _clienteGateway;
 

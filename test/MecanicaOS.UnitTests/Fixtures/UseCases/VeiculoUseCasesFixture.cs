@@ -3,7 +3,6 @@ using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.UseCases;
-using Core.UseCases.Veiculos;
 
 namespace MecanicaOS.UnitTests.Fixtures.UseCases;
 

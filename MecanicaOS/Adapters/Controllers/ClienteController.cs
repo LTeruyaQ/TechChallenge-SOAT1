@@ -38,7 +38,7 @@ namespace Adapters.Controllers
             var resultado = await _clienteUseCases.CadastrarUseCaseAsync(useCaseDto);
             return _clientePresenter.ParaResponse(resultado);
         }
-        
+
         internal CadastrarClienteUseCaseDto MapearParaCadastrarClienteUseCaseDto(CadastrarClienteRequest request)
         {
             if (request is null)
@@ -68,7 +68,7 @@ namespace Adapters.Controllers
             var resultado = await _clienteUseCases.AtualizarUseCaseAsync(id, useCaseDto);
             return _clientePresenter.ParaResponse(resultado);
         }
-        
+
         internal AtualizarClienteUseCaseDto MapearParaAtualizarClienteUseCaseDto(AtualizarClienteRequest request)
         {
             if (request is null)

@@ -1,4 +1,3 @@
-using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -8,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.AceitarOrcamento
 {
-    public class AceitarOrcamentoHandler : UseCasesAbstrato<AceitarOrcamentoHandler, OrdemServico>
+    public class AceitarOrcamentoHandler : UseCasesAbstrato<AceitarOrcamentoHandler>
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
 
@@ -38,7 +37,7 @@ namespace Core.UseCases.OrdensServico.AceitarOrcamento
                     throw new DadosInvalidosException("Ordem de serviço não está aguardando aprovação do orçamento");
 
                 // Verificar se orçamento não expirou (exemplo: 7 dias)
-                if (ordemServico.DataEnvioOrcamento.HasValue && 
+                if (ordemServico.DataEnvioOrcamento.HasValue &&
                     ordemServico.DataEnvioOrcamento.Value.AddDays(7) < DateTime.UtcNow)
                     throw new DadosInvalidosException("Orçamento expirado");
 

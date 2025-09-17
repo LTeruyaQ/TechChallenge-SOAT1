@@ -1,13 +1,7 @@
 using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
+using Core.Interfaces.Handlers.Veiculos;
 using Core.Interfaces.UseCases;
-using Core.UseCases.Veiculos.AtualizarVeiculo;
-using Core.UseCases.Veiculos.CadastrarVeiculo;
-using Core.UseCases.Veiculos.DeletarVeiculo;
-using Core.UseCases.Veiculos.ObterTodosVeiculos;
-using Core.UseCases.Veiculos.ObterVeiculo;
-using Core.UseCases.Veiculos.ObterVeiculoPorCliente;
-using Core.UseCases.Veiculos.ObterVeiculoPorPlaca;
 
 namespace Core.UseCases.Veiculos
 {
@@ -17,22 +11,22 @@ namespace Core.UseCases.Veiculos
     /// </summary>
     public class VeiculoUseCasesFacade : IVeiculoUseCases
     {
-        private readonly CadastrarVeiculoHandler _cadastrarVeiculoHandler;
-        private readonly AtualizarVeiculoHandler _atualizarVeiculoHandler;
-        private readonly ObterVeiculoHandler _obterVeiculoHandler;
-        private readonly ObterTodosVeiculosHandler _obterTodosVeiculosHandler;
-        private readonly ObterVeiculoPorClienteHandler _obterVeiculoPorClienteHandler;
-        private readonly ObterVeiculoPorPlacaHandler _obterVeiculoPorPlacaHandler;
-        private readonly DeletarVeiculoHandler _deletarVeiculoHandler;
+        private readonly ICadastrarVeiculoHandler _cadastrarVeiculoHandler;
+        private readonly IAtualizarVeiculoHandler _atualizarVeiculoHandler;
+        private readonly IObterVeiculoHandler _obterVeiculoHandler;
+        private readonly IObterTodosVeiculosHandler _obterTodosVeiculosHandler;
+        private readonly IObterVeiculoPorClienteHandler _obterVeiculoPorClienteHandler;
+        private readonly IObterVeiculoPorPlacaHandler _obterVeiculoPorPlacaHandler;
+        private readonly IDeletarVeiculoHandler _deletarVeiculoHandler;
 
         public VeiculoUseCasesFacade(
-            CadastrarVeiculoHandler cadastrarVeiculoHandler,
-            AtualizarVeiculoHandler atualizarVeiculoHandler,
-            ObterVeiculoHandler obterVeiculoHandler,
-            ObterTodosVeiculosHandler obterTodosVeiculosHandler,
-            ObterVeiculoPorClienteHandler obterVeiculoPorClienteHandler,
-            ObterVeiculoPorPlacaHandler obterVeiculoPorPlacaHandler,
-            DeletarVeiculoHandler deletarVeiculoHandler)
+            ICadastrarVeiculoHandler cadastrarVeiculoHandler,
+            IAtualizarVeiculoHandler atualizarVeiculoHandler,
+            IObterVeiculoHandler obterVeiculoHandler,
+            IObterTodosVeiculosHandler obterTodosVeiculosHandler,
+            IObterVeiculoPorClienteHandler obterVeiculoPorClienteHandler,
+            IObterVeiculoPorPlacaHandler obterVeiculoPorPlacaHandler,
+            IDeletarVeiculoHandler deletarVeiculoHandler)
         {
             _cadastrarVeiculoHandler = cadastrarVeiculoHandler ?? throw new ArgumentNullException(nameof(cadastrarVeiculoHandler));
             _atualizarVeiculoHandler = atualizarVeiculoHandler ?? throw new ArgumentNullException(nameof(atualizarVeiculoHandler));

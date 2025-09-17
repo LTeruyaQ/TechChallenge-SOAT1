@@ -1,8 +1,6 @@
-using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
-using Core.Interfaces.UseCases;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
 
 namespace MecanicaOS.UnitTests.Core.UseCases;

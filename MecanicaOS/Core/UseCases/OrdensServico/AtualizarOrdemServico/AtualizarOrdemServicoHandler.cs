@@ -1,5 +1,4 @@
 using Core.DTOs.UseCases.OrdemServico;
-using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -9,21 +8,18 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.AtualizarOrdemServico
 {
-    public class AtualizarOrdemServicoHandler : UseCasesAbstrato<AtualizarOrdemServicoHandler, OrdemServico>
+    public class AtualizarOrdemServicoHandler : UseCasesAbstrato<AtualizarOrdemServicoHandler>
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
-        private readonly IEventosGateway _eventosGateway;
 
         public AtualizarOrdemServicoHandler(
             IOrdemServicoGateway ordemServicoGateway,
-            IEventosGateway eventosGateway,
             ILogServico<AtualizarOrdemServicoHandler> logServico,
             IUnidadeDeTrabalho udt,
             IUsuarioLogadoServico usuarioLogadoServico)
             : base(logServico, udt, usuarioLogadoServico)
         {
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
-            _eventosGateway = eventosGateway ?? throw new ArgumentNullException(nameof(eventosGateway));
         }
 
         public async Task<AtualizarOrdemServicoResponse> Handle(Guid id, AtualizarOrdemServicoUseCaseDto request)
@@ -51,7 +47,7 @@ namespace Core.UseCases.OrdensServico.AtualizarOrdemServico
                 await _ordemServicoGateway.EditarAsync(ordemServico);
 
                 // Publicar evento se mudou para diagnóstico (simplificado)
-                if (statusAnterior != StatusOrdemServico.EmDiagnostico && 
+                if (statusAnterior != StatusOrdemServico.EmDiagnostico &&
                     ordemServico.Status == StatusOrdemServico.EmDiagnostico)
                 {
                     // Evento seria publicado aqui

@@ -1,4 +1,3 @@
-using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
@@ -7,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.DeletarUsuario
 {
-    public class DeletarUsuarioHandler : UseCasesAbstrato<DeletarUsuarioHandler, Usuario>
+    public class DeletarUsuarioHandler : UseCasesAbstrato<DeletarUsuarioHandler>
     {
         private readonly IUsuarioGateway _usuarioGateway;
 

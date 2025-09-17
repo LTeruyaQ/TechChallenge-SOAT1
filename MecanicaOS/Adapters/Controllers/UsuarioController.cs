@@ -2,7 +2,6 @@ using Adapters.DTOs.Requests.Usuario;
 using Adapters.DTOs.Responses.Usuario;
 using Adapters.Presenters.Interfaces;
 using Core.DTOs.UseCases.Usuario;
-using Core.Enumeradores;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
@@ -39,7 +38,7 @@ namespace Adapters.Controllers
             var resultado = await _usuarioUseCases.CadastrarUseCaseAsync(useCaseDto);
             return _usuarioPresenter.ParaResponse(resultado);
         }
-        
+
         internal CadastrarUsuarioUseCaseDto MapearParaCadastrarUsuarioUseCaseDto(CadastrarUsuarioRequest request)
         {
             if (request is null)
@@ -61,7 +60,7 @@ namespace Adapters.Controllers
             var resultado = await _usuarioUseCases.AtualizarUseCaseAsync(id, useCaseDto);
             return _usuarioPresenter.ParaResponse(resultado);
         }
-        
+
         internal AtualizarUsuarioUseCaseDto MapearParaAtualizarUsuarioUseCaseDto(AtualizarUsuarioRequest request)
         {
             if (request is null)

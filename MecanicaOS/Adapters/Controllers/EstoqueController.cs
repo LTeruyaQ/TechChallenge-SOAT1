@@ -33,7 +33,7 @@ namespace Adapters.Controllers
             var resultado = await _estoqueUseCases.CadastrarUseCaseAsync(useCaseDto);
             return _estoquePresenter.ParaResponse(resultado);
         }
-        
+
         internal CadastrarEstoqueUseCaseDto MapearParaCadastrarEstoqueUseCaseDto(CadastrarEstoqueRequest request)
         {
             if (request is null)
@@ -55,7 +55,7 @@ namespace Adapters.Controllers
             var resultado = await _estoqueUseCases.AtualizarUseCaseAsync(id, useCaseDto);
             return _estoquePresenter.ParaResponse(resultado);
         }
-        
+
         internal AtualizarEstoqueUseCaseDto MapearParaAtualizarEstoqueUseCaseDto(AtualizarEstoqueRequest request)
         {
             if (request is null)

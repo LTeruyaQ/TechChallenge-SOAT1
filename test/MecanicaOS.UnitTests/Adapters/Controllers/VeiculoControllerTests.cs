@@ -5,12 +5,6 @@ using Adapters.Presenters.Interfaces;
 using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
 using Core.Interfaces.UseCases;
-using FluentAssertions;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -141,9 +135,9 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                       dto.Ano == request.Ano &&
                       dto.Anotacoes == request.Anotacoes &&
                       dto.ClienteId == request.ClienteId));
-            
+
             _veiculoPresenter.Received(1).ParaResponse(veiculo);
-            
+
             result.Should().Be(veiculoResponse);
         }
 
@@ -186,9 +180,9 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                           dto.Ano == request.Ano &&
                           dto.Anotacoes == request.Anotacoes &&
                           dto.ClienteId == request.ClienteId));
-            
+
             _veiculoPresenter.Received(1).ParaResponse(veiculo);
-            
+
             result.Should().Be(veiculoResponse);
         }
     }

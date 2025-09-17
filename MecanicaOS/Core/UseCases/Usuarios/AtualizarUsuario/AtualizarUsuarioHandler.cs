@@ -8,7 +8,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.AtualizarUsuario
 {
-    public class AtualizarUsuarioHandler : UseCasesAbstrato<AtualizarUsuarioHandler, Usuario>
+    public class AtualizarUsuarioHandler : UseCasesAbstrato<AtualizarUsuarioHandler>
     {
         private readonly IUsuarioGateway _usuarioGateway;
         private readonly IServicoSenha _servicoSenha;
@@ -50,7 +50,7 @@ namespace Core.UseCases.Usuarios.AtualizarUsuario
 
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao atualizar usuario");
-                
+
                 IsNotGetSenha(usuario);
 
                 LogFim(metodo, usuario);
