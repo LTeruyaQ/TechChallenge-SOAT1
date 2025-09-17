@@ -21,15 +21,15 @@ namespace Core.UseCases.InsumosOS.DevolverInsumos
             _estoqueUseCases = estoqueUseCases ?? throw new ArgumentNullException(nameof(estoqueUseCases));
         }
 
-        public async Task<DevolverInsumosResponse> Handle(DevolverInsumosCommand command)
+        public async Task<DevolverInsumosResponse> Handle(IEnumerable<InsumoOS> insumosOS)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, new { InsumosCount = command.InsumosOS.Count() });
+                LogInicio(metodo, new { InsumosCount = insumosOS.Count() });
 
-                foreach (var insumoOS in command.InsumosOS)
+                foreach (var insumoOS in insumosOS)
                 {
                     var estoque = await _estoqueUseCases.ObterPorIdUseCaseAsync(insumoOS.EstoqueId);
 

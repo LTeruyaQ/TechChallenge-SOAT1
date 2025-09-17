@@ -31,18 +31,18 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
             _clienteUseCases = clienteUseCases ?? throw new ArgumentNullException(nameof(clienteUseCases));
         }
 
-        public async Task<AutenticarUsuarioResponse> Handle(AutenticarUsuarioCommand command)
+        public async Task<AutenticarUsuarioResponse> Handle(AutenticacaoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                var usuario = await _usuarioUseCases.ObterPorEmailUseCaseAsync(command.Request.Email);
+                var usuario = await _usuarioUseCases.ObterPorEmailUseCaseAsync(request.Email);
 
                 if (usuario is null)
                     throw new DadosInvalidosException("Usuário ou senha inválidos");
 
-                if (!_servicoSenha.VerificarSenha(command.Request.Senha, usuario.Senha))
+                if (!_servicoSenha.VerificarSenha(request.Senha, usuario.Senha))
                     throw new DadosInvalidosException("Usuário ou senha inválidos");
 
                 var permissoes = ObterPermissoesDoUsuario(usuario);

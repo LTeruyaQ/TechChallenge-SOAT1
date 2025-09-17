@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -31,20 +32,20 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
             _verificarEstoqueJobGateway = verificarEstoqueJobGateway ?? throw new ArgumentNullException(nameof(verificarEstoqueJobGateway));
         }
 
-        public async Task<CadastrarInsumosResponse> Handle(CadastrarInsumosCommand command)
+        public async Task<CadastrarInsumosResponse> Handle(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request)
         {
             string metodo = nameof(Handle);
 
             try
             {
-                LogInicio(metodo, new { command.OrdemServicoId, InsumosCount = command.Request.Count });
+                LogInicio(metodo, new { ordemServicoId, InsumosCount = request.Count });
 
-                var ordemServico = await _ordemServicoUseCases.ObterPorIdUseCaseAsync(command.OrdemServicoId)
+                var ordemServico = await _ordemServicoUseCases.ObterPorIdUseCaseAsync(ordemServicoId)
                     ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
 
                 var insumosOS = new List<InsumoOS>();
 
-                foreach (var insumoDto in command.Request)
+                foreach (var insumoDto in request)
                 {
                     var estoque = await _estoqueUseCases.ObterPorIdUseCaseAsync(insumoDto.EstoqueId);
 
@@ -53,7 +54,7 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
 
                     var insumoOS = new InsumoOS
                     {
-                        OrdemServicoId = command.OrdemServicoId,
+                        OrdemServicoId = ordemServicoId,
                         EstoqueId = insumoDto.EstoqueId,
                         Quantidade = insumoDto.Quantidade,
                         Estoque = estoque
