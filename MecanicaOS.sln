@@ -15,6 +15,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infraestrutura", "MecanicaO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MecanicaOSTests", "test\MecanicaOSTests\MecanicaOSTests.csproj", "{B9C6D139-02E4-45C2-ACF0-473A7E08D91B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		k8s\api.yaml = k8s\api.yaml
+		k8s\db.yaml = k8s\db.yaml
+		pgadmin.yaml = pgadmin.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
