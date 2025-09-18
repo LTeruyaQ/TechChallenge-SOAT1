@@ -19,11 +19,10 @@ spec:
           image: dpage/pgadmin4:latest
           ports:
             - containerPort: 80
-          env:
-            - name: PGADMIN_DEFAULT_EMAIL
-              value: "admin@mecanicaos.com"
-            - name: PGADMIN_DEFAULT_PASSWORD
-              value: "admin"
+          envFrom:
+            - configMapRef:
+                name: pgadmin-configmap
+
 ---
 
 apiVersion: v1
