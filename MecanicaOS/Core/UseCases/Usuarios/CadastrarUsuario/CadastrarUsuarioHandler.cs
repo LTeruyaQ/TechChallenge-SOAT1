@@ -3,6 +3,7 @@ using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Usuarios;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
@@ -10,7 +11,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.CadastrarUsuario
 {
-    public class CadastrarUsuarioHandler : UseCasesAbstrato<CadastrarUsuarioHandler>
+    public class CadastrarUsuarioHandler : UseCasesAbstrato<CadastrarUsuarioHandler>, ICadastrarUsuarioHandler
     {
         private readonly IUsuarioGateway _usuarioGateway;
         private readonly IClienteUseCases _clienteUseCases;

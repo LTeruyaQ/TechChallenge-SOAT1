@@ -1,4 +1,5 @@
 using Core.Entidades;
+using Core.Interfaces.Handlers.Orcamentos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Orcamentos.GerarOrcamento;
 
@@ -10,9 +11,9 @@ namespace Core.UseCases.Orcamentos
     /// </summary>
     public class OrcamentoUseCasesFacade : IOrcamentoUseCases
     {
-        private readonly GerarOrcamentoHandler _gerarOrcamentoHandler;
+        private readonly IGerarOrcamentoHandler _gerarOrcamentoHandler;
 
-        public OrcamentoUseCasesFacade(GerarOrcamentoHandler gerarOrcamentoHandler)
+        public OrcamentoUseCasesFacade(IGerarOrcamentoHandler gerarOrcamentoHandler)
         {
             _gerarOrcamentoHandler = gerarOrcamentoHandler ?? throw new ArgumentNullException(nameof(gerarOrcamentoHandler));
         }

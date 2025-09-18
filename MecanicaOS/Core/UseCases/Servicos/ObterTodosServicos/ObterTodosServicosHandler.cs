@@ -1,11 +1,12 @@
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Servicos;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Servicos.ObterTodosServicos
 {
-    public class ObterTodosServicosHandler : UseCasesAbstrato<ObterTodosServicosHandler>
+    public class ObterTodosServicosHandler : UseCasesAbstrato<ObterTodosServicosHandler>, IObterTodosServicosHandler
     {
         private readonly IServicoGateway _servicoGateway;
 

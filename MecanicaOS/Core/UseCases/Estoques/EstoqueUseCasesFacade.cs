@@ -1,5 +1,6 @@
 using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
+using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Estoques.AtualizarEstoque;
 using Core.UseCases.Estoques.CadastrarEstoque;
@@ -16,20 +17,20 @@ namespace Core.UseCases.Estoques
     /// </summary>
     public class EstoqueUseCasesFacade : IEstoqueUseCases
     {
-        private readonly CadastrarEstoqueHandler _cadastrarEstoqueHandler;
-        private readonly AtualizarEstoqueHandler _atualizarEstoqueHandler;
-        private readonly DeletarEstoqueHandler _deletarEstoqueHandler;
-        private readonly ObterEstoqueHandler _obterEstoqueHandler;
-        private readonly ObterTodosEstoquesHandler _obterTodosEstoquesHandler;
-        private readonly ObterEstoqueCriticoHandler _obterEstoqueCriticoHandler;
+        private readonly ICadastrarEstoqueHandler _cadastrarEstoqueHandler;
+        private readonly IAtualizarEstoqueHandler _atualizarEstoqueHandler;
+        private readonly IDeletarEstoqueHandler _deletarEstoqueHandler;
+        private readonly IObterEstoqueHandler _obterEstoqueHandler;
+        private readonly IObterTodosEstoquesHandler _obterTodosEstoquesHandler;
+        private readonly IObterEstoqueCriticoHandler _obterEstoqueCriticoHandler;
 
         public EstoqueUseCasesFacade(
-            CadastrarEstoqueHandler cadastrarEstoqueHandler,
-            AtualizarEstoqueHandler atualizarEstoqueHandler,
-            DeletarEstoqueHandler deletarEstoqueHandler,
-            ObterEstoqueHandler obterEstoqueHandler,
-            ObterTodosEstoquesHandler obterTodosEstoquesHandler,
-            ObterEstoqueCriticoHandler obterEstoqueCriticoHandler)
+            ICadastrarEstoqueHandler cadastrarEstoqueHandler,
+            IAtualizarEstoqueHandler atualizarEstoqueHandler,
+            IDeletarEstoqueHandler deletarEstoqueHandler,
+            IObterEstoqueHandler obterEstoqueHandler,
+            IObterTodosEstoquesHandler obterTodosEstoquesHandler,
+            IObterEstoqueCriticoHandler obterEstoqueCriticoHandler)
         {
             _cadastrarEstoqueHandler = cadastrarEstoqueHandler ?? throw new ArgumentNullException(nameof(cadastrarEstoqueHandler));
             _atualizarEstoqueHandler = atualizarEstoqueHandler ?? throw new ArgumentNullException(nameof(atualizarEstoqueHandler));

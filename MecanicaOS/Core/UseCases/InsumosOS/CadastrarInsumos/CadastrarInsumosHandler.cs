@@ -1,6 +1,7 @@
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.Exceptions;
+using Core.Interfaces.Handlers.InsumosOS;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
@@ -8,7 +9,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.InsumosOS.CadastrarInsumos
 {
-    public class CadastrarInsumosHandler : UseCasesAbstrato<CadastrarInsumosHandler>
+    public class CadastrarInsumosHandler : UseCasesAbstrato<CadastrarInsumosHandler>, ICadastrarInsumosHandler
     {
         private readonly IOrdemServicoUseCases _ordemServicoUseCases;
         private readonly IEstoqueUseCases _estoqueUseCases;

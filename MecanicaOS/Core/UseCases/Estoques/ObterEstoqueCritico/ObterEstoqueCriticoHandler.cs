@@ -1,11 +1,12 @@
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.ObterEstoqueCritico
 {
-    public class ObterEstoqueCriticoHandler : UseCasesAbstrato<ObterEstoqueCriticoHandler>
+    public class ObterEstoqueCriticoHandler : UseCasesAbstrato<ObterEstoqueCriticoHandler>, IObterEstoqueCriticoHandler
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

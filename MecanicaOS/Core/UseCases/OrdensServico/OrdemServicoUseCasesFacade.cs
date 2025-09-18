@@ -1,6 +1,7 @@
 using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
+using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.UseCases;
 using Core.UseCases.OrdensServico.AceitarOrcamento;
 using Core.UseCases.OrdensServico.AtualizarOrdemServico;
@@ -18,22 +19,22 @@ namespace Core.UseCases.OrdensServico
     /// </summary>
     public class OrdemServicoUseCasesFacade : IOrdemServicoUseCases
     {
-        private readonly CadastrarOrdemServicoHandler _cadastrarOrdemServicoHandler;
-        private readonly AtualizarOrdemServicoHandler _atualizarOrdemServicoHandler;
-        private readonly ObterOrdemServicoHandler _obterOrdemServicoHandler;
-        private readonly ObterTodosOrdensServicoHandler _obterTodosOrdensServicoHandler;
-        private readonly ObterOrdemServicoPorStatusHandler _obterOrdemServicoPorStatusHandler;
-        private readonly AceitarOrcamentoHandler _aceitarOrcamentoHandler;
-        private readonly RecusarOrcamentoHandler _recusarOrcamentoHandler;
+        private readonly ICadastrarOrdemServicoHandler _cadastrarOrdemServicoHandler;
+        private readonly IAtualizarOrdemServicoHandler _atualizarOrdemServicoHandler;
+        private readonly IObterOrdemServicoHandler _obterOrdemServicoHandler;
+        private readonly IObterTodosOrdensServicoHandler _obterTodosOrdensServicoHandler;
+        private readonly IObterOrdemServicoPorStatusHandler _obterOrdemServicoPorStatusHandler;
+        private readonly IAceitarOrcamentoHandler _aceitarOrcamentoHandler;
+        private readonly IRecusarOrcamentoHandler _recusarOrcamentoHandler;
 
         public OrdemServicoUseCasesFacade(
-            CadastrarOrdemServicoHandler cadastrarOrdemServicoHandler,
-            AtualizarOrdemServicoHandler atualizarOrdemServicoHandler,
-            ObterOrdemServicoHandler obterOrdemServicoHandler,
-            ObterTodosOrdensServicoHandler obterTodosOrdensServicoHandler,
-            ObterOrdemServicoPorStatusHandler obterOrdemServicoPorStatusHandler,
-            AceitarOrcamentoHandler aceitarOrcamentoHandler,
-            RecusarOrcamentoHandler recusarOrcamentoHandler)
+            ICadastrarOrdemServicoHandler cadastrarOrdemServicoHandler,
+            IAtualizarOrdemServicoHandler atualizarOrdemServicoHandler,
+            IObterOrdemServicoHandler obterOrdemServicoHandler,
+            IObterTodosOrdensServicoHandler obterTodosOrdensServicoHandler,
+            IObterOrdemServicoPorStatusHandler obterOrdemServicoPorStatusHandler,
+            IAceitarOrcamentoHandler aceitarOrcamentoHandler,
+            IRecusarOrcamentoHandler recusarOrcamentoHandler)
         {
             _cadastrarOrdemServicoHandler = cadastrarOrdemServicoHandler ?? throw new ArgumentNullException(nameof(cadastrarOrdemServicoHandler));
             _atualizarOrdemServicoHandler = atualizarOrdemServicoHandler ?? throw new ArgumentNullException(nameof(atualizarOrdemServicoHandler));

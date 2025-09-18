@@ -1,12 +1,13 @@
 using Core.Entidades;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Usuarios;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.ObterUsuario
 {
-    public class ObterUsuarioHandler : UseCasesAbstrato<ObterUsuarioHandler>
+    public class ObterUsuarioHandler : UseCasesAbstrato<ObterUsuarioHandler>, IObterUsuarioHandler
     {
         private readonly IUsuarioGateway _usuarioGateway;
 

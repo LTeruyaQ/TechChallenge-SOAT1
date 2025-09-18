@@ -10,39 +10,6 @@ public class ObterOSOrcamentoExpiradoEspecificacao : EspecificacaoBase<OrdemServ
     public ObterOSOrcamentoExpiradoEspecificacao()
     {
         AdicionarInclusao(os => os.InsumosOS, io => io.Estoque);
-        DefinirProjecao(os => new Entidades.OrdemServico()
-        {
-            Id = os.Id,
-            Ativo = os.Ativo,
-            DataCadastro = os.DataCadastro,
-            DataAtualizacao = os.DataAtualizacao,
-            Descricao = os.Descricao,
-            VeiculoId = os.VeiculoId,
-            Status = os.Status,
-            DataEnvioOrcamento = os.DataEnvioOrcamento,
-            Orcamento = os.Orcamento,
-            ClienteId = os.ClienteId,
-            ServicoId = os.ServicoId,
-            InsumosOS = os.InsumosOS.Select(io => new Entidades.InsumoOS
-            {
-                Id = io.Id,
-                Ativo = io.Ativo,
-                DataCadastro = io.DataCadastro,
-                DataAtualizacao = io.DataAtualizacao,
-                Quantidade = io.Quantidade,
-                OrdemServicoId = io.OrdemServicoId,
-                EstoqueId = io.EstoqueId,
-                Estoque = new Entidades.Estoque
-                {
-                    Id = io.Estoque.Id,
-                    Ativo = io.Estoque.Ativo,
-                    DataCadastro = io.Estoque.DataCadastro,
-                    DataAtualizacao = io.Estoque.DataAtualizacao,
-                    Descricao = io.Estoque.Descricao,
-                    QuantidadeMinima = io.Estoque.QuantidadeMinima
-                }
-            })
-        });
     }
 
     public override Expression<Func<OrdemServicoEntityDto, bool>> Expressao =>

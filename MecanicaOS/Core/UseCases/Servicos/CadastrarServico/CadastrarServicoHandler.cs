@@ -2,13 +2,14 @@ using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Servicos;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Servicos.CadastrarServico
 {
-    public class CadastrarServicoHandler : UseCasesAbstrato<CadastrarServicoHandler>
+    public class CadastrarServicoHandler : UseCasesAbstrato<CadastrarServicoHandler>, ICadastrarServicoHandler
     {
         private readonly IServicoGateway _servicoGateway;
 

@@ -1,13 +1,14 @@
 using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.AceitarOrcamento
 {
-    public class AceitarOrcamentoHandler : UseCasesAbstrato<AceitarOrcamentoHandler>
+    public class AceitarOrcamentoHandler : UseCasesAbstrato<AceitarOrcamentoHandler>, IAceitarOrcamentoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
 

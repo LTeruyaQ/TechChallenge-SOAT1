@@ -14,24 +14,6 @@ public class ObterAlertaDoDiaPorEstoqueEspecificacao : EspecificacaoBase<AlertaE
     {
         _estoqueId = estoqueId;
         _data = (data ?? DateTime.UtcNow).Date;
-
-        DefinirProjecao(a => new AlertaEstoque()
-        {
-            Id = a.Id,
-            Ativo = a.Ativo,
-            DataCadastro = a.DataCadastro,
-            DataAtualizacao = a.DataAtualizacao,
-            EstoqueId = a.EstoqueId,
-            Estoque = new Entidades.Estoque()
-            {
-                Id = a.Estoque.Id,
-                Ativo = a.Estoque.Ativo,
-                DataCadastro = a.Estoque.DataCadastro,
-                DataAtualizacao = a.Estoque.DataAtualizacao,
-                QuantidadeMinima = a.Estoque.QuantidadeMinima,
-                Descricao = a.Estoque.Descricao,
-            }
-        });
     }
 
     public override Expression<Func<AlertaEstoqueEntityDto, bool>> Expressao =>

@@ -2,13 +2,14 @@ using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Clientes;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.AtualizarCliente
 {
-    public class AtualizarClienteHandler : UseCasesAbstrato<AtualizarClienteHandler>
+    public class AtualizarClienteHandler : UseCasesAbstrato<AtualizarClienteHandler>, IAtualizarClienteHandler
     {
         private readonly IClienteGateway _clienteGateway;
         private readonly IEnderecoGateway _enderecoGateway;

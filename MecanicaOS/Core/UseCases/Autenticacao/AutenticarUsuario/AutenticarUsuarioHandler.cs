@@ -2,12 +2,13 @@ using Core.DTOs.UseCases.Autenticacao;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
+using Core.Interfaces.Handlers.Autenticacao;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 
 namespace Core.UseCases.Autenticacao.AutenticarUsuario
 {
-    public class AutenticarUsuarioHandler
+    public class AutenticarUsuarioHandler : IAutenticarUsuarioHandler
     {
         private readonly IUsuarioUseCases _usuarioUseCases;
         private readonly IClienteUseCases _clienteUseCases;

@@ -1,5 +1,6 @@
 using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
+using Core.Interfaces.Handlers.Clientes;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Clientes.AtualizarCliente;
 using Core.UseCases.Clientes.CadastrarCliente;
@@ -16,20 +17,20 @@ namespace Core.UseCases.Clientes
     /// </summary>
     public class ClienteUseCasesFacade : IClienteUseCases
     {
-        private readonly CadastrarClienteHandler _cadastrarClienteHandler;
-        private readonly AtualizarClienteHandler _atualizarClienteHandler;
-        private readonly ObterClienteHandler _obterClienteHandler;
-        private readonly ObterTodosClientesHandler _obterTodosClientesHandler;
-        private readonly RemoverClienteHandler _removerClienteHandler;
-        private readonly ObterClientePorDocumentoHandler _obterClientePorDocumentoHandler;
+        private readonly ICadastrarClienteHandler _cadastrarClienteHandler;
+        private readonly IAtualizarClienteHandler _atualizarClienteHandler;
+        private readonly IObterClienteHandler _obterClienteHandler;
+        private readonly IObterTodosClientesHandler _obterTodosClientesHandler;
+        private readonly IRemoverClienteHandler _removerClienteHandler;
+        private readonly IObterClientePorDocumentoHandler _obterClientePorDocumentoHandler;
 
         public ClienteUseCasesFacade(
-            CadastrarClienteHandler cadastrarClienteHandler,
-            AtualizarClienteHandler atualizarClienteHandler,
-            ObterClienteHandler obterClienteHandler,
-            ObterTodosClientesHandler obterTodosClientesHandler,
-            RemoverClienteHandler removerClienteHandler,
-            ObterClientePorDocumentoHandler obterClientePorDocumentoHandler)
+            ICadastrarClienteHandler cadastrarClienteHandler,
+            IAtualizarClienteHandler atualizarClienteHandler,
+            IObterClienteHandler obterClienteHandler,
+            IObterTodosClientesHandler obterTodosClientesHandler,
+            IRemoverClienteHandler removerClienteHandler,
+            IObterClientePorDocumentoHandler obterClientePorDocumentoHandler)
         {
             _cadastrarClienteHandler = cadastrarClienteHandler ?? throw new ArgumentNullException(nameof(cadastrarClienteHandler));
             _atualizarClienteHandler = atualizarClienteHandler ?? throw new ArgumentNullException(nameof(atualizarClienteHandler));

@@ -1,5 +1,6 @@
 using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
+using Core.Interfaces.Handlers.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Servicos.CadastrarServico;
 using Core.UseCases.Servicos.DeletarServico;
@@ -17,22 +18,22 @@ namespace Core.UseCases.Servicos
     /// </summary>
     public class ServicoUseCasesFacade : IServicoUseCases
     {
-        private readonly CadastrarServicoHandler _cadastrarServicoHandler;
-        private readonly EditarServicoHandler _editarServicoHandler;
-        private readonly DeletarServicoHandler _deletarServicoHandler;
-        private readonly ObterServicoHandler _obterServicoHandler;
-        private readonly ObterTodosServicosHandler _obterTodosServicosHandler;
-        private readonly ObterServicoPorNomeHandler _obterServicoPorNomeHandler;
-        private readonly ObterServicosDisponiveisHandler _obterServicosDisponiveisHandler;
+        private readonly ICadastrarServicoHandler _cadastrarServicoHandler;
+        private readonly IEditarServicoHandler _editarServicoHandler;
+        private readonly IDeletarServicoHandler _deletarServicoHandler;
+        private readonly IObterServicoHandler _obterServicoHandler;
+        private readonly IObterTodosServicosHandler _obterTodosServicosHandler;
+        private readonly IObterServicoPorNomeHandler _obterServicoPorNomeHandler;
+        private readonly IObterServicosDisponiveisHandler _obterServicosDisponiveisHandler;
 
         public ServicoUseCasesFacade(
-            CadastrarServicoHandler cadastrarServicoHandler,
-            EditarServicoHandler editarServicoHandler,
-            DeletarServicoHandler deletarServicoHandler,
-            ObterServicoHandler obterServicoHandler,
-            ObterTodosServicosHandler obterTodosServicosHandler,
-            ObterServicoPorNomeHandler obterServicoPorNomeHandler,
-            ObterServicosDisponiveisHandler obterServicosDisponiveisHandler)
+            ICadastrarServicoHandler cadastrarServicoHandler,
+            IEditarServicoHandler editarServicoHandler,
+            IDeletarServicoHandler deletarServicoHandler,
+            IObterServicoHandler obterServicoHandler,
+            IObterTodosServicosHandler obterTodosServicosHandler,
+            IObterServicoPorNomeHandler obterServicoPorNomeHandler,
+            IObterServicosDisponiveisHandler obterServicosDisponiveisHandler)
         {
             _cadastrarServicoHandler = cadastrarServicoHandler ?? throw new ArgumentNullException(nameof(cadastrarServicoHandler));
             _editarServicoHandler = editarServicoHandler ?? throw new ArgumentNullException(nameof(editarServicoHandler));

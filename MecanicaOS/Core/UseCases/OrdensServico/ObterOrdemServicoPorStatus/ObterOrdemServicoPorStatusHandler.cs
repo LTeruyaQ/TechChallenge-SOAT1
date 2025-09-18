@@ -1,12 +1,13 @@
 using Core.Enumeradores;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus
 {
-    public class ObterOrdemServicoPorStatusHandler : UseCasesAbstrato<ObterOrdemServicoPorStatusHandler>
+    public class ObterOrdemServicoPorStatusHandler : UseCasesAbstrato<ObterOrdemServicoPorStatusHandler>, IObterOrdemServicoPorStatusHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
 

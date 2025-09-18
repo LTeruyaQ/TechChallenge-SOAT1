@@ -1,0 +1,19 @@
+using Core.UseCases.Estoques.DeletarEstoque;
+using System;
+using System.Threading.Tasks;
+
+namespace Core.Interfaces.Handlers.Estoques
+{
+    /// <summary>
+    /// Interface para o handler de deleção de estoque
+    /// </summary>
+    public interface IDeletarEstoqueHandler
+    {
+        /// <summary>
+        /// Manipula a operação de deleção de estoque
+        /// </summary>
+        /// <param name="id">ID do estoque a ser deletado</param>
+        /// <returns>Resposta indicando o sucesso da operação</returns>
+        Task<DeletarEstoqueResponse> Handle(Guid id);
+    }
+}

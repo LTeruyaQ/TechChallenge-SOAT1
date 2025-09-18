@@ -2,13 +2,14 @@ using Core.DTOs.UseCases.OrdemServico;
 using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.AtualizarOrdemServico
 {
-    public class AtualizarOrdemServicoHandler : UseCasesAbstrato<AtualizarOrdemServicoHandler>
+    public class AtualizarOrdemServicoHandler : UseCasesAbstrato<AtualizarOrdemServicoHandler>, IAtualizarOrdemServicoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
 

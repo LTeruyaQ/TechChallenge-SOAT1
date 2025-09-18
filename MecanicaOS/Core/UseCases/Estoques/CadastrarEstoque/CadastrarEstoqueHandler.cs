@@ -2,13 +2,14 @@ using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.CadastrarEstoque
 {
-    public class CadastrarEstoqueHandler : UseCasesAbstrato<CadastrarEstoqueHandler>
+    public class CadastrarEstoqueHandler : UseCasesAbstrato<CadastrarEstoqueHandler>, ICadastrarEstoqueHandler
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

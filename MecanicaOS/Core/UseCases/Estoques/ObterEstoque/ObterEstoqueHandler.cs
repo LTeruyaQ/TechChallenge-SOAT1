@@ -1,12 +1,13 @@
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.ObterEstoque
 {
-    public class ObterEstoqueHandler : UseCasesAbstrato<ObterEstoqueHandler>
+    public class ObterEstoqueHandler : UseCasesAbstrato<ObterEstoqueHandler>, IObterEstoqueHandler
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

@@ -3,6 +3,7 @@ using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
@@ -10,7 +11,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
 {
-    public class CadastrarOrdemServicoHandler : UseCasesAbstrato<CadastrarOrdemServicoHandler>
+    public class CadastrarOrdemServicoHandler : UseCasesAbstrato<CadastrarOrdemServicoHandler>, ICadastrarOrdemServicoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
         private readonly IClienteUseCases _clienteUseCases;

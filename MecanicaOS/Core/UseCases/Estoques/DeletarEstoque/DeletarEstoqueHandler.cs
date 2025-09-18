@@ -1,12 +1,13 @@
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.DeletarEstoque
 {
-    public class DeletarEstoqueHandler : UseCasesAbstrato<DeletarEstoqueHandler>
+    public class DeletarEstoqueHandler : UseCasesAbstrato<DeletarEstoqueHandler>, IDeletarEstoqueHandler
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

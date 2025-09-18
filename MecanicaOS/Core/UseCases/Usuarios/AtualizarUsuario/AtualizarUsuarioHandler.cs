@@ -2,13 +2,14 @@ using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Usuarios;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.AtualizarUsuario
 {
-    public class AtualizarUsuarioHandler : UseCasesAbstrato<AtualizarUsuarioHandler>
+    public class AtualizarUsuarioHandler : UseCasesAbstrato<AtualizarUsuarioHandler>, IAtualizarUsuarioHandler
     {
         private readonly IUsuarioGateway _usuarioGateway;
         private readonly IServicoSenha _servicoSenha;

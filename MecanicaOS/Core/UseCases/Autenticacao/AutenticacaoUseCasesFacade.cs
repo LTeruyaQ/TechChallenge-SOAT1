@@ -1,4 +1,5 @@
 using Core.DTOs.UseCases.Autenticacao;
+using Core.Interfaces.Handlers.Autenticacao;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Autenticacao.AutenticarUsuario;
 
@@ -10,9 +11,9 @@ namespace Core.UseCases.Autenticacao
     /// </summary>
     public class AutenticacaoUseCasesFacade : IAutenticacaoUseCases
     {
-        private readonly AutenticarUsuarioHandler _autenticarUsuarioHandler;
+        private readonly IAutenticarUsuarioHandler _autenticarUsuarioHandler;
 
-        public AutenticacaoUseCasesFacade(AutenticarUsuarioHandler autenticarUsuarioHandler)
+        public AutenticacaoUseCasesFacade(IAutenticarUsuarioHandler autenticarUsuarioHandler)
         {
             _autenticarUsuarioHandler = autenticarUsuarioHandler ?? throw new ArgumentNullException(nameof(autenticarUsuarioHandler));
         }

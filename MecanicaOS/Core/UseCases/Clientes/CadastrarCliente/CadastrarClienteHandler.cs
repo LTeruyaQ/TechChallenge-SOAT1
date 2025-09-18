@@ -2,13 +2,14 @@ using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Clientes;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.CadastrarCliente
 {
-    public class CadastrarClienteHandler : UseCasesAbstrato<CadastrarClienteHandler>
+    public class CadastrarClienteHandler : UseCasesAbstrato<CadastrarClienteHandler>, ICadastrarClienteHandler
     {
         private readonly IClienteGateway _clienteGateway;
         private readonly IEnderecoGateway _enderecoGateway;

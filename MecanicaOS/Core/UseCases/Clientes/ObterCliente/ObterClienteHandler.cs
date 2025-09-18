@@ -1,11 +1,12 @@
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Clientes;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.ObterCliente
 {
-    public class ObterClienteHandler : UseCasesAbstrato<ObterClienteHandler>
+    public class ObterClienteHandler : UseCasesAbstrato<ObterClienteHandler>, IObterClienteHandler
     {
         private readonly IClienteGateway _clienteGateway;
 

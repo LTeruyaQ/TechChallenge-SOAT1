@@ -1,5 +1,6 @@
 using Core.Entidades;
 using Core.Exceptions;
+using Core.Interfaces.Handlers.InsumosOS;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
@@ -7,7 +8,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.InsumosOS.DevolverInsumos
 {
-    public class DevolverInsumosHandler : UseCasesAbstrato<DevolverInsumosHandler>
+    public class DevolverInsumosHandler : UseCasesAbstrato<DevolverInsumosHandler>, IDevolverInsumosHandler
     {
         private readonly IEstoqueUseCases _estoqueUseCases;
 

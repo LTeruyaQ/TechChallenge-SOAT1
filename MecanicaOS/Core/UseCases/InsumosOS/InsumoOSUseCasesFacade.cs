@@ -1,5 +1,6 @@
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
+using Core.Interfaces.Handlers.InsumosOS;
 using Core.Interfaces.UseCases;
 using Core.UseCases.InsumosOS.CadastrarInsumos;
 using Core.UseCases.InsumosOS.DevolverInsumos;
@@ -12,12 +13,12 @@ namespace Core.UseCases.InsumosOS
     /// </summary>
     public class InsumoOSUseCasesFacade : IInsumoOSUseCases
     {
-        private readonly CadastrarInsumosHandler _cadastrarInsumosHandler;
-        private readonly DevolverInsumosHandler _devolverInsumosHandler;
+        private readonly ICadastrarInsumosHandler _cadastrarInsumosHandler;
+        private readonly IDevolverInsumosHandler _devolverInsumosHandler;
 
         public InsumoOSUseCasesFacade(
-            CadastrarInsumosHandler cadastrarInsumosHandler,
-            DevolverInsumosHandler devolverInsumosHandler)
+            ICadastrarInsumosHandler cadastrarInsumosHandler,
+            IDevolverInsumosHandler devolverInsumosHandler)
         {
             _cadastrarInsumosHandler = cadastrarInsumosHandler ?? throw new ArgumentNullException(nameof(cadastrarInsumosHandler));
             _devolverInsumosHandler = devolverInsumosHandler ?? throw new ArgumentNullException(nameof(devolverInsumosHandler));

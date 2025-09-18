@@ -1,9 +1,10 @@
+using Core.Interfaces.Handlers.Orcamentos;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 
 namespace Core.UseCases.Orcamentos.GerarOrcamento
 {
-    public class GerarOrcamentoHandler
+    public class GerarOrcamentoHandler : IGerarOrcamentoHandler
     {
         private readonly ILogServico<GerarOrcamentoHandler> _logServico;
 

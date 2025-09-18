@@ -1,12 +1,13 @@
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Servicos;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Servicos.DeletarServico
 {
-    public class DeletarServicoHandler : UseCasesAbstrato<DeletarServicoHandler>
+    public class DeletarServicoHandler : UseCasesAbstrato<DeletarServicoHandler>, IDeletarServicoHandler
     {
         private readonly IServicoGateway _servicoGateway;
 

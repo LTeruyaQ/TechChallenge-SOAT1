@@ -134,7 +134,7 @@ public class OrdemServicoEspecificacaoTests
     public void ObterOSOrcamentoExpiradoEspecificacao_DeveRetornarOrcamentosExpirados()
     {
         // Arrange
-        var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
+        var especificacao = new ObterOSOrcamentoExpiradoProjetadoEspecificacao();
 
         // Criar ordens com datas específicas para teste
         var ordensServico = new List<OrdemServicoEntityDto>
@@ -162,7 +162,7 @@ public class OrdemServicoEspecificacaoTests
     public void ObterOSOrcamentoExpiradoEspecificacao_ComOrcamentosNaoExpirados_DeveRetornarListaVazia()
     {
         // Arrange
-        var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
+        var especificacao = new ObterOSOrcamentoExpiradoProjetadoEspecificacao();
 
         var ordensServico = new List<OrdemServicoEntityDto>
         {
@@ -183,7 +183,7 @@ public class OrdemServicoEspecificacaoTests
     public void ObterOSOrcamentoExpiradoEspecificacao_ComOrcamentosExpirados_DeveFiltrarCorretamente()
     {
         // Arrange
-        var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
+        var especificacao = new ObterOSOrcamentoExpiradoProjetadoEspecificacao();
 
         var ordensServico = new List<OrdemServicoEntityDto>
         {

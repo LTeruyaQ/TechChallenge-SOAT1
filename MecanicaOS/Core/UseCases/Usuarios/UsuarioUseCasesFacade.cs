@@ -1,5 +1,6 @@
 using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
+using Core.Interfaces.Handlers.Usuarios;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Usuarios.AtualizarUsuario;
 using Core.UseCases.Usuarios.CadastrarUsuario;
@@ -16,20 +17,20 @@ namespace Core.UseCases.Usuarios
     /// </summary>
     public class UsuarioUseCasesFacade : IUsuarioUseCases
     {
-        private readonly CadastrarUsuarioHandler _cadastrarUsuarioHandler;
-        private readonly AtualizarUsuarioHandler _atualizarUsuarioHandler;
-        private readonly ObterUsuarioHandler _obterUsuarioHandler;
-        private readonly ObterTodosUsuariosHandler _obterTodosUsuariosHandler;
-        private readonly DeletarUsuarioHandler _deletarUsuarioHandler;
-        private readonly ObterUsuarioPorEmailHandler _obterUsuarioPorEmailHandler;
+        private readonly ICadastrarUsuarioHandler _cadastrarUsuarioHandler;
+        private readonly IAtualizarUsuarioHandler _atualizarUsuarioHandler;
+        private readonly IObterUsuarioHandler _obterUsuarioHandler;
+        private readonly IObterTodosUsuariosHandler _obterTodosUsuariosHandler;
+        private readonly IDeletarUsuarioHandler _deletarUsuarioHandler;
+        private readonly IObterUsuarioPorEmailHandler _obterUsuarioPorEmailHandler;
 
         public UsuarioUseCasesFacade(
-            CadastrarUsuarioHandler cadastrarUsuarioHandler,
-            AtualizarUsuarioHandler atualizarUsuarioHandler,
-            ObterUsuarioHandler obterUsuarioHandler,
-            ObterTodosUsuariosHandler obterTodosUsuariosHandler,
-            DeletarUsuarioHandler deletarUsuarioHandler,
-            ObterUsuarioPorEmailHandler obterUsuarioPorEmailHandler)
+            ICadastrarUsuarioHandler cadastrarUsuarioHandler,
+            IAtualizarUsuarioHandler atualizarUsuarioHandler,
+            IObterUsuarioHandler obterUsuarioHandler,
+            IObterTodosUsuariosHandler obterTodosUsuariosHandler,
+            IDeletarUsuarioHandler deletarUsuarioHandler,
+            IObterUsuarioPorEmailHandler obterUsuarioPorEmailHandler)
         {
             _cadastrarUsuarioHandler = cadastrarUsuarioHandler ?? throw new ArgumentNullException(nameof(cadastrarUsuarioHandler));
             _atualizarUsuarioHandler = atualizarUsuarioHandler ?? throw new ArgumentNullException(nameof(atualizarUsuarioHandler));

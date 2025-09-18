@@ -1,13 +1,14 @@
 using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.Clientes;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.ObterClientePorDocumento
 {
-    public class ObterClientePorDocumentoHandler : UseCasesAbstrato<ObterClientePorDocumentoHandler>
+    public class ObterClientePorDocumentoHandler : UseCasesAbstrato<ObterClientePorDocumentoHandler>, IObterClientePorDocumentoHandler
     {
         private readonly IClienteGateway _clienteGateway;
 

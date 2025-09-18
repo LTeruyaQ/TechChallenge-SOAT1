@@ -36,7 +36,7 @@ namespace Adapters.Gateways
 
         public async Task<IEnumerable<OrdemServico>> ListarOSOrcamentoExpiradoAsync()
         {
-            var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
+            var especificacao = new ObterOSOrcamentoExpiradoProjetadoEspecificacao();
             return await _repositorioOrdemServico.ListarProjetadoAsync<OrdemServico>(especificacao);
         }
 
