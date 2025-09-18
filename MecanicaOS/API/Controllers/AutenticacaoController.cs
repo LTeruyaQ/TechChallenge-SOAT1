@@ -22,22 +22,6 @@ namespace API.Controllers
             this.servicoEmail = servicoEmail;
         }
 
-
-        [HttpPost("Email")]
-        [AllowAnonymous]
-        public async Task<IActionResult> EnviarEmail(string email, string assunto, string conteudo)
-        {
-            try
-            {
-                await this.servicoEmail.EnviarAsync([email], assunto, conteudo);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpPost("Login")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AutenticacaoResponse), StatusCodes.Status200OK)]

@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
     name: pgadmin-configmap
 data:
-    PGADMIN_DEFAULT_EMAIL: admin@mecanicaos.com
-    PGADMIN_DEFAULT_PASSWORD: admin    
+    PGADMIN_DEFAULT_EMAIL: "admin@mecanicaos.com"
+    PGADMIN_DEFAULT_PASSWORD: "admin"    

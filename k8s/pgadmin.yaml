@@ -19,9 +19,17 @@ spec:
           image: dpage/pgadmin4:latest
           ports:
             - containerPort: 80
-          envFrom:
-            - configMapRef:
-                name: pgadmin-configmap
+          env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              valueFrom:
+                configMapKeyRef:
+                    name: pgadmin-configmap
+                    key: PGADMIN_DEFAULT_EMAIL
+            - name: PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                    name: pgadmin-configmap
+                    key: PGADMIN_DEFAULT_PASSWORD
 
 ---
 

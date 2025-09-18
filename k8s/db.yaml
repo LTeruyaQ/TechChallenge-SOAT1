@@ -32,9 +32,22 @@ spec:
           image: postgres:16-alpine
           ports:
             - containerPort: 5432
-          envFrom:
-            - configMapRef:
-                name: db-configmap
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: db-configmap
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: db-configmap
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: db-configmap
+                  key: POSTGRES_PASSWORD
           volumeMounts:
             - name: db-storage
               mountPath: /var/lib/postgresql/data

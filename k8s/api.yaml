@@ -38,22 +38,44 @@ spec:
             - name: ConnectionStrings__DefaultConnection
               valueFrom:
                 configMapKeyRef:
-                    name: api-configmap
-                    key: ConnectionStrings__DefaultConnection
+                  name: api-configmap
+                  key: ConnectionStrings__DefaultConnection
+            - name: ASPNETCORE_URLS
+              valueFrom:
+                configMapKeyRef:
+                  name: api-configmap
+                  key: ASPNETCORE_URLS
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-configmap
+                  key: ASPNETCORE_ENVIRONMENT
       containers:
         - name: api
           image: fthalita91/techchallenge-api:latest
           ports:
             - containerPort: 80
           env:
-            - name: SENDGRID_API_KEY
+            - name: SENDGRID_APIKEY
               valueFrom:
                 secretKeyRef:
-                    name: api-secret
-                    key: sendgrid_apikey
-          envFrom:
-            - configMapRef:
-                name: api-configmap
+                  name: api-secret
+                  key: sendgrid_apikey
+            - name: ASPNETCORE_URLS
+              valueFrom:
+                configMapKeyRef:
+                  name: api-configmap
+                  key: ASPNETCORE_URLS
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-configmap
+                  key: ASPNETCORE_ENVIRONMENT
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                configMapKeyRef:
+                  name: api-configmap
+                  key: ConnectionStrings__DefaultConnection
 
 ---
 
