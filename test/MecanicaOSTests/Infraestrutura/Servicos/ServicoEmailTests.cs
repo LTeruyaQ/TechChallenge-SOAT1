@@ -14,7 +14,7 @@ namespace MecanicaOSTests.Infraestrutura.Servicos
         {
             // Arrange
             var inMemorySettings = new Dictionary<string, string> {
-                {"SendGrid:ApiKey", "dummy_key"}
+                {"SENDGRID_APIKEY", "dummy_key"}
             };
 
             IConfiguration configuration = new ConfigurationBuilder()

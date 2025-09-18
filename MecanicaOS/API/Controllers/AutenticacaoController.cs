@@ -3,6 +3,7 @@ using Aplicacao.DTOs.Requests.Autenticacao;
 using Aplicacao.DTOs.Requests.Usuario;
 using Aplicacao.DTOs.Responses.Autenticacao;
 using Aplicacao.Interfaces.Servicos;
+using Dominio.Interfaces.Servicos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +13,29 @@ namespace API.Controllers
     {
         private readonly IAutenticacaoServico _autenticacaoServico;
         private readonly IUsuarioServico _usuarioServico;
+        private readonly IServicoEmail servicoEmail;
 
-        public AutenticacaoController(IAutenticacaoServico autenticacaoServico, IUsuarioServico usuarioServico)
+        public AutenticacaoController(IAutenticacaoServico autenticacaoServico, IUsuarioServico usuarioServico, IServicoEmail servicoEmail)
         {
             _autenticacaoServico = autenticacaoServico ?? throw new ArgumentNullException(nameof(autenticacaoServico));
             _usuarioServico = usuarioServico ?? throw new ArgumentNullException(nameof(usuarioServico));
+            this.servicoEmail = servicoEmail;
+        }
+
+
+        [HttpPost("Email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> EnviarEmail(string email, string assunto, string conteudo)
+        {
+            try
+            {
+                await this.servicoEmail.EnviarAsync([email], assunto, conteudo);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("Login")]

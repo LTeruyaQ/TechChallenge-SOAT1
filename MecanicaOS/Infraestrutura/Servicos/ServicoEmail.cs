@@ -11,7 +11,7 @@ public class ServicoEmail : IServicoEmail
 
     public ServicoEmail(IConfiguration configuration)
     {
-        _apiKey = configuration["SendGrid:ApiKey"]!;
+        _apiKey = configuration["SENDGRID_APIKEY"]!;
     }
 
     public async Task EnviarAsync(IEnumerable<string> emailsDestino, string assunto, string conteudo)
