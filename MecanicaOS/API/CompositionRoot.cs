@@ -2,6 +2,7 @@ using Adapters.Controllers;
 using Adapters.Gateways;
 using Adapters.Presenters;
 using API.Jobs;
+using API.Notificacoes;
 using Core.DTOs.Config;
 using Core.DTOs.Entidades.Autenticacao;
 using Core.DTOs.Entidades.Cliente;
@@ -84,20 +85,18 @@ using Infraestrutura.Autenticacao;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.UdT;
 using Infraestrutura.Logs;
-using API.Notificacoes;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace API
 {
     public class CompositionRoot : ICompositionRoot
     {
-        // Contexto de banco de dados
         private readonly MecanicaContexto _dbContext;
 
-        // Repositórios
         private readonly IRepositorio<ClienteEntityDto> _repositorioCliente;
         private readonly IRepositorio<EnderecoEntityDto> _repositorioEndereco;
         private readonly IRepositorio<ContatoEntityDto> _repositorioContato;
@@ -109,31 +108,28 @@ namespace API
         private readonly IRepositorio<VeiculoEntityDto> _repositorioVeiculo;
         private readonly IRepositorio<AlertaEstoqueEntityDto> _repositorioAlertaEstoque;
 
-        // Serviços
         private readonly IUnidadeDeTrabalho _unidadeDeTrabalho;
         private readonly IUsuarioLogadoServico _usuarioLogadoServico;
         private readonly IIdCorrelacionalService _idCorrelacionalService;
         private readonly IVerificarEstoqueJob _verificarEstoqueJob;
         private readonly IServicoEmail _servicoEmail;
         private readonly IMediator _mediator;
+        private readonly IConfiguration _configuration;
 
-        // Loggers
         private readonly ILogger<VerificarEstoqueJob> _loggerVerificarEstoqueJob;
 
-        // Construtor
         public CompositionRoot(MecanicaContexto contexto,
             IMediator mediator,
             IIdCorrelacionalService idCorrelacionalService,
             IHttpContextAccessor httpContext,
             IConfiguration configuration)
         {
+            _configuration = configuration;
             _dbContext = contexto;
             _mediator = mediator;
 
-            // Criando unidade de trabalho
             _unidadeDeTrabalho = new UnidadeDeTrabalho(_dbContext);
 
-            // Criando repositórios
             _repositorioCliente = new Repositorio<ClienteEntityDto>(_dbContext);
             _repositorioEndereco = new Repositorio<EnderecoEntityDto>(_dbContext);
             _repositorioContato = new Repositorio<ContatoEntityDto>(_dbContext);
@@ -145,7 +141,6 @@ namespace API
             _repositorioVeiculo = new Repositorio<VeiculoEntityDto>(_dbContext);
             _repositorioAlertaEstoque = new Repositorio<AlertaEstoqueEntityDto>(_dbContext);
 
-            // Criando loggers (usando NullLogger para simplificar)
             _loggerVerificarEstoqueJob = NullLogger<VerificarEstoqueJob>.Instance;
 
 
@@ -153,12 +148,10 @@ namespace API
 
             _usuarioLogadoServico = new UsuarioLogadoServico(httpContext, _repositorioUsuario);
 
-            // Criando gateways para o job
             var alertaEstoqueGateway = new AlertaEstoqueGateway(_repositorioAlertaEstoque);
             var estoqueGateway = new EstoqueGateway(_repositorioEstoque);
             var usuarioGateway = new UsuarioGateway(_repositorioUsuario);
 
-            // Criando logger para o job
             var logServicoVerificarEstoqueJob = new LogServico<VerificarEstoqueJob>(
                 _idCorrelacionalService,
                 _loggerVerificarEstoqueJob,
@@ -166,7 +159,6 @@ namespace API
 
             _servicoEmail = new ServicoEmail(configuration);
 
-            // Criando o job real
             _verificarEstoqueJob = new VerificarEstoqueJob(this);
         }
 
@@ -192,7 +184,6 @@ namespace API
 
         #region Criação de Gateways
 
-        // Cliente e relacionados
         public IClienteGateway CriarClienteGateway()
         {
             return new ClienteGateway(_repositorioCliente);
@@ -208,7 +199,6 @@ namespace API
             return new ContatoGateway(_repositorioContato);
         }
 
-        // Ordem de Serviço e relacionados
         public IOrdemServicoGateway CriarOrdemServicoGateway()
         {
             return new OrdemServicoGateway(_repositorioOrdemServico);
@@ -219,7 +209,6 @@ namespace API
             return new InsumosGateway(_repositorioInsumoOS);
         }
 
-        // Estoque
         public IEstoqueGateway CriarEstoqueGateway()
         {
             return new EstoqueGateway(_repositorioEstoque);
@@ -235,25 +224,21 @@ namespace API
             return new VerificarEstoqueJobGateway(_verificarEstoqueJob);
         }
 
-        // Serviço
         public IServicoGateway CriarServicoGateway()
         {
             return new ServicoGateway(_repositorioServico);
         }
 
-        // Usuário
         public IUsuarioGateway CriarUsuarioGateway()
         {
             return new UsuarioGateway(_repositorioUsuario);
         }
 
-        // Veículo
         public IVeiculoGateway CriarVeiculoGateway()
         {
             return new VeiculoGateway(_repositorioVeiculo);
         }
 
-        // Eventos
         public IEventosPublisher CriarEventosPublisher()
         {
             return new EventoPublisher(_mediator);
@@ -264,10 +249,6 @@ namespace API
             var eventosPublisher = CriarEventosPublisher();
             return new EventosGateway(eventosPublisher);
         }
-
-        #endregion
-
-        #region Criação de Serviços de Log
 
         #endregion
 
@@ -851,7 +832,6 @@ namespace API
 
         #region Criação de Use Cases
 
-        // Cliente - Usando novo padrão com facade
         public IClienteUseCases CriarClienteUseCases()
         {
             var cadastrarClienteHandler = CriarCadastrarClienteHandler();
@@ -870,7 +850,6 @@ namespace API
                 obterClientePorDocumentoHandler);
         }
 
-        // Serviço - Usando novo padrão com facade
         public IServicoUseCases CriarServicoUseCases()
         {
             var cadastrarServicoHandler = CriarCadastrarServicoHandler();
@@ -891,7 +870,6 @@ namespace API
                 obterServicosDisponiveisHandler);
         }
 
-        // Estoque - Usando novo padrão com facade completo
         public IEstoqueUseCases CriarEstoqueUseCases()
         {
             var cadastrarEstoqueHandler = CriarCadastrarEstoqueHandler();
@@ -910,7 +888,6 @@ namespace API
                 obterEstoqueCriticoHandler);
         }
 
-        // Ordem de Serviço - Usando novo padrão com facade
         public IOrdemServicoUseCases CriarOrdemServicoUseCases()
         {
             var cadastrarOrdemServicoHandler = CriarCadastrarOrdemServicoHandler();
@@ -931,7 +908,6 @@ namespace API
                 recusarOrcamentoHandler);
         }
 
-        // Insumo OS
         public IInsumoOSUseCases CriarInsumoOSUseCases()
         {
             var cadastrarInsumosHandler = CriarCadastrarInsumosHandler();
@@ -942,7 +918,6 @@ namespace API
                 devolverInsumosHandler);
         }
 
-        // Usuário - Usando novo padrão com facade
         public IUsuarioUseCases CriarUsuarioUseCases()
         {
             var cadastrarUsuarioHandler = CriarCadastrarUsuarioHandler();
@@ -961,7 +936,6 @@ namespace API
                 obterUsuarioPorEmailHandler);
         }
 
-        // Veículo - Usando novo padrão com facade
         public IVeiculoUseCases CriarVeiculoUseCases()
         {
             var cadastrarVeiculoHandler = CriarCadastrarVeiculoHandler();
@@ -982,23 +956,20 @@ namespace API
                 deletarVeiculoHandler);
         }
 
-        // Orçamento - Usando novo padrão com facade
         public IOrcamentoUseCases CriarOrcamentoUseCases()
         {
             var gerarOrcamentoHandler = CriarGerarOrcamentoHandler();
             return new OrcamentoUseCasesFacade(gerarOrcamentoHandler);
         }
 
-        // Serviços de autenticação
         public ConfiguracaoJwt CriarConfiguracaoJwt()
         {
-            // Criar uma configuração JWT com valores padrão
             var configuracao = new ConfiguracaoJwt
             {
-                SecretKey = "chave-secreta-mecanica-os-para-testes-locais",
-                Issuer = "MecanicaOS",
-                Audience = "MecanicaOS.Users",
-                ExpiryInMinutes = 60
+                SecretKey = _configuration["Jwt:SecretKey"],
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"],
+                ExpiryInMinutes = int.Parse(_configuration["Jwt:ExpiryInMinutes"])
             };
 
             return configuracao;
@@ -1010,7 +981,6 @@ namespace API
             return new ServicoJwt(configuracaoJwt);
         }
 
-        // Autenticação - Usando novo padrão com facade
         public IAutenticacaoUseCases CriarAutenticacaoUseCases()
         {
             var autenticarUsuarioHandler = CriarAutenticarUsuarioHandler();
