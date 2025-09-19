@@ -5,8 +5,6 @@ using Core.Interfaces.Controllers;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
-using Infraestrutura.Dados;
-using MediatR;
 
 namespace API.Jobs;
 

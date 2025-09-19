@@ -2,7 +2,7 @@
 
 namespace Core.DTOs.Requests.OrdemServico.InsumoOS;
 
-public class CadastrarInsumoOSRequest
+public class DevolverInsumoOSRequest
 {
     [Required]
     public Guid EstoqueId { get; set; }

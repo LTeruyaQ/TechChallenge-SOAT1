@@ -1,3 +1,4 @@
+using Core.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.Interfaces.Handlers.InsumosOS;
@@ -28,7 +29,7 @@ namespace Core.UseCases.InsumosOS
             return response.InsumosOS;
         }
 
-        public async Task DevolverInsumosAoEstoqueUseCaseAsync(IEnumerable<InsumoOS> insumosOS)
+        public async Task DevolverInsumosAoEstoqueUseCaseAsync(IEnumerable<DevolverInsumoOSRequest> insumosOS)
         {
             await _devolverInsumosHandler.Handle(insumosOS);
         }

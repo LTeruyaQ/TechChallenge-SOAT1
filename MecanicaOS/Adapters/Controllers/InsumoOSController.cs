@@ -20,7 +20,7 @@ namespace Adapters.Controllers
             _insumoPresenter = new InsumoOSPresenter();
         }
 
-        public async Task<IEnumerable<InsumoOS>> CadastrarInsumos(Guid ordemServicoId, List<CadastrarInsumoOSRequest> requests)
+        public async Task<IEnumerable<InsumoOS>> CadastrarInsumos(Guid ordemServicoId, IEnumerable<CadastrarInsumoOSRequest> requests)
         {
             // Converter os DTOs de request para UseCaseDto
             var useCaseDtos = requests.Select(MapearParaCadastrarInsumoOSUseCaseDto).ToList();
@@ -41,7 +41,7 @@ namespace Adapters.Controllers
             };
         }
 
-        public async Task DevolverInsumosAoEstoque(IEnumerable<InsumoOS> insumosOS)
+        public async Task DevolverInsumosAoEstoque(IEnumerable<DevolverInsumoOSRequest> insumosOS)
         {
             await _insumoOSUseCases.DevolverInsumosAoEstoqueUseCaseAsync(insumosOS);
         }

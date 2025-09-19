@@ -1,3 +1,4 @@
+using Core.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.UseCases.InsumosOS.DevolverInsumos;
 
@@ -13,6 +14,6 @@ namespace Core.Interfaces.Handlers.InsumosOS
         /// </summary>
         /// <param name="insumosOS">Lista de insumos a serem devolvidos</param>
         /// <returns>Resposta indicando o sucesso da operação</returns>
-        Task<DevolverInsumosResponse> Handle(IEnumerable<InsumoOS> insumosOS);
+        Task<DevolverInsumosResponse> Handle(IEnumerable<DevolverInsumoOSRequest> insumosOS);
     }
 }

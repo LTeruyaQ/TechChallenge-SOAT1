@@ -1,26 +1,20 @@
-using API;
-using Core.DTOs.Entidades.OrdemServicos;
-using Core.Entidades;
-using Core.Especificacoes.Insumo;
+using Core.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.Interfaces.Controllers;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
-using Infraestrutura.Dados;
 using MediatR;
 
 namespace Infraestrutura.Notificacoes.OS;
 
 public class OrdemServicoCanceladaHandler : INotificationHandler<OrdemServicoCanceladaEvent>
 {
-    private readonly IRepositorio<InsumoOSEntityDto> _insumoOSRepositorio;
     private readonly IOrdemServicoController _ordemServicoController;
+    private readonly IInsumoOSController _insumosOSController;
     private readonly ILogServico<OrdemServicoCanceladaHandler> _logServico;
 
     public OrdemServicoCanceladaHandler(ICompositionRoot compositionRoot)
     {
-        _insumoOSRepositorio = compositionRoot.CriarRepositorio<InsumoOSEntityDto>();
-        _ordemServicoController = compositionRoot.CriarOrdemServicoController();
+        _insumosOSController = compositionRoot.CriarInsumoOSController();
         _logServico = compositionRoot.CriarLogService<OrdemServicoCanceladaHandler>();
     }
 
@@ -32,26 +26,16 @@ public class OrdemServicoCanceladaHandler : INotificationHandler<OrdemServicoCan
         {
             _logServico.LogInicio(metodo, notification.OrdemServicoId);
 
-            await _ordemServicoController.CalcularOrcamentoAsync(notification.OrdemServicoId);
+            var os = await _ordemServicoController.ObterPorId(notification.OrdemServicoId);
 
-            var especificacao = new ObterInsumosOSPorOSEspecificacao(notification.OrdemServicoId);
-            var insumosOSDto = await _insumoOSRepositorio.ListarSemRastreamentoAsync(especificacao);
-
+            var insumosOSDto = os.Insumos;
             if (!insumosOSDto.Any()) return;
 
-            // Usar o Controller para devolver os insumos ao estoque
-            //var insumosOS = insumosOSDto.Select(dto => new InsumoOS
-            //{
-            //    Id = dto.Id,
-            //    Ativo = dto.Ativo,
-            //    DataCadastro = dto.DataCadastro,
-            //    DataAtualizacao = dto.DataAtualizacao,
-            //    OrdemServicoId = dto.OrdemServicoId,
-            //    EstoqueId = dto.EstoqueId,
-            //    Quantidade = dto.Quantidade
-            //});
-
-            //await _insumoOSUController.DevolverInsumosAoEstoqueUseCaseAsync(insumosOS);
+            await _insumosOSController.DevolverInsumosAoEstoque(os.Insumos.Select(i => new DevolverInsumoOSRequest()
+            {
+                EstoqueId = i.EstoqueId,
+                Quantidade = i.Quantidade
+            }));
 
             _logServico.LogFim(metodo);
         }

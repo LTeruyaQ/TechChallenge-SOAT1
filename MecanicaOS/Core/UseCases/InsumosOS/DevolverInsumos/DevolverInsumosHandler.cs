@@ -1,5 +1,5 @@
+using Core.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.DTOs.UseCases.Estoque;
-using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.Handlers.InsumosOS;
@@ -26,7 +26,7 @@ namespace Core.UseCases.InsumosOS.DevolverInsumos
             _atualizarEstoqueHandler = atualizarEstoqueHandler ?? throw new ArgumentNullException(nameof(atualizarEstoqueHandler));
         }
 
-        public async Task<DevolverInsumosResponse> Handle(IEnumerable<InsumoOS> insumosOS)
+        public async Task<DevolverInsumosResponse> Handle(IEnumerable<DevolverInsumoOSRequest> insumosOS)
         {
             string metodo = nameof(Handle);
 

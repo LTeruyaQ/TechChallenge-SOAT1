@@ -5,7 +5,7 @@ namespace Core.Interfaces.Controllers
 {
     public interface IInsumoOSController
     {
-        Task<IEnumerable<InsumoOS>> CadastrarInsumos(Guid ordemServicoId, List<CadastrarInsumoOSRequest> requests);
-        Task DevolverInsumosAoEstoque(IEnumerable<InsumoOS> insumosOS);
+        Task<IEnumerable<InsumoOS>> CadastrarInsumos(Guid ordemServicoId, IEnumerable<CadastrarInsumoOSRequest> requests);
+        Task DevolverInsumosAoEstoque(IEnumerable<DevolverInsumoOSRequest> insumosOS);
     }
 }
