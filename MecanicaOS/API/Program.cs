@@ -9,7 +9,7 @@ using Hangfire.PostgreSql;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.Extensions;
 using Infraestrutura.Logs;
-using Infraestrutura.Notificacoes.OS;
+using API.Notificacoes.OS;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;

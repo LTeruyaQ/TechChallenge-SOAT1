@@ -114,10 +114,10 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
         public async Task DevolverInsumosAoEstoque_DeveChamarUseCase()
         {
             // Arrange
-            var insumosOS = new List<InsumoOS>
+            var insumosOS = new List<DevolverInsumoOSRequest>
             {
-                new InsumoOS(),
-                new InsumoOS()
+                new DevolverInsumoOSRequest { EstoqueId = Guid.NewGuid(), Quantidade = 1 },
+                new DevolverInsumoOSRequest { EstoqueId = Guid.NewGuid(), Quantidade = 2 }
             };
 
             // Act
@@ -125,7 +125,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
 
             // Assert
             await _insumoOSUseCases.Received(1).DevolverInsumosAoEstoqueUseCaseAsync(
-                Arg.Is<IEnumerable<InsumoOS>>(i => i == insumosOS));
+                Arg.Is<IEnumerable<DevolverInsumoOSRequest>>(i => i == insumosOS));
         }
     }
 }

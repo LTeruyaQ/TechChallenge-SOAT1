@@ -9,7 +9,7 @@ using MediatR;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Infraestrutura.Notificacoes.OS;
+namespace API.Notificacoes.OS;
 
 public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoEmOrcamentoEvent>
 {

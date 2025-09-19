@@ -10,7 +10,7 @@ using Infraestrutura.Dados;
 using MediatR;
 using System.Text;
 
-namespace Infraestrutura.Notificacoes.OS;
+namespace API.Notificacoes.OS;
 
 public class OrdemServicoFinalizadaHandler : INotificationHandler<OrdemServicoFinalizadaEvent>
 {
@@ -22,6 +22,7 @@ public class OrdemServicoFinalizadaHandler : INotificationHandler<OrdemServicoFi
     {
         _logServico = compositionRoot.CriarLogService<OrdemServicoFinalizadaHandler>();
         _emailServico = compositionRoot.CriarServicoEmail();
+        _ordemServicoController = compositionRoot.CriarOrdemServicoController();
     }
 
     public async Task Handle(OrdemServicoFinalizadaEvent notification, CancellationToken cancellationToken)

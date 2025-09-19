@@ -84,7 +84,7 @@ using Infraestrutura.Autenticacao;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.UdT;
 using Infraestrutura.Logs;
-using Infraestrutura.Notificacoes;
+using API.Notificacoes;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using MediatR;

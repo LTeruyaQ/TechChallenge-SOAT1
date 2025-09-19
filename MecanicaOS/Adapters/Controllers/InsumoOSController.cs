@@ -1,7 +1,7 @@
 using Adapters.Presenters;
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
+using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
-using Core.Entidades;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.Presenters;
 using Core.Interfaces.root;
@@ -20,13 +20,11 @@ namespace Adapters.Controllers
             _insumoPresenter = new InsumoOSPresenter();
         }
 
-        public async Task<IEnumerable<InsumoOS>> CadastrarInsumos(Guid ordemServicoId, IEnumerable<CadastrarInsumoOSRequest> requests)
+        public async Task<IEnumerable<InsumoOSResponse>> CadastrarInsumos(Guid ordemServicoId, IEnumerable<CadastrarInsumoOSRequest> requests)
         {
-            // Converter os DTOs de request para UseCaseDto
             var useCaseDtos = requests.Select(MapearParaCadastrarInsumoOSUseCaseDto).ToList();
 
-            // Chamar o use case
-            return await _insumoOSUseCases.CadastrarInsumosUseCaseAsync(ordemServicoId, useCaseDtos);
+            return _insumoPresenter.ToResponse(await _insumoOSUseCases.CadastrarInsumosUseCaseAsync(ordemServicoId, useCaseDtos));
         }
 
         internal CadastrarInsumoOSUseCaseDto MapearParaCadastrarInsumoOSUseCaseDto(CadastrarInsumoOSRequest request)

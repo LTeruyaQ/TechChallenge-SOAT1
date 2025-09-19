@@ -6,10 +6,6 @@ using Core.Interfaces.UseCases;
 
 namespace Core.UseCases.InsumosOS
 {
-    /// <summary>
-    /// Facade para manter compatibilidade com a interface IInsumoOSUseCases
-    /// enquanto utiliza os novos casos de uso individuais
-    /// </summary>
     public class InsumoOSUseCasesFacade : IInsumoOSUseCases
     {
         private readonly ICadastrarInsumosHandler _cadastrarInsumosHandler;

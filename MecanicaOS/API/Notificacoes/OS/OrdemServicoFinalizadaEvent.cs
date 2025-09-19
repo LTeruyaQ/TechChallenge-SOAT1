@@ -1,6 +1,6 @@
-﻿using MediatR;
+using MediatR;
 
-namespace Infraestrutura.Notificacoes.OS;
+namespace API.Notificacoes.OS;
 
 public class OrdemServicoFinalizadaEvent(Guid ordemServicoId) : INotification
 {

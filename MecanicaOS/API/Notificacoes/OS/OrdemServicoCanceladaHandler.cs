@@ -4,7 +4,7 @@ using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
 using MediatR;
 
-namespace Infraestrutura.Notificacoes.OS;
+namespace API.Notificacoes.OS;
 
 public class OrdemServicoCanceladaHandler : INotificationHandler<OrdemServicoCanceladaEvent>
 {
@@ -14,6 +14,7 @@ public class OrdemServicoCanceladaHandler : INotificationHandler<OrdemServicoCan
 
     public OrdemServicoCanceladaHandler(ICompositionRoot compositionRoot)
     {
+        _ordemServicoController = compositionRoot.CriarOrdemServicoController();
         _insumosOSController = compositionRoot.CriarInsumoOSController();
         _logServico = compositionRoot.CriarLogService<OrdemServicoCanceladaHandler>();
     }

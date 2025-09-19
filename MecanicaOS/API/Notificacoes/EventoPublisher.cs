@@ -1,9 +1,9 @@
-﻿using Core.DTOs.UseCases.Eventos;
+using Core.DTOs.UseCases.Eventos;
 using Core.Interfaces.Eventos;
-using Infraestrutura.Notificacoes.OS;
+using API.Notificacoes.OS;
 using MediatR;
 
-namespace Infraestrutura.Notificacoes
+namespace API.Notificacoes
 {
     public class EventoPublisher : IEventosPublisher
     {
