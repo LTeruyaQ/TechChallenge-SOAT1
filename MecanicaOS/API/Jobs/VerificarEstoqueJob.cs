@@ -13,7 +13,9 @@ using MediatR;
 using System.Text;
 
 namespace API.Jobs;
-
+/// <summary>
+/// TODO: Migrar pra usar controller
+/// </summary>
 public class VerificarEstoqueJob : IVerificarEstoqueJob
 {
     private readonly ICompositionRoot _compositionRoot;

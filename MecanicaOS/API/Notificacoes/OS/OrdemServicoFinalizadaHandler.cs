@@ -12,6 +12,9 @@ using System.Text;
 
 namespace API.Notificacoes.OS;
 
+/// <summary>
+/// TODO: Checar se a migração está concluida
+/// </summary>
 public class OrdemServicoFinalizadaHandler : INotificationHandler<OrdemServicoFinalizadaEvent>
 {
     private readonly ILogServico<OrdemServicoFinalizadaHandler> _logServico;

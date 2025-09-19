@@ -8,6 +8,9 @@ using Core.Interfaces.Servicos;
 
 namespace API.Jobs;
 
+/// <summary>
+/// TODO: Migrar pra usar controller
+/// </summary>
 public class VerificarOrcamentoExpiradoJob
 {
     private readonly ICompositionRoot _compositionRoot;
