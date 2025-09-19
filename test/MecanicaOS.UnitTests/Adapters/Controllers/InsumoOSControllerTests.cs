@@ -1,23 +1,38 @@
 using Adapters.Controllers;
-using Adapters.DTOs.Requests.OrdemServico.InsumoOS;
-using Adapters.Presenters.Interfaces;
+using Core.DTOs.Requests.OrdemServico.InsumoOS;
+using Core.DTOs.Responses.OrdemServico;
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.Presenters;
+using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
+using NSubstitute;
+using FluentAssertions;
+using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
     public class InsumoOSControllerTests
     {
         private readonly IInsumoOSUseCases _insumoOSUseCases;
-        private readonly IOrdemServicoPresenter _ordemServicoPresenter;
+        private readonly IInsumoPresenter _insumoPresenter;
         private readonly InsumoOSController _insumoOSController;
+        private readonly ICompositionRoot _compositionRoot;
 
         public InsumoOSControllerTests()
         {
             _insumoOSUseCases = Substitute.For<IInsumoOSUseCases>();
-            _ordemServicoPresenter = Substitute.For<IOrdemServicoPresenter>();
-            _insumoOSController = new InsumoOSController(_insumoOSUseCases, _ordemServicoPresenter);
+            _insumoPresenter = Substitute.For<IInsumoPresenter>();
+            _compositionRoot = Substitute.For<ICompositionRoot>();
+            
+            _compositionRoot.CriarInsumoOSUseCases().Returns(_insumoOSUseCases);
+            _insumoOSController = new InsumoOSController(_compositionRoot);
+            
+            // Usar reflexão para injetar o presenter mockado
+            var presenterField = typeof(InsumoOSController).GetField("_insumoPresenter", 
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            presenterField?.SetValue(_insumoOSController, _insumoPresenter);
         }
 
         [Fact]

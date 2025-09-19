@@ -32,7 +32,6 @@ namespace Core.UseCases.Orcamentos.GerarOrcamento
             }
             catch (Exception e)
             {
-                // Log simplificado por enquanto
                 throw;
             }
         }

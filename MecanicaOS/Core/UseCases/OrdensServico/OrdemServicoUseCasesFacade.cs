@@ -3,13 +3,6 @@ using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.UseCases;
-using Core.UseCases.OrdensServico.AceitarOrcamento;
-using Core.UseCases.OrdensServico.AtualizarOrdemServico;
-using Core.UseCases.OrdensServico.CadastrarOrdemServico;
-using Core.UseCases.OrdensServico.ObterOrdemServico;
-using Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus;
-using Core.UseCases.OrdensServico.ObterTodosOrdensServico;
-using Core.UseCases.OrdensServico.RecusarOrcamento;
 
 namespace Core.UseCases.OrdensServico
 {
@@ -26,6 +19,7 @@ namespace Core.UseCases.OrdensServico
         private readonly IObterOrdemServicoPorStatusHandler _obterOrdemServicoPorStatusHandler;
         private readonly IAceitarOrcamentoHandler _aceitarOrcamentoHandler;
         private readonly IRecusarOrcamentoHandler _recusarOrcamentoHandler;
+        private readonly ICalcularOrcamentoHandler _calcularOrcamentoHandler;
 
         public OrdemServicoUseCasesFacade(
             ICadastrarOrdemServicoHandler cadastrarOrdemServicoHandler,

@@ -2,8 +2,6 @@ using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.Interfaces.Handlers.InsumosOS;
 using Core.Interfaces.UseCases;
-using Core.UseCases.InsumosOS.CadastrarInsumos;
-using Core.UseCases.InsumosOS.DevolverInsumos;
 
 namespace Core.UseCases.InsumosOS
 {

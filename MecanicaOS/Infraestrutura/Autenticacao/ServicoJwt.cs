@@ -1,5 +1,5 @@
+using Core.DTOs.Config;
 using Core.Interfaces.Servicos;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,9 +11,9 @@ public class ServicoJwt : IServicoJwt
 {
     private readonly ConfiguracaoJwt _configuracaoJwt;
 
-    public ServicoJwt(IOptions<ConfiguracaoJwt> configuracaoJwt)
+    public ServicoJwt(ConfiguracaoJwt configuracaoJwt)
     {
-        _configuracaoJwt = configuracaoJwt.Value;
+        _configuracaoJwt = configuracaoJwt;
     }
 
     public string GerarToken(Guid usuarioId, string email, string tipoUsuario, string? nome = null, IEnumerable<string>? permissoes = null)

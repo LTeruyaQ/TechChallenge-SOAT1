@@ -36,12 +36,26 @@ namespace Core.UseCases.OrdensServico.AtualizarOrdemServico
 
                 var statusAnterior = ordemServico.Status;
 
-                // Atualizar campos
                 if (!string.IsNullOrEmpty(request.Descricao))
                     ordemServico.Descricao = request.Descricao;
 
                 if (request.Status.HasValue)
                     ordemServico.Status = request.Status.Value;
+
+                if(request.Orcamento.HasValue)
+                    ordemServico.Orcamento = request.Orcamento.Value;
+
+                if (request.DataEnvioOrcamento.HasValue)
+                    ordemServico.DataEnvioOrcamento = request.DataEnvioOrcamento.Value;
+
+                if(request.ClienteId.HasValue)
+                    ordemServico.ClienteId = request.ClienteId.Value;
+
+                if(request.VeiculoId.HasValue)
+                    ordemServico.VeiculoId = request.VeiculoId.Value;
+
+                if(request.ServicoId.HasValue)
+                    ordemServico.ServicoId = request.ServicoId.Value;
 
                 ordemServico.DataAtualizacao = DateTime.UtcNow;
 

@@ -1,6 +1,4 @@
 using Core.UseCases.OrdensServico.AceitarOrcamento;
-using System;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.OrdensServico
 {

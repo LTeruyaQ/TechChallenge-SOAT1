@@ -1,20 +1,23 @@
-using Adapters.DTOs.Requests.OrdemServico.InsumoOS;
-using Adapters.Presenters.Interfaces;
+using Adapters.Presenters;
+using Core.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.Presenters;
+using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
 {
-    public class InsumoOSController
+    public class InsumoOSController : IInsumoOSController
     {
         private readonly IInsumoOSUseCases _insumoOSUseCases;
-        private readonly IOrdemServicoPresenter _ordemServicoPresenter;
+        private readonly IInsumoPresenter _insumoPresenter;
 
-        public InsumoOSController(IInsumoOSUseCases insumoOSUseCases, IOrdemServicoPresenter ordemServicoPresenter)
+        public InsumoOSController(ICompositionRoot compositionRoot)
         {
-            _insumoOSUseCases = insumoOSUseCases;
-            _ordemServicoPresenter = ordemServicoPresenter;
+            _insumoOSUseCases = compositionRoot.CriarInsumoOSUseCases();
+            _insumoPresenter = new InsumoOSPresenter();
         }
 
         public async Task<IEnumerable<InsumoOS>> CadastrarInsumos(Guid ordemServicoId, List<CadastrarInsumoOSRequest> requests)

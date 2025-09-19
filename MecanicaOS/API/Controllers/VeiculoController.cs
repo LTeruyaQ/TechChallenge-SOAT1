@@ -1,9 +1,8 @@
-using Adapters.DTOs.Requests.Veiculo;
-using Adapters.DTOs.Responses.Veiculo;
 using API.Models;
-using Core.Interfaces.Servicos;
-using Infraestrutura.Dados;
-using MediatR;
+using Core.DTOs.Requests.Veiculo;
+using Core.DTOs.Responses.Veiculo;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.root;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,22 +11,15 @@ namespace API.Controllers
     [Authorize]
     public class VeiculoController : BaseApiController
     {
-        private readonly Adapters.Controllers.VeiculoController _veiculoController;
+        private readonly IVeiculoController _veiculoController;
         private readonly ILogger<VeiculoController> _logger;
 
-        public VeiculoController(
-            MecanicaContexto contexto,
-            Mediator mediator,
-            IIdCorrelacionalService idCorrelacionalService,
-            HttpContextAccessor httpContext,
-            IConfiguration configuration,
+        public VeiculoController(ICompositionRoot compositionRoot,
             ILogger<VeiculoController> logger)
         {
             _logger = logger;
 
-            // Usando o CompositionRoot para criar o controller com dependências externas
-            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
-            _veiculoController = compositionRoot.CreateVeiculoController();
+            _veiculoController = compositionRoot.CriarVeiculoController();
         }
 
         [HttpPost]

@@ -1,6 +1,4 @@
 using Core.UseCases.Clientes.RemoverCliente;
-using System;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Clientes
 {

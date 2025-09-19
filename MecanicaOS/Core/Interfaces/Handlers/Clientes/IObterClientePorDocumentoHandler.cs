@@ -1,5 +1,4 @@
 using Core.UseCases.Clientes.ObterClientePorDocumento;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Clientes
 {

@@ -2,12 +2,6 @@ using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 using Core.Interfaces.Handlers.Clientes;
 using Core.Interfaces.UseCases;
-using Core.UseCases.Clientes.AtualizarCliente;
-using Core.UseCases.Clientes.CadastrarCliente;
-using Core.UseCases.Clientes.ObterCliente;
-using Core.UseCases.Clientes.ObterClientePorDocumento;
-using Core.UseCases.Clientes.ObterTodosClientes;
-using Core.UseCases.Clientes.RemoverCliente;
 
 namespace Core.UseCases.Clientes
 {

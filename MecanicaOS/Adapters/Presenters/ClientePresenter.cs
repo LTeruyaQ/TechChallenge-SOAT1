@@ -1,9 +1,9 @@
-using Adapters.DTOs.Requests.Cliente;
-using Adapters.DTOs.Responses.Cliente;
-using Adapters.DTOs.Responses.Veiculo;
-using Adapters.Presenters.Interfaces;
+using Core.DTOs.Requests.Cliente;
+using Core.DTOs.Responses.Cliente;
+using Core.DTOs.Responses.Veiculo;
 using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
+using Core.Interfaces.Presenters;
 
 namespace Adapters.Presenters
 {

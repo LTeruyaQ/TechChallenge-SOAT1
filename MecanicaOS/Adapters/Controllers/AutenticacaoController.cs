@@ -1,7 +1,10 @@
-using Adapters.DTOs.Requests.Autenticacao;
-using Adapters.DTOs.Responses.Autenticacao;
-using Adapters.Presenters.Interfaces;
+using Adapters.Presenters;
+using Core.DTOs.Requests.Autenticacao;
+using Core.DTOs.Responses.Autenticacao;
 using Core.DTOs.UseCases.Autenticacao;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.Presenters;
+using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
@@ -11,10 +14,10 @@ namespace Adapters.Controllers
         private readonly IAutenticacaoUseCases _autenticacaoUseCases;
         private readonly IAutenticacaoPresenter _autenticacaoPresenter;
 
-        public AutenticacaoController(IAutenticacaoUseCases autenticacaoUseCases, IAutenticacaoPresenter autenticacaoPresenter)
+        public AutenticacaoController(ICompositionRoot compositionRoot)
         {
-            _autenticacaoUseCases = autenticacaoUseCases;
-            _autenticacaoPresenter = autenticacaoPresenter;
+            _autenticacaoUseCases = compositionRoot.CriarAutenticacaoUseCases();
+            _autenticacaoPresenter = new AutenticacaoPresenter();
         }
 
         public async Task<AutenticacaoResponse> AutenticarAsync(AutenticacaoRequest autenticacaoRequest)

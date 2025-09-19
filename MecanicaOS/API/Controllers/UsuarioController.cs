@@ -1,9 +1,8 @@
-using Adapters.DTOs.Requests.Usuario;
-using Adapters.DTOs.Responses.Usuario;
 using API.Models;
-using Core.Interfaces.Servicos;
-using Infraestrutura.Dados;
-using MediatR;
+using Core.DTOs.Requests.Usuario;
+using Core.DTOs.Responses.Usuario;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.root;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,18 +11,11 @@ namespace API.Controllers
     [Authorize(Roles = "Admin")]
     public class UsuarioController : BaseApiController
     {
-        private readonly Adapters.Controllers.UsuarioController _usuarioController;
+        private readonly IUsuarioController _usuarioController;
 
-        public UsuarioController(
-            MecanicaContexto contexto,
-            Mediator mediator,
-            IIdCorrelacionalService idCorrelacionalService,
-            HttpContextAccessor httpContext,
-            IConfiguration configuration)
+        public UsuarioController(ICompositionRoot compositionRoot)
         {
-            // Usando o CompositionRoot para criar o controller com dependências externas
-            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
-            _usuarioController = compositionRoot.CreateUsuarioController();
+            _usuarioController = compositionRoot.CriarUsuarioController();
         }
 
         [HttpGet]

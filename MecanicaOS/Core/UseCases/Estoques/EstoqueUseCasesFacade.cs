@@ -2,12 +2,6 @@ using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.UseCases;
-using Core.UseCases.Estoques.AtualizarEstoque;
-using Core.UseCases.Estoques.CadastrarEstoque;
-using Core.UseCases.Estoques.DeletarEstoque;
-using Core.UseCases.Estoques.ObterEstoque;
-using Core.UseCases.Estoques.ObterEstoqueCritico;
-using Core.UseCases.Estoques.ObterTodosEstoques;
 
 namespace Core.UseCases.Estoques
 {

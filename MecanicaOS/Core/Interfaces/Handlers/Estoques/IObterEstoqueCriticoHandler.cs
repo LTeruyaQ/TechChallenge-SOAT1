@@ -1,5 +1,4 @@
 using Core.UseCases.Estoques.ObterEstoqueCritico;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Estoques
 {

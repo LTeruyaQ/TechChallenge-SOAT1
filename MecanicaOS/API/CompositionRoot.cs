@@ -1,26 +1,31 @@
 using Adapters.Controllers;
 using Adapters.Gateways;
 using Adapters.Presenters;
-using Adapters.Presenters.Interfaces;
+using API.Jobs;
+using Core.DTOs.Config;
+using Core.DTOs.Entidades.Autenticacao;
 using Core.DTOs.Entidades.Cliente;
 using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.Entidades.OrdemServicos;
 using Core.DTOs.Entidades.Servico;
 using Core.DTOs.Entidades.Usuarios;
 using Core.DTOs.Entidades.Veiculo;
+using Core.Interfaces.Controllers;
 using Core.Interfaces.Eventos;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Autenticacao;
 using Core.Interfaces.Handlers.Clientes;
 using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.Handlers.InsumosOS;
-using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.Handlers.Orcamentos;
+using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.Handlers.Servicos;
 using Core.Interfaces.Handlers.Usuarios;
 using Core.Interfaces.Handlers.Veiculos;
 using Core.Interfaces.Jobs;
+using Core.Interfaces.Presenters;
 using Core.Interfaces.Repositorios;
+using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Autenticacao;
@@ -78,18 +83,16 @@ using Core.UseCases.Veiculos.ObterVeiculoPorPlaca;
 using Infraestrutura.Autenticacao;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.UdT;
-using Infraestrutura.Jobs;
 using Infraestrutura.Logs;
 using Infraestrutura.Notificacoes;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using MediatR;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 
 namespace API
 {
-    public class CompositionRoot
+    public class CompositionRoot : ICompositionRoot
     {
         // Contexto de banco de dados
         private readonly MecanicaContexto _dbContext;
@@ -119,9 +122,9 @@ namespace API
 
         // Construtor
         public CompositionRoot(MecanicaContexto contexto,
-            Mediator mediator,
+            IMediator mediator,
             IIdCorrelacionalService idCorrelacionalService,
-            HttpContextAccessor httpContext,
+            IHttpContextAccessor httpContext,
             IConfiguration configuration)
         {
             _dbContext = contexto;
@@ -164,87 +167,101 @@ namespace API
             _servicoEmail = new ServicoEmail(configuration);
 
             // Criando o job real
-            _verificarEstoqueJob = new VerificarEstoqueJob(
-                _repositorioAlertaEstoque,
-                _servicoEmail,
-                logServicoVerificarEstoqueJob,
-                _unidadeDeTrabalho,
-                _repositorioEstoque,
-                _repositorioUsuario);
+            _verificarEstoqueJob = new VerificarEstoqueJob(this);
+        }
+
+        public IRepositorio<T> CriarRepositorio<T>() where T : EntityDto
+        {
+            return new Repositorio<T>(_dbContext);
+        }
+
+        public ILogServico<T> CriarLogService<T>() where T : class
+        {
+            return new LogServico<T>(_idCorrelacionalService, NullLogger<T>.Instance, _usuarioLogadoServico);
+        }
+
+        public IServicoEmail CriarServicoEmail()
+        {
+            return _servicoEmail;
+        }
+
+        public IUnidadeDeTrabalho CriarUnidadeDeTrabalho()
+        {
+            return _unidadeDeTrabalho;
         }
 
         #region Criação de Gateways
 
         // Cliente e relacionados
-        public IClienteGateway CreateClienteGateway()
+        public IClienteGateway CriarClienteGateway()
         {
             return new ClienteGateway(_repositorioCliente);
         }
 
-        public IEnderecoGateway CreateEnderecoGateway()
+        public IEnderecoGateway CriarEnderecoGateway()
         {
             return new EnderecoGateway(_repositorioEndereco);
         }
 
-        public IContatoGateway CreateContatoGateway()
+        public IContatoGateway CriarContatoGateway()
         {
             return new ContatoGateway(_repositorioContato);
         }
 
         // Ordem de Serviço e relacionados
-        public IOrdemServicoGateway CreateOrdemServicoGateway()
+        public IOrdemServicoGateway CriarOrdemServicoGateway()
         {
             return new OrdemServicoGateway(_repositorioOrdemServico);
         }
 
-        public IInsumosGateway CreateInsumosGateway()
+        public IInsumosGateway CriarInsumosGateway()
         {
             return new InsumosGateway(_repositorioInsumoOS);
         }
 
         // Estoque
-        public IEstoqueGateway CreateEstoqueGateway()
+        public IEstoqueGateway CriarEstoqueGateway()
         {
             return new EstoqueGateway(_repositorioEstoque);
         }
 
-        public IAlertaEstoqueGateway CreateAlertaEstoqueGateway()
+        public IAlertaEstoqueGateway CriarAlertaEstoqueGateway()
         {
             return new AlertaEstoqueGateway(_repositorioAlertaEstoque);
         }
 
-        public IVerificarEstoqueJobGateway CreateVerificarEstoqueJobGateway()
+        public IVerificarEstoqueJobGateway CriarVerificarEstoqueJobGateway()
         {
             return new VerificarEstoqueJobGateway(_verificarEstoqueJob);
         }
 
         // Serviço
-        public IServicoGateway CreateServicoGateway()
+        public IServicoGateway CriarServicoGateway()
         {
             return new ServicoGateway(_repositorioServico);
         }
 
         // Usuário
-        public IUsuarioGateway CreateUsuarioGateway()
+        public IUsuarioGateway CriarUsuarioGateway()
         {
             return new UsuarioGateway(_repositorioUsuario);
         }
 
         // Veículo
-        public IVeiculoGateway CreateVeiculoGateway()
+        public IVeiculoGateway CriarVeiculoGateway()
         {
             return new VeiculoGateway(_repositorioVeiculo);
         }
 
         // Eventos
-        public IEventosPublisher CreateEventosPublisher()
+        public IEventosPublisher CriarEventosPublisher()
         {
             return new EventoPublisher(_mediator);
         }
 
-        public IEventosGateway CreateEventosGateway()
+        public IEventosGateway CriarEventosGateway()
         {
-            var eventosPublisher = CreateEventosPublisher();
+            var eventosPublisher = CriarEventosPublisher();
             return new EventosGateway(eventosPublisher);
         }
 
@@ -256,11 +273,11 @@ namespace API
 
         #region Criação de Handlers Individuais - Cliente
 
-        public ICadastrarClienteHandler CreateCadastrarClienteHandler()
+        public ICadastrarClienteHandler CriarCadastrarClienteHandler()
         {
-            var clienteGateway = CreateClienteGateway();
-            var enderecoGateway = CreateEnderecoGateway();
-            var contatoGateway = CreateContatoGateway();
+            var clienteGateway = CriarClienteGateway();
+            var enderecoGateway = CriarEnderecoGateway();
+            var contatoGateway = CriarContatoGateway();
             var logServico = new LogServico<CadastrarClienteHandler>(_idCorrelacionalService, NullLogger<CadastrarClienteHandler>.Instance, _usuarioLogadoServico);
 
             return new CadastrarClienteHandler(
@@ -272,11 +289,11 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IAtualizarClienteHandler CreateAtualizarClienteHandler()
+        public IAtualizarClienteHandler CriarAtualizarClienteHandler()
         {
-            var clienteGateway = CreateClienteGateway();
-            var enderecoGateway = CreateEnderecoGateway();
-            var contatoGateway = CreateContatoGateway();
+            var clienteGateway = CriarClienteGateway();
+            var enderecoGateway = CriarEnderecoGateway();
+            var contatoGateway = CriarContatoGateway();
             var logServico = new LogServico<AtualizarClienteHandler>(_idCorrelacionalService, NullLogger<AtualizarClienteHandler>.Instance, _usuarioLogadoServico);
 
             return new AtualizarClienteHandler(
@@ -288,9 +305,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterClienteHandler CreateObterClienteHandler()
+        public IObterClienteHandler CriarObterClienteHandler()
         {
-            var clienteGateway = CreateClienteGateway();
+            var clienteGateway = CriarClienteGateway();
             var logServico = new LogServico<ObterClienteHandler>(_idCorrelacionalService, NullLogger<ObterClienteHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterClienteHandler(
@@ -300,9 +317,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterTodosClientesHandler CreateObterTodosClientesHandler()
+        public IObterTodosClientesHandler CriarObterTodosClientesHandler()
         {
-            var clienteGateway = CreateClienteGateway();
+            var clienteGateway = CriarClienteGateway();
             var logServico = new LogServico<ObterTodosClientesHandler>(_idCorrelacionalService, NullLogger<ObterTodosClientesHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterTodosClientesHandler(
@@ -312,9 +329,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IRemoverClienteHandler CreateRemoverClienteHandler()
+        public IRemoverClienteHandler CriarRemoverClienteHandler()
         {
-            var clienteGateway = CreateClienteGateway();
+            var clienteGateway = CriarClienteGateway();
             var logServico = new LogServico<RemoverClienteHandler>(_idCorrelacionalService, NullLogger<RemoverClienteHandler>.Instance, _usuarioLogadoServico);
 
             return new RemoverClienteHandler(
@@ -324,9 +341,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterClientePorDocumentoHandler CreateObterClientePorDocumentoHandler()
+        public IObterClientePorDocumentoHandler CriarObterClientePorDocumentoHandler()
         {
-            var clienteGateway = CreateClienteGateway();
+            var clienteGateway = CriarClienteGateway();
             var logServico = new LogServico<ObterClientePorDocumentoHandler>(_idCorrelacionalService, NullLogger<ObterClientePorDocumentoHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterClientePorDocumentoHandler(
@@ -340,9 +357,9 @@ namespace API
 
         #region Criação de Handlers Individuais - Veículo
 
-        public ICadastrarVeiculoHandler CreateCadastrarVeiculoHandler()
+        public ICadastrarVeiculoHandler CriarCadastrarVeiculoHandler()
         {
-            var veiculoGateway = CreateVeiculoGateway();
+            var veiculoGateway = CriarVeiculoGateway();
             var logServico = new LogServico<CadastrarVeiculoHandler>(_idCorrelacionalService, NullLogger<CadastrarVeiculoHandler>.Instance, _usuarioLogadoServico);
 
             return new CadastrarVeiculoHandler(
@@ -352,9 +369,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IAtualizarVeiculoHandler CreateAtualizarVeiculoHandler()
+        public IAtualizarVeiculoHandler CriarAtualizarVeiculoHandler()
         {
-            var veiculoGateway = CreateVeiculoGateway();
+            var veiculoGateway = CriarVeiculoGateway();
             var logServico = new LogServico<AtualizarVeiculoHandler>(_idCorrelacionalService, NullLogger<AtualizarVeiculoHandler>.Instance, _usuarioLogadoServico);
 
             return new AtualizarVeiculoHandler(
@@ -364,9 +381,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterVeiculoHandler CreateObterVeiculoHandler()
+        public IObterVeiculoHandler CriarObterVeiculoHandler()
         {
-            var veiculoGateway = CreateVeiculoGateway();
+            var veiculoGateway = CriarVeiculoGateway();
             var logServico = new LogServico<ObterVeiculoHandler>(_idCorrelacionalService, NullLogger<ObterVeiculoHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterVeiculoHandler(
@@ -376,9 +393,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterTodosVeiculosHandler CreateObterTodosVeiculosHandler()
+        public IObterTodosVeiculosHandler CriarObterTodosVeiculosHandler()
         {
-            var veiculoGateway = CreateVeiculoGateway();
+            var veiculoGateway = CriarVeiculoGateway();
             var logServico = new LogServico<ObterTodosVeiculosHandler>(_idCorrelacionalService, NullLogger<ObterTodosVeiculosHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterTodosVeiculosHandler(
@@ -388,9 +405,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterVeiculoPorClienteHandler CreateObterVeiculoPorClienteHandler()
+        public IObterVeiculoPorClienteHandler CriarObterVeiculoPorClienteHandler()
         {
-            var veiculoGateway = CreateVeiculoGateway();
+            var veiculoGateway = CriarVeiculoGateway();
             var logServico = new LogServico<ObterVeiculoPorClienteHandler>(_idCorrelacionalService, NullLogger<ObterVeiculoPorClienteHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterVeiculoPorClienteHandler(
@@ -400,9 +417,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterVeiculoPorPlacaHandler CreateObterVeiculoPorPlacaHandler()
+        public IObterVeiculoPorPlacaHandler CriarObterVeiculoPorPlacaHandler()
         {
-            var veiculoGateway = CreateVeiculoGateway();
+            var veiculoGateway = CriarVeiculoGateway();
             var logServico = new LogServico<ObterVeiculoPorPlacaHandler>(_idCorrelacionalService, NullLogger<ObterVeiculoPorPlacaHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterVeiculoPorPlacaHandler(
@@ -412,9 +429,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IDeletarVeiculoHandler CreateDeletarVeiculoHandler()
+        public IDeletarVeiculoHandler CriarDeletarVeiculoHandler()
         {
-            var veiculoGateway = CreateVeiculoGateway();
+            var veiculoGateway = CriarVeiculoGateway();
             var logServico = new LogServico<DeletarVeiculoHandler>(_idCorrelacionalService, NullLogger<DeletarVeiculoHandler>.Instance, _usuarioLogadoServico);
 
             return new DeletarVeiculoHandler(
@@ -428,10 +445,10 @@ namespace API
 
         #region Criação de Handlers Individuais - Usuário
 
-        public ICadastrarUsuarioHandler CreateCadastrarUsuarioHandler()
+        public ICadastrarUsuarioHandler CriarCadastrarUsuarioHandler()
         {
-            var usuarioGateway = CreateUsuarioGateway();
-            var clienteUseCases = CreateClienteUseCases();
+            var usuarioGateway = CriarUsuarioGateway();
+            var clienteUseCases = CriarClienteUseCases();
             var servicoSenha = new ServicoSenha();
             var logServico = new LogServico<CadastrarUsuarioHandler>(_idCorrelacionalService, NullLogger<CadastrarUsuarioHandler>.Instance, _usuarioLogadoServico);
 
@@ -444,9 +461,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IAtualizarUsuarioHandler CreateAtualizarUsuarioHandler()
+        public IAtualizarUsuarioHandler CriarAtualizarUsuarioHandler()
         {
-            var usuarioGateway = CreateUsuarioGateway();
+            var usuarioGateway = CriarUsuarioGateway();
             var servicoSenha = new ServicoSenha();
             var logServico = new LogServico<AtualizarUsuarioHandler>(_idCorrelacionalService, NullLogger<AtualizarUsuarioHandler>.Instance, _usuarioLogadoServico);
 
@@ -458,9 +475,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterUsuarioHandler CreateObterUsuarioHandler()
+        public IObterUsuarioHandler CriarObterUsuarioHandler()
         {
-            var usuarioGateway = CreateUsuarioGateway();
+            var usuarioGateway = CriarUsuarioGateway();
             var logServico = new LogServico<ObterUsuarioHandler>(_idCorrelacionalService, NullLogger<ObterUsuarioHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterUsuarioHandler(
@@ -470,9 +487,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterTodosUsuariosHandler CreateObterTodosUsuariosHandler()
+        public IObterTodosUsuariosHandler CriarObterTodosUsuariosHandler()
         {
-            var usuarioGateway = CreateUsuarioGateway();
+            var usuarioGateway = CriarUsuarioGateway();
             var logServico = new LogServico<ObterTodosUsuariosHandler>(_idCorrelacionalService, NullLogger<ObterTodosUsuariosHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterTodosUsuariosHandler(
@@ -482,9 +499,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IDeletarUsuarioHandler CreateDeletarUsuarioHandler()
+        public IDeletarUsuarioHandler CriarDeletarUsuarioHandler()
         {
-            var usuarioGateway = CreateUsuarioGateway();
+            var usuarioGateway = CriarUsuarioGateway();
             var logServico = new LogServico<DeletarUsuarioHandler>(_idCorrelacionalService, NullLogger<DeletarUsuarioHandler>.Instance, _usuarioLogadoServico);
 
             return new DeletarUsuarioHandler(
@@ -494,9 +511,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterUsuarioPorEmailHandler CreateObterUsuarioPorEmailHandler()
+        public IObterUsuarioPorEmailHandler CriarObterUsuarioPorEmailHandler()
         {
-            var usuarioGateway = CreateUsuarioGateway();
+            var usuarioGateway = CriarUsuarioGateway();
             var logServico = new LogServico<ObterUsuarioPorEmailHandler>(_idCorrelacionalService, NullLogger<ObterUsuarioPorEmailHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterUsuarioPorEmailHandler(
@@ -510,9 +527,9 @@ namespace API
 
         #region Criação de Handlers Individuais - Serviço
 
-        public ICadastrarServicoHandler CreateCadastrarServicoHandler()
+        public ICadastrarServicoHandler CriarCadastrarServicoHandler()
         {
-            var servicoGateway = CreateServicoGateway();
+            var servicoGateway = CriarServicoGateway();
             var logServico = new LogServico<CadastrarServicoHandler>(_idCorrelacionalService, NullLogger<CadastrarServicoHandler>.Instance, _usuarioLogadoServico);
 
             return new CadastrarServicoHandler(
@@ -522,9 +539,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IEditarServicoHandler CreateEditarServicoHandler()
+        public IEditarServicoHandler CriarEditarServicoHandler()
         {
-            var servicoGateway = CreateServicoGateway();
+            var servicoGateway = CriarServicoGateway();
             var logServico = new LogServico<EditarServicoHandler>(_idCorrelacionalService, NullLogger<EditarServicoHandler>.Instance, _usuarioLogadoServico);
 
             return new EditarServicoHandler(
@@ -534,9 +551,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IDeletarServicoHandler CreateDeletarServicoHandler()
+        public IDeletarServicoHandler CriarDeletarServicoHandler()
         {
-            var servicoGateway = CreateServicoGateway();
+            var servicoGateway = CriarServicoGateway();
             var logServico = new LogServico<DeletarServicoHandler>(_idCorrelacionalService, NullLogger<DeletarServicoHandler>.Instance, _usuarioLogadoServico);
 
             return new DeletarServicoHandler(
@@ -546,9 +563,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterServicoHandler CreateObterServicoHandler()
+        public IObterServicoHandler CriarObterServicoHandler()
         {
-            var servicoGateway = CreateServicoGateway();
+            var servicoGateway = CriarServicoGateway();
             var logServico = new LogServico<ObterServicoHandler>(_idCorrelacionalService, NullLogger<ObterServicoHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterServicoHandler(
@@ -558,9 +575,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterTodosServicosHandler CreateObterTodosServicosHandler()
+        public IObterTodosServicosHandler CriarObterTodosServicosHandler()
         {
-            var servicoGateway = CreateServicoGateway();
+            var servicoGateway = CriarServicoGateway();
             var logServico = new LogServico<ObterTodosServicosHandler>(_idCorrelacionalService, NullLogger<ObterTodosServicosHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterTodosServicosHandler(
@@ -570,9 +587,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterServicoPorNomeHandler CreateObterServicoPorNomeHandler()
+        public IObterServicoPorNomeHandler CriarObterServicoPorNomeHandler()
         {
-            var servicoGateway = CreateServicoGateway();
+            var servicoGateway = CriarServicoGateway();
             var logServico = new LogServico<ObterServicoPorNomeHandler>(_idCorrelacionalService, NullLogger<ObterServicoPorNomeHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterServicoPorNomeHandler(
@@ -582,9 +599,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterServicosDisponiveisHandler CreateObterServicosDisponiveisHandler()
+        public IObterServicosDisponiveisHandler CriarObterServicosDisponiveisHandler()
         {
-            var servicoGateway = CreateServicoGateway();
+            var servicoGateway = CriarServicoGateway();
             var logServico = new LogServico<ObterServicosDisponiveisHandler>(_idCorrelacionalService, NullLogger<ObterServicosDisponiveisHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterServicosDisponiveisHandler(
@@ -598,7 +615,7 @@ namespace API
 
         #region Criação de Handlers Individuais - Orçamento
 
-        public IGerarOrcamentoHandler CreateGerarOrcamentoHandler()
+        public IGerarOrcamentoHandler CriarGerarOrcamentoHandler()
         {
             var logServico = new LogServico<GerarOrcamentoHandler>(_idCorrelacionalService, NullLogger<GerarOrcamentoHandler>.Instance, _usuarioLogadoServico);
 
@@ -612,9 +629,9 @@ namespace API
 
         #region Criação de Handlers Individuais - Estoque
 
-        public ICadastrarEstoqueHandler CreateCadastrarEstoqueHandler()
+        public ICadastrarEstoqueHandler CriarCadastrarEstoqueHandler()
         {
-            var estoqueGateway = CreateEstoqueGateway();
+            var estoqueGateway = CriarEstoqueGateway();
             var logServico = new LogServico<CadastrarEstoqueHandler>(_idCorrelacionalService, NullLogger<CadastrarEstoqueHandler>.Instance, _usuarioLogadoServico);
 
             return new CadastrarEstoqueHandler(
@@ -624,9 +641,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IAtualizarEstoqueHandler CreateAtualizarEstoqueHandler()
+        public IAtualizarEstoqueHandler CriarAtualizarEstoqueHandler()
         {
-            var estoqueGateway = CreateEstoqueGateway();
+            var estoqueGateway = CriarEstoqueGateway();
             var logServico = new LogServico<AtualizarEstoqueHandler>(_idCorrelacionalService, NullLogger<AtualizarEstoqueHandler>.Instance, _usuarioLogadoServico);
 
             return new AtualizarEstoqueHandler(
@@ -636,9 +653,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IDeletarEstoqueHandler CreateDeletarEstoqueHandler()
+        public IDeletarEstoqueHandler CriarDeletarEstoqueHandler()
         {
-            var estoqueGateway = CreateEstoqueGateway();
+            var estoqueGateway = CriarEstoqueGateway();
             var logServico = new LogServico<DeletarEstoqueHandler>(_idCorrelacionalService, NullLogger<DeletarEstoqueHandler>.Instance, _usuarioLogadoServico);
 
             return new DeletarEstoqueHandler(
@@ -648,9 +665,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterEstoqueHandler CreateObterEstoqueHandler()
+        public IObterEstoqueHandler CriarObterEstoqueHandler()
         {
-            var estoqueGateway = CreateEstoqueGateway();
+            var estoqueGateway = CriarEstoqueGateway();
             var logServico = new LogServico<ObterEstoqueHandler>(_idCorrelacionalService, NullLogger<ObterEstoqueHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterEstoqueHandler(
@@ -660,9 +677,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterTodosEstoquesHandler CreateObterTodosEstoquesHandler()
+        public IObterTodosEstoquesHandler CriarObterTodosEstoquesHandler()
         {
-            var estoqueGateway = CreateEstoqueGateway();
+            var estoqueGateway = CriarEstoqueGateway();
             var logServico = new LogServico<ObterTodosEstoquesHandler>(_idCorrelacionalService, NullLogger<ObterTodosEstoquesHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterTodosEstoquesHandler(
@@ -672,9 +689,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterEstoqueCriticoHandler CreateObterEstoqueCriticoHandler()
+        public IObterEstoqueCriticoHandler CriarObterEstoqueCriticoHandler()
         {
-            var estoqueGateway = CreateEstoqueGateway();
+            var estoqueGateway = CriarEstoqueGateway();
             var logServico = new LogServico<ObterEstoqueCriticoHandler>(_idCorrelacionalService, NullLogger<ObterEstoqueCriticoHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterEstoqueCriticoHandler(
@@ -688,12 +705,12 @@ namespace API
 
         #region Criação de Handlers Individuais - Autenticação
 
-        public IAutenticarUsuarioHandler CreateAutenticarUsuarioHandler()
+        public IAutenticarUsuarioHandler CriarAutenticarUsuarioHandler()
         {
-            var usuarioUseCases = CreateUsuarioUseCases();
-            var clienteUseCases = CreateClienteUseCases();
+            var usuarioUseCases = CriarUsuarioUseCases();
+            var clienteUseCases = CriarClienteUseCases();
             var servicoSenha = new ServicoSenha();
-            var servicoJwt = CreateServicoJwt();
+            var servicoJwt = CriarServicoJwt();
             var logServico = new LogServico<AutenticarUsuarioHandler>(_idCorrelacionalService, NullLogger<AutenticarUsuarioHandler>.Instance, _usuarioLogadoServico);
 
             return new AutenticarUsuarioHandler(
@@ -708,10 +725,10 @@ namespace API
 
         #region Criação de Handlers Individuais - InsumoOS
 
-        public ICadastrarInsumosHandler CreateCadastrarInsumosHandler()
+        public ICadastrarInsumosHandler CriarCadastrarInsumosHandler()
         {
-            var ordemServicoUseCases = CreateOrdemServicoUseCases();
-            var estoqueUseCases = CreateEstoqueUseCases();
+            var ordemServicoUseCases = CriarOrdemServicoUseCases();
+            var estoqueUseCases = CriarEstoqueUseCases();
             var logServico = new LogServico<CadastrarInsumosHandler>(_idCorrelacionalService, NullLogger<CadastrarInsumosHandler>.Instance, _usuarioLogadoServico);
 
             return new CadastrarInsumosHandler(
@@ -722,13 +739,16 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IDevolverInsumosHandler CreateDevolverInsumosHandler()
+        public IDevolverInsumosHandler CriarDevolverInsumosHandler()
         {
-            var estoqueUseCases = CreateEstoqueUseCases();
+            var obterEstoqueHandler = CriarObterEstoqueHandler();
+            var atualizarEstoqueHandler = CriarAtualizarEstoqueHandler();
+
             var logServico = new LogServico<DevolverInsumosHandler>(_idCorrelacionalService, NullLogger<DevolverInsumosHandler>.Instance, _usuarioLogadoServico);
 
             return new DevolverInsumosHandler(
-                estoqueUseCases,
+                obterEstoqueHandler,
+                atualizarEstoqueHandler,
                 logServico,
                 _unidadeDeTrabalho,
                 _usuarioLogadoServico);
@@ -738,11 +758,11 @@ namespace API
 
         #region Criação de Handlers Individuais - OrdemServico
 
-        public ICadastrarOrdemServicoHandler CreateCadastrarOrdemServicoHandler()
+        public ICadastrarOrdemServicoHandler CriarCadastrarOrdemServicoHandler()
         {
-            var ordemServicoGateway = CreateOrdemServicoGateway();
-            var clienteUseCases = CreateClienteUseCases();
-            var servicoUseCases = CreateServicoUseCases();
+            var ordemServicoGateway = CriarOrdemServicoGateway();
+            var clienteUseCases = CriarClienteUseCases();
+            var servicoUseCases = CriarServicoUseCases();
             var logServico = new LogServico<CadastrarOrdemServicoHandler>(_idCorrelacionalService, NullLogger<CadastrarOrdemServicoHandler>.Instance, _usuarioLogadoServico);
 
             return new CadastrarOrdemServicoHandler(
@@ -754,10 +774,10 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IAtualizarOrdemServicoHandler CreateAtualizarOrdemServicoHandler()
+        public IAtualizarOrdemServicoHandler CriarAtualizarOrdemServicoHandler()
         {
-            var ordemServicoGateway = CreateOrdemServicoGateway();
-            var eventosGateway = CreateEventosGateway();
+            var ordemServicoGateway = CriarOrdemServicoGateway();
+            var eventosGateway = CriarEventosGateway();
             var logServico = new LogServico<AtualizarOrdemServicoHandler>(_idCorrelacionalService, NullLogger<AtualizarOrdemServicoHandler>.Instance, _usuarioLogadoServico);
 
             return new AtualizarOrdemServicoHandler(
@@ -767,9 +787,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterOrdemServicoHandler CreateObterOrdemServicoHandler()
+        public IObterOrdemServicoHandler CriarObterOrdemServicoHandler()
         {
-            var ordemServicoGateway = CreateOrdemServicoGateway();
+            var ordemServicoGateway = CriarOrdemServicoGateway();
             var logServico = new LogServico<ObterOrdemServicoHandler>(_idCorrelacionalService, NullLogger<ObterOrdemServicoHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterOrdemServicoHandler(
@@ -779,9 +799,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterTodosOrdensServicoHandler CreateObterTodosOrdensServicoHandler()
+        public IObterTodosOrdensServicoHandler CriarObterTodosOrdensServicoHandler()
         {
-            var ordemServicoGateway = CreateOrdemServicoGateway();
+            var ordemServicoGateway = CriarOrdemServicoGateway();
             var logServico = new LogServico<ObterTodosOrdensServicoHandler>(_idCorrelacionalService, NullLogger<ObterTodosOrdensServicoHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterTodosOrdensServicoHandler(
@@ -791,9 +811,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IObterOrdemServicoPorStatusHandler CreateObterOrdemServicoPorStatusHandler()
+        public IObterOrdemServicoPorStatusHandler CriarObterOrdemServicoPorStatusHandler()
         {
-            var ordemServicoGateway = CreateOrdemServicoGateway();
+            var ordemServicoGateway = CriarOrdemServicoGateway();
             var logServico = new LogServico<ObterOrdemServicoPorStatusHandler>(_idCorrelacionalService, NullLogger<ObterOrdemServicoPorStatusHandler>.Instance, _usuarioLogadoServico);
 
             return new ObterOrdemServicoPorStatusHandler(
@@ -803,9 +823,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IAceitarOrcamentoHandler CreateAceitarOrcamentoHandler()
+        public IAceitarOrcamentoHandler CriarAceitarOrcamentoHandler()
         {
-            var ordemServicoGateway = CreateOrdemServicoGateway();
+            var ordemServicoGateway = CriarOrdemServicoGateway();
             var logServico = new LogServico<AceitarOrcamentoHandler>(_idCorrelacionalService, NullLogger<AceitarOrcamentoHandler>.Instance, _usuarioLogadoServico);
 
             return new AceitarOrcamentoHandler(
@@ -815,9 +835,9 @@ namespace API
                 _usuarioLogadoServico);
         }
 
-        public IRecusarOrcamentoHandler CreateRecusarOrcamentoHandler()
+        public IRecusarOrcamentoHandler CriarRecusarOrcamentoHandler()
         {
-            var ordemServicoGateway = CreateOrdemServicoGateway();
+            var ordemServicoGateway = CriarOrdemServicoGateway();
             var logServico = new LogServico<RecusarOrcamentoHandler>(_idCorrelacionalService, NullLogger<RecusarOrcamentoHandler>.Instance, _usuarioLogadoServico);
 
             return new RecusarOrcamentoHandler(
@@ -832,14 +852,14 @@ namespace API
         #region Criação de Use Cases
 
         // Cliente - Usando novo padrão com facade
-        public IClienteUseCases CreateClienteUseCases()
+        public IClienteUseCases CriarClienteUseCases()
         {
-            var cadastrarClienteHandler = CreateCadastrarClienteHandler();
-            var atualizarClienteHandler = CreateAtualizarClienteHandler();
-            var obterClienteHandler = CreateObterClienteHandler();
-            var obterTodosClientesHandler = CreateObterTodosClientesHandler();
-            var removerClienteHandler = CreateRemoverClienteHandler();
-            var obterClientePorDocumentoHandler = CreateObterClientePorDocumentoHandler();
+            var cadastrarClienteHandler = CriarCadastrarClienteHandler();
+            var atualizarClienteHandler = CriarAtualizarClienteHandler();
+            var obterClienteHandler = CriarObterClienteHandler();
+            var obterTodosClientesHandler = CriarObterTodosClientesHandler();
+            var removerClienteHandler = CriarRemoverClienteHandler();
+            var obterClientePorDocumentoHandler = CriarObterClientePorDocumentoHandler();
 
             return new ClienteUseCasesFacade(
                 cadastrarClienteHandler,
@@ -851,15 +871,15 @@ namespace API
         }
 
         // Serviço - Usando novo padrão com facade
-        public IServicoUseCases CreateServicoUseCases()
+        public IServicoUseCases CriarServicoUseCases()
         {
-            var cadastrarServicoHandler = CreateCadastrarServicoHandler();
-            var editarServicoHandler = CreateEditarServicoHandler();
-            var deletarServicoHandler = CreateDeletarServicoHandler();
-            var obterServicoHandler = CreateObterServicoHandler();
-            var obterTodosServicosHandler = CreateObterTodosServicosHandler();
-            var obterServicoPorNomeHandler = CreateObterServicoPorNomeHandler();
-            var obterServicosDisponiveisHandler = CreateObterServicosDisponiveisHandler();
+            var cadastrarServicoHandler = CriarCadastrarServicoHandler();
+            var editarServicoHandler = CriarEditarServicoHandler();
+            var deletarServicoHandler = CriarDeletarServicoHandler();
+            var obterServicoHandler = CriarObterServicoHandler();
+            var obterTodosServicosHandler = CriarObterTodosServicosHandler();
+            var obterServicoPorNomeHandler = CriarObterServicoPorNomeHandler();
+            var obterServicosDisponiveisHandler = CriarObterServicosDisponiveisHandler();
 
             return new ServicoUseCasesFacade(
                 cadastrarServicoHandler,
@@ -872,14 +892,14 @@ namespace API
         }
 
         // Estoque - Usando novo padrão com facade completo
-        public IEstoqueUseCases CreateEstoqueUseCases()
+        public IEstoqueUseCases CriarEstoqueUseCases()
         {
-            var cadastrarEstoqueHandler = CreateCadastrarEstoqueHandler();
-            var atualizarEstoqueHandler = CreateAtualizarEstoqueHandler();
-            var deletarEstoqueHandler = CreateDeletarEstoqueHandler();
-            var obterEstoqueHandler = CreateObterEstoqueHandler();
-            var obterTodosEstoquesHandler = CreateObterTodosEstoquesHandler();
-            var obterEstoqueCriticoHandler = CreateObterEstoqueCriticoHandler();
+            var cadastrarEstoqueHandler = CriarCadastrarEstoqueHandler();
+            var atualizarEstoqueHandler = CriarAtualizarEstoqueHandler();
+            var deletarEstoqueHandler = CriarDeletarEstoqueHandler();
+            var obterEstoqueHandler = CriarObterEstoqueHandler();
+            var obterTodosEstoquesHandler = CriarObterTodosEstoquesHandler();
+            var obterEstoqueCriticoHandler = CriarObterEstoqueCriticoHandler();
 
             return new EstoqueUseCasesFacade(
                 cadastrarEstoqueHandler,
@@ -891,15 +911,15 @@ namespace API
         }
 
         // Ordem de Serviço - Usando novo padrão com facade
-        public IOrdemServicoUseCases CreateOrdemServicoUseCases()
+        public IOrdemServicoUseCases CriarOrdemServicoUseCases()
         {
-            var cadastrarOrdemServicoHandler = CreateCadastrarOrdemServicoHandler();
-            var atualizarOrdemServicoHandler = CreateAtualizarOrdemServicoHandler();
-            var obterOrdemServicoHandler = CreateObterOrdemServicoHandler();
-            var obterTodosOrdensServicoHandler = CreateObterTodosOrdensServicoHandler();
-            var obterOrdemServicoPorStatusHandler = CreateObterOrdemServicoPorStatusHandler();
-            var aceitarOrcamentoHandler = CreateAceitarOrcamentoHandler();
-            var recusarOrcamentoHandler = CreateRecusarOrcamentoHandler();
+            var cadastrarOrdemServicoHandler = CriarCadastrarOrdemServicoHandler();
+            var atualizarOrdemServicoHandler = CriarAtualizarOrdemServicoHandler();
+            var obterOrdemServicoHandler = CriarObterOrdemServicoHandler();
+            var obterTodosOrdensServicoHandler = CriarObterTodosOrdensServicoHandler();
+            var obterOrdemServicoPorStatusHandler = CriarObterOrdemServicoPorStatusHandler();
+            var aceitarOrcamentoHandler = CriarAceitarOrcamentoHandler();
+            var recusarOrcamentoHandler = CriarRecusarOrcamentoHandler();
 
             return new OrdemServicoUseCasesFacade(
                 cadastrarOrdemServicoHandler,
@@ -912,10 +932,10 @@ namespace API
         }
 
         // Insumo OS
-        public IInsumoOSUseCases CreateInsumoOSUseCases()
+        public IInsumoOSUseCases CriarInsumoOSUseCases()
         {
-            var cadastrarInsumosHandler = CreateCadastrarInsumosHandler();
-            var devolverInsumosHandler = CreateDevolverInsumosHandler();
+            var cadastrarInsumosHandler = CriarCadastrarInsumosHandler();
+            var devolverInsumosHandler = CriarDevolverInsumosHandler();
 
             return new InsumoOSUseCasesFacade(
                 cadastrarInsumosHandler,
@@ -923,14 +943,14 @@ namespace API
         }
 
         // Usuário - Usando novo padrão com facade
-        public IUsuarioUseCases CreateUsuarioUseCases()
+        public IUsuarioUseCases CriarUsuarioUseCases()
         {
-            var cadastrarUsuarioHandler = CreateCadastrarUsuarioHandler();
-            var atualizarUsuarioHandler = CreateAtualizarUsuarioHandler();
-            var obterUsuarioHandler = CreateObterUsuarioHandler();
-            var obterTodosUsuariosHandler = CreateObterTodosUsuariosHandler();
-            var deletarUsuarioHandler = CreateDeletarUsuarioHandler();
-            var obterUsuarioPorEmailHandler = CreateObterUsuarioPorEmailHandler();
+            var cadastrarUsuarioHandler = CriarCadastrarUsuarioHandler();
+            var atualizarUsuarioHandler = CriarAtualizarUsuarioHandler();
+            var obterUsuarioHandler = CriarObterUsuarioHandler();
+            var obterTodosUsuariosHandler = CriarObterTodosUsuariosHandler();
+            var deletarUsuarioHandler = CriarDeletarUsuarioHandler();
+            var obterUsuarioPorEmailHandler = CriarObterUsuarioPorEmailHandler();
 
             return new UsuarioUseCasesFacade(
                 cadastrarUsuarioHandler,
@@ -942,15 +962,15 @@ namespace API
         }
 
         // Veículo - Usando novo padrão com facade
-        public IVeiculoUseCases CreateVeiculoUseCases()
+        public IVeiculoUseCases CriarVeiculoUseCases()
         {
-            var cadastrarVeiculoHandler = CreateCadastrarVeiculoHandler();
-            var atualizarVeiculoHandler = CreateAtualizarVeiculoHandler();
-            var obterVeiculoHandler = CreateObterVeiculoHandler();
-            var obterTodosVeiculosHandler = CreateObterTodosVeiculosHandler();
-            var obterVeiculoPorClienteHandler = CreateObterVeiculoPorClienteHandler();
-            var obterVeiculoPorPlacaHandler = CreateObterVeiculoPorPlacaHandler();
-            var deletarVeiculoHandler = CreateDeletarVeiculoHandler();
+            var cadastrarVeiculoHandler = CriarCadastrarVeiculoHandler();
+            var atualizarVeiculoHandler = CriarAtualizarVeiculoHandler();
+            var obterVeiculoHandler = CriarObterVeiculoHandler();
+            var obterTodosVeiculosHandler = CriarObterTodosVeiculosHandler();
+            var obterVeiculoPorClienteHandler = CriarObterVeiculoPorClienteHandler();
+            var obterVeiculoPorPlacaHandler = CriarObterVeiculoPorPlacaHandler();
+            var deletarVeiculoHandler = CriarDeletarVeiculoHandler();
 
             return new VeiculoUseCasesFacade(
                 cadastrarVeiculoHandler,
@@ -963,14 +983,14 @@ namespace API
         }
 
         // Orçamento - Usando novo padrão com facade
-        public IOrcamentoUseCases CreateOrcamentoUseCases()
+        public IOrcamentoUseCases CriarOrcamentoUseCases()
         {
-            var gerarOrcamentoHandler = CreateGerarOrcamentoHandler();
+            var gerarOrcamentoHandler = CriarGerarOrcamentoHandler();
             return new OrcamentoUseCasesFacade(gerarOrcamentoHandler);
         }
 
         // Serviços de autenticação
-        public IOptions<ConfiguracaoJwt> CreateConfiguracaoJwt()
+        public ConfiguracaoJwt CriarConfiguracaoJwt()
         {
             // Criar uma configuração JWT com valores padrão
             var configuracao = new ConfiguracaoJwt
@@ -981,19 +1001,19 @@ namespace API
                 ExpiryInMinutes = 60
             };
 
-            return Options.Create(configuracao);
+            return configuracao;
         }
 
-        public IServicoJwt CreateServicoJwt()
+        public IServicoJwt CriarServicoJwt()
         {
-            var configuracaoJwt = CreateConfiguracaoJwt();
+            var configuracaoJwt = CriarConfiguracaoJwt();
             return new ServicoJwt(configuracaoJwt);
         }
 
         // Autenticação - Usando novo padrão com facade
-        public IAutenticacaoUseCases CreateAutenticacaoUseCases()
+        public IAutenticacaoUseCases CriarAutenticacaoUseCases()
         {
-            var autenticarUsuarioHandler = CreateAutenticarUsuarioHandler();
+            var autenticarUsuarioHandler = CriarAutenticarUsuarioHandler();
             return new AutenticacaoUseCasesFacade(autenticarUsuarioHandler);
         }
 
@@ -1001,37 +1021,37 @@ namespace API
 
         #region Criação de Presenters
 
-        public IClientePresenter CreateClientePresenter()
+        public IClientePresenter CriarClientePresenter()
         {
             return new ClientePresenter();
         }
 
-        public IOrdemServicoPresenter CreateOrdemServicoPresenter()
+        public IOrdemServicoPresenter CriarOrdemServicoPresenter()
         {
             return new OrdemServicoPresenter();
         }
 
-        public IServicoPresenter CreateServicoPresenter()
+        public IServicoPresenter CriarServicoPresenter()
         {
             return new ServicoPresenter();
         }
 
-        public IEstoquePresenter CreateEstoquePresenter()
+        public IEstoquePresenter CriarEstoquePresenter()
         {
             return new EstoquePresenter();
         }
 
-        public IUsuarioPresenter CreateUsuarioPresenter()
+        public IUsuarioPresenter CriarUsuarioPresenter()
         {
             return new UsuarioPresenter();
         }
 
-        public IVeiculoPresenter CreateVeiculoPresenter()
+        public IVeiculoPresenter CriarVeiculoPresenter()
         {
             return new VeiculoPresenter();
         }
 
-        public IAutenticacaoPresenter CreateAutenticacaoPresenter()
+        public IAutenticacaoPresenter CriarAutenticacaoPresenter()
         {
             return new AutenticacaoPresenter();
         }
@@ -1040,7 +1060,7 @@ namespace API
 
         #region Criação de Serviços
 
-        public IUsuarioLogadoServico CreateUsuarioLogadoServico()
+        public IUsuarioLogadoServico CriarUsuarioLogadoServico()
         {
             return _usuarioLogadoServico;
         }
@@ -1049,68 +1069,44 @@ namespace API
 
         #region Criação de Controllers
 
-        public Adapters.Controllers.ClienteController CreateClienteController()
+        public IClienteController CriarClienteController()
         {
-            var clienteUseCases = CreateClienteUseCases();
-            var clientePresenter = CreateClientePresenter();
-
-            return new Adapters.Controllers.ClienteController(clienteUseCases, clientePresenter);
+            return new ClienteController(this);
         }
 
-        public Adapters.Controllers.OrdemServicoController CreateOrdemServicoController()
+        public IOrdemServicoController CriarOrdemServicoController()
         {
-            var ordemServicoUseCases = CreateOrdemServicoUseCases();
-            var ordemServicoPresenter = CreateOrdemServicoPresenter();
-
-            return new Adapters.Controllers.OrdemServicoController(ordemServicoUseCases, ordemServicoPresenter);
+            return new OrdemServicoController(this);
         }
 
-        public InsumoOSController CreateInsumoOSController()
+        public IInsumoOSController CriarInsumoOSController()
         {
-            var insumoOSUseCases = CreateInsumoOSUseCases();
-            var ordemServicoPresenter = CreateOrdemServicoPresenter();
-
-            return new InsumoOSController(insumoOSUseCases, ordemServicoPresenter);
+            return new InsumoOSController(this);
         }
 
-        public Adapters.Controllers.ServicoController CreateServicoController()
+        public IServicoController CriarServicoController()
         {
-            var servicoUseCases = CreateServicoUseCases();
-            var servicoPresenter = CreateServicoPresenter();
-
-            return new Adapters.Controllers.ServicoController(servicoUseCases, servicoPresenter);
+            return new ServicoController(this);
         }
 
-        public Adapters.Controllers.EstoqueController CreateEstoqueController()
+        public IEstoqueController CriarEstoqueController()
         {
-            var estoqueUseCases = CreateEstoqueUseCases();
-            var estoquePresenter = CreateEstoquePresenter();
-
-            return new Adapters.Controllers.EstoqueController(estoqueUseCases, estoquePresenter);
+            return new EstoqueController(this);
         }
 
-        public Adapters.Controllers.UsuarioController CreateUsuarioController()
+        public IUsuarioController CriarUsuarioController()
         {
-            var usuarioUseCases = CreateUsuarioUseCases();
-            var usuarioPresenter = CreateUsuarioPresenter();
-
-            return new Adapters.Controllers.UsuarioController(usuarioUseCases, usuarioPresenter);
+            return new UsuarioController(this);
         }
 
-        public Adapters.Controllers.VeiculoController CreateVeiculoController()
+        public IVeiculoController CriarVeiculoController()
         {
-            var veiculoUseCases = CreateVeiculoUseCases();
-            var veiculoPresenter = CreateVeiculoPresenter();
-
-            return new Adapters.Controllers.VeiculoController(veiculoUseCases, veiculoPresenter);
+            return new VeiculoController(this);
         }
 
-        public Adapters.Controllers.AutenticacaoController CreateAutenticacaoController()
+        public IAutenticacaoController CriarAutenticacaoController()
         {
-            var autenticacaoUseCases = CreateAutenticacaoUseCases();
-            var autenticacaoPresenter = CreateAutenticacaoPresenter();
-
-            return new Adapters.Controllers.AutenticacaoController(autenticacaoUseCases, autenticacaoPresenter);
+            return new AutenticacaoController(this);
         }
 
         #endregion

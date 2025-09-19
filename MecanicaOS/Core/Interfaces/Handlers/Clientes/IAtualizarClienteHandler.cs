@@ -1,7 +1,5 @@
 using Core.DTOs.UseCases.Cliente;
 using Core.UseCases.Clientes.AtualizarCliente;
-using System;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Clientes
 {

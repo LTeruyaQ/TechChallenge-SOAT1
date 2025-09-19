@@ -54,7 +54,8 @@ namespace Adapters.Gateways
 
         public async Task<OrdemServico?> ObterPorIdAsync(Guid id)
         {
-            var dto = await _repositorioOrdemServico.ObterPorIdAsync(id);
+            var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(id);
+            var dto = await _repositorioOrdemServico.ObterUmAsync(especificacao);
             return dto != null ? FromDto(dto) : null;
         }
 
@@ -94,7 +95,7 @@ namespace Adapters.Gateways
 
         private static OrdemServico FromDto(OrdemServicoEntityDto dto)
         {
-            return new OrdemServico
+            var ordemServico = new OrdemServico
             {
                 Id = dto.Id,
                 Ativo = dto.Ativo,
@@ -118,6 +119,65 @@ namespace Adapters.Gateways
                     Quantidade = insumoDto.Quantidade
                 }).ToList()
             };
+
+            if(dto.InsumosOS.Any())
+                ordemServico.InsumosOS = dto.InsumosOS.Select(insumoDto => {
+                    var insumo = new InsumoOS
+                    {
+                        Id = insumoDto.Id,
+                        Ativo = insumoDto.Ativo,
+                        DataCadastro = insumoDto.DataCadastro,
+                        DataAtualizacao = insumoDto.DataAtualizacao,
+                        OrdemServicoId = insumoDto.OrdemServicoId,
+                        EstoqueId = insumoDto.EstoqueId,
+                        Quantidade = insumoDto.Quantidade
+                    };
+
+                    if(insumoDto.Estoque is not null)
+                        insumo.Estoque = new Estoque
+                        {
+                            Id = insumoDto.Estoque.Id,
+                            Ativo = insumoDto.Estoque.Ativo,
+                            DataCadastro = insumoDto.Estoque.DataCadastro,
+                            DataAtualizacao = insumoDto.Estoque.DataAtualizacao,
+                            Insumo = insumoDto.Estoque.Insumo,
+                            QuantidadeMinima = insumoDto.Estoque.QuantidadeMinima,
+                            QuantidadeDisponivel = insumoDto.Estoque.QuantidadeDisponivel,
+                            Preco = insumoDto.Estoque.Preco,
+                            Descricao = insumoDto.Estoque.Descricao,
+                        };
+
+                    return insumo;
+                });
+
+            if(dto.Cliente is not null)
+            {
+                ordemServico.Cliente = new Cliente
+                {
+                    Id = dto.Cliente.Id,
+                    Ativo = dto.Cliente.Ativo,
+                    DataCadastro = dto.Cliente.DataCadastro,
+                    DataAtualizacao = dto.Cliente.DataAtualizacao,
+                    Nome = dto.Cliente.Nome,
+                    Documento = dto.Cliente.Documento
+                };
+
+                if(dto.Cliente.Contato is not null)
+                {
+                    ordemServico.Cliente.Contato = new Contato
+                    {
+                        Id = dto.Cliente.Contato.Id,
+                        Ativo = dto.Cliente.Contato.Ativo,
+                        DataCadastro = dto.Cliente.Contato.DataCadastro,
+                        DataAtualizacao = dto.Cliente.Contato.DataAtualizacao,
+                        Email = dto.Cliente.Contato.Email,
+                        Telefone = dto.Cliente.Contato.Telefone,
+                        IdCliente = dto.Cliente.Contato.IdCliente
+                    };
+                }
+            }
+
+            return ordemServico;
         }
     }
 }

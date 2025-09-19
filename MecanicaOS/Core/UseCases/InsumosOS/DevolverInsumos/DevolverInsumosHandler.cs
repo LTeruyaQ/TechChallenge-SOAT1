@@ -1,25 +1,29 @@
+using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 using Core.Exceptions;
+using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.Handlers.InsumosOS;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.InsumosOS.DevolverInsumos
 {
     public class DevolverInsumosHandler : UseCasesAbstrato<DevolverInsumosHandler>, IDevolverInsumosHandler
     {
-        private readonly IEstoqueUseCases _estoqueUseCases;
+        private readonly IObterEstoqueHandler _obterEstoqueHandler;
+        private readonly IAtualizarEstoqueHandler _atualizarEstoqueHandler;
 
         public DevolverInsumosHandler(
-            IEstoqueUseCases estoqueUseCases,
+            IObterEstoqueHandler obterEstoqueHandler,
+            IAtualizarEstoqueHandler atualizarEstoqueHandler,
             ILogServico<DevolverInsumosHandler> logServico,
             IUnidadeDeTrabalho udt,
             IUsuarioLogadoServico usuarioLogadoServico)
             : base(logServico, udt, usuarioLogadoServico)
         {
-            _estoqueUseCases = estoqueUseCases ?? throw new ArgumentNullException(nameof(estoqueUseCases));
+            _obterEstoqueHandler = obterEstoqueHandler ?? throw new ArgumentNullException(nameof(obterEstoqueHandler));
+            _atualizarEstoqueHandler = atualizarEstoqueHandler ?? throw new ArgumentNullException(nameof(atualizarEstoqueHandler));
         }
 
         public async Task<DevolverInsumosResponse> Handle(IEnumerable<InsumoOS> insumosOS)
@@ -32,12 +36,13 @@ namespace Core.UseCases.InsumosOS.DevolverInsumos
 
                 foreach (var insumoOS in insumosOS)
                 {
-                    var estoque = await _estoqueUseCases.ObterPorIdUseCaseAsync(insumoOS.EstoqueId);
+                    var estoqueResponse = await _obterEstoqueHandler.Handle(insumoOS.EstoqueId);
+                    var estoque = estoqueResponse.Estoque
+                        ?? throw new DadosNaoEncontradosException($"Estoque com ID {insumoOS.EstoqueId} não encontrado");
 
-                    // Devolver quantidade ao estoque
                     estoque.QuantidadeDisponivel += insumoOS.Quantidade;
 
-                    await _estoqueUseCases.AtualizarUseCaseAsync(estoque.Id, new Core.DTOs.UseCases.Estoque.AtualizarEstoqueUseCaseDto
+                    await _atualizarEstoqueHandler.Handle(estoque.Id, new AtualizarEstoqueUseCaseDto
                     {
                         Insumo = estoque.Insumo,
                         QuantidadeDisponivel = estoque.QuantidadeDisponivel,

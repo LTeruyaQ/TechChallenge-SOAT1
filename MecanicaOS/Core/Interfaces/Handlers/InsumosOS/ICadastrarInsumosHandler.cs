@@ -1,8 +1,5 @@
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.UseCases.InsumosOS.CadastrarInsumos;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.InsumosOS
 {

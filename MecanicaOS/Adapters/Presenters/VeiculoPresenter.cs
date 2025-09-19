@@ -1,8 +1,8 @@
-using Adapters.DTOs.Requests.Veiculo;
-using Adapters.DTOs.Responses.Veiculo;
-using Adapters.Presenters.Interfaces;
+using Core.DTOs.Requests.Veiculo;
+using Core.DTOs.Responses.Veiculo;
 using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
+using Core.Interfaces.Presenters;
 
 namespace Adapters.Presenters
 {

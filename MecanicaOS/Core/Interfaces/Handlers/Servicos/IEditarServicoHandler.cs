@@ -1,7 +1,5 @@
 using Core.DTOs.UseCases.Servico;
 using Core.UseCases.Servicos.EditarServico;
-using System;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Servicos
 {

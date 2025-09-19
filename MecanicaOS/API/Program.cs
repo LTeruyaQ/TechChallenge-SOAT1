@@ -1,22 +1,15 @@
-using Adapters.Gateways;
+using API;
+using API.Jobs;
 using API.Middlewares;
-using Core.Interfaces.Eventos;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.Jobs;
-using Core.Interfaces.Repositorios;
+using Core.DTOs.Config;
+using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
 using Hangfire;
 using Hangfire.PostgreSql;
-using Infraestrutura.Autenticacao;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.Extensions;
-using Infraestrutura.Dados.UdT;
-using Infraestrutura.Jobs;
 using Infraestrutura.Logs;
-using Infraestrutura.Notificacoes;
 using Infraestrutura.Notificacoes.OS;
-using Infraestrutura.Repositorios;
-using Infraestrutura.Servicos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -123,21 +116,8 @@ builder.Services.AddHangfire(config => config
 
 builder.Services.AddHangfireServer();
 
-// Registrar gateways
-builder.Services.AddScoped<IAlertaEstoqueGateway, AlertaEstoqueGateway>();
-builder.Services.AddScoped<IOrdemServicoGateway, OrdemServicoGateway>();
-builder.Services.AddScoped<IInsumosGateway, InsumosGateway>();
-builder.Services.AddScoped<IEstoqueGateway, EstoqueGateway>();
-builder.Services.AddScoped<IVerificarEstoqueJobGateway, VerificarEstoqueJobGateway>();
-builder.Services.AddScoped<IUsuarioGateway, UsuarioGateway>();
-builder.Services.AddScoped<IEventosGateway, EventosGateway>();
-builder.Services.AddScoped<IEventosPublisher, EventoPublisher>();
-builder.Services.AddScoped<IClienteGateway, ClienteGateway>();
-
-// UseCases são criados via CompositionRoot
-
 // Registrar Jobs
-builder.Services.AddScoped<IVerificarEstoqueJob, VerificarEstoqueJob>();
+builder.Services.AddScoped<ICompositionRoot, CompositionRoot>();
 builder.Services.AddScoped<VerificarEstoqueJob>();
 builder.Services.AddScoped<VerificarOrcamentoExpiradoJob>();
 
@@ -147,17 +127,9 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(OrdemServicoEmOrcamentoEvent).Assembly);
 });
 
-builder.Services.AddScoped<IServicoEmail, ServicoEmail>();
-builder.Services.AddScoped<IServicoJwt, ServicoJwt>();
-builder.Services.AddScoped<IServicoSenha, ServicoSenha>();
-builder.Services.AddScoped<IUsuarioLogadoServico, UsuarioLogadoServico>();
-builder.Services.AddScoped<IIdCorrelacionalService, IdCorrelacionalService>();
 builder.Services.AddScoped<IdCorrelacionalLogMiddleware>();
-builder.Services.AddScoped<IUnidadeDeTrabalho, UnidadeDeTrabalho>();
-builder.Services.AddScoped(typeof(ILogServico<>), typeof(LogServico<>));
+builder.Services.AddScoped<IIdCorrelacionalService, IdCorrelacionalService>();
 
-// Repositórios
-builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
 #endregion
 
 builder.Services.Configure<GzipCompressionProviderOptions>(options =>

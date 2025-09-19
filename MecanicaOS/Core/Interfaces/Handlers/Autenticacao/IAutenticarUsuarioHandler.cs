@@ -1,6 +1,5 @@
 using Core.DTOs.UseCases.Autenticacao;
 using Core.UseCases.Autenticacao.AutenticarUsuario;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Autenticacao
 {

@@ -1,6 +1,5 @@
 using Core.Enumeradores;
 using Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.OrdensServico
 {

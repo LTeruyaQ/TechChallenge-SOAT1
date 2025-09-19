@@ -1,7 +1,6 @@
 using Core.DTOs.UseCases.Autenticacao;
 using Core.Interfaces.Handlers.Autenticacao;
 using Core.Interfaces.UseCases;
-using Core.UseCases.Autenticacao.AutenticarUsuario;
 
 namespace Core.UseCases.Autenticacao
 {

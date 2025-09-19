@@ -1,6 +1,4 @@
 using Core.UseCases.Servicos.ObterServico;
-using System;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Servicos
 {

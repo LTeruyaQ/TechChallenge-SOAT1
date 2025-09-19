@@ -1,5 +1,4 @@
 using Core.UseCases.Usuarios.ObterTodosUsuarios;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Usuarios
 {

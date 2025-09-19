@@ -2,12 +2,6 @@ using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Interfaces.Handlers.Usuarios;
 using Core.Interfaces.UseCases;
-using Core.UseCases.Usuarios.AtualizarUsuario;
-using Core.UseCases.Usuarios.CadastrarUsuario;
-using Core.UseCases.Usuarios.DeletarUsuario;
-using Core.UseCases.Usuarios.ObterTodosUsuarios;
-using Core.UseCases.Usuarios.ObterUsuario;
-using Core.UseCases.Usuarios.ObterUsuarioPorEmail;
 
 namespace Core.UseCases.Usuarios
 {

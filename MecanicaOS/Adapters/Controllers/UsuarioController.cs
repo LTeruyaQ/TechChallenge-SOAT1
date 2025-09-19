@@ -1,7 +1,10 @@
-using Adapters.DTOs.Requests.Usuario;
-using Adapters.DTOs.Responses.Usuario;
-using Adapters.Presenters.Interfaces;
+using Adapters.Presenters;
+using Core.DTOs.Requests.Usuario;
+using Core.DTOs.Responses.Usuario;
 using Core.DTOs.UseCases.Usuario;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.Presenters;
+using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
@@ -11,10 +14,10 @@ namespace Adapters.Controllers
         private readonly IUsuarioUseCases _usuarioUseCases;
         private readonly IUsuarioPresenter _usuarioPresenter;
 
-        public UsuarioController(IUsuarioUseCases usuarioUseCases, IUsuarioPresenter usuarioPresenter)
+        public UsuarioController(ICompositionRoot compositionRoot)
         {
-            _usuarioUseCases = usuarioUseCases;
-            _usuarioPresenter = usuarioPresenter;
+            _usuarioUseCases = compositionRoot.CriarUsuarioUseCases();
+            _usuarioPresenter = new UsuarioPresenter();
         }
 
         public async Task<IEnumerable<UsuarioResponse>> ObterTodosAsync()

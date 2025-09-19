@@ -1,9 +1,8 @@
-using Adapters.DTOs.Requests.Cliente;
-using Adapters.DTOs.Responses.Cliente;
 using API.Models;
-using Core.Interfaces.Servicos;
-using Infraestrutura.Dados;
-using MediatR;
+using Core.DTOs.Requests.Cliente;
+using Core.DTOs.Responses.Cliente;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.root;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,13 +11,11 @@ namespace API.Controllers
     [Authorize]
     public class ClienteController : BaseApiController
     {
-        private readonly Adapters.Controllers.ClienteController _clienteController;
+        private readonly IClienteController _clienteController;
 
-        public ClienteController(MecanicaContexto contexto, Mediator mediator, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext, IConfiguration configuration)
+        public ClienteController(ICompositionRoot compositionRoot)
         {
-            // Usando o CompositionRoot para criar o controller com dependências externas
-            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
-            _clienteController = compositionRoot.CreateClienteController();
+            _clienteController = compositionRoot.CriarClienteController();
         }
 
         [HttpGet]

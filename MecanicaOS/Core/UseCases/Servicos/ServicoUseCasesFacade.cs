@@ -2,13 +2,6 @@ using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 using Core.Interfaces.Handlers.Servicos;
 using Core.Interfaces.UseCases;
-using Core.UseCases.Servicos.CadastrarServico;
-using Core.UseCases.Servicos.DeletarServico;
-using Core.UseCases.Servicos.EditarServico;
-using Core.UseCases.Servicos.ObterServico;
-using Core.UseCases.Servicos.ObterServicoPorNome;
-using Core.UseCases.Servicos.ObterServicosDisponiveis;
-using Core.UseCases.Servicos.ObterTodosServicos;
 
 namespace Core.UseCases.Servicos
 {

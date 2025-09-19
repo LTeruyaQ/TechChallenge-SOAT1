@@ -1,12 +1,10 @@
-using Adapters.Controllers;
-using Adapters.DTOs.Requests.OrdemServico;
-using Adapters.DTOs.Requests.OrdemServico.InsumoOS;
-using Adapters.DTOs.Responses.OrdemServico;
 using API.Models;
+using Core.DTOs.Requests.OrdemServico;
+using Core.DTOs.Requests.OrdemServico.InsumoOS;
+using Core.DTOs.Responses.OrdemServico;
 using Core.Enumeradores;
-using Core.Interfaces.Servicos;
-using Infraestrutura.Dados;
-using MediatR;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.root;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,15 +13,13 @@ namespace API.Controllers
     [Authorize]
     public class OrdemServicoController : BaseApiController
     {
-        private readonly Adapters.Controllers.OrdemServicoController _ordemServicoController;
-        private readonly InsumoOSController _insumoOSController;
+        private readonly IOrdemServicoController _ordemServicoController;
+        private readonly IInsumoOSController _insumoOSController;
 
-        public OrdemServicoController(MecanicaContexto contexto, Mediator mediator, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext, IConfiguration configuration)
+        public OrdemServicoController(ICompositionRoot compositionRoot)
         {
-            // Usando o CompositionRoot para criar os controllers com dependências externas
-            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
-            _ordemServicoController = compositionRoot.CreateOrdemServicoController();
-            _insumoOSController = compositionRoot.CreateInsumoOSController();
+            _ordemServicoController = compositionRoot.CriarOrdemServicoController();
+            _insumoOSController = compositionRoot.CriarInsumoOSController();
         }
 
         [HttpGet]

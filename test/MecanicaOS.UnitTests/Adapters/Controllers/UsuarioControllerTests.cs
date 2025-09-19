@@ -1,11 +1,16 @@
 using Adapters.Controllers;
-using Adapters.DTOs.Requests.Usuario;
-using Adapters.DTOs.Responses.Usuario;
-using Adapters.Presenters.Interfaces;
+using Core.DTOs.Requests.Usuario;
+using Core.DTOs.Responses.Usuario;
 using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Enumeradores;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.Presenters;
+using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
+using NSubstitute;
+using FluentAssertions;
+using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -14,12 +19,21 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
         private readonly IUsuarioUseCases _usuarioUseCases;
         private readonly IUsuarioPresenter _usuarioPresenter;
         private readonly UsuarioController _usuarioController;
+        private readonly ICompositionRoot _compositionRoot;
 
         public UsuarioControllerTests()
         {
             _usuarioUseCases = Substitute.For<IUsuarioUseCases>();
             _usuarioPresenter = Substitute.For<IUsuarioPresenter>();
-            _usuarioController = new UsuarioController(_usuarioUseCases, _usuarioPresenter);
+            _compositionRoot = Substitute.For<ICompositionRoot>();
+            
+            _compositionRoot.CriarUsuarioUseCases().Returns(_usuarioUseCases);
+            _usuarioController = new UsuarioController(_compositionRoot);
+            
+            // Usar reflexão para injetar o presenter mockado
+            var presenterField = typeof(UsuarioController).GetField("_usuarioPresenter", 
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            presenterField?.SetValue(_usuarioController, _usuarioPresenter);
         }
 
         [Fact]

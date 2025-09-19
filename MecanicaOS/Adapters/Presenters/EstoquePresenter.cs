@@ -1,8 +1,8 @@
-using Adapters.DTOs.Requests.Estoque;
-using Adapters.DTOs.Responses.Estoque;
-using Adapters.Presenters.Interfaces;
+using Core.DTOs.Requests.Estoque;
+using Core.DTOs.Responses.Estoque;
 using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
+using Core.Interfaces.Presenters;
 
 namespace Adapters.Presenters
 {

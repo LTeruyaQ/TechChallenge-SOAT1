@@ -1,6 +1,4 @@
 using Core.UseCases.Estoques.DeletarEstoque;
-using System;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Estoques
 {

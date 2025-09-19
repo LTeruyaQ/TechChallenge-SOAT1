@@ -1,21 +1,25 @@
-using Adapters.DTOs.Requests.OrdemServico;
-using Adapters.DTOs.Responses.OrdemServico;
-using Adapters.Presenters.Interfaces;
+using Adapters.Presenters;
+using Core.DTOs.Requests.OrdemServico;
+using Core.DTOs.Responses.OrdemServico;
 using Core.DTOs.UseCases.OrdemServico;
 using Core.Enumeradores;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.Presenters;
+using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
 {
-    public class OrdemServicoController
+    public class OrdemServicoController : IOrdemServicoController
     {
         private readonly IOrdemServicoUseCases _ordemServicoUseCases;
+        private readonly IOrcamentoUseCases _orcamentoUseCases;
         private readonly IOrdemServicoPresenter _ordemServicoPresenter;
 
-        public OrdemServicoController(IOrdemServicoUseCases ordemServicoUseCases, IOrdemServicoPresenter ordemServicoPresenter)
+        public OrdemServicoController(ICompositionRoot compositionRoot)
         {
-            _ordemServicoUseCases = ordemServicoUseCases;
-            _ordemServicoPresenter = ordemServicoPresenter;
+            _ordemServicoUseCases = compositionRoot.CriarOrdemServicoUseCases();
+            _ordemServicoPresenter = new OrdemServicoPresenter();
         }
 
         public async Task<IEnumerable<OrdemServicoResponse>> ObterTodos()
@@ -84,6 +88,20 @@ namespace Adapters.Controllers
         public async Task RecusarOrcamento(Guid id)
         {
             await _ordemServicoUseCases.RecusarOrcamentoUseCaseAsync(id);
+        }
+
+        public async Task CalcularOrcamentoAsync(Guid ordemServicoId)
+        {
+            var ordemServico = await _ordemServicoUseCases.ObterPorIdUseCaseAsync(ordemServicoId);
+
+            var orcamento = _orcamentoUseCases.GerarOrcamentoUseCase(ordemServico);
+            
+            await _ordemServicoUseCases.AtualizarUseCaseAsync(ordemServicoId, new AtualizarOrdemServicoUseCaseDto
+            {
+                Status = StatusOrdemServico.AguardandoAprovação,
+                Orcamento = orcamento,
+                DataEnvioOrcamento = DateTime.UtcNow
+            });
         }
     }
 }

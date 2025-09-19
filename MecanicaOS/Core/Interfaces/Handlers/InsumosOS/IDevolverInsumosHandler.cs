@@ -1,7 +1,5 @@
 using Core.Entidades;
 using Core.UseCases.InsumosOS.DevolverInsumos;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.InsumosOS
 {

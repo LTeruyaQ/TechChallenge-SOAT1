@@ -1,7 +1,5 @@
 using Core.DTOs.UseCases.OrdemServico;
 using Core.UseCases.OrdensServico.AtualizarOrdemServico;
-using System;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.OrdensServico
 {

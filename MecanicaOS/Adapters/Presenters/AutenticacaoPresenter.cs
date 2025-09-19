@@ -1,7 +1,7 @@
-using Adapters.DTOs.Requests.Autenticacao;
-using Adapters.DTOs.Responses.Autenticacao;
-using Adapters.Presenters.Interfaces;
+using Core.DTOs.Requests.Autenticacao;
+using Core.DTOs.Responses.Autenticacao;
 using Core.DTOs.UseCases.Autenticacao;
+using Core.Interfaces.Presenters;
 
 namespace Adapters.Presenters
 {

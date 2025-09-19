@@ -1,20 +1,23 @@
-using Adapters.DTOs.Requests.Servico;
-using Adapters.DTOs.Responses.Servico;
-using Adapters.Presenters.Interfaces;
+using Adapters.Presenters;
+using Core.DTOs.Requests.Servico;
+using Core.DTOs.Responses.Servico;
 using Core.DTOs.UseCases.Servico;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.Presenters;
+using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
 {
-    public class ServicoController
+    public class ServicoController : IServicoController
     {
         private readonly IServicoUseCases _servicoUseCases;
         private readonly IServicoPresenter _servicoPresenter;
 
-        public ServicoController(IServicoUseCases servicoUseCases, IServicoPresenter servicoPresenter)
+        public ServicoController(ICompositionRoot compositionRoot)
         {
-            _servicoUseCases = servicoUseCases;
-            _servicoPresenter = servicoPresenter;
+            _servicoUseCases = compositionRoot.CriarServicoUseCases();
+            _servicoPresenter = new ServicoPresenter();
         }
 
         public async Task<IEnumerable<ServicoResponse>> ObterTodos()

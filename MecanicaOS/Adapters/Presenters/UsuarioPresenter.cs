@@ -1,8 +1,8 @@
-using Adapters.DTOs.Requests.Usuario;
-using Adapters.DTOs.Responses.Usuario;
-using Adapters.Presenters.Interfaces;
+using Core.DTOs.Requests.Usuario;
+using Core.DTOs.Responses.Usuario;
 using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
+using Core.Interfaces.Presenters;
 
 namespace Adapters.Presenters
 {

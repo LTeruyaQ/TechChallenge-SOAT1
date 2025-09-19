@@ -1,6 +1,5 @@
 using Core.DTOs.UseCases.Usuario;
 using Core.UseCases.Usuarios.CadastrarUsuario;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Usuarios
 {

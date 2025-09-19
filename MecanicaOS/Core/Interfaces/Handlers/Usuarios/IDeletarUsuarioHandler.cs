@@ -1,6 +1,4 @@
 using Core.UseCases.Usuarios.DeletarUsuario;
-using System;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Usuarios
 {

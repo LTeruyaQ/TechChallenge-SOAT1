@@ -1,10 +1,8 @@
-using Adapters.Controllers;
-using Adapters.DTOs.Requests.Servico;
-using Adapters.DTOs.Responses.Servico;
 using API.Models;
-using Core.Interfaces.Servicos;
-using Infraestrutura.Dados;
-using MediatR;
+using Core.DTOs.Requests.Servico;
+using Core.DTOs.Responses.Servico;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.root;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +11,11 @@ namespace API.Controllers
     [Authorize]
     public class ServicosController : BaseApiController
     {
-        private readonly ServicoController _servicoController;
+        private readonly IServicoController _servicoController;
 
-        public ServicosController(MecanicaContexto contexto, Mediator mediator, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext, IConfiguration configuration)
+        public ServicosController(ICompositionRoot compositionRoot)
         {
-            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
-            _servicoController = compositionRoot.CreateServicoController();
+            _servicoController = compositionRoot.CriarServicoController();
         }
 
         [HttpGet]

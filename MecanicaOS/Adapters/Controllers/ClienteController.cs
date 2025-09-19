@@ -1,20 +1,23 @@
-using Adapters.DTOs.Requests.Cliente;
-using Adapters.DTOs.Responses.Cliente;
-using Adapters.Presenters.Interfaces;
+using Adapters.Presenters;
+using Core.DTOs.Requests.Cliente;
+using Core.DTOs.Responses.Cliente;
 using Core.DTOs.UseCases.Cliente;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.Presenters;
+using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
 {
-    public class ClienteController
+    public class ClienteController : IClienteController
     {
         private readonly IClienteUseCases _clienteUseCases;
         private readonly IClientePresenter _clientePresenter;
 
-        public ClienteController(IClienteUseCases clienteUseCases, IClientePresenter clientePresenter)
+        public ClienteController(ICompositionRoot compositionRoot)
         {
-            _clienteUseCases = clienteUseCases;
-            _clientePresenter = clientePresenter;
+            _clienteUseCases = compositionRoot.CriarClienteUseCases();
+            _clientePresenter = new ClientePresenter();
         }
 
         public async Task<IEnumerable<ClienteResponse>> ObterTodos()

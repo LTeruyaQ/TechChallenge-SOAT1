@@ -1,6 +1,5 @@
 using Core.DTOs.UseCases.Servico;
 using Core.UseCases.Servicos.CadastrarServico;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Servicos
 {

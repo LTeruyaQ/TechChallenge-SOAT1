@@ -1,9 +1,8 @@
-using Adapters.DTOs.Requests.Estoque;
-using Adapters.DTOs.Responses.Estoque;
 using API.Models;
-using Core.Interfaces.Servicos;
-using Infraestrutura.Dados;
-using MediatR;
+using Core.DTOs.Requests.Estoque;
+using Core.DTOs.Responses.Estoque;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.root;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,13 +11,11 @@ namespace API.Controllers
     [Authorize(Roles = "Admin")]
     public class EstoqueController : BaseApiController
     {
-        private readonly Adapters.Controllers.EstoqueController _estoqueController;
+        private readonly IEstoqueController _estoqueController;
 
-        public EstoqueController(MecanicaContexto contexto, Mediator mediator, IIdCorrelacionalService idCorrelacionalService, HttpContextAccessor httpContext, IConfiguration configuration)
+        public EstoqueController(ICompositionRoot compositionRoot)
         {
-            // Usando o CompositionRoot para criar o controller com dependências externas
-            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
-            _estoqueController = compositionRoot.CreateEstoqueController();
+            _estoqueController = compositionRoot.CriarEstoqueController();
         }
 
         [HttpGet]

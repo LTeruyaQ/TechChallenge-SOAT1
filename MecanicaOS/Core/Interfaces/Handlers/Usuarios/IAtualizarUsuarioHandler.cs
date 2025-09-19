@@ -1,7 +1,5 @@
 using Core.DTOs.UseCases.Usuario;
 using Core.UseCases.Usuarios.AtualizarUsuario;
-using System;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Usuarios
 {

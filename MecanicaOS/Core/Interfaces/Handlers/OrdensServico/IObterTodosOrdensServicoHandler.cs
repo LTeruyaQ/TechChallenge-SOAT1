@@ -1,5 +1,4 @@
 using Core.UseCases.OrdensServico.ObterTodosOrdensServico;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.OrdensServico
 {

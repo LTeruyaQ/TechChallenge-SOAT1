@@ -9,4 +9,6 @@ public class AtualizarOrdemServicoUseCaseDto
     public Guid? ServicoId { get; set; }
     public string? Descricao { get; set; }
     public StatusOrdemServico? Status { get; set; }
+    public decimal? Orcamento { get; set; }
+    public DateTime? DataEnvioOrcamento { get; set; }
 }

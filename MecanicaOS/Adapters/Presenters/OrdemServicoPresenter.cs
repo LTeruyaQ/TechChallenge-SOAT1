@@ -1,11 +1,11 @@
-using Adapters.DTOs.Requests.OrdemServico;
-using Adapters.DTOs.Requests.OrdemServico.InsumoOS;
-using Adapters.DTOs.Responses.OrdemServico;
-using Adapters.DTOs.Responses.OrdemServico.InsumoOrdemServico;
-using Adapters.Presenters.Interfaces;
+using Core.DTOs.Requests.OrdemServico;
+using Core.DTOs.Requests.OrdemServico.InsumoOS;
+using Core.DTOs.Responses.OrdemServico;
+using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Core.DTOs.UseCases.OrdemServico;
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
+using Core.Interfaces.Presenters;
 
 namespace Adapters.Presenters
 {

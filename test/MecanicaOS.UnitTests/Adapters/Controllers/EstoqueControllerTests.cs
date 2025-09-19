@@ -1,9 +1,15 @@
 using Adapters.Controllers;
-using Adapters.DTOs.Requests.Estoque;
-using Adapters.Presenters.Interfaces;
+using Core.DTOs.Requests.Estoque;
+using Core.DTOs.Responses.Estoque;
 using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.Presenters;
+using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
+using NSubstitute;
+using FluentAssertions;
+using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -12,12 +18,21 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
         private readonly IEstoqueUseCases _estoqueUseCases;
         private readonly IEstoquePresenter _estoquePresenter;
         private readonly EstoqueController _estoqueController;
+        private readonly ICompositionRoot _compositionRoot;
 
         public EstoqueControllerTests()
         {
             _estoqueUseCases = Substitute.For<IEstoqueUseCases>();
             _estoquePresenter = Substitute.For<IEstoquePresenter>();
-            _estoqueController = new EstoqueController(_estoqueUseCases, _estoquePresenter);
+            _compositionRoot = Substitute.For<ICompositionRoot>();
+            
+            _compositionRoot.CriarEstoqueUseCases().Returns(_estoqueUseCases);
+            _estoqueController = new EstoqueController(_compositionRoot);
+            
+            // Usar reflexão para injetar o presenter mockado
+            var presenterField = typeof(EstoqueController).GetField("_estoquePresenter", 
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            presenterField?.SetValue(_estoqueController, _estoquePresenter);
         }
 
         [Fact]

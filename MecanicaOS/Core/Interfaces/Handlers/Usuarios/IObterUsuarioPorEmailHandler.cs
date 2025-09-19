@@ -1,5 +1,4 @@
 using Core.UseCases.Usuarios.ObterUsuarioPorEmail;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Usuarios
 {

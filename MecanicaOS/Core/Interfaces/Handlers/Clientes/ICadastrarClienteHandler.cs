@@ -1,6 +1,5 @@
 using Core.DTOs.UseCases.Cliente;
 using Core.UseCases.Clientes.CadastrarCliente;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Clientes
 {

@@ -1,15 +1,11 @@
-using Adapters.Controllers;
-using Adapters.DTOs.Requests.Autenticacao;
-using Adapters.DTOs.Requests.Usuario;
-using Adapters.DTOs.Responses.Autenticacao;
 using API.Models;
-using Core.Interfaces.Servicos;
-using Infraestrutura.Autenticacao;
-using Infraestrutura.Dados;
-using MediatR;
+using Core.DTOs.Requests.Autenticacao;
+using Core.DTOs.Requests.Usuario;
+using Core.DTOs.Responses.Autenticacao;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.root;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace API.Controllers
 {
@@ -19,18 +15,10 @@ namespace API.Controllers
         private readonly IUsuarioController _usuarioController;
 
         public AutenticacaoController(
-            MecanicaContexto contexto,
-            Mediator mediator,
-            IIdCorrelacionalService idCorrelacionalService,
-            HttpContextAccessor httpContext,
-            IOptions<ConfiguracaoJwt> configuracaoJwt,
-            IConfiguration configuration)
+            ICompositionRoot compositionRoot)
         {
-            // Usando o CompositionRoot para criar os controllers com dependências externas
-            var compositionRoot = new CompositionRoot(contexto, mediator, idCorrelacionalService, httpContext, configuration);
-
-            _autenticacaoController = compositionRoot.CreateAutenticacaoController();
-            _usuarioController = compositionRoot.CreateUsuarioController();
+            _autenticacaoController = compositionRoot.CriarAutenticacaoController();
+            _usuarioController = compositionRoot.CriarUsuarioController();
         }
 
         [HttpPost("Login")]

@@ -1,20 +1,23 @@
-using Adapters.DTOs.Requests.Veiculo;
-using Adapters.DTOs.Responses.Veiculo;
-using Adapters.Presenters.Interfaces;
+using Adapters.Presenters;
+using Core.DTOs.Requests.Veiculo;
+using Core.DTOs.Responses.Veiculo;
 using Core.DTOs.UseCases.Veiculo;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.Presenters;
+using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
 {
-    public class VeiculoController
+    public class VeiculoController : IVeiculoController
     {
         private readonly IVeiculoUseCases _veiculoUseCases;
         private readonly IVeiculoPresenter _veiculoPresenter;
 
-        public VeiculoController(IVeiculoUseCases veiculoUseCases, IVeiculoPresenter veiculoPresenter)
+        public VeiculoController(ICompositionRoot compositionRoot)
         {
-            _veiculoUseCases = veiculoUseCases;
-            _veiculoPresenter = veiculoPresenter;
+            _veiculoUseCases = compositionRoot.CriarVeiculoUseCases();
+            _veiculoPresenter = new VeiculoPresenter();
         }
 
         public async Task<IEnumerable<VeiculoResponse>> ObterTodos()

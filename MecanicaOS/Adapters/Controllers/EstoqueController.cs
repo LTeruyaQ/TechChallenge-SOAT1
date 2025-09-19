@@ -1,20 +1,23 @@
-using Adapters.DTOs.Requests.Estoque;
-using Adapters.DTOs.Responses.Estoque;
-using Adapters.Presenters.Interfaces;
+using Adapters.Presenters;
+using Core.DTOs.Requests.Estoque;
+using Core.DTOs.Responses.Estoque;
 using Core.DTOs.UseCases.Estoque;
+using Core.Interfaces.Controllers;
+using Core.Interfaces.Presenters;
+using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
 {
-    public class EstoqueController
+    public class EstoqueController : IEstoqueController
     {
         private readonly IEstoqueUseCases _estoqueUseCases;
         private readonly IEstoquePresenter _estoquePresenter;
 
-        public EstoqueController(IEstoqueUseCases estoqueUseCases, IEstoquePresenter estoquePresenter)
+        public EstoqueController(ICompositionRoot compositionRoot)
         {
-            _estoqueUseCases = estoqueUseCases;
-            _estoquePresenter = estoquePresenter;
+            _estoqueUseCases = compositionRoot.CriarEstoqueUseCases();
+            _estoquePresenter = new EstoquePresenter();
         }
 
         public async Task<IEnumerable<EstoqueResponse>> ObterTodos()

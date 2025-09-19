@@ -1,7 +1,5 @@
 using Core.DTOs.UseCases.Estoque;
 using Core.UseCases.Estoques.AtualizarEstoque;
-using System;
-using System.Threading.Tasks;
 
 namespace Core.Interfaces.Handlers.Estoques
 {
