@@ -6,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.ObterTodosEstoques
 {
-    public class ObterTodosEstoquesHandler : UseCasesAbstrato<ObterTodosEstoquesHandler>, IObterTodosEstoquesHandler
+    public class ObterTodosEstoquesHandler : UseCasesHandlerAbstrato<ObterTodosEstoquesHandler>, IObterTodosEstoquesHandler
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

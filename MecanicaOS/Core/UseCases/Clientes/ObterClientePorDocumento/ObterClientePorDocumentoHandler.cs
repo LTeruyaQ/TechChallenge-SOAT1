@@ -8,7 +8,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.ObterClientePorDocumento
 {
-    public class ObterClientePorDocumentoHandler : UseCasesAbstrato<ObterClientePorDocumentoHandler>, IObterClientePorDocumentoHandler
+    public class ObterClientePorDocumentoHandler : UseCasesHandlerAbstrato<ObterClientePorDocumentoHandler>, IObterClientePorDocumentoHandler
     {
         private readonly IClienteGateway _clienteGateway;
 

@@ -7,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.DeletarUsuario
 {
-    public class DeletarUsuarioHandler : UseCasesAbstrato<DeletarUsuarioHandler>, IDeletarUsuarioHandler
+    public class DeletarUsuarioHandler : UseCasesHandlerAbstrato<DeletarUsuarioHandler>, IDeletarUsuarioHandler
     {
         private readonly IUsuarioGateway _usuarioGateway;
 

@@ -6,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Veiculos.ObterVeiculoPorCliente
 {
-    public class ObterVeiculoPorClienteHandler : UseCasesAbstrato<ObterVeiculoPorClienteHandler>, IObterVeiculoPorClienteHandler
+    public class ObterVeiculoPorClienteHandler : UseCasesHandlerAbstrato<ObterVeiculoPorClienteHandler>, IObterVeiculoPorClienteHandler
     {
         private readonly IVeiculoGateway _veiculoGateway;
 

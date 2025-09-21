@@ -1,6 +1,6 @@
-using API.Models;
 using Core.DTOs.Requests.Cliente;
 using Core.DTOs.Responses.Cliente;
+using Core.DTOs.Responses.Erro;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Microsoft.AspNetCore.Authorization;

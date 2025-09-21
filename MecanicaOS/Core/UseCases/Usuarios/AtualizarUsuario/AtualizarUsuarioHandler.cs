@@ -9,7 +9,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.AtualizarUsuario
 {
-    public class AtualizarUsuarioHandler : UseCasesAbstrato<AtualizarUsuarioHandler>, IAtualizarUsuarioHandler
+    public class AtualizarUsuarioHandler : UseCasesHandlerAbstrato<AtualizarUsuarioHandler>, IAtualizarUsuarioHandler
     {
         private readonly IUsuarioGateway _usuarioGateway;
         private readonly IServicoSenha _servicoSenha;

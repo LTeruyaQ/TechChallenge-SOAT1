@@ -7,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.RemoverCliente
 {
-    public class RemoverClienteHandler : UseCasesAbstrato<RemoverClienteHandler>, IRemoverClienteHandler
+    public class RemoverClienteHandler : UseCasesHandlerAbstrato<RemoverClienteHandler>, IRemoverClienteHandler
     {
         private readonly IClienteGateway _clienteGateway;
 

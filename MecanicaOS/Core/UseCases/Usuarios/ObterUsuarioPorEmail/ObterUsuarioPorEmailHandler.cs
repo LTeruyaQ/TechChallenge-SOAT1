@@ -7,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.ObterUsuarioPorEmail
 {
-    public class ObterUsuarioPorEmailHandler : UseCasesAbstrato<ObterUsuarioPorEmailHandler>, IObterUsuarioPorEmailHandler
+    public class ObterUsuarioPorEmailHandler : UseCasesHandlerAbstrato<ObterUsuarioPorEmailHandler>, IObterUsuarioPorEmailHandler
     {
         private readonly IUsuarioGateway _usuarioGateway;
 

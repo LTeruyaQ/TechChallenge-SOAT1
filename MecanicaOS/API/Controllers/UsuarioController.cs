@@ -1,5 +1,5 @@
-using API.Models;
 using Core.DTOs.Requests.Usuario;
+using Core.DTOs.Responses.Erro;
 using Core.DTOs.Responses.Usuario;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;

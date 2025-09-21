@@ -699,7 +699,9 @@ namespace API
                 servicoSenha,
                 servicoJwt,
                 logServico,
-                clienteUseCases);
+                clienteUseCases,
+                _unidadeDeTrabalho,
+                _usuarioLogadoServico);
         }
 
         #endregion

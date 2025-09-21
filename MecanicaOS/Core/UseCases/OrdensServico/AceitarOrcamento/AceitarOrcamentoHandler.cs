@@ -8,7 +8,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.AceitarOrcamento
 {
-    public class AceitarOrcamentoHandler : UseCasesAbstrato<AceitarOrcamentoHandler>, IAceitarOrcamentoHandler
+    public class AceitarOrcamentoHandler : UseCasesHandlerAbstrato<AceitarOrcamentoHandler>, IAceitarOrcamentoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
 

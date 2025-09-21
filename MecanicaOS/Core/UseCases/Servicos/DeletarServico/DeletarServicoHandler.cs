@@ -7,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Servicos.DeletarServico
 {
-    public class DeletarServicoHandler : UseCasesAbstrato<DeletarServicoHandler>, IDeletarServicoHandler
+    public class DeletarServicoHandler : UseCasesHandlerAbstrato<DeletarServicoHandler>, IDeletarServicoHandler
     {
         private readonly IServicoGateway _servicoGateway;
 

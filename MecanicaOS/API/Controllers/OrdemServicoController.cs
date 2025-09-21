@@ -1,6 +1,6 @@
-using API.Models;
 using Core.DTOs.Requests.OrdemServico;
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
+using Core.DTOs.Responses.Erro;
 using Core.DTOs.Responses.OrdemServico;
 using Core.Enumeradores;
 using Core.Interfaces.Controllers;

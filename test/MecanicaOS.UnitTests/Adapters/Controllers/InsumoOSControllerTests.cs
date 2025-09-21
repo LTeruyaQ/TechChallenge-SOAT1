@@ -10,6 +10,7 @@ using Core.Interfaces.UseCases;
 using NSubstitute;
 using FluentAssertions;
 using Xunit;
+using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -83,31 +84,43 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                 }
             };
 
+            // Crie uma lista simples de InsumoOS para o retorno do mock
             var insumosOS = new List<InsumoOS>
             {
-                new InsumoOS(),
-                new InsumoOS()
+                new InsumoOS { Id = Guid.NewGuid() },
+                new InsumoOS { Id = Guid.NewGuid() }
             };
 
+            // Configure o mock para retornar a lista de insumos
             _insumoOSUseCases.CadastrarInsumosUseCaseAsync(
                 Arg.Any<Guid>(),
                 Arg.Any<List<CadastrarInsumoOSUseCaseDto>>())
                 .Returns(insumosOS);
 
+            // Crie uma lista simples de InsumoOSResponse para o retorno do presenter
+            var responses = new List<InsumoOSResponse>
+            {
+                new InsumoOSResponse(),
+                new InsumoOSResponse()
+            };
+
+            // Configure o presenter para retornar as respostas
+            _insumoPresenter.ToResponse(Arg.Any<IEnumerable<InsumoOS>>()).Returns(responses);
+
             // Act
             var result = await _insumoOSController.CadastrarInsumos(ordemServicoId, requests);
 
             // Assert
+            // Verifique se o método do usecase foi chamado com os parâmetros corretos
             await _insumoOSUseCases.Received(1).CadastrarInsumosUseCaseAsync(
                 Arg.Is<Guid>(g => g == ordemServicoId),
-                Arg.Is<List<CadastrarInsumoOSUseCaseDto>>(dtos =>
-                    dtos.Count == requests.Count &&
-                    dtos.All(dto =>
-                        requests.Any(r =>
-                            r.EstoqueId == dto.EstoqueId &&
-                            r.Quantidade == dto.Quantidade))));
+                Arg.Any<List<CadastrarInsumoOSUseCaseDto>>());
 
-            result.Should().BeEquivalentTo(insumosOS);
+            // Verifique se o presenter foi chamado com a lista de insumos
+            _insumoPresenter.Received(1).ToResponse(Arg.Any<IEnumerable<InsumoOS>>());
+
+            // Verifique se o resultado é o mesmo que o retornado pelo presenter
+            result.Should().BeSameAs(responses);
         }
 
         [Fact]

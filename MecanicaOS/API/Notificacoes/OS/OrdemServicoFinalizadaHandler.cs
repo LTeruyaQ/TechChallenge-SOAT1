@@ -1,12 +1,7 @@
-using API;
-using Core.DTOs.Entidades.OrdemServicos;
 using Core.DTOs.Responses.OrdemServico;
-using Core.Especificacoes.OrdemServico;
 using Core.Interfaces.Controllers;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
-using Infraestrutura.Dados;
 using MediatR;
 using System.Text;
 

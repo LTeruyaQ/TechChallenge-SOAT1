@@ -3,13 +3,13 @@ using Core.Interfaces.Servicos;
 
 namespace Core.UseCases.Abstrato
 {
-    public abstract class UseCasesAbstrato<T> where T : class
+    public abstract class UseCasesHandlerAbstrato<T> where T : class
     {
         private readonly ILogServico<T> _logServico;
         private readonly IUnidadeDeTrabalho _udt;
         protected readonly IUsuarioLogadoServico _usuarioLogadoServico;
 
-        protected UseCasesAbstrato(ILogServico<T> logServico, IUnidadeDeTrabalho udt, IUsuarioLogadoServico usuarioLogadoServico)
+        protected UseCasesHandlerAbstrato(ILogServico<T> logServico, IUnidadeDeTrabalho udt, IUsuarioLogadoServico usuarioLogadoServico)
         {
             _logServico = logServico ?? throw new ArgumentNullException(nameof(logServico));
             _udt = udt ?? throw new ArgumentNullException(nameof(udt));

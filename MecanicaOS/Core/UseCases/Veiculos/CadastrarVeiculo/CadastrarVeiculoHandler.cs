@@ -9,7 +9,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Veiculos.CadastrarVeiculo
 {
-    public class CadastrarVeiculoHandler : UseCasesAbstrato<CadastrarVeiculoHandler>, ICadastrarVeiculoHandler
+    public class CadastrarVeiculoHandler : UseCasesHandlerAbstrato<CadastrarVeiculoHandler>, ICadastrarVeiculoHandler
     {
         private readonly IVeiculoGateway _veiculoGateway;
 

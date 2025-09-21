@@ -1,7 +1,7 @@
-using API.Models;
 using Core.DTOs.Requests.Autenticacao;
 using Core.DTOs.Requests.Usuario;
 using Core.DTOs.Responses.Autenticacao;
+using Core.DTOs.Responses.Erro;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Microsoft.AspNetCore.Authorization;

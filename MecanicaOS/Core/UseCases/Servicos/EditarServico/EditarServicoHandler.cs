@@ -8,7 +8,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Servicos.EditarServico
 {
-    public class EditarServicoHandler : UseCasesAbstrato<EditarServicoHandler>, IEditarServicoHandler
+    public class EditarServicoHandler : UseCasesHandlerAbstrato<EditarServicoHandler>, IEditarServicoHandler
     {
         private readonly IServicoGateway _servicoGateway;
 

@@ -8,7 +8,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.AtualizarEstoque
 {
-    public class AtualizarEstoqueHandler : UseCasesAbstrato<AtualizarEstoqueHandler>, IAtualizarEstoqueHandler
+    public class AtualizarEstoqueHandler : UseCasesHandlerAbstrato<AtualizarEstoqueHandler>, IAtualizarEstoqueHandler
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

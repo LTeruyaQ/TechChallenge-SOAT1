@@ -9,7 +9,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Servicos.CadastrarServico
 {
-    public class CadastrarServicoHandler : UseCasesAbstrato<CadastrarServicoHandler>, ICadastrarServicoHandler
+    public class CadastrarServicoHandler : UseCasesHandlerAbstrato<CadastrarServicoHandler>, ICadastrarServicoHandler
     {
         private readonly IServicoGateway _servicoGateway;
 

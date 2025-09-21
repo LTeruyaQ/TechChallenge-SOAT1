@@ -6,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Veiculos.ObterTodosVeiculos
 {
-    public class ObterTodosVeiculosHandler : UseCasesAbstrato<ObterTodosVeiculosHandler>, IObterTodosVeiculosHandler
+    public class ObterTodosVeiculosHandler : UseCasesHandlerAbstrato<ObterTodosVeiculosHandler>, IObterTodosVeiculosHandler
     {
         private readonly IVeiculoGateway _veiculoGateway;
 

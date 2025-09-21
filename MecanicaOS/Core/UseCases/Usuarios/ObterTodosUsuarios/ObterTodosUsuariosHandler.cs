@@ -7,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.ObterTodosUsuarios
 {
-    public class ObterTodosUsuariosHandler : UseCasesAbstrato<ObterTodosUsuariosHandler>, IObterTodosUsuariosHandler
+    public class ObterTodosUsuariosHandler : UseCasesHandlerAbstrato<ObterTodosUsuariosHandler>, IObterTodosUsuariosHandler
     {
         private readonly IUsuarioGateway _usuarioGateway;
 

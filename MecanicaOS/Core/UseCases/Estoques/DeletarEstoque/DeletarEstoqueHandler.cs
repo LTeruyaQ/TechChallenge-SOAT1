@@ -7,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.DeletarEstoque
 {
-    public class DeletarEstoqueHandler : UseCasesAbstrato<DeletarEstoqueHandler>, IDeletarEstoqueHandler
+    public class DeletarEstoqueHandler : UseCasesHandlerAbstrato<DeletarEstoqueHandler>, IDeletarEstoqueHandler
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

@@ -7,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Veiculos.DeletarVeiculo
 {
-    public class DeletarVeiculoHandler : UseCasesAbstrato<DeletarVeiculoHandler>, IDeletarVeiculoHandler
+    public class DeletarVeiculoHandler : UseCasesHandlerAbstrato<DeletarVeiculoHandler>, IDeletarVeiculoHandler
     {
         private readonly IVeiculoGateway _veiculoGateway;
 

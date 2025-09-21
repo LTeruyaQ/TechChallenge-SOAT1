@@ -3,30 +3,33 @@ using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Handlers.Autenticacao;
+using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
+using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Autenticacao.AutenticarUsuario
 {
-    public class AutenticarUsuarioHandler : IAutenticarUsuarioHandler
+    public class AutenticarUsuarioHandler : UseCasesHandlerAbstrato<AutenticarUsuarioHandler>, IAutenticarUsuarioHandler
     {
         private readonly IUsuarioUseCases _usuarioUseCases;
         private readonly IClienteUseCases _clienteUseCases;
         private readonly IServicoSenha _servicoSenha;
         private readonly IServicoJwt _servicoJwt;
-        private readonly ILogServico<AutenticarUsuarioHandler> _log;
 
         public AutenticarUsuarioHandler(
             IUsuarioUseCases usuarioUseCases,
             IServicoSenha servicoSenha,
             IServicoJwt servicoJwt,
-            ILogServico<AutenticarUsuarioHandler> log,
-            IClienteUseCases clienteUseCases)
+            ILogServico<AutenticarUsuarioHandler> logServico,
+            IClienteUseCases clienteUseCases,
+            IUnidadeDeTrabalho udt,
+            IUsuarioLogadoServico usuarioLogadoServico)
+            : base(logServico, udt, usuarioLogadoServico)
         {
             _usuarioUseCases = usuarioUseCases ?? throw new ArgumentNullException(nameof(usuarioUseCases));
             _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
             _servicoJwt = servicoJwt ?? throw new ArgumentNullException(nameof(servicoJwt));
-            _log = log ?? throw new ArgumentNullException(nameof(log));
             _clienteUseCases = clienteUseCases ?? throw new ArgumentNullException(nameof(clienteUseCases));
         }
 
@@ -36,6 +39,8 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
 
             try
             {
+                LogInicio(metodo, request);
+
                 var usuario = await _usuarioUseCases.ObterPorEmailUseCaseAsync(request.Email);
 
                 if (usuario is null)
@@ -54,11 +59,13 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
                     Permissoes = permissoes.ToList()
                 };
 
-                return new AutenticarUsuarioResponse { Autenticacao = autenticacaoDto };
+                var response = new AutenticarUsuarioResponse { Autenticacao = autenticacaoDto };
+                LogFim(metodo, response);
+                return response;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _log.LogErro($"[{metodo}] Erro na autenticação", e);
+                LogErro(metodo, ex);
                 throw;
             }
         }

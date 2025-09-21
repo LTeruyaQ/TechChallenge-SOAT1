@@ -9,7 +9,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.AtualizarOrdemServico
 {
-    public class AtualizarOrdemServicoHandler : UseCasesAbstrato<AtualizarOrdemServicoHandler>, IAtualizarOrdemServicoHandler
+    public class AtualizarOrdemServicoHandler : UseCasesHandlerAbstrato<AtualizarOrdemServicoHandler>, IAtualizarOrdemServicoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
 

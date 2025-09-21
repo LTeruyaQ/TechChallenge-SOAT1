@@ -11,7 +11,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.CadastrarUsuario
 {
-    public class CadastrarUsuarioHandler : UseCasesAbstrato<CadastrarUsuarioHandler>, ICadastrarUsuarioHandler
+    public class CadastrarUsuarioHandler : UseCasesHandlerAbstrato<CadastrarUsuarioHandler>, ICadastrarUsuarioHandler
     {
         private readonly IUsuarioGateway _usuarioGateway;
         private readonly IClienteUseCases _clienteUseCases;

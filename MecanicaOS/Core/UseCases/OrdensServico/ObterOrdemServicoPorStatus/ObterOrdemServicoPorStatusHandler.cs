@@ -7,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus
 {
-    public class ObterOrdemServicoPorStatusHandler : UseCasesAbstrato<ObterOrdemServicoPorStatusHandler>, IObterOrdemServicoPorStatusHandler
+    public class ObterOrdemServicoPorStatusHandler : UseCasesHandlerAbstrato<ObterOrdemServicoPorStatusHandler>, IObterOrdemServicoPorStatusHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
 

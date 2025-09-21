@@ -7,7 +7,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.ObterEstoque
 {
-    public class ObterEstoqueHandler : UseCasesAbstrato<ObterEstoqueHandler>, IObterEstoqueHandler
+    public class ObterEstoqueHandler : UseCasesHandlerAbstrato<ObterEstoqueHandler>, IObterEstoqueHandler
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

@@ -6,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.ObterCliente
 {
-    public class ObterClienteHandler : UseCasesAbstrato<ObterClienteHandler>, IObterClienteHandler
+    public class ObterClienteHandler : UseCasesHandlerAbstrato<ObterClienteHandler>, IObterClienteHandler
     {
         private readonly IClienteGateway _clienteGateway;
 

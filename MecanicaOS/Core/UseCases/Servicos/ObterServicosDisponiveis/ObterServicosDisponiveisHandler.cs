@@ -6,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Servicos.ObterServicosDisponiveis
 {
-    public class ObterServicosDisponiveisHandler : UseCasesAbstrato<ObterServicosDisponiveisHandler>, IObterServicosDisponiveisHandler
+    public class ObterServicosDisponiveisHandler : UseCasesHandlerAbstrato<ObterServicosDisponiveisHandler>, IObterServicosDisponiveisHandler
     {
         private readonly IServicoGateway _servicoGateway;
 

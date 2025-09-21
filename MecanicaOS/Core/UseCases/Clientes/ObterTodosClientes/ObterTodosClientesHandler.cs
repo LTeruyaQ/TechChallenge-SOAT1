@@ -6,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.ObterTodosClientes
 {
-    public class ObterTodosClientesHandler : UseCasesAbstrato<ObterTodosClientesHandler>, IObterTodosClientesHandler
+    public class ObterTodosClientesHandler : UseCasesHandlerAbstrato<ObterTodosClientesHandler>, IObterTodosClientesHandler
     {
         private readonly IClienteGateway _clienteGateway;
 

@@ -1,5 +1,5 @@
-using API.Models;
 using Core.DTOs.Requests.Estoque;
+using Core.DTOs.Responses.Erro;
 using Core.DTOs.Responses.Estoque;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;

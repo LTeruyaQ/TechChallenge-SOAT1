@@ -1,6 +1,8 @@
+using Core.DTOs.UseCases.Estoque;
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.Exceptions;
+using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.InsumosOS;
 using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
@@ -9,11 +11,11 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.InsumosOS.CadastrarInsumos
 {
-    public class CadastrarInsumosHandler : UseCasesAbstrato<CadastrarInsumosHandler>, ICadastrarInsumosHandler
+    public class CadastrarInsumosHandler : UseCasesHandlerAbstrato<CadastrarInsumosHandler>, ICadastrarInsumosHandler
     {
         private readonly IOrdemServicoUseCases _ordemServicoUseCases;
         private readonly IEstoqueUseCases _estoqueUseCases;
-
+        private readonly IVerificarEstoqueJobGateway _verificarEstoqueJobGateway;
         public CadastrarInsumosHandler(
             IOrdemServicoUseCases ordemServicoUseCases,
             IEstoqueUseCases estoqueUseCases,
@@ -54,12 +56,10 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
                         Estoque = estoque
                     };
 
-                    // Simular cadastro por enquanto - método não existe na interface
                     insumosOS.Add(insumoOS);
 
-                    // Atualizar estoque
                     estoque.QuantidadeDisponivel -= insumoDto.Quantidade;
-                    await _estoqueUseCases.AtualizarUseCaseAsync(estoque.Id, new Core.DTOs.UseCases.Estoque.AtualizarEstoqueUseCaseDto
+                    await _estoqueUseCases.AtualizarUseCaseAsync(estoque.Id, new AtualizarEstoqueUseCaseDto
                     {
                         Insumo = estoque.Insumo,
                         QuantidadeDisponivel = estoque.QuantidadeDisponivel,
@@ -67,19 +67,19 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
                         Preco = estoque.Preco
                     });
 
-                    // Verificar se precisa gerar job de estoque crítico (simplificado)
                     if (estoque.QuantidadeDisponivel <= estoque.QuantidadeMinima)
                     {
-                        // Job seria criado aqui
+                        await _verificarEstoqueJobGateway.VerificarEstoqueAsync();
                     }
                 }
 
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao cadastrar insumos na ordem de serviço");
 
-                LogFim(metodo, insumosOS);
+                var response = new CadastrarInsumosResponse { InsumosOS = insumosOS.ToList() };
+                LogFim(metodo, response);
 
-                return new CadastrarInsumosResponse { InsumosOS = insumosOS };
+                return response;
             }
             catch (Exception e)
             {

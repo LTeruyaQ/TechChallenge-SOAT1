@@ -6,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.ObterOrdemServico
 {
-    public class ObterOrdemServicoHandler : UseCasesAbstrato<ObterOrdemServicoHandler>, IObterOrdemServicoHandler
+    public class ObterOrdemServicoHandler : UseCasesHandlerAbstrato<ObterOrdemServicoHandler>, IObterOrdemServicoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
 

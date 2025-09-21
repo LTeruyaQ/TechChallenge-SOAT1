@@ -9,7 +9,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.CadastrarEstoque
 {
-    public class CadastrarEstoqueHandler : UseCasesAbstrato<CadastrarEstoqueHandler>, ICadastrarEstoqueHandler
+    public class CadastrarEstoqueHandler : UseCasesHandlerAbstrato<CadastrarEstoqueHandler>, ICadastrarEstoqueHandler
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

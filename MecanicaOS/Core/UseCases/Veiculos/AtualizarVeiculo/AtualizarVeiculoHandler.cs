@@ -8,7 +8,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Veiculos.AtualizarVeiculo
 {
-    public class AtualizarVeiculoHandler : UseCasesAbstrato<AtualizarVeiculoHandler>, IAtualizarVeiculoHandler
+    public class AtualizarVeiculoHandler : UseCasesHandlerAbstrato<AtualizarVeiculoHandler>, IAtualizarVeiculoHandler
     {
         private readonly IVeiculoGateway _veiculoGateway;
 

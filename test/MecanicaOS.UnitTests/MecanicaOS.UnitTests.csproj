@@ -21,6 +21,7 @@
     <ProjectReference Include="..\..\MecanicaOS\Core\Core.csproj" />
     <ProjectReference Include="..\..\MecanicaOS\Adapters\Adapters.csproj" />
     <ProjectReference Include="..\..\MecanicaOS\Infraestrutura\Infraestrutura.csproj" />
+    <ProjectReference Include="..\..\MecanicaOS\API\API.csproj" />
   </ItemGroup>
 
   <ItemGroup>

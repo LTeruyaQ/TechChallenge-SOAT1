@@ -8,7 +8,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.RecusarOrcamento
 {
-    public class RecusarOrcamentoHandler : UseCasesAbstrato<RecusarOrcamentoHandler>, IRecusarOrcamentoHandler
+    public class RecusarOrcamentoHandler : UseCasesHandlerAbstrato<RecusarOrcamentoHandler>, IRecusarOrcamentoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
 

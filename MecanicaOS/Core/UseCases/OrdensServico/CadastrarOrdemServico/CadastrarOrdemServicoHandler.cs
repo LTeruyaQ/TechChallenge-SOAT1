@@ -11,7 +11,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
 {
-    public class CadastrarOrdemServicoHandler : UseCasesAbstrato<CadastrarOrdemServicoHandler>, ICadastrarOrdemServicoHandler
+    public class CadastrarOrdemServicoHandler : UseCasesHandlerAbstrato<CadastrarOrdemServicoHandler>, ICadastrarOrdemServicoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
         private readonly IClienteUseCases _clienteUseCases;

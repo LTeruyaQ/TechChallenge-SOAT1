@@ -6,7 +6,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.ObterEstoqueCritico
 {
-    public class ObterEstoqueCriticoHandler : UseCasesAbstrato<ObterEstoqueCriticoHandler>, IObterEstoqueCriticoHandler
+    public class ObterEstoqueCriticoHandler : UseCasesHandlerAbstrato<ObterEstoqueCriticoHandler>, IObterEstoqueCriticoHandler
     {
         private readonly IEstoqueGateway _estoqueGateway;
 

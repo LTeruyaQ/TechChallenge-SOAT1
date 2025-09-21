@@ -33,11 +33,7 @@ public class OrdemServicoCanceladaHandler : INotificationHandler<OrdemServicoCan
             var os = await _ordemServicoController.ObterPorId(notification.OrdemServicoId);
 
             var insumosOSDto = os.Insumos;
-            if (insumosOSDto == null || !insumosOSDto.Any())
-            {
-                _logServico.LogFim(metodo, null);
-                return;
-            }
+            if (insumosOSDto == null || !insumosOSDto.Any()) return;
 
             await _insumosOSController.DevolverInsumosAoEstoque(os.Insumos.Select(i => new DevolverInsumoOSRequest()
             {
@@ -45,7 +41,7 @@ public class OrdemServicoCanceladaHandler : INotificationHandler<OrdemServicoCan
                 Quantidade = i.Quantidade
             }));
 
-            _logServico.LogFim(metodo, null);
+            _logServico.LogFim(metodo);
         }
         catch (Exception e)
         {

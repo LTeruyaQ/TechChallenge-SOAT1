@@ -9,7 +9,7 @@ using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.InsumosOS.DevolverInsumos
 {
-    public class DevolverInsumosHandler : UseCasesAbstrato<DevolverInsumosHandler>, IDevolverInsumosHandler
+    public class DevolverInsumosHandler : UseCasesHandlerAbstrato<DevolverInsumosHandler>, IDevolverInsumosHandler
     {
         private readonly IObterEstoqueHandler _obterEstoqueHandler;
         private readonly IAtualizarEstoqueHandler _atualizarEstoqueHandler;

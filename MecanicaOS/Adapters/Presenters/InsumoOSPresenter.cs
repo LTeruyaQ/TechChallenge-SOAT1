@@ -8,15 +8,23 @@ namespace Adapters.Presenters
     {
         public IEnumerable<InsumoOSResponse> ToResponse(IEnumerable<InsumoOS> insumos)
         {
-            if (insumos == null)
-                return [];
+            if (insumos == null || !insumos.Any())
+                return new List<InsumoOSResponse>();
 
             return insumos.Select(insumo => new InsumoOSResponse
             {
                 EstoqueId = insumo.EstoqueId,
                 OrdemServicoId = insumo.OrdemServicoId,
-                Quantidade = insumo.Quantidade
-            });
+                Quantidade = insumo.Quantidade,
+                Estoque = insumo.Estoque != null ? new Core.DTOs.Responses.Estoque.EstoqueResponse
+                {
+                    Id = insumo.EstoqueId,
+                    Insumo = insumo.Estoque.Insumo,
+                    QuantidadeDisponivel = insumo.Estoque.QuantidadeDisponivel,
+                    QuantidadeMinima = insumo.Estoque.QuantidadeMinima,
+                    Preco = (double)insumo.Estoque.Preco
+                } : null
+            }).ToList();
         }
     }
 }
