@@ -21,11 +21,13 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
             IEstoqueUseCases estoqueUseCases,
             ILogServico<CadastrarInsumosHandler> logServico,
             IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
+            IUsuarioLogadoServico usuarioLogadoServico,
+            IVerificarEstoqueJobGateway verificarEstoqueJobGateway)
             : base(logServico, udt, usuarioLogadoServico)
         {
             _ordemServicoUseCases = ordemServicoUseCases ?? throw new ArgumentNullException(nameof(ordemServicoUseCases));
             _estoqueUseCases = estoqueUseCases ?? throw new ArgumentNullException(nameof(estoqueUseCases));
+            _verificarEstoqueJobGateway = verificarEstoqueJobGateway ?? throw new ArgumentNullException(nameof(verificarEstoqueJobGateway));
         }
 
         public async Task<CadastrarInsumosResponse> Handle(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request)

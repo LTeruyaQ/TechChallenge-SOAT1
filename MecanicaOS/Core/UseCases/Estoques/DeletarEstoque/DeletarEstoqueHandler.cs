@@ -34,6 +34,9 @@ namespace Core.UseCases.Estoques.DeletarEstoque
 
                 await _estoqueGateway.DeletarAsync(estoque);
                 var sucesso = await Commit();
+                
+                if (!sucesso)
+                    throw new PersistirDadosException("Erro ao deletar estoque");
 
                 LogFim(metodo, sucesso);
 

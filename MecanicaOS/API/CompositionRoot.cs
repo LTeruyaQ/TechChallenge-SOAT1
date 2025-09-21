@@ -712,6 +712,7 @@ namespace API
         {
             var ordemServicoUseCases = CriarOrdemServicoUseCases();
             var estoqueUseCases = CriarEstoqueUseCases();
+            var verificarEstoqueJobGateway = CriarVerificarEstoqueJobGateway();
             var logServico = new LogServico<CadastrarInsumosHandler>(_idCorrelacionalService, NullLogger<CadastrarInsumosHandler>.Instance, _usuarioLogadoServico);
 
             return new CadastrarInsumosHandler(
@@ -719,7 +720,8 @@ namespace API
                 estoqueUseCases,
                 logServico,
                 _unidadeDeTrabalho,
-                _usuarioLogadoServico);
+                _usuarioLogadoServico,
+                verificarEstoqueJobGateway);
         }
 
         public IDevolverInsumosHandler CriarDevolverInsumosHandler()

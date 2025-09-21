@@ -46,8 +46,7 @@ public class VerificarOrcamentoExpiradoJob
             {
                 os.Status = StatusOrdemServico.OrcamentoExpirado;
                 os.DataAtualizacao = DateTime.UtcNow;
-            }
-            ;
+            };
 
             //TODO: Refatorar para usar Controller, isso nao é responsabilidade do Job
             //await _devolverInsumosHandler.Handle(ordensServico
