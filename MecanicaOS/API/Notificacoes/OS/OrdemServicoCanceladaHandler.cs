@@ -6,9 +6,6 @@ using MediatR;
 
 namespace API.Notificacoes.OS;
 
-/// <summary>
-/// TODO: Checar se a migração está concluida
-/// </summary>
 public class OrdemServicoCanceladaHandler : INotificationHandler<OrdemServicoCanceladaEvent>
 {
     private readonly IOrdemServicoController _ordemServicoController;

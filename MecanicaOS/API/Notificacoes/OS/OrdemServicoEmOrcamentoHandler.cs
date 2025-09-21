@@ -11,9 +11,6 @@ using System.Text.RegularExpressions;
 
 namespace API.Notificacoes.OS;
 
-/// <summary>
-/// TODO: Checar se a migração está concluida
-/// </summary>
 public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoEmOrcamentoEvent>
 {
     private readonly IServicoEmail _emailServico;
