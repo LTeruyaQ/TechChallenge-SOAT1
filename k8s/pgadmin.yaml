@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: pgadmin-deployment
   labels:
-    app: pgadmin-pod
+    app: pgadmin-deployment
 spec:
   replicas: 1
   selector:
@@ -15,21 +15,13 @@ spec:
         app: pgadmin-pod
     spec:
       containers:
-        - name: pgadmin
+        - name: pgadmin-container
           image: dpage/pgadmin4:latest
           ports:
             - containerPort: 80
-          env:
-            - name: PGADMIN_DEFAULT_EMAIL
-              valueFrom:
-                configMapKeyRef:
-                    name: pgadmin-configmap
-                    key: PGADMIN_DEFAULT_EMAIL
-            - name: PGADMIN_DEFAULT_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                    name: pgadmin-configmap
-                    key: PGADMIN_DEFAULT_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: pgadmin-configmap
 
 ---
 

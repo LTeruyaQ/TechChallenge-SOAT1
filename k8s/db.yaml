@@ -1,4 +1,20 @@
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: db-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: hostpath
+  hostPath:
+    path: /mnt/data/postgres
+
+---
+
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: db-pv-claim
@@ -8,6 +24,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  storageClassName: hostpath
 
 ---
 
@@ -16,71 +33,33 @@ kind: Deployment
 metadata:
   name: db-deployment
   labels:
-    app: db
+    app: db-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: db
+      app: db-pod
   template:
     metadata:
       labels:
-        app: db
+        app: db-pod
     spec:
       containers:
-        - name: db
+        - name: db-container
           image: postgres:16-alpine
           ports:
             - containerPort: 5432
-          env:
-            - name: POSTGRES_DB
-              valueFrom:
-                configMapKeyRef:
-                  name: db-configmap
-                  key: POSTGRES_DB
-            - name: POSTGRES_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: db-configmap
-                  key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: db-configmap
-                  key: POSTGRES_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: db-configmap
           volumeMounts:
             - name: db-storage
               mountPath: /var/lib/postgresql/data
-          livenessProbe:
-            exec:
-              command:
-                - pg_isready
-                - -U
-                - postgres
-                - -d
-                - mecanicaos
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
-            successThreshold: 1
-            failureThreshold: 3
-          readinessProbe:
-            exec:
-              command:
-                - pg_isready
-                - -U
-                - postgres
-                - -d
-                - mecanicaos
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            timeoutSeconds: 5
-            successThreshold: 1
-            failureThreshold: 3
       volumes:
         - name: db-storage
           persistentVolumeClaim:
             claimName: db-pv-claim
+
 ---
 
 apiVersion: v1
@@ -89,7 +68,7 @@ metadata:
   name: db-service
 spec:
   selector:
-    app: db
+    app: db-pod
   ports:
     - protocol: TCP
       port: 5432

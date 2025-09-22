@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: api-deployment
   labels:
-    app: api-pod
+    app: api-deployment
 spec:
   replicas: 1
   selector:
@@ -38,7 +38,7 @@ spec:
             - configMapRef:
                 name: api-configmap
       containers:
-        - name: api
+        - name: api-container
           image: fthalita91/techchallenge-api:latest
           ports:
             - containerPort: 80
@@ -47,6 +47,13 @@ spec:
                 name: api-configmap
             - secretRef:
                 name: api-secret
+          resources:
+            requests:
+                cpu: 10m
+          #      memory: "128Mi"
+          #   limits:
+          #       cpu: "200m"
+          #       memory: "256Mi"
 
 ---
 

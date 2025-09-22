@@ -18,10 +18,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
 		k8s\api-configmap.yaml = k8s\api-configmap.yaml
+		k8s\api-hpa.yaml = k8s\api-hpa.yaml
 		k8s\api-secret.yaml = k8s\api-secret.yaml
 		k8s\api.yaml = k8s\api.yaml
 		k8s\db-configmap.yaml = k8s\db-configmap.yaml
 		k8s\db.yaml = k8s\db.yaml
+		k8s\metrics.yaml = k8s\metrics.yaml
 		k8s\pgadmin-configmap.yaml = k8s\pgadmin-configmap.yaml
 		k8s\pgadmin.yaml = k8s\pgadmin.yaml
 	EndProjectSection
