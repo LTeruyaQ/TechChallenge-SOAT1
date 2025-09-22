@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ "feature/*" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
+      - name: Restore dependencies
+        run: dotnet restore MecanicaOS.sln
+      - name: Build
+        run: dotnet build MecanicaOS.sln --no-restore
+      - name: Test
+        run: |
+          chmod +x .github/scripts/check_test_success.sh
+          .github/scripts/check_test_success.sh
+
+  create-pr:
+    needs: [build-and-test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "feat: new feature"
+          title: "PR for feature branch ${{ github.ref_name }}"
+          body: "This PR was auto-generated."
+          branch: ${{ github.ref_name }}
+          base: main
