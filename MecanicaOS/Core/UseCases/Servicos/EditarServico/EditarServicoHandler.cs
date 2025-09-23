@@ -30,6 +30,16 @@ namespace Core.UseCases.Servicos.EditarServico
             {
                 LogInicio(metodo, new { id, request });
 
+                // Validar dados
+                if (string.IsNullOrWhiteSpace(request.Nome))
+                    throw new DadosInvalidosException("Nome é obrigatório");
+                
+                if (string.IsNullOrWhiteSpace(request.Descricao))
+                    throw new DadosInvalidosException("Descrição é obrigatória");
+                
+                if (request.Valor <= 0)
+                    throw new DadosInvalidosException("Valor deve ser maior que zero");
+
                 var servico = await _servicoGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
 
@@ -44,9 +54,9 @@ namespace Core.UseCases.Servicos.EditarServico
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao editar serviço");
 
-                LogFim(metodo, servico);
-
-                return new EditarServicoResponse { Servico = servico };
+                var response = new EditarServicoResponse { Servico = servico };
+                LogFim(metodo, response);
+                return response;
             }
             catch (Exception e)
             {

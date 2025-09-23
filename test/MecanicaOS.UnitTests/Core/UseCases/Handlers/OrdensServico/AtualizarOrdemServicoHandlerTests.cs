@@ -1,0 +1,214 @@
+using Core.DTOs.UseCases.OrdemServico;
+using Core.Entidades;
+using Core.Enumeradores;
+using Core.Exceptions;
+using Core.UseCases.OrdensServico.AtualizarOrdemServico;
+using FluentAssertions;
+using MecanicaOS.UnitTests.Fixtures.Handlers;
+using NSubstitute;
+using System;
+using System.Threading.Tasks;
+using Xunit;
+
+namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
+{
+    public class AtualizarOrdemServicoHandlerTests
+    {
+        private readonly OrdemServicoHandlerFixture _fixture;
+
+        public AtualizarOrdemServicoHandlerTests()
+        {
+            _fixture = new OrdemServicoHandlerFixture();
+        }
+
+        [Fact]
+        public async Task Handle_ComDadosValidos_DeveAtualizarOrdemServico()
+        {
+            // Arrange
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida();
+            var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
+                StatusOrdemServico.EmExecucao, "Descrição atualizada");
+
+            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockUdtParaCommitSucesso();
+
+            var handler = _fixture.CriarAtualizarOrdemServicoHandler();
+
+            // Act
+            var resultado = await handler.Handle(ordemServico.Id, dto);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.OrdemServico.Should().NotBeNull();
+            resultado.OrdemServico.Status.Should().Be(StatusOrdemServico.EmExecucao);
+            resultado.OrdemServico.Descricao.Should().Be("Descrição atualizada");
+
+            // Verificar que o gateway foi chamado
+            await _fixture.OrdemServicoGateway.Received(1).EditarAsync(
+                Arg.Is<OrdemServico>(os => 
+                    os.Id == ordemServico.Id && 
+                    os.Status == StatusOrdemServico.EmExecucao && 
+                    os.Descricao == "Descrição atualizada"));
+
+            // Verificar que o commit foi chamado
+            await _fixture.UnidadeDeTrabalho.Received(1).Commit();
+
+            // Verificar que os logs foram registrados
+            _fixture.LogServicoAtualizar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
+            _fixture.LogServicoAtualizar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<OrdemServico>());
+        }
+
+        [Fact]
+        public async Task Handle_ComApenasStatus_DeveAtualizarSomenteStatus()
+        {
+            // Arrange
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida();
+            var descricaoOriginal = ordemServico.Descricao;
+            var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
+                StatusOrdemServico.EmExecucao);
+
+            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockUdtParaCommitSucesso();
+
+            var handler = _fixture.CriarAtualizarOrdemServicoHandler();
+
+            // Act
+            var resultado = await handler.Handle(ordemServico.Id, dto);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.OrdemServico.Should().NotBeNull();
+            resultado.OrdemServico.Status.Should().Be(StatusOrdemServico.EmExecucao);
+            resultado.OrdemServico.Descricao.Should().Be(descricaoOriginal);
+
+            // Verificar que o gateway foi chamado
+            await _fixture.OrdemServicoGateway.Received(1).EditarAsync(
+                Arg.Is<OrdemServico>(os => 
+                    os.Id == ordemServico.Id && 
+                    os.Status == StatusOrdemServico.EmExecucao && 
+                    os.Descricao == descricaoOriginal));
+
+            // Verificar que o commit foi chamado
+            await _fixture.UnidadeDeTrabalho.Received(1).Commit();
+        }
+
+        [Fact]
+        public async Task Handle_ComApenasDescricao_DeveAtualizarSomenteDescricao()
+        {
+            // Arrange
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida();
+            var statusOriginal = ordemServico.Status;
+            var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
+                null, "Descrição atualizada");
+
+            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockUdtParaCommitSucesso();
+
+            var handler = _fixture.CriarAtualizarOrdemServicoHandler();
+
+            // Act
+            var resultado = await handler.Handle(ordemServico.Id, dto);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.OrdemServico.Should().NotBeNull();
+            resultado.OrdemServico.Status.Should().Be(statusOriginal);
+            resultado.OrdemServico.Descricao.Should().Be("Descrição atualizada");
+
+            // Verificar que o gateway foi chamado
+            await _fixture.OrdemServicoGateway.Received(1).EditarAsync(
+                Arg.Is<OrdemServico>(os => 
+                    os.Id == ordemServico.Id && 
+                    os.Status == statusOriginal && 
+                    os.Descricao == "Descrição atualizada"));
+
+            // Verificar que o commit foi chamado
+            await _fixture.UnidadeDeTrabalho.Received(1).Commit();
+        }
+
+        [Fact]
+        public async Task Handle_ComOrdemServicoInexistente_DeveLancarDadosNaoEncontradosException()
+        {
+            // Arrange
+            var ordemServicoId = Guid.NewGuid();
+            var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
+                StatusOrdemServico.EmExecucao, "Descrição atualizada");
+
+            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorIdNull(ordemServicoId);
+
+            var handler = _fixture.CriarAtualizarOrdemServicoHandler();
+
+            // Act & Assert
+            var act = async () => await handler.Handle(ordemServicoId, dto);
+
+            await act.Should().ThrowAsync<DadosNaoEncontradosException>()
+                .WithMessage("Ordem de serviço não encontrada");
+
+            // Verificar que o gateway de edição não foi chamado
+            await _fixture.OrdemServicoGateway.DidNotReceive().EditarAsync(Arg.Any<OrdemServico>());
+
+            // Verificar que o commit não foi chamado
+            await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
+
+            // Verificar que os logs foram registrados
+            _fixture.LogServicoAtualizar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
+            _fixture.LogServicoAtualizar.Received(1).LogErro(Arg.Any<string>(), Arg.Any<DadosNaoEncontradosException>());
+        }
+
+        [Fact]
+        public async Task Handle_QuandoCommitFalha_DeveLancarPersistirDadosException()
+        {
+            // Arrange
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida();
+            var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
+                StatusOrdemServico.EmExecucao, "Descrição atualizada");
+
+            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockUdtParaCommitFalha();
+
+            var handler = _fixture.CriarAtualizarOrdemServicoHandler();
+
+            // Act & Assert
+            var act = async () => await handler.Handle(ordemServico.Id, dto);
+
+            await act.Should().ThrowAsync<PersistirDadosException>()
+                .WithMessage("Erro ao atualizar ordem de serviço");
+
+            // Verificar que o gateway foi chamado
+            await _fixture.OrdemServicoGateway.Received(1).EditarAsync(Arg.Any<OrdemServico>());
+
+            // Verificar que o commit foi chamado
+            await _fixture.UnidadeDeTrabalho.Received(1).Commit();
+
+            // Verificar que os logs foram registrados
+            _fixture.LogServicoAtualizar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
+            _fixture.LogServicoAtualizar.Received(1).LogErro(Arg.Any<string>(), Arg.Any<PersistirDadosException>());
+        }
+
+        [Fact]
+        public async Task Handle_DeveAtualizarDataAtualizacao()
+        {
+            // Arrange
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida();
+            var dataAtualizacaoOriginal = ordemServico.DataAtualizacao;
+            var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
+                StatusOrdemServico.EmExecucao);
+
+            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockUdtParaCommitSucesso();
+
+            var handler = _fixture.CriarAtualizarOrdemServicoHandler();
+
+            // Act
+            var resultado = await handler.Handle(ordemServico.Id, dto);
+
+            // Assert
+            resultado.OrdemServico.DataAtualizacao.Should().NotBe(dataAtualizacaoOriginal);
+            resultado.OrdemServico.DataAtualizacao.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+
+            // Verificar que o gateway foi chamado com a data atualizada
+            await _fixture.OrdemServicoGateway.Received(1).EditarAsync(
+                Arg.Is<OrdemServico>(os => os.DataAtualizacao > dataAtualizacaoOriginal));
+        }
+    }
+}

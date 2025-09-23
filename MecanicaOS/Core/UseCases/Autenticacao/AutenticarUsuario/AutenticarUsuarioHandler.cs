@@ -41,6 +41,9 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
             {
                 LogInicio(metodo, request);
 
+                if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Senha))
+                    throw new DadosInvalidosException("Email e senha são obrigatórios");
+
                 var usuario = await _usuarioUseCases.ObterPorEmailUseCaseAsync(request.Email);
 
                 if (usuario is null)

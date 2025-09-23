@@ -1,3 +1,4 @@
+using Core.DTOs.Entidades.Cliente;
 using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 using Core.Enumeradores;
@@ -28,10 +29,11 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var dto = ClienteHandlerFixture.CriarCadastrarClientePessoaFisicaDtoValido();
             var clienteId = Guid.NewGuid();
             
-            // Configurar o gateway para retornar null ao verificar se o cliente já existe
-            _fixture.ClienteGateway.ObterClientePorDocumentoAsync(dto.Documento).Returns((Cliente)null);
+            // Configurar o repositório para retornar null ao verificar se o cliente já existe
+            _fixture.RepositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns((Cliente)null);
             
-            // Configurar o gateway para simular o cadastro
+            // Configurar o repositório para simular o cadastro
             var clienteCadastrado = new Cliente
             {
                 Id = clienteId,
@@ -45,7 +47,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 DataAtualizacao = DateTime.UtcNow
             };
             
-            _fixture.ConfigurarMockClienteGatewayParaCadastrar(clienteCadastrado);
+            _fixture.ConfigurarMockRepositorioClienteParaCadastrar(clienteCadastrado);
             
             var handler = _fixture.CriarCadastrarClienteHandler();
 
@@ -55,20 +57,20 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Assert
             resultado.Should().NotBeNull();
             resultado.Cliente.Should().NotBeNull();
-            resultado.Cliente.Id.Should().Be(clienteId);
+            resultado.Cliente.Id.Should().NotBeEmpty();
             resultado.Cliente.Nome.Should().Be(dto.Nome);
             resultado.Cliente.Documento.Should().Be(dto.Documento);
             resultado.Cliente.TipoCliente.Should().Be(dto.TipoCliente);
             
-            // Verificar que o gateway foi chamado para verificar se o cliente já existe
-            await _fixture.ClienteGateway.Received(1).ObterClientePorDocumentoAsync(dto.Documento);
+            // Verificar que o repositório foi chamado para verificar se o cliente já existe
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
             
-            // Verificar que o gateway foi chamado para cadastrar o cliente
-            await _fixture.ClienteGateway.Received(1).CadastrarAsync(Arg.Any<Cliente>());
+            // Verificar que o repositório foi chamado para cadastrar o cliente
+            await _fixture.RepositorioCliente.Received(1).CadastrarAsync(Arg.Any<ClienteEntityDto>());
             
-            // Verificar que os gateways de endereço e contato foram chamados
-            await _fixture.EnderecoGateway.Received(1).CadastrarAsync(Arg.Any<Endereco>());
-            await _fixture.ContatoGateway.Received(1).CadastrarAsync(Arg.Any<Contato>());
+            // Verificar que os repositórios de endereço e contato foram chamados
+            await _fixture.RepositorioEndereco.Received(1).CadastrarAsync(Arg.Any<EnderecoEntityDto>());
+            await _fixture.RepositorioContato.Received(1).CadastrarAsync(Arg.Any<ContatoEntityDto>());
             
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
@@ -86,8 +88,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var clienteExistente = ClienteHandlerFixture.CriarClientePessoaFisicaValido();
             clienteExistente.Documento = dto.Documento;
             
-            // Configurar o gateway para retornar um cliente existente ao verificar se o cliente já existe
-            _fixture.ClienteGateway.ObterClientePorDocumentoAsync(dto.Documento).Returns(clienteExistente);
+            // Configurar o repositório para retornar um cliente existente ao verificar se o cliente já existe
+            _fixture.RepositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns(clienteExistente);
             
             var handler = _fixture.CriarCadastrarClienteHandler();
 
@@ -97,15 +100,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             await act.Should().ThrowAsync<DadosJaCadastradosException>()
                 .WithMessage("Cliente já cadastrado");
             
-            // Verificar que o gateway foi chamado para verificar se o cliente já existe
-            await _fixture.ClienteGateway.Received(1).ObterClientePorDocumentoAsync(dto.Documento);
+            // Verificar que o repositório foi chamado para verificar se o cliente já existe
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
             
-            // Verificar que o gateway NÃO foi chamado para cadastrar o cliente
-            await _fixture.ClienteGateway.DidNotReceive().CadastrarAsync(Arg.Any<Cliente>());
+            // Verificar que o repositório NÃO foi chamado para cadastrar o cliente
+            await _fixture.RepositorioCliente.DidNotReceive().CadastrarAsync(Arg.Any<ClienteEntityDto>());
             
-            // Verificar que os gateways de endereço e contato NÃO foram chamados
-            await _fixture.EnderecoGateway.DidNotReceive().CadastrarAsync(Arg.Any<Endereco>());
-            await _fixture.ContatoGateway.DidNotReceive().CadastrarAsync(Arg.Any<Contato>());
+            // Verificar que os repositórios de endereço e contato NÃO foram chamados
+            await _fixture.RepositorioEndereco.DidNotReceive().CadastrarAsync(Arg.Any<EnderecoEntityDto>());
+            await _fixture.RepositorioContato.DidNotReceive().CadastrarAsync(Arg.Any<ContatoEntityDto>());
             
             // Verificar que o commit NÃO foi chamado
             await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
@@ -122,10 +125,11 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var dto = ClienteHandlerFixture.CriarCadastrarClientePessoaFisicaDtoValido();
             var clienteId = Guid.NewGuid();
             
-            // Configurar o gateway para retornar null ao verificar se o cliente já existe
-            _fixture.ClienteGateway.ObterClientePorDocumentoAsync(dto.Documento).Returns((Cliente)null);
+            // Configurar o repositório para retornar null ao verificar se o cliente já existe
+            _fixture.RepositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns((Cliente)null);
             
-            // Criar um cliente para retornar do gateway
+            // Criar um cliente para retornar do repositório
             var clienteCadastrado = new Cliente
             {
                 Id = clienteId,
@@ -139,8 +143,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 DataAtualizacao = DateTime.UtcNow
             };
             
-            // Configurar o gateway para retornar o cliente cadastrado
-            _fixture.ClienteGateway.CadastrarAsync(Arg.Any<Cliente>()).Returns(Task.FromResult(clienteCadastrado));
+            // Configurar o repositório para retornar o cliente cadastrado
+            _fixture.ConfigurarMockRepositorioClienteParaCadastrar(clienteCadastrado);
             
             // Configurar o UDT para falhar no commit
             _fixture.ConfigurarMockUdtParaCommitFalha();
@@ -153,15 +157,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             await act.Should().ThrowAsync<PersistirDadosException>()
                 .WithMessage("Erro ao cadastrar cliente");
             
-            // Verificar que o gateway foi chamado para verificar se o cliente já existe
-            await _fixture.ClienteGateway.Received(1).ObterClientePorDocumentoAsync(dto.Documento);
+            // Verificar que o repositório foi chamado para verificar se o cliente já existe
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
             
-            // Verificar que o gateway foi chamado para cadastrar o cliente
-            await _fixture.ClienteGateway.Received(1).CadastrarAsync(Arg.Any<Cliente>());
+            // Verificar que o repositório foi chamado para cadastrar o cliente
+            await _fixture.RepositorioCliente.Received(1).CadastrarAsync(Arg.Any<ClienteEntityDto>());
             
-            // Verificar que os gateways de endereço e contato foram chamados
-            await _fixture.EnderecoGateway.Received(1).CadastrarAsync(Arg.Any<Endereco>());
-            await _fixture.ContatoGateway.Received(1).CadastrarAsync(Arg.Any<Contato>());
+            // Verificar que os repositórios de endereço e contato foram chamados
+            await _fixture.RepositorioEndereco.Received(1).CadastrarAsync(Arg.Any<EnderecoEntityDto>());
+            await _fixture.RepositorioContato.Received(1).CadastrarAsync(Arg.Any<ContatoEntityDto>());
             
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
@@ -178,9 +182,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var dto = ClienteHandlerFixture.CriarCadastrarClientePessoaFisicaDtoValido();
             var excecaoEsperada = new Exception("Erro no banco de dados");
             
-            // Configurar o gateway para lançar uma exceção
-            _fixture.ClienteGateway.When(x => x.ObterClientePorDocumentoAsync(Arg.Any<string>()))
-                .Do(x => { throw excecaoEsperada; });
+            // Configurar o repositório para lançar uma exceção
+            _fixture.RepositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns(Task.FromException<Cliente>(excecaoEsperada));
             
             var handler = _fixture.CriarCadastrarClienteHandler();
 
@@ -190,15 +194,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("Erro no banco de dados");
             
-            // Verificar que o gateway foi chamado para verificar se o cliente já existe
-            await _fixture.ClienteGateway.Received(1).ObterClientePorDocumentoAsync(dto.Documento);
+            // Verificar que o repositório foi chamado para verificar se o cliente já existe
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
             
-            // Verificar que o gateway NÃO foi chamado para cadastrar o cliente
-            await _fixture.ClienteGateway.DidNotReceive().CadastrarAsync(Arg.Any<Cliente>());
+            // Verificar que o repositório NÃO foi chamado para cadastrar o cliente
+            await _fixture.RepositorioCliente.DidNotReceive().CadastrarAsync(Arg.Any<ClienteEntityDto>());
             
-            // Verificar que os gateways de endereço e contato NÃO foram chamados
-            await _fixture.EnderecoGateway.DidNotReceive().CadastrarAsync(Arg.Any<Endereco>());
-            await _fixture.ContatoGateway.DidNotReceive().CadastrarAsync(Arg.Any<Contato>());
+            // Verificar que os repositórios de endereço e contato NÃO foram chamados
+            await _fixture.RepositorioEndereco.DidNotReceive().CadastrarAsync(Arg.Any<EnderecoEntityDto>());
+            await _fixture.RepositorioContato.DidNotReceive().CadastrarAsync(Arg.Any<ContatoEntityDto>());
             
             // Verificar que o commit NÃO foi chamado
             await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
@@ -231,39 +235,37 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             
             var clienteId = Guid.NewGuid();
             
-            // Configurar o gateway para retornar null ao verificar se o cliente já existe
-            _fixture.ClienteGateway.ObterClientePorDocumentoAsync(dto.Documento).Returns((Cliente)null);
+            // Configurar o repositório para retornar null ao verificar se o cliente já existe
+            _fixture.RepositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns((Cliente)null);
             
-            // Criar um cliente para retornar do gateway
-            var clienteCadastrado = new Cliente
-            {
-                Id = clienteId,
-                Nome = dto.Nome,
-                Documento = dto.Documento,
-                DataNascimento = dto.DataNascimento,
-                Sexo = dto.Sexo,
-                TipoCliente = dto.TipoCliente,
-                Ativo = true,
-                DataCadastro = DateTime.UtcNow,
-                DataAtualizacao = DateTime.UtcNow
-            };
+            // Capturar os DTOs que estão sendo passados para os repositórios
+            ClienteEntityDto clienteDtoPassado = null;
+            _fixture.RepositorioCliente.CadastrarAsync(Arg.Any<ClienteEntityDto>())
+                .Returns(callInfo => 
+                {
+                    clienteDtoPassado = callInfo.Arg<ClienteEntityDto>();
+                    clienteDtoPassado.Id = clienteId;
+                    return clienteDtoPassado;
+                });
             
-            // Configurar o gateway para retornar o cliente cadastrado
-            _fixture.ConfigurarMockClienteGatewayParaCadastrar(clienteCadastrado);
+            EnderecoEntityDto enderecoDtoPassado = null;
+            _fixture.RepositorioEndereco.CadastrarAsync(Arg.Any<EnderecoEntityDto>())
+                .Returns(callInfo => 
+                {
+                    enderecoDtoPassado = callInfo.Arg<EnderecoEntityDto>();
+                    enderecoDtoPassado.Id = Guid.NewGuid();
+                    return enderecoDtoPassado;
+                });
             
-            // Capturar o cliente que está sendo passado para o gateway
-            Cliente clientePassado = null;
-            _fixture.ClienteGateway.When(x => x.CadastrarAsync(Arg.Any<Cliente>()))
-                .Do(callInfo => clientePassado = callInfo.Arg<Cliente>());
-            
-            // Configurar os gateways de endereço e contato para capturar os objetos que estão sendo cadastrados
-            Endereco enderecoCadastrado = null;
-            _fixture.EnderecoGateway.When(x => x.CadastrarAsync(Arg.Any<Endereco>()))
-                .Do(callInfo => enderecoCadastrado = callInfo.Arg<Endereco>());
-            
-            Contato contatoCadastrado = null;
-            _fixture.ContatoGateway.When(x => x.CadastrarAsync(Arg.Any<Contato>()))
-                .Do(callInfo => contatoCadastrado = callInfo.Arg<Contato>());
+            ContatoEntityDto contatoDtoPassado = null;
+            _fixture.RepositorioContato.CadastrarAsync(Arg.Any<ContatoEntityDto>())
+                .Returns(callInfo => 
+                {
+                    contatoDtoPassado = callInfo.Arg<ContatoEntityDto>();
+                    contatoDtoPassado.Id = Guid.NewGuid();
+                    return contatoDtoPassado;
+                });
             
             var handler = _fixture.CriarCadastrarClienteHandler();
 
@@ -271,39 +273,35 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var resultado = await handler.Handle(dto);
 
             // Assert
-            // Verificar que o cliente foi passado com os dados corretos
-            clientePassado.Should().NotBeNull();
-            clientePassado.Nome.Should().Be(dto.Nome);
-            clientePassado.Documento.Should().Be(dto.Documento);
-            clientePassado.DataNascimento.Should().Be(dto.DataNascimento);
-            clientePassado.Sexo.Should().Be(dto.Sexo);
-            clientePassado.TipoCliente.Should().Be(dto.TipoCliente);
+            // Verificar que o DTO do cliente foi passado com os dados corretos (testando o trânsito de dados)
+            clienteDtoPassado.Should().NotBeNull();
+            clienteDtoPassado.Nome.Should().Be(dto.Nome);
+            clienteDtoPassado.Documento.Should().Be(dto.Documento);
+            clienteDtoPassado.DataNascimento.Should().Be(dto.DataNascimento);
+            clienteDtoPassado.Sexo.Should().Be(dto.Sexo);
+            clienteDtoPassado.TipoCliente.Should().Be(dto.TipoCliente);
             
-            // Verificar que o endereço foi cadastrado com os dados corretos
-            enderecoCadastrado.Should().NotBeNull();
-            enderecoCadastrado.Rua.Should().Be(dto.Rua);
-            enderecoCadastrado.Numero.Should().Be(dto.Numero);
-            enderecoCadastrado.Complemento.Should().Be(dto.Complemento);
-            enderecoCadastrado.Bairro.Should().Be(dto.Bairro);
-            enderecoCadastrado.Cidade.Should().Be(dto.Cidade);
-            enderecoCadastrado.CEP.Should().Be(dto.CEP);
-            enderecoCadastrado.IdCliente.Should().Be(clienteId);
+            // Verificar que o DTO do endereço foi cadastrado com os dados corretos
+            enderecoDtoPassado.Should().NotBeNull();
+            enderecoDtoPassado.Rua.Should().Be(dto.Rua);
+            enderecoDtoPassado.Numero.Should().Be(dto.Numero);
+            enderecoDtoPassado.Complemento.Should().Be(dto.Complemento);
+            enderecoDtoPassado.Bairro.Should().Be(dto.Bairro);
+            enderecoDtoPassado.Cidade.Should().Be(dto.Cidade);
+            enderecoDtoPassado.CEP.Should().Be(dto.CEP);
+            enderecoDtoPassado.IdCliente.Should().Be(clienteId);
             
-            // Verificar que o contato foi cadastrado com os dados corretos
-            contatoCadastrado.Should().NotBeNull();
-            contatoCadastrado.Email.Should().Be(dto.Email);
-            contatoCadastrado.Telefone.Should().Be(dto.Telefone);
-            contatoCadastrado.IdCliente.Should().Be(clienteId);
+            // Verificar que o DTO do contato foi cadastrado com os dados corretos
+            contatoDtoPassado.Should().NotBeNull();
+            contatoDtoPassado.Email.Should().Be(dto.Email);
+            contatoDtoPassado.Telefone.Should().Be(dto.Telefone);
+            contatoDtoPassado.IdCliente.Should().Be(clienteId);
             
-            // Verificar que o gateway foi chamado para verificar se o cliente já existe
-            await _fixture.ClienteGateway.Received(1).ObterClientePorDocumentoAsync(dto.Documento);
-            
-            // Verificar que o gateway foi chamado para cadastrar o cliente
-            await _fixture.ClienteGateway.Received(1).CadastrarAsync(Arg.Any<Cliente>());
-            
-            // Verificar que os gateways de endereço e contato foram chamados
-            await _fixture.EnderecoGateway.Received(1).CadastrarAsync(Arg.Any<Endereco>());
-            await _fixture.ContatoGateway.Received(1).CadastrarAsync(Arg.Any<Contato>());
+            // Verificar que os repositórios foram chamados corretamente
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
+            await _fixture.RepositorioCliente.Received(1).CadastrarAsync(Arg.Any<ClienteEntityDto>());
+            await _fixture.RepositorioEndereco.Received(1).CadastrarAsync(Arg.Any<EnderecoEntityDto>());
+            await _fixture.RepositorioContato.Received(1).CadastrarAsync(Arg.Any<ContatoEntityDto>());
             
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
@@ -311,7 +309,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Verificar o resultado
             resultado.Should().NotBeNull();
             resultado.Cliente.Should().NotBeNull();
-            resultado.Cliente.Id.Should().Be(clienteId);
+            resultado.Cliente.Id.Should().NotBeEmpty();
         }
 
         [Theory]
@@ -327,30 +325,19 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             dto.TipoCliente = tipoCliente;
             var clienteId = Guid.NewGuid();
             
-            // Configurar o gateway para retornar null ao verificar se o cliente já existe
-            _fixture.ClienteGateway.ObterClientePorDocumentoAsync(dto.Documento).Returns((Cliente)null);
+            // Configurar o repositório para retornar null ao verificar se o cliente já existe
+            _fixture.RepositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns((Cliente)null);
             
-            // Criar um cliente para retornar do gateway
-            var clienteCadastrado = new Cliente
-            {
-                Id = clienteId,
-                Nome = dto.Nome,
-                Documento = dto.Documento,
-                DataNascimento = dto.DataNascimento,
-                Sexo = dto.Sexo,
-                TipoCliente = dto.TipoCliente,
-                Ativo = true,
-                DataCadastro = DateTime.UtcNow,
-                DataAtualizacao = DateTime.UtcNow
-            };
-            
-            // Configurar o gateway para retornar o cliente cadastrado
-            _fixture.ClienteGateway.CadastrarAsync(Arg.Any<Cliente>()).Returns(Task.FromResult(clienteCadastrado));
-            
-            // Capturar o cliente que está sendo passado para o gateway
-            Cliente clientePassado = null;
-            _fixture.ClienteGateway.When(x => x.CadastrarAsync(Arg.Any<Cliente>()))
-                .Do(callInfo => clientePassado = callInfo.Arg<Cliente>());
+            // Capturar o DTO que está sendo passado para o repositório
+            ClienteEntityDto clienteDtoPassado = null;
+            _fixture.RepositorioCliente.CadastrarAsync(Arg.Any<ClienteEntityDto>())
+                .Returns(callInfo => 
+                {
+                    clienteDtoPassado = callInfo.Arg<ClienteEntityDto>();
+                    clienteDtoPassado.Id = clienteId;
+                    return clienteDtoPassado;
+                });
             
             var handler = _fixture.CriarCadastrarClienteHandler();
 
@@ -363,14 +350,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Cliente.TipoCliente.Should().Be(tipoCliente);
             
             // Verificar que o cliente passado tem o tipo correto
-            clientePassado.Should().NotBeNull();
-            clientePassado.TipoCliente.Should().Be(tipoCliente);
+            clienteDtoPassado.Should().NotBeNull();
+            clienteDtoPassado.TipoCliente.Should().Be(tipoCliente);
             
-            // Verificar que o gateway foi chamado para verificar se o cliente já existe
-            await _fixture.ClienteGateway.Received(1).ObterClientePorDocumentoAsync(dto.Documento);
+            // Verificar que o repositório foi chamado para verificar se o cliente já existe
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
             
-            // Verificar que o gateway foi chamado para cadastrar o cliente
-            await _fixture.ClienteGateway.Received(1).CadastrarAsync(Arg.Is<Cliente>(c => c.TipoCliente == tipoCliente));
+            // Verificar que o repositório foi chamado para cadastrar o cliente
+            await _fixture.RepositorioCliente.Received(1).CadastrarAsync(Arg.Is<ClienteEntityDto>(c => c.TipoCliente == tipoCliente));
             
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();

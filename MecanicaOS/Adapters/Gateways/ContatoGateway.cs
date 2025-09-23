@@ -30,7 +30,7 @@ namespace Adapters.Gateways
             return contatoDto != null ? FromDto(contatoDto) : null;
         }
 
-        private static ContatoEntityDto ToDto(Contato contato)
+        public static ContatoEntityDto ToDto(Contato contato)
         {
             return new ContatoEntityDto
             {
@@ -44,7 +44,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Contato FromDto(ContatoEntityDto dto)
+        public static Contato FromDto(ContatoEntityDto dto)
         {
             return new Contato
             {

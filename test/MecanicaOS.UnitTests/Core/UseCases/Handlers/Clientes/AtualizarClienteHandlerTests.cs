@@ -1,5 +1,8 @@
+using Core.DTOs.Entidades.Cliente;
 using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
+using Core.Enumeradores;
+using Core.Especificacoes.Base.Interfaces;
 using Core.Exceptions;
 using Core.UseCases.Clientes.AtualizarCliente;
 using FluentAssertions;
@@ -44,11 +47,11 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Assert
             resultado.Should().NotBeNull();
             resultado.Cliente.Should().NotBeNull();
-            resultado.Cliente.Should().Be(clienteExistente);
+            resultado.Cliente.Should().BeEquivalentTo(clienteExistente);
             
             // Verificar que o gateway foi chamado para obter e atualizar o cliente
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
-            await _fixture.ClienteGateway.Received(1).EditarAsync(clienteExistente);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).EditarAsync(Arg.Any<ClienteEntityDto>());
             
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
@@ -66,7 +69,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var dto = ClienteHandlerFixture.CriarAtualizarClienteDtoValido();
             
             // Configurar o gateway para retornar null (cliente não encontrado)
-            _fixture.ClienteGateway.ObterPorIdAsync(clienteId).Returns((Cliente)null);
+            _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(Task.FromResult<ClienteEntityDto>(null));
             
             var handler = _fixture.CriarAtualizarClienteHandler();
 
@@ -77,10 +80,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Cliente não encontrado");
             
             // Verificar que o gateway foi chamado para obter o cliente
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
             // Verificar que o gateway NÃO foi chamado para atualizar o cliente
-            await _fixture.ClienteGateway.DidNotReceive().EditarAsync(Arg.Any<Cliente>());
+            await _fixture.RepositorioCliente.DidNotReceive().EditarAsync(Arg.Any<ClienteEntityDto>());
             
             // Verificar que o commit NÃO foi chamado
             await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
@@ -118,8 +121,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Erro ao atualizar cliente");
             
             // Verificar que o gateway foi chamado para obter e atualizar o cliente
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
-            await _fixture.ClienteGateway.Received(1).EditarAsync(clienteExistente);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).EditarAsync(Arg.Any<ClienteEntityDto>());
             
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
@@ -187,14 +190,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Cliente.DataNascimento.Should().Be("02/02/1990");
             
             // Verificar que o gateway foi chamado para obter e atualizar o cliente
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
-            await _fixture.ClienteGateway.Received(1).EditarAsync(clienteExistente);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).EditarAsync(Arg.Any<ClienteEntityDto>());
             
             // Verificar que o gateway de endereço foi chamado para atualizar o endereço
-            await _fixture.EnderecoGateway.Received(1).EditarAsync(Arg.Any<Endereco>());
+            await _fixture.RepositorioEndereco.Received(1).EditarAsync(Arg.Any<EnderecoEntityDto>());
             
             // Verificar que o gateway de contato foi chamado para atualizar o contato
-            await _fixture.ContatoGateway.Received(1).EditarAsync(Arg.Any<Contato>());
+            await _fixture.RepositorioContato.Received(1).EditarAsync(Arg.Any<ContatoEntityDto>());
             
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();

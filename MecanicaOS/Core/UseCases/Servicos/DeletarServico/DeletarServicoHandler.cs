@@ -37,9 +37,9 @@ namespace Core.UseCases.Servicos.DeletarServico
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao deletar serviço");
 
-                LogFim(metodo, true);
-
-                return new DeletarServicoResponse { Sucesso = true };
+                var response = new DeletarServicoResponse { Sucesso = true };
+                LogFim(metodo, response);
+                return response;
             }
             catch (Exception e)
             {

@@ -1,12 +1,12 @@
+using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
-using Core.Enumeradores;
+using Core.Especificacoes.Base.Interfaces;
 using Core.UseCases.Clientes.ObterTodosClientes;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -25,10 +25,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
         public async Task Handle_DeveRetornarTodosClientes()
         {
             // Arrange
-            var clientes = ClienteHandlerFixture.CriarListaClientesVariados();
+            var clientes = new List<Cliente>
+            {
+                ClienteHandlerFixture.CriarClientePessoaFisicaValido(),
+                ClienteHandlerFixture.CriarClientePessoaJuridicaValido()
+            };
             
-            // Configurar o gateway para retornar a lista de clientes
-            _fixture.ConfigurarMockClienteGatewayParaObterTodos(clientes);
+            // Configurar o repositório para retornar a lista de clientes
+            _fixture.ConfigurarMockRepositorioClienteParaObterTodos(clientes);
             
             var handler = _fixture.CriarObterTodosClientesHandler();
 
@@ -38,24 +42,25 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Assert
             resultado.Should().NotBeNull();
             resultado.Clientes.Should().NotBeNull();
-            resultado.Clientes.Should().HaveCount(clientes.Count);
+            resultado.Clientes.Should().HaveCount(2);
+            resultado.Clientes.Should().BeEquivalentTo(clientes);
             
-            // Verificar que o gateway foi chamado
-            await _fixture.ClienteGateway.Received(1).ObterTodosClienteComVeiculoAsync();
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioCliente.Received(1).ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>());
-            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<IEnumerable<Cliente>>());
+            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Fact]
         public async Task Handle_QuandoNaoHaClientes_DeveRetornarListaVazia()
         {
             // Arrange
-            var clientes = new List<Cliente>();
+            var listaVazia = new List<Cliente>();
             
-            // Configurar o gateway para retornar uma lista vazia
-            _fixture.ConfigurarMockClienteGatewayParaObterTodos(clientes);
+            // Configurar o repositório para retornar uma lista vazia
+            _fixture.ConfigurarMockRepositorioClienteParaObterTodos(listaVazia);
             
             var handler = _fixture.CriarObterTodosClientesHandler();
 
@@ -67,12 +72,12 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Clientes.Should().NotBeNull();
             resultado.Clientes.Should().BeEmpty();
             
-            // Verificar que o gateway foi chamado
-            await _fixture.ClienteGateway.Received(1).ObterTodosClienteComVeiculoAsync();
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioCliente.Received(1).ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>());
-            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<IEnumerable<Cliente>>());
+            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Fact]
@@ -81,9 +86,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Arrange
             var excecaoEsperada = new Exception("Erro no banco de dados");
             
-            // Configurar o gateway para lançar uma exceção
-            _fixture.ClienteGateway.When(x => x.ObterTodosClienteComVeiculoAsync())
-                .Do(x => { throw excecaoEsperada; });
+            // Configurar o repositório para lançar uma exceção
+            _fixture.RepositorioCliente.ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>())
+                .Returns(Task.FromException<IEnumerable<Cliente>>(excecaoEsperada));
             
             var handler = _fixture.CriarObterTodosClientesHandler();
 
@@ -93,8 +98,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("Erro no banco de dados");
             
-            // Verificar que o gateway foi chamado
-            await _fixture.ClienteGateway.Received(1).ObterTodosClienteComVeiculoAsync();
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioCliente.Received(1).ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>());
@@ -105,63 +110,16 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
         public async Task Handle_DevePassarDadosCorretamenteEntreHandlerERepositorio()
         {
             // Arrange
-            var clientes = new List<Cliente>
-            {
-                new Cliente
-                {
-                    Id = Guid.NewGuid(),
-                    Nome = "Cliente Específico 1",
-                    Documento = "111.222.333-44",
-                    DataNascimento = "01/01/1990",
-                    Sexo = "M",
-                    TipoCliente = TipoCliente.PessoaFisica,
-                    Contato = new Contato
-                    {
-                        Email = "cliente1@example.com",
-                        Telefone = "(11) 91234-5678"
-                    },
-                    Endereco = new Endereco
-                    {
-                        Rua = "Rua Teste 1",
-                        Numero = "100",
-                        Complemento = "Apto 10",
-                        Bairro = "Bairro Teste 1",
-                        Cidade = "Cidade Teste 1",
-                        CEP = "11111-111"
-                    },
-                    Ativo = true,
-                    DataCadastro = new DateTime(2023, 1, 15),
-                    DataAtualizacao = new DateTime(2023, 6, 30)
-                },
-                new Cliente
-                {
-                    Id = Guid.NewGuid(),
-                    Nome = "Cliente Específico 2",
-                    Documento = "22.333.444/0001-55",
-                    DataNascimento = "01/01/2000",
-                    TipoCliente = TipoCliente.PessoaJuridico,
-                    Contato = new Contato
-                    {
-                        Email = "cliente2@example.com",
-                        Telefone = "(11) 92345-6789"
-                    },
-                    Endereco = new Endereco
-                    {
-                        Rua = "Rua Teste 2",
-                        Numero = "200",
-                        Complemento = "Sala 20",
-                        Bairro = "Bairro Teste 2",
-                        Cidade = "Cidade Teste 2",
-                        CEP = "22222-222"
-                    },
-                    Ativo = true,
-                    DataCadastro = new DateTime(2023, 2, 15),
-                    DataAtualizacao = new DateTime(2023, 7, 30)
-                }
-            };
+            var cliente1 = ClienteHandlerFixture.CriarClientePessoaFisicaValido();
+            cliente1.Nome = "Cliente Específico 1";
             
-            // Configurar o gateway para retornar a lista de clientes específica
-            _fixture.ConfigurarMockClienteGatewayParaObterTodos(clientes);
+            var cliente2 = ClienteHandlerFixture.CriarClientePessoaJuridicaValido();
+            cliente2.Nome = "Cliente Específico 2";
+            
+            var clientes = new List<Cliente> { cliente1, cliente2 };
+            
+            // Configurar o repositório para retornar a lista específica
+            _fixture.ConfigurarMockRepositorioClienteParaObterTodos(clientes);
             
             var handler = _fixture.CriarObterTodosClientesHandler();
 
@@ -169,28 +127,18 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var resultado = await handler.Handle();
 
             // Assert
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioCliente.Received(1).ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
+            
+            // Verificar que o resultado contém exatamente os mesmos dados retornados pelo gateway
             resultado.Should().NotBeNull();
             resultado.Clientes.Should().NotBeNull();
             resultado.Clientes.Should().HaveCount(2);
+            resultado.Clientes.Should().BeEquivalentTo(clientes);
             
-            // Verificar os dados do primeiro cliente
-            var primeiroCliente = resultado.Clientes.First();
-            primeiroCliente.Nome.Should().Be("Cliente Específico 1");
-            primeiroCliente.Documento.Should().Be("111.222.333-44");
-            primeiroCliente.TipoCliente.Should().Be(TipoCliente.PessoaFisica);
-            primeiroCliente.Contato.Email.Should().Be("cliente1@example.com");
-            primeiroCliente.Endereco.Rua.Should().Be("Rua Teste 1");
-            
-            // Verificar os dados do segundo cliente
-            var segundoCliente = resultado.Clientes.Skip(1).First();
-            segundoCliente.Nome.Should().Be("Cliente Específico 2");
-            segundoCliente.Documento.Should().Be("22.333.444/0001-55");
-            segundoCliente.TipoCliente.Should().Be(TipoCliente.PessoaJuridico);
-            segundoCliente.Contato.Email.Should().Be("cliente2@example.com");
-            segundoCliente.Endereco.Rua.Should().Be("Rua Teste 2");
-            
-            // Verificar que o gateway foi chamado
-            await _fixture.ClienteGateway.Received(1).ObterTodosClienteComVeiculoAsync();
+            // Verificar que os nomes específicos estão presentes
+            resultado.Clientes.Should().Contain(c => c.Nome == "Cliente Específico 1");
+            resultado.Clientes.Should().Contain(c => c.Nome == "Cliente Específico 2");
         }
     }
 }

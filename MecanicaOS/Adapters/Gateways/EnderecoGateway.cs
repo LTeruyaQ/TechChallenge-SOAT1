@@ -30,7 +30,7 @@ namespace Adapters.Gateways
             return enderecoDto != null ? FromDto(enderecoDto) : null;
         }
 
-        private static EnderecoEntityDto ToDto(Endereco endereco)
+        public static EnderecoEntityDto ToDto(Endereco endereco)
         {
             return new EnderecoEntityDto
             {
@@ -48,7 +48,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Endereco FromDto(EnderecoEntityDto dto)
+        public static Endereco FromDto(EnderecoEntityDto dto)
         {
             return new Endereco
             {

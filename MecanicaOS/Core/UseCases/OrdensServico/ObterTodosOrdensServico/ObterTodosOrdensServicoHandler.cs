@@ -29,10 +29,11 @@ namespace Core.UseCases.OrdensServico.ObterTodosOrdensServico
                 LogInicio(metodo);
 
                 var ordensServico = await _ordemServicoGateway.ObterTodosAsync();
+                
+                var response = new ObterTodosOrdensServicoResponse { OrdensServico = ordensServico };
+                LogFim(metodo, response);
 
-                LogFim(metodo, ordensServico);
-
-                return new ObterTodosOrdensServicoResponse { OrdensServico = ordensServico };
+                return response;
             }
             catch (Exception e)
             {

@@ -49,8 +49,7 @@ namespace Adapters.Gateways
             var especificacao = new ObterServicoPorNomeEspecificacao(nome)
                 .E(new ObterServicoDisponivelEspecificacao());
 
-            var dto = await _repositorioServico.ObterUmSemRastreamentoAsync(especificacao);
-            return dto != null ? FromDto(dto) : null;
+            return await _repositorioServico.ObterUmProjetadoSemRastreamentoAsync<Servico>(especificacao);
         }
 
         public async Task<IEnumerable<Servico>> ObterTodosAsync()

@@ -34,8 +34,7 @@ namespace Adapters.Gateways
         public async Task<Usuario?> ObterPorEmailAsync(string email)
         {
             var especificacao = new ObterUsuarioPorEmailEspecificacao(email);
-            var dto = await _repositorioUsuario.ObterUmSemRastreamentoAsync(especificacao);
-            return dto != null ? FromDto(dto) : null;
+            return await _repositorioUsuario.ObterUmProjetadoSemRastreamentoAsync<Usuario>(especificacao);
         }
 
         public async Task<Usuario?> ObterPorIdAsync(Guid id)
@@ -56,7 +55,7 @@ namespace Adapters.Gateways
             return await _repositorioUsuario.ListarProjetadoAsync<Usuario>(especificacao);
         }
 
-        private static UsuarioEntityDto ToDto(Usuario usuario)
+        public static UsuarioEntityDto ToDto(Usuario usuario)
         {
             return new UsuarioEntityDto
             {
@@ -73,7 +72,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Usuario FromDto(UsuarioEntityDto dto)
+        public static Usuario FromDto(UsuarioEntityDto dto)
         {
             return new Usuario
             {

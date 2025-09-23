@@ -823,10 +823,12 @@ namespace API
         public IRecusarOrcamentoHandler CriarRecusarOrcamentoHandler()
         {
             var ordemServicoGateway = CriarOrdemServicoGateway();
+            var eventosGateway = CriarEventosGateway();
             var logServico = new LogServico<RecusarOrcamentoHandler>(_idCorrelacionalService, NullLogger<RecusarOrcamentoHandler>.Instance, _usuarioLogadoServico);
 
             return new RecusarOrcamentoHandler(
                 ordemServicoGateway,
+                eventosGateway,
                 logServico,
                 _unidadeDeTrabalho,
                 _usuarioLogadoServico);

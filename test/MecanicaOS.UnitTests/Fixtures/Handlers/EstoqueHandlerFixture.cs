@@ -1,3 +1,4 @@
+using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 using Core.Interfaces.Gateways;
@@ -9,6 +10,7 @@ using Core.UseCases.Estoques.DeletarEstoque;
 using Core.UseCases.Estoques.ObterEstoque;
 using Core.UseCases.Estoques.ObterEstoqueCritico;
 using Core.UseCases.Estoques.ObterTodosEstoques;
+using Adapters.Gateways;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
@@ -19,7 +21,13 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
 {
     public class EstoqueHandlerFixture
     {
+        // Repositório mockado
+        public IRepositorio<EstoqueEntityDto> RepositorioEstoque { get; }
+        
+        // Gateway real
         public IEstoqueGateway EstoqueGateway { get; }
+        
+        // Serviços mockados
         public ILogServico<CadastrarEstoqueHandler> LogServicoCadastrar { get; }
         public ILogServico<ObterEstoqueHandler> LogServicoObter { get; }
         public ILogServico<ObterTodosEstoquesHandler> LogServicoObterTodos { get; }
@@ -31,7 +39,13 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
 
         public EstoqueHandlerFixture()
         {
-            EstoqueGateway = Substitute.For<IEstoqueGateway>();
+            // Inicializar repositório mockado
+            RepositorioEstoque = Substitute.For<IRepositorio<EstoqueEntityDto>>();
+            
+            // Inicializar gateway real usando o repositório mockado
+            EstoqueGateway = new EstoqueGateway(RepositorioEstoque);
+            
+            // Inicializar serviços mockados
             LogServicoCadastrar = Substitute.For<ILogServico<CadastrarEstoqueHandler>>();
             LogServicoObter = Substitute.For<ILogServico<ObterEstoqueHandler>>();
             LogServicoObterTodos = Substitute.For<ILogServico<ObterTodosEstoquesHandler>>();
@@ -184,56 +198,116 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
 
         #endregion
 
-        #region Configuração de Mocks
+        #region Configuração de Mocks dos Repositórios
 
-        public void ConfigurarMockEstoqueGatewayParaObterPorId(Guid id, Estoque estoque)
+        public void ConfigurarMockRepositorioEstoqueParaObterPorId(Guid id, Estoque estoque)
         {
-            EstoqueGateway.ObterPorIdAsync(id).Returns(estoque);
+            var dto = estoque != null ? ToEstoqueDto(estoque) : null;
+            RepositorioEstoque.ObterPorIdAsync(id).Returns(dto);
         }
 
-        public void ConfigurarMockEstoqueGatewayParaObterTodos(List<Estoque> estoques)
+        public void ConfigurarMockRepositorioEstoqueParaObterTodos(List<Estoque> estoques)
         {
-            EstoqueGateway.ObterTodosAsync().Returns(estoques);
+            var dtos = estoques.Select(ToEstoqueDto).ToList();
+            RepositorioEstoque.ObterTodosAsync().Returns(dtos);
         }
 
-        public void ConfigurarMockEstoqueGatewayParaObterEstoqueCritico(List<Estoque> estoquesCriticos)
+        public void ConfigurarMockRepositorioEstoqueParaObterEstoqueCritico(List<Estoque> estoquesCriticos)
         {
-            EstoqueGateway.ObterEstoqueCriticoAsync().Returns(estoquesCriticos);
+            // Para consultas com especificação (ObterEstoqueCriticoAsync)
+            RepositorioEstoque.ListarProjetadoAsync<Estoque>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<EstoqueEntityDto>>())
+                .Returns(estoquesCriticos);
         }
 
-        public void ConfigurarMockEstoqueGatewayParaCadastrar(Estoque estoque)
+        public void ConfigurarMockRepositorioEstoqueParaCadastrar(Estoque estoque)
         {
-            EstoqueGateway.CadastrarAsync(Arg.Any<Estoque>()).Returns(Task.CompletedTask);
-            EstoqueGateway.When(x => x.CadastrarAsync(Arg.Any<Estoque>()))
-                .Do(callInfo => 
-                {
-                    var estoqueArg = callInfo.Arg<Estoque>();
-                    estoqueArg.Id = estoque.Id;
-                    estoqueArg.DataCadastro = estoque.DataCadastro;
-                    estoqueArg.DataAtualizacao = estoque.DataAtualizacao;
-                    estoqueArg.Ativo = estoque.Ativo;
-                });
+            var dto = ToEstoqueDto(estoque);
+            RepositorioEstoque.CadastrarAsync(Arg.Any<EstoqueEntityDto>()).Returns(dto);
         }
 
-        public void ConfigurarMockEstoqueGatewayParaAtualizar(Estoque estoque)
+        public void ConfigurarMockRepositorioEstoqueParaEditar()
         {
-            EstoqueGateway.EditarAsync(Arg.Any<Estoque>()).Returns(Task.CompletedTask);
-            EstoqueGateway.When(x => x.EditarAsync(Arg.Any<Estoque>()))
-                .Do(callInfo => 
-                {
-                    var estoqueArg = callInfo.Arg<Estoque>();
-                    estoqueArg.DataAtualizacao = DateTime.UtcNow;
-                });
+            RepositorioEstoque.EditarAsync(Arg.Any<EstoqueEntityDto>()).Returns(Task.CompletedTask);
         }
 
-        public void ConfigurarMockEstoqueGatewayParaDeletar(Estoque estoque, bool sucesso)
+        public void ConfigurarMockRepositorioEstoqueParaDeletar()
         {
-            EstoqueGateway.DeletarAsync(estoque).Returns(Task.CompletedTask);
+            RepositorioEstoque.DeletarAsync(Arg.Any<EstoqueEntityDto>()).Returns(Task.CompletedTask);
         }
 
         public void ConfigurarMockUdtParaCommitFalha()
         {
             UnidadeDeTrabalho.Commit().Returns(Task.FromResult(false));
+        }
+
+        #endregion
+
+        #region Métodos de Compatibilidade (para facilitar migração dos testes)
+
+        public void ConfigurarMockEstoqueGatewayParaObterPorId(Guid id, Estoque estoque)
+        {
+            ConfigurarMockRepositorioEstoqueParaObterPorId(id, estoque);
+        }
+
+        public void ConfigurarMockEstoqueGatewayParaObterTodos(List<Estoque> estoques)
+        {
+            ConfigurarMockRepositorioEstoqueParaObterTodos(estoques);
+        }
+
+        public void ConfigurarMockEstoqueGatewayParaObterEstoqueCritico(List<Estoque> estoquesCriticos)
+        {
+            ConfigurarMockRepositorioEstoqueParaObterEstoqueCritico(estoquesCriticos);
+        }
+
+        public void ConfigurarMockEstoqueGatewayParaCadastrar(Estoque estoque)
+        {
+            ConfigurarMockRepositorioEstoqueParaCadastrar(estoque);
+        }
+
+        public void ConfigurarMockEstoqueGatewayParaAtualizar(Estoque estoque)
+        {
+            ConfigurarMockRepositorioEstoqueParaEditar();
+        }
+
+        public void ConfigurarMockEstoqueGatewayParaDeletar(Estoque estoque, bool sucesso)
+        {
+            ConfigurarMockRepositorioEstoqueParaDeletar();
+        }
+
+        #endregion
+
+        #region Métodos de Conversão para DTOs
+
+        private static EstoqueEntityDto ToEstoqueDto(Estoque estoque)
+        {
+            return new EstoqueEntityDto
+            {
+                Id = estoque.Id,
+                Ativo = estoque.Ativo,
+                DataCadastro = estoque.DataCadastro,
+                DataAtualizacao = estoque.DataAtualizacao,
+                QuantidadeMinima = estoque.QuantidadeMinima,
+                QuantidadeDisponivel = estoque.QuantidadeDisponivel,
+                Descricao = estoque.Descricao,
+                Insumo = estoque.Insumo,
+                Preco = estoque.Preco
+            };
+        }
+
+        private static Estoque FromEstoqueDto(EstoqueEntityDto dto)
+        {
+            return new Estoque
+            {
+                Id = dto.Id,
+                Ativo = dto.Ativo,
+                DataCadastro = dto.DataCadastro,
+                DataAtualizacao = dto.DataAtualizacao,
+                QuantidadeMinima = dto.QuantidadeMinima,
+                QuantidadeDisponivel = dto.QuantidadeDisponivel,
+                Descricao = dto.Descricao,
+                Insumo = dto.Insumo,
+                Preco = dto.Preco
+            };
         }
 
         #endregion

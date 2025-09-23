@@ -45,18 +45,16 @@ namespace Adapters.Gateways
         public async Task<IEnumerable<Veiculo>> ObterVeiculoPorClienteAsync(Guid clienteId)
         {
             var especificacao = new ObterVeiculoPorClienteEspecificacao(clienteId);
-            var dtos = await _repositorioVeiculo.ListarAsync(especificacao);
-            return dtos.Select(FromDto);
+            return await _repositorioVeiculo.ListarProjetadoAsync<Veiculo>(especificacao);
         }
 
         public async Task<IEnumerable<Veiculo>> ObterVeiculoPorPlacaAsync(string placa)
         {
             var especificacao = new ObterVeiculoPorPlacaEspecificacao(placa);
-            var dtos = await _repositorioVeiculo.ListarAsync(especificacao);
-            return dtos.Select(FromDto);
+            return await _repositorioVeiculo.ListarProjetadoAsync<Veiculo>(especificacao);
         }
 
-        private static VeiculoEntityDto ToDto(Veiculo veiculo)
+        public static VeiculoEntityDto ToDto(Veiculo veiculo)
         {
             return new VeiculoEntityDto
             {
@@ -74,7 +72,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Veiculo FromDto(VeiculoEntityDto dto)
+        public static Veiculo FromDto(VeiculoEntityDto dto)
         {
             return new Veiculo
             {

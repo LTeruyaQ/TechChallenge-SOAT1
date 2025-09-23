@@ -30,9 +30,9 @@ namespace Core.UseCases.Servicos.ObterTodosServicos
 
                 var servicos = await _servicoGateway.ObterTodosAsync();
 
-                LogFim(metodo, servicos);
-
-                return new ObterTodosServicosResponse { Servicos = servicos };
+                var response = new ObterTodosServicosResponse { Servicos = servicos };
+                LogFim(metodo, response);
+                return response;
             }
             catch (Exception e)
             {

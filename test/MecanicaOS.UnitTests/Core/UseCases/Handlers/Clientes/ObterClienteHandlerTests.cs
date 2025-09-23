@@ -1,5 +1,7 @@
+using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
 using Core.Enumeradores;
+using Core.Especificacoes.Base.Interfaces;
 using Core.Exceptions;
 using Core.UseCases.Clientes.ObterCliente;
 using FluentAssertions;
@@ -39,10 +41,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Assert
             resultado.Should().NotBeNull();
             resultado.Cliente.Should().NotBeNull();
-            resultado.Cliente.Should().Be(clienteEsperado);
+            resultado.Cliente.Should().BeEquivalentTo(clienteEsperado);
             
             // Verificar que o gateway foi chamado com o ID correto
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), clienteId);
@@ -56,7 +58,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var clienteId = Guid.NewGuid();
             
             // Configurar o gateway para retornar null
-            _fixture.ClienteGateway.ObterPorIdAsync(clienteId).Returns((Cliente)null);
+            _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(Task.FromResult<ClienteEntityDto>(null));
             
             var handler = _fixture.CriarObterClienteHandler();
 
@@ -68,7 +70,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Cliente.Should().BeNull();
             
             // Verificar que o gateway foi chamado com o ID correto
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), clienteId);
@@ -83,8 +85,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var excecaoEsperada = new Exception("Erro no banco de dados");
             
             // Configurar o gateway para lançar uma exceção
-            _fixture.ClienteGateway.When(x => x.ObterPorIdAsync(Arg.Any<Guid>()))
-                .Do(x => { throw excecaoEsperada; });
+            _fixture.RepositorioCliente.ObterPorIdAsync(Arg.Any<Guid>())
+                .Returns<ClienteEntityDto>(x => { throw excecaoEsperada; });
             
             var handler = _fixture.CriarObterClienteHandler();
 
@@ -95,7 +97,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Erro no banco de dados");
             
             // Verificar que o gateway foi chamado com o ID correto
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), clienteId);
@@ -146,12 +148,12 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Assert
             // Verificar que o gateway foi chamado com o ID correto
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
             // Verificar que o resultado contém exatamente os mesmos dados retornados pelo gateway
             resultado.Should().NotBeNull();
             resultado.Cliente.Should().NotBeNull();
-            resultado.Cliente.Should().BeSameAs(clienteEsperado);
+            resultado.Cliente.Should().BeEquivalentTo(clienteEsperado);
             
             // Verificar cada propriedade individualmente para garantir que não houve alteração
             resultado.Cliente.Id.Should().Be(clienteId);

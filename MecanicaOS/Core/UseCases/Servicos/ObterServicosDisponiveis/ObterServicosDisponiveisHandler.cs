@@ -30,9 +30,9 @@ namespace Core.UseCases.Servicos.ObterServicosDisponiveis
 
                 var servicos = await _servicoGateway.ObterServicoDisponivelAsync();
 
-                LogFim(metodo, servicos);
-
-                return new ObterServicosDisponiveisResponse { Servicos = servicos };
+                var response = new ObterServicosDisponiveisResponse { Servicos = servicos };
+                LogFim(metodo, response);
+                return response;
             }
             catch (Exception e)
             {

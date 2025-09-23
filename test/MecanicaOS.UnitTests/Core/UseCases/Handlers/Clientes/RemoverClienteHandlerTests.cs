@@ -1,3 +1,4 @@
+using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
@@ -28,8 +29,18 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var clienteExistente = ClienteHandlerFixture.CriarClientePessoaFisicaValido();
             clienteExistente.Id = clienteId;
             
-            // Configurar o gateway para retornar o cliente existente
-            _fixture.ConfigurarMockClienteGatewayParaObterPorId(clienteId, clienteExistente);
+            // Configurar o repositório para retornar o cliente existente
+            var dto = new ClienteEntityDto
+            {
+                Id = clienteExistente.Id,
+                Nome = clienteExistente.Nome,
+                Documento = clienteExistente.Documento,
+                TipoCliente = clienteExistente.TipoCliente,
+                Ativo = clienteExistente.Ativo,
+                DataCadastro = clienteExistente.DataCadastro,
+                DataAtualizacao = clienteExistente.DataAtualizacao
+            };
+            _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(dto);
             
             // Configurar o gateway para simular a remoção
             _fixture.ConfigurarMockClienteGatewayParaRemover(clienteExistente);
@@ -44,8 +55,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Sucesso.Should().BeTrue();
             
             // Verificar que o gateway foi chamado para obter e remover o cliente
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
-            await _fixture.ClienteGateway.Received(1).DeletarAsync(clienteExistente);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).DeletarAsync(Arg.Any<ClienteEntityDto>());
             
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
@@ -61,8 +72,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Arrange
             var clienteId = Guid.NewGuid();
             
-            // Configurar o gateway para retornar null (cliente não encontrado)
-            _fixture.ClienteGateway.ObterPorIdAsync(clienteId).Returns((Cliente)null);
+            // Configurar o repositório para retornar null (cliente não encontrado)
+            _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns((ClienteEntityDto)null);
             
             var handler = _fixture.CriarRemoverClienteHandler();
 
@@ -73,10 +84,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Cliente não encontrado");
             
             // Verificar que o gateway foi chamado para obter o cliente
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
             // Verificar que o gateway NÃO foi chamado para remover o cliente
-            await _fixture.ClienteGateway.DidNotReceive().DeletarAsync(Arg.Any<Cliente>());
+            await _fixture.RepositorioCliente.DidNotReceive().DeletarAsync(Arg.Any<ClienteEntityDto>());
             
             // Verificar que o commit NÃO foi chamado
             await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
@@ -94,8 +105,18 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var clienteExistente = ClienteHandlerFixture.CriarClientePessoaFisicaValido();
             clienteExistente.Id = clienteId;
             
-            // Configurar o gateway para retornar o cliente existente
-            _fixture.ConfigurarMockClienteGatewayParaObterPorId(clienteId, clienteExistente);
+            // Configurar o repositório para retornar o cliente existente
+            var dto = new ClienteEntityDto
+            {
+                Id = clienteExistente.Id,
+                Nome = clienteExistente.Nome,
+                Documento = clienteExistente.Documento,
+                TipoCliente = clienteExistente.TipoCliente,
+                Ativo = clienteExistente.Ativo,
+                DataCadastro = clienteExistente.DataCadastro,
+                DataAtualizacao = clienteExistente.DataAtualizacao
+            };
+            _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(dto);
             
             // Configurar o gateway para simular a remoção
             _fixture.ConfigurarMockClienteGatewayParaRemover(clienteExistente);
@@ -112,8 +133,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Erro ao remover cliente");
             
             // Verificar que o gateway foi chamado para obter e remover o cliente
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
-            await _fixture.ClienteGateway.Received(1).DeletarAsync(clienteExistente);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).DeletarAsync(Arg.Any<ClienteEntityDto>());
             
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
@@ -130,9 +151,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var clienteId = Guid.NewGuid();
             var excecaoEsperada = new Exception("Erro no banco de dados");
             
-            // Configurar o gateway para lançar uma exceção
-            _fixture.ClienteGateway.When(x => x.ObterPorIdAsync(Arg.Any<Guid>()))
-                .Do(x => { throw excecaoEsperada; });
+            // Configurar o repositório para lançar uma exceção
+            _fixture.RepositorioCliente.ObterPorIdAsync(Arg.Any<Guid>())
+                .Returns(Task.FromException<ClienteEntityDto>(excecaoEsperada));
             
             var handler = _fixture.CriarRemoverClienteHandler();
 
@@ -143,10 +164,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Erro no banco de dados");
             
             // Verificar que o gateway foi chamado para obter o cliente
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
             // Verificar que o gateway NÃO foi chamado para remover o cliente
-            await _fixture.ClienteGateway.DidNotReceive().DeletarAsync(Arg.Any<Cliente>());
+            await _fixture.RepositorioCliente.DidNotReceive().DeletarAsync(Arg.Any<ClienteEntityDto>());
             
             // Verificar que o commit NÃO foi chamado
             await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
@@ -190,8 +211,18 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 DataAtualizacao = new DateTime(2023, 6, 30)
             };
             
-            // Configurar o gateway para retornar o cliente específico
-            _fixture.ConfigurarMockClienteGatewayParaObterPorId(clienteId, clienteEspecifico);
+            // Configurar o repositório para retornar o cliente específico
+            var dto = new ClienteEntityDto
+            {
+                Id = clienteEspecifico.Id,
+                Nome = clienteEspecifico.Nome,
+                Documento = clienteEspecifico.Documento,
+                TipoCliente = clienteEspecifico.TipoCliente,
+                Ativo = clienteEspecifico.Ativo,
+                DataCadastro = clienteEspecifico.DataCadastro,
+                DataAtualizacao = clienteEspecifico.DataAtualizacao
+            };
+            _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(dto);
             
             // Configurar o gateway para simular a remoção
             _fixture.ConfigurarMockClienteGatewayParaRemover(clienteEspecifico);
@@ -203,10 +234,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Assert
             // Verificar que o gateway foi chamado com o ID correto
-            await _fixture.ClienteGateway.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
             // Verificar que o gateway foi chamado para remover o cliente específico
-            await _fixture.ClienteGateway.Received(1).DeletarAsync(clienteEspecifico);
+            await _fixture.RepositorioCliente.Received(1).DeletarAsync(Arg.Any<ClienteEntityDto>());
             
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();

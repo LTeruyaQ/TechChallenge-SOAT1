@@ -30,10 +30,11 @@ namespace Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus
                 LogInicio(metodo, status);
 
                 var ordensServico = await _ordemServicoGateway.ObterOrdemServicoPorStatusAsync(status);
+                
+                var response = new ObterOrdemServicoPorStatusResponse { OrdensServico = ordensServico };
+                LogFim(metodo, response);
 
-                LogFim(metodo, ordensServico);
-
-                return new ObterOrdemServicoPorStatusResponse { OrdensServico = ordensServico };
+                return response;
             }
             catch (Exception e)
             {

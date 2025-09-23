@@ -48,7 +48,7 @@ namespace Adapters.Gateways
             return estoquesDto.Select(FromDto);
         }
 
-        private static EstoqueEntityDto ToDto(Estoque estoque)
+        public static EstoqueEntityDto ToDto(Estoque estoque)
         {
             return new EstoqueEntityDto
             {
@@ -64,7 +64,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static Estoque FromDto(EstoqueEntityDto dto)
+        public static Estoque FromDto(EstoqueEntityDto dto)
         {
             return new Estoque
             {

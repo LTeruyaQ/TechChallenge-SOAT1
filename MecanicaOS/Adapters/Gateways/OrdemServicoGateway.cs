@@ -55,8 +55,7 @@ namespace Adapters.Gateways
         public async Task<OrdemServico?> ObterPorIdAsync(Guid id)
         {
             var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(id);
-            var dto = await _repositorioOrdemServico.ObterUmAsync(especificacao);
-            return dto != null ? FromDto(dto) : null;
+            return await _repositorioOrdemServico.ObterUmProjetadoAsync<OrdemServico>(especificacao);
         }
 
         public async Task<IEnumerable<OrdemServico>> ObterTodosAsync()
@@ -65,7 +64,7 @@ namespace Adapters.Gateways
             return dtos.Select(FromDto);
         }
 
-        private static OrdemServicoEntityDto ToDto(OrdemServico ordemServico)
+        public static OrdemServicoEntityDto ToDto(OrdemServico ordemServico)
         {
             return new OrdemServicoEntityDto
             {
@@ -93,7 +92,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static OrdemServico FromDto(OrdemServicoEntityDto dto)
+        public static OrdemServico FromDto(OrdemServicoEntityDto dto)
         {
             var ordemServico = new OrdemServico
             {

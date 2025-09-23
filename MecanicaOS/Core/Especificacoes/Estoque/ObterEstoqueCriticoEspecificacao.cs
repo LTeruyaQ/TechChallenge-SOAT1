@@ -17,6 +17,8 @@ public class ObterEstoqueCriticoEspecificacao : EspecificacaoBase<EstoqueEntityD
             QuantidadeMinima = e.QuantidadeMinima,
             QuantidadeDisponivel = e.QuantidadeDisponivel,
             Descricao = e.Descricao,
+            Insumo = e.Insumo,
+            Preco = e.Preco
         });
     }
 

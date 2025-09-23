@@ -1,4 +1,6 @@
+using Core.DTOs.Entidades.Estoque;
 using Core.Entidades;
+using Core.Especificacoes.Base.Interfaces;
 using Core.Exceptions;
 using Core.UseCases.Estoques.ObterEstoque;
 using FluentAssertions;
@@ -27,8 +29,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             var estoqueEsperado = EstoqueHandlerFixture.CriarEstoqueValido();
             estoqueEsperado.Id = estoqueId;
             
-            // Configurar o gateway para retornar o estoque esperado
-            _fixture.ConfigurarMockEstoqueGatewayParaObterPorId(estoqueId, estoqueEsperado);
+            // Configurar o repositório para retornar o estoque esperado
+            _fixture.ConfigurarMockRepositorioEstoqueParaObterPorId(estoqueId, estoqueEsperado);
             
             var handler = _fixture.CriarObterEstoqueHandler();
 
@@ -38,14 +40,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             // Assert
             resultado.Should().NotBeNull();
             resultado.Estoque.Should().NotBeNull();
-            resultado.Estoque.Should().Be(estoqueEsperado);
+            resultado.Estoque.Should().BeEquivalentTo(estoqueEsperado);
             
-            // Verificar que o gateway foi chamado com o ID correto
-            await _fixture.EstoqueGateway.Received(1).ObterPorIdAsync(estoqueId);
+            // Verificar que o repositório foi chamado com o ID correto
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), estoqueId);
-            _fixture.LogServicoObter.Received(1).LogFim(Arg.Any<string>(), estoqueEsperado);
+            _fixture.LogServicoObter.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Fact]
@@ -54,8 +56,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             // Arrange
             var estoqueId = Guid.NewGuid();
             
-            // Configurar o gateway para retornar null
-            _fixture.EstoqueGateway.ObterPorIdAsync(Arg.Any<Guid>()).Returns((Estoque)null);
+            // Configurar o repositório para retornar null
+            _fixture.ConfigurarMockRepositorioEstoqueParaObterPorId(estoqueId, null);
             
             var handler = _fixture.CriarObterEstoqueHandler();
 
@@ -65,8 +67,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             await act.Should().ThrowAsync<DadosNaoEncontradosException>()
                 .WithMessage("Estoque não encontrado");
             
-            // Verificar que o gateway foi chamado com o ID correto
-            await _fixture.EstoqueGateway.Received(1).ObterPorIdAsync(estoqueId);
+            // Verificar que o repositório foi chamado com o ID correto
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), estoqueId);
@@ -80,9 +82,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             var estoqueId = Guid.NewGuid();
             var excecaoEsperada = new Exception("Erro no banco de dados");
             
-            // Configurar o gateway para lançar uma exceção
-            _fixture.EstoqueGateway.When(x => x.ObterPorIdAsync(Arg.Any<Guid>()))
-                .Do(x => { throw excecaoEsperada; });
+            // Configurar o repositório para lançar uma exceção
+            _fixture.RepositorioEstoque.ObterPorIdAsync(Arg.Any<Guid>())
+                .Returns(Task.FromException<EstoqueEntityDto>(excecaoEsperada));
             
             var handler = _fixture.CriarObterEstoqueHandler();
 
@@ -92,8 +94,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("Erro no banco de dados");
             
-            // Verificar que o gateway foi chamado com o ID correto
-            await _fixture.EstoqueGateway.Received(1).ObterPorIdAsync(estoqueId);
+            // Verificar que o repositório foi chamado com o ID correto
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), estoqueId);
@@ -120,8 +122,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 DataAtualizacao = new DateTime(2023, 6, 30)
             };
             
-            // Configurar o gateway para retornar o estoque específico
-            _fixture.ConfigurarMockEstoqueGatewayParaObterPorId(estoqueId, estoqueEsperado);
+            // Configurar o repositório para retornar o estoque específico
+            _fixture.ConfigurarMockRepositorioEstoqueParaObterPorId(estoqueId, estoqueEsperado);
             
             var handler = _fixture.CriarObterEstoqueHandler();
 
@@ -129,13 +131,13 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             var resultado = await handler.Handle(estoqueId);
 
             // Assert
-            // Verificar que o gateway foi chamado com o ID correto
-            await _fixture.EstoqueGateway.Received(1).ObterPorIdAsync(estoqueId);
+            // Verificar que o repositório foi chamado com o ID correto
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
             
             // Verificar que o resultado contém exatamente os mesmos dados retornados pelo gateway
             resultado.Should().NotBeNull();
             resultado.Estoque.Should().NotBeNull();
-            resultado.Estoque.Should().BeSameAs(estoqueEsperado);
+            resultado.Estoque.Should().BeEquivalentTo(estoqueEsperado);
             
             // Verificar cada propriedade individualmente para garantir que não houve alteração
             resultado.Estoque.Id.Should().Be(estoqueId);

@@ -31,6 +31,19 @@ namespace Core.UseCases.Servicos.CadastrarServico
             {
                 LogInicio(metodo, request);
 
+                if (string.IsNullOrWhiteSpace(request.Nome))
+                    throw new DadosInvalidosException("Nome é obrigatório");
+                
+                if (string.IsNullOrWhiteSpace(request.Descricao))
+                    throw new DadosInvalidosException("Descrição é obrigatória");
+                
+                if (request.Valor <= 0)
+                    throw new DadosInvalidosException("Valor deve ser maior que zero");
+
+                var servicoExistente = await _servicoGateway.ObterServicosDisponiveisPorNomeAsync(request.Nome);
+                if (servicoExistente != null)
+                    throw new DadosJaCadastradosException("Já existe um serviço cadastrado com este nome");
+
                 Servico servico = new()
                 {
                     Nome = request.Nome,
@@ -44,9 +57,9 @@ namespace Core.UseCases.Servicos.CadastrarServico
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao cadastrar serviço");
 
-                LogFim(metodo, servico);
-
-                return new CadastrarServicoResponse { Servico = servico };
+                var response = new CadastrarServicoResponse { Servico = servico };
+                LogFim(metodo, response);
+                return response;
             }
             catch (Exception e)
             {

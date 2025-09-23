@@ -1,3 +1,4 @@
+using Core.DTOs.Entidades.Cliente;
 using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 using Core.Enumeradores;
@@ -10,6 +11,7 @@ using Core.UseCases.Clientes.ObterCliente;
 using Core.UseCases.Clientes.ObterClientePorDocumento;
 using Core.UseCases.Clientes.ObterTodosClientes;
 using Core.UseCases.Clientes.RemoverCliente;
+using Adapters.Gateways;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
@@ -20,9 +22,17 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
 {
     public class ClienteHandlerFixture
     {
+        // Repositórios mockados
+        public IRepositorio<ClienteEntityDto> RepositorioCliente { get; }
+        public IRepositorio<EnderecoEntityDto> RepositorioEndereco { get; }
+        public IRepositorio<ContatoEntityDto> RepositorioContato { get; }
+        
+        // Gateways reais
         public IClienteGateway ClienteGateway { get; }
         public IEnderecoGateway EnderecoGateway { get; }
         public IContatoGateway ContatoGateway { get; }
+        
+        // Serviços mockados
         public ILogServico<CadastrarClienteHandler> LogServicoCadastrar { get; }
         public ILogServico<AtualizarClienteHandler> LogServicoAtualizar { get; }
         public ILogServico<ObterClienteHandler> LogServicoObter { get; }
@@ -34,9 +44,17 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
 
         public ClienteHandlerFixture()
         {
-            ClienteGateway = Substitute.For<IClienteGateway>();
-            EnderecoGateway = Substitute.For<IEnderecoGateway>();
-            ContatoGateway = Substitute.For<IContatoGateway>();
+            // Inicializar repositórios mockados
+            RepositorioCliente = Substitute.For<IRepositorio<ClienteEntityDto>>();
+            RepositorioEndereco = Substitute.For<IRepositorio<EnderecoEntityDto>>();
+            RepositorioContato = Substitute.For<IRepositorio<ContatoEntityDto>>();
+            
+            // Inicializar gateways reais usando os repositórios mockados
+            ClienteGateway = new ClienteGateway(RepositorioCliente);
+            EnderecoGateway = new EnderecoGateway(RepositorioEndereco);
+            ContatoGateway = new ContatoGateway(RepositorioContato);
+            
+            // Inicializar serviços mockados
             LogServicoCadastrar = Substitute.For<ILogServico<CadastrarClienteHandler>>();
             LogServicoAtualizar = Substitute.For<ILogServico<AtualizarClienteHandler>>();
             LogServicoObter = Substitute.For<ILogServico<ObterClienteHandler>>();
@@ -268,51 +286,76 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
 
         #endregion
 
-        #region Configuração de Mocks
+        #region Configuração de Mocks dos Repositórios
 
-        public void ConfigurarMockClienteGatewayParaObterPorId(Guid id, Cliente cliente)
+        public void ConfigurarMockRepositorioClienteParaObterPorId(Guid id, Cliente cliente)
         {
-            ClienteGateway.ObterPorIdAsync(id).Returns(cliente);
+            var dto = cliente != null ? ToClienteDto(cliente) : null;
+            RepositorioCliente.ObterPorIdAsync(id).Returns(dto);
         }
 
-        public void ConfigurarMockClienteGatewayParaObterTodos(List<Cliente> clientes)
+        public void ConfigurarMockRepositorioClienteParaObterTodos(List<Cliente> clientes)
         {
-            ClienteGateway.ObterTodosClienteComVeiculoAsync().Returns(clientes);
+            // Para consultas com especificação (ObterTodosClienteComVeiculoAsync)
+            RepositorioCliente.ListarProjetadoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns(clientes);
         }
 
-        public void ConfigurarMockClienteGatewayParaObterPorDocumento(string documento, Cliente cliente)
+        public void ConfigurarMockRepositorioClienteParaObterPorDocumento(string documento, Cliente cliente)
         {
-            ClienteGateway.ObterClientePorDocumentoAsync(documento).Returns(cliente);
+            // Para consultas com especificação (ObterClientePorDocumentoAsync)
+            RepositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns(cliente);
         }
 
-        public void ConfigurarMockClienteGatewayParaCadastrar(Cliente cliente)
+        public void ConfigurarMockRepositorioClienteParaCadastrar(Cliente cliente)
         {
-            ClienteGateway.CadastrarAsync(Arg.Any<Cliente>()).Returns(Task.FromResult(cliente));
-            ClienteGateway.When(x => x.CadastrarAsync(Arg.Any<Cliente>()))
-                .Do(callInfo => 
-                {
-                    var clienteArg = callInfo.Arg<Cliente>();
-                    clienteArg.Id = cliente.Id;
-                    clienteArg.DataCadastro = cliente.DataCadastro;
-                    clienteArg.DataAtualizacao = cliente.DataAtualizacao;
-                    clienteArg.Ativo = cliente.Ativo;
-                });
+            var dto = ToClienteDto(cliente);
+            RepositorioCliente.CadastrarAsync(Arg.Any<ClienteEntityDto>()).Returns(dto);
         }
 
-        public void ConfigurarMockClienteGatewayParaAtualizar(Cliente cliente)
+        public void ConfigurarMockRepositorioClienteParaEditar()
         {
-            ClienteGateway.EditarAsync(Arg.Any<Cliente>()).Returns(Task.CompletedTask);
-            ClienteGateway.When(x => x.EditarAsync(Arg.Any<Cliente>()))
-                .Do(callInfo => 
-                {
-                    var clienteArg = callInfo.Arg<Cliente>();
-                    clienteArg.DataAtualizacao = DateTime.UtcNow;
-                });
+            RepositorioCliente.EditarAsync(Arg.Any<ClienteEntityDto>()).Returns(Task.CompletedTask);
         }
 
-        public void ConfigurarMockClienteGatewayParaRemover(Cliente cliente)
+        public void ConfigurarMockRepositorioClienteParaDeletar()
         {
-            ClienteGateway.DeletarAsync(cliente).Returns(Task.CompletedTask);
+            RepositorioCliente.DeletarAsync(Arg.Any<ClienteEntityDto>()).Returns(Task.CompletedTask);
+        }
+
+        public void ConfigurarMockRepositorioEnderecoParaCadastrar(Endereco endereco)
+        {
+            var dto = ToEnderecoDto(endereco);
+            RepositorioEndereco.CadastrarAsync(Arg.Any<EnderecoEntityDto>()).Returns(dto);
+        }
+
+        public void ConfigurarMockRepositorioEnderecoParaObterPorId(Guid id, Endereco endereco)
+        {
+            var dto = endereco != null ? ToEnderecoDto(endereco) : null;
+            RepositorioEndereco.ObterPorIdAsync(id).Returns(dto);
+        }
+
+        public void ConfigurarMockRepositorioEnderecoParaEditar()
+        {
+            RepositorioEndereco.EditarAsync(Arg.Any<EnderecoEntityDto>()).Returns(Task.CompletedTask);
+        }
+
+        public void ConfigurarMockRepositorioContatoParaCadastrar(Contato contato)
+        {
+            var dto = ToContatoDto(contato);
+            RepositorioContato.CadastrarAsync(Arg.Any<ContatoEntityDto>()).Returns(dto);
+        }
+
+        public void ConfigurarMockRepositorioContatoParaObterPorId(Guid id, Contato contato)
+        {
+            var dto = contato != null ? ToContatoDto(contato) : null;
+            RepositorioContato.ObterPorIdAsync(id).Returns(dto);
+        }
+
+        public void ConfigurarMockRepositorioContatoParaEditar()
+        {
+            RepositorioContato.EditarAsync(Arg.Any<ContatoEntityDto>()).Returns(Task.CompletedTask);
         }
 
         public void ConfigurarMockUdtParaCommitFalha()
@@ -320,13 +363,121 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             UnidadeDeTrabalho.Commit().Returns(Task.FromResult(false));
         }
 
+        #endregion
+
+        #region Métodos de Compatibilidade (para facilitar migração dos testes)
+
+        public void ConfigurarMockClienteGatewayParaObterPorId(Guid id, Cliente cliente)
+        {
+            ConfigurarMockRepositorioClienteParaObterPorId(id, cliente);
+        }
+
+        public void ConfigurarMockClienteGatewayParaObterTodos(List<Cliente> clientes)
+        {
+            ConfigurarMockRepositorioClienteParaObterTodos(clientes);
+        }
+
+        public void ConfigurarMockClienteGatewayParaObterPorDocumento(string documento, Cliente cliente)
+        {
+            ConfigurarMockRepositorioClienteParaObterPorDocumento(documento, cliente);
+        }
+
+        public void ConfigurarMockClienteGatewayParaCadastrar(Cliente cliente)
+        {
+            ConfigurarMockRepositorioClienteParaCadastrar(cliente);
+            
+            // Configurar também endereço e contato se existirem
+            if (cliente.Endereco != null)
+            {
+                ConfigurarMockRepositorioEnderecoParaCadastrar(cliente.Endereco);
+            }
+            if (cliente.Contato != null)
+            {
+                ConfigurarMockRepositorioContatoParaCadastrar(cliente.Contato);
+            }
+        }
+
+        public void ConfigurarMockClienteGatewayParaAtualizar(Cliente cliente)
+        {
+            ConfigurarMockRepositorioClienteParaEditar();
+            
+            // Configurar também endereço e contato se existirem
+            if (cliente.Endereco != null)
+            {
+                ConfigurarMockRepositorioEnderecoParaEditar();
+            }
+            if (cliente.Contato != null)
+            {
+                ConfigurarMockRepositorioContatoParaEditar();
+            }
+        }
+
+        public void ConfigurarMockClienteGatewayParaRemover(Cliente cliente)
+        {
+            ConfigurarMockRepositorioClienteParaDeletar();
+        }
+
         public void ConfigurarMockEnderecoeContatoParaAtualizar(Guid enderecoId, Guid contatoId, Guid clienteId)
         {
             var endereco = new Endereco { Id = enderecoId, IdCliente = clienteId };
-            EnderecoGateway.ObterPorIdAsync(enderecoId).Returns(endereco);
+            ConfigurarMockRepositorioEnderecoParaObterPorId(enderecoId, endereco);
             
             var contato = new Contato { Id = contatoId, IdCliente = clienteId };
-            ContatoGateway.ObterPorIdAsync(contatoId).Returns(contato);
+            ConfigurarMockRepositorioContatoParaObterPorId(contatoId, contato);
+        }
+
+        #endregion
+
+        #region Métodos de Conversão para DTOs
+
+        private static ClienteEntityDto ToClienteDto(Cliente cliente)
+        {
+            return new ClienteEntityDto
+            {
+                Id = cliente.Id,
+                Ativo = cliente.Ativo,
+                DataCadastro = cliente.DataCadastro,
+                DataAtualizacao = cliente.DataAtualizacao,
+                Nome = cliente.Nome,
+                Documento = cliente.Documento,
+                Sexo = cliente.Sexo,
+                DataNascimento = cliente.DataNascimento,
+                TipoCliente = cliente.TipoCliente,
+                Contato = cliente.Contato != null ? ToContatoDto(cliente.Contato) : null,
+                Endereco = cliente.Endereco != null ? ToEnderecoDto(cliente.Endereco) : null
+            };
+        }
+
+        private static EnderecoEntityDto ToEnderecoDto(Endereco endereco)
+        {
+            return new EnderecoEntityDto
+            {
+                Id = endereco.Id,
+                Ativo = endereco.Ativo,
+                DataCadastro = endereco.DataCadastro,
+                DataAtualizacao = endereco.DataAtualizacao,
+                Rua = endereco.Rua,
+                Numero = endereco.Numero,
+                Complemento = endereco.Complemento,
+                Bairro = endereco.Bairro,
+                Cidade = endereco.Cidade,
+                CEP = endereco.CEP,
+                IdCliente = endereco.IdCliente
+            };
+        }
+
+        private static ContatoEntityDto ToContatoDto(Contato contato)
+        {
+            return new ContatoEntityDto
+            {
+                Id = contato.Id,
+                Ativo = contato.Ativo,
+                DataCadastro = contato.DataCadastro,
+                DataAtualizacao = contato.DataAtualizacao,
+                Email = contato.Email,
+                Telefone = contato.Telefone,
+                IdCliente = contato.IdCliente
+            };
         }
 
         #endregion

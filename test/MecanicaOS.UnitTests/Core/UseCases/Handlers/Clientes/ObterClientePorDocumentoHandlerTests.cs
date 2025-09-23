@@ -1,5 +1,7 @@
+using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
 using Core.Enumeradores;
+using Core.Especificacoes.Base.Interfaces;
 using Core.Exceptions;
 using Core.UseCases.Clientes.ObterClientePorDocumento;
 using FluentAssertions;
@@ -42,7 +44,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Cliente.Should().Be(clienteEsperado);
             
             // Verificar que o gateway foi chamado com o documento correto
-            await _fixture.ClienteGateway.Received(1).ObterClientePorDocumentoAsync(documento);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorDocumento.Received(1).LogInicio(Arg.Any<string>(), documento);
@@ -67,7 +69,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage($"Cliente de documento {documento} não encontrado");
             
             // Verificar que o gateway foi chamado com o documento correto
-            await _fixture.ClienteGateway.Received(1).ObterClientePorDocumentoAsync(documento);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorDocumento.Received(1).LogInicio(Arg.Any<string>(), documento);
@@ -89,7 +91,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Deve ser informado o documento do usuario do cliente");
             
             // Verificar que o gateway NÃO foi chamado
-            await _fixture.ClienteGateway.DidNotReceive().ObterClientePorDocumentoAsync(Arg.Any<string>());
+            await _fixture.RepositorioCliente.DidNotReceive().ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorDocumento.Received(1).LogInicio(Arg.Any<string>(), documento);
@@ -103,9 +105,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var documento = "123.456.789-00";
             var excecaoEsperada = new Exception("Erro no banco de dados");
             
-            // Configurar o gateway para lançar uma exceção
-            _fixture.ClienteGateway.When(x => x.ObterClientePorDocumentoAsync(Arg.Any<string>()))
-                .Do(x => { throw excecaoEsperada; });
+            // Configurar o repositório para lançar uma exceção
+            _fixture.RepositorioCliente
+                .ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>())
+                .Returns(Task.FromException<Cliente>(excecaoEsperada));
             
             var handler = _fixture.CriarObterClientePorDocumentoHandler();
 
@@ -116,7 +119,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Erro no banco de dados");
             
             // Verificar que o gateway foi chamado com o documento correto
-            await _fixture.ClienteGateway.Received(1).ObterClientePorDocumentoAsync(documento);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorDocumento.Received(1).LogInicio(Arg.Any<string>(), documento);
@@ -167,7 +170,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Assert
             // Verificar que o gateway foi chamado com o documento correto
-            await _fixture.ClienteGateway.Received(1).ObterClientePorDocumentoAsync(documento);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que o resultado contém exatamente os mesmos dados retornados pelo gateway
             resultado.Should().NotBeNull();

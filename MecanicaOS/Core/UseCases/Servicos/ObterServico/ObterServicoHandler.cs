@@ -1,3 +1,4 @@
+using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Servicos;
 using Core.Interfaces.Repositorios;
@@ -29,10 +30,12 @@ namespace Core.UseCases.Servicos.ObterServico
                 LogInicio(metodo, id);
 
                 var servico = await _servicoGateway.ObterPorIdAsync(id);
+                if (servico == null)
+                    throw new DadosNaoEncontradosException("Serviço não encontrado");
 
-                LogFim(metodo, servico);
-
-                return new ObterServicoResponse { Servico = servico };
+                var response = new ObterServicoResponse { Servico = servico };
+                LogFim(metodo, response);
+                return response;
             }
             catch (Exception e)
             {

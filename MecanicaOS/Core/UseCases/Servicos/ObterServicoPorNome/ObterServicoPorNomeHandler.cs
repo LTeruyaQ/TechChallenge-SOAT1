@@ -28,11 +28,17 @@ namespace Core.UseCases.Servicos.ObterServicoPorNome
             {
                 LogInicio(metodo, nome);
 
+                if (string.IsNullOrWhiteSpace(nome))
+                {
+                    LogFim(metodo, null);
+                    return new ObterServicoPorNomeResponse { Servico = null };
+                }
+
                 var servico = await _servicoGateway.ObterServicosDisponiveisPorNomeAsync(nome);
 
-                LogFim(metodo, servico);
-
-                return new ObterServicoPorNomeResponse { Servico = servico };
+                var response = new ObterServicoPorNomeResponse { Servico = servico };
+                LogFim(metodo, response);
+                return response;
             }
             catch (Exception e)
             {

@@ -55,7 +55,7 @@ namespace Adapters.Gateways
             return await _repositorioCliente.ListarProjetadoAsync<Cliente>(especificacao);
         }
 
-        private static ClienteEntityDto ToDto(Cliente cliente)
+        public static ClienteEntityDto ToDto(Cliente cliente)
         {
             return new ClienteEntityDto
             {
@@ -68,7 +68,7 @@ namespace Adapters.Gateways
                 Sexo = cliente.Sexo,
                 DataNascimento = cliente.DataNascimento,
                 TipoCliente = cliente.TipoCliente,
-                Contato = new ContatoEntityDto
+                Contato = cliente.Contato != null ? new ContatoEntityDto
                 {
                     Id = cliente.Contato.Id,
                     Ativo = cliente.Contato.Ativo,
@@ -77,8 +77,8 @@ namespace Adapters.Gateways
                     Email = cliente.Contato.Email,
                     Telefone = cliente.Contato.Telefone,
                     IdCliente = cliente.Id
-                },
-                Endereco = new EnderecoEntityDto
+                } : null,
+                Endereco = cliente.Endereco != null ? new EnderecoEntityDto
                 {
                     Id = cliente.Endereco.Id,
                     Ativo = cliente.Endereco.Ativo,
@@ -91,11 +91,11 @@ namespace Adapters.Gateways
                     Cidade = cliente.Endereco.Cidade,
                     CEP = cliente.Endereco.CEP,
                     IdCliente = cliente.Id
-                }
+                } : null
             };
         }
 
-        private static Cliente FromDto(ClienteEntityDto dto)
+        public static Cliente FromDto(ClienteEntityDto dto)
         {
             return new Cliente
             {
@@ -108,7 +108,7 @@ namespace Adapters.Gateways
                 Sexo = dto.Sexo,
                 DataNascimento = dto.DataNascimento,
                 TipoCliente = dto.TipoCliente,
-                Contato = new Contato
+                Contato = dto.Contato != null ? new Contato
                 {
                     Id = dto.Contato.Id,
                     Ativo = dto.Contato.Ativo,
@@ -117,8 +117,8 @@ namespace Adapters.Gateways
                     Email = dto.Contato.Email,
                     Telefone = dto.Contato.Telefone,
                     IdCliente = dto.Id
-                },
-                Endereco = new Endereco
+                } : null,
+                Endereco = dto.Endereco != null ? new Endereco
                 {
                     Id = dto.Endereco.Id,
                     Ativo = dto.Endereco.Ativo,
@@ -131,7 +131,7 @@ namespace Adapters.Gateways
                     Cidade = dto.Endereco.Cidade,
                     CEP = dto.Endereco.CEP,
                     IdCliente = dto.Id
-                },
+                } : null,
                 Veiculos = dto.Veiculos?.Select(v => new Veiculo
                 {
                     Id = v.Id,

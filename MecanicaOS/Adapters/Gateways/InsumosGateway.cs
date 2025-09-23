@@ -21,7 +21,7 @@ namespace Adapters.Gateways
             return insumosCadastrados.Select(FromDto);
         }
 
-        private static InsumoOSEntityDto ToDto(InsumoOS insumo)
+        public static InsumoOSEntityDto ToDto(InsumoOS insumo)
         {
             return new InsumoOSEntityDto
             {
@@ -35,7 +35,7 @@ namespace Adapters.Gateways
             };
         }
 
-        private static InsumoOS FromDto(InsumoOSEntityDto dto)
+        public static InsumoOS FromDto(InsumoOSEntityDto dto)
         {
             return new InsumoOS
             {

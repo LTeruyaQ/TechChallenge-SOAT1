@@ -1,4 +1,5 @@
 using Core.Entidades;
+using Core.DTOs.Entidades.Estoque;
 using Core.UseCases.Estoques.ObterTodosEstoques;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
@@ -26,8 +27,20 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             // Arrange
             var estoquesEsperados = EstoqueHandlerFixture.CriarListaEstoquesVariados();
             
-            // Configurar o gateway para retornar a lista de estoques
-            _fixture.EstoqueGateway.ObterTodosAsync().Returns(estoquesEsperados);
+            // Configurar o repositório para retornar a lista de estoques
+            var dtos = estoquesEsperados.Select(e => new EstoqueEntityDto
+            {
+                Id = e.Id,
+                Insumo = e.Insumo,
+                Descricao = e.Descricao,
+                QuantidadeDisponivel = e.QuantidadeDisponivel,
+                QuantidadeMinima = e.QuantidadeMinima,
+                Preco = e.Preco,
+                Ativo = e.Ativo,
+                DataCadastro = e.DataCadastro,
+                DataAtualizacao = e.DataAtualizacao
+            }).ToList();
+            _fixture.RepositorioEstoque.ObterTodosAsync().Returns(dtos);
             
             var handler = _fixture.CriarObterTodosEstoquesHandler();
 
@@ -41,7 +54,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             resultado.Estoques.Should().BeEquivalentTo(estoquesEsperados);
             
             // Verificar que o gateway foi chamado
-            await _fixture.EstoqueGateway.Received(1).ObterTodosAsync();
+            await _fixture.RepositorioEstoque.Received(1).ObterTodosAsync();
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>());
@@ -54,8 +67,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             // Arrange
             var listaVazia = new List<Estoque>();
             
-            // Configurar o gateway para retornar uma lista vazia
-            _fixture.EstoqueGateway.ObterTodosAsync().Returns(listaVazia);
+            // Configurar o repositório para retornar uma lista vazia
+            _fixture.RepositorioEstoque.ObterTodosAsync().Returns(new List<EstoqueEntityDto>());
             
             var handler = _fixture.CriarObterTodosEstoquesHandler();
 
@@ -68,7 +81,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             resultado.Estoques.Should().BeEmpty();
             
             // Verificar que o gateway foi chamado
-            await _fixture.EstoqueGateway.Received(1).ObterTodosAsync();
+            await _fixture.RepositorioEstoque.Received(1).ObterTodosAsync();
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>());
@@ -81,8 +94,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             // Arrange
             var excecaoEsperada = new Exception("Erro ao obter estoques");
             
-            // Configurar o gateway para lançar uma exceção
-            _fixture.EstoqueGateway.ObterTodosAsync().Returns<IEnumerable<Estoque>>(x => { throw excecaoEsperada; });
+            // Configurar o repositório para lançar uma exceção
+            _fixture.RepositorioEstoque.ObterTodosAsync().Returns(Task.FromException<IEnumerable<EstoqueEntityDto>>(excecaoEsperada));
             
             var handler = _fixture.CriarObterTodosEstoquesHandler();
 
@@ -93,7 +106,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 .WithMessage("Erro ao obter estoques");
             
             // Verificar que o gateway foi chamado
-            await _fixture.EstoqueGateway.Received(1).ObterTodosAsync();
+            await _fixture.RepositorioEstoque.Received(1).ObterTodosAsync();
             
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>());
@@ -133,8 +146,20 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 }
             };
             
-            // Configurar o gateway para retornar a lista específica
-            _fixture.EstoqueGateway.ObterTodosAsync().Returns(estoquesEspecificos);
+            // Configurar o repositório para retornar a lista específica
+            var dtos = estoquesEspecificos.Select(e => new EstoqueEntityDto
+            {
+                Id = e.Id,
+                Insumo = e.Insumo,
+                Descricao = e.Descricao,
+                QuantidadeDisponivel = e.QuantidadeDisponivel,
+                QuantidadeMinima = e.QuantidadeMinima,
+                Preco = e.Preco,
+                Ativo = e.Ativo,
+                DataCadastro = e.DataCadastro,
+                DataAtualizacao = e.DataAtualizacao
+            }).ToList();
+            _fixture.RepositorioEstoque.ObterTodosAsync().Returns(dtos);
             
             var handler = _fixture.CriarObterTodosEstoquesHandler();
 
@@ -143,7 +168,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
 
             // Assert
             // Verificar que o gateway foi chamado
-            await _fixture.EstoqueGateway.Received(1).ObterTodosAsync();
+            await _fixture.RepositorioEstoque.Received(1).ObterTodosAsync();
             
             // Verificar que o resultado contém exatamente os mesmos dados retornados pelo gateway
             resultado.Should().NotBeNull();

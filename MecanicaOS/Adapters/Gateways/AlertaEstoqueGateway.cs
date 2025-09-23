@@ -20,7 +20,7 @@ namespace Adapters.Gateways
             await _repositorioAlertaEstoque.CadastrarVariosAsync(alertas.Select(ToDto));
         }
 
-        private static AlertaEstoqueEntityDto ToDto(AlertaEstoque alerta)
+        public static AlertaEstoqueEntityDto ToDto(AlertaEstoque alerta)
         {
             return new AlertaEstoqueEntityDto
             {

@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.Eventos;
 using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -11,15 +12,18 @@ namespace Core.UseCases.OrdensServico.RecusarOrcamento
     public class RecusarOrcamentoHandler : UseCasesHandlerAbstrato<RecusarOrcamentoHandler>, IRecusarOrcamentoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
+        private readonly IEventosGateway _eventosGateway;
 
         public RecusarOrcamentoHandler(
             IOrdemServicoGateway ordemServicoGateway,
+            IEventosGateway eventosGateway,
             ILogServico<RecusarOrcamentoHandler> logServico,
             IUnidadeDeTrabalho udt,
             IUsuarioLogadoServico usuarioLogadoServico)
             : base(logServico, udt, usuarioLogadoServico)
         {
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
+            _eventosGateway = eventosGateway ?? throw new ArgumentNullException(nameof(eventosGateway));
         }
 
         public async Task<RecusarOrcamentoResponse> Handle(Guid id)
@@ -41,6 +45,9 @@ namespace Core.UseCases.OrdensServico.RecusarOrcamento
                 ordemServico.DataAtualizacao = DateTime.UtcNow;
 
                 await _ordemServicoGateway.EditarAsync(ordemServico);
+                
+                // Publicar evento de ordem de serviço cancelada
+                await _eventosGateway.Publicar(new OrdemServicoCanceladaEventDTO(ordemServico.Id));
 
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao recusar orçamento");
