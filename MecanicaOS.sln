@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -13,6 +14,24 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapters", "MecanicaOS\Adapters\Adapters.csproj", "{340971E7-54DE-3534-048F-E5C43716F3DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MecanicaOS.UnitTests", "test\MecanicaOS.UnitTests\MecanicaOS.UnitTests.csproj", "{C39EE15A-9D95-B7DB-7CE7-0196DE872E4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		k8s\api-configmap.yaml = k8s\api-configmap.yaml
+		k8s\api-deployment.yaml = k8s\api-deployment.yaml
+		k8s\api-hpa.yaml = k8s\api-hpa.yaml
+		k8s\api-secret.yaml = k8s\api-secret.yaml
+		k8s\api-service.yaml = k8s\api-service.yaml
+		k8s\db-configmap.yaml = k8s\db-configmap.yaml
+		k8s\db-deployment.yaml = k8s\db-deployment.yaml
+		k8s\db-pv.yaml = k8s\db-pv.yaml
+		k8s\db-pvc.yaml = k8s\db-pvc.yaml
+		k8s\db-service.yaml = k8s\db-service.yaml
+		k8s\metrics.yaml = k8s\metrics.yaml
+		k8s\pgadmin-configmap.yaml = k8s\pgadmin-configmap.yaml
+		k8s\pgadmin-service.yaml = k8s\pgadmin-service.yaml
+		k8s\pgadmin.yaml = k8s\pgadmin.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
