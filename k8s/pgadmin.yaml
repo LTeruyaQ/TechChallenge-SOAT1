@@ -22,21 +22,3 @@ spec:
           envFrom:
             - configMapRef:
                 name: pgadmin-configmap
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: pgadmin-service
-  labels:
-    app: pgadmin-pod
-spec:
-  type: NodePort
-  selector:
-    app: pgadmin-pod
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-      nodePort: 30050
