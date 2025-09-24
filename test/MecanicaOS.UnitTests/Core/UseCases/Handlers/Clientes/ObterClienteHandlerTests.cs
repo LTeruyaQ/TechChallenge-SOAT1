@@ -30,8 +30,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var clienteEsperado = ClienteHandlerFixture.CriarClientePessoaFisicaValido();
             clienteEsperado.Id = clienteId;
             
-            // Configurar o gateway para retornar o cliente esperado
-            _fixture.ConfigurarMockClienteGatewayParaObterPorId(clienteId, clienteEsperado);
+            // Configurar o repositório para retornar o cliente esperado
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorId(clienteId, clienteEsperado);
             
             var handler = _fixture.CriarObterClienteHandler();
 
@@ -43,7 +43,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Cliente.Should().NotBeNull();
             resultado.Cliente.Should().BeEquivalentTo(clienteEsperado);
             
-            // Verificar que o gateway foi chamado com o ID correto
+            // Verificar que o repositório foi chamado com o ID correto
             await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
             // Verificar que os logs foram registrados
@@ -57,7 +57,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Arrange
             var clienteId = Guid.NewGuid();
             
-            // Configurar o gateway para retornar null
+            // Configurar o repositório para retornar null
             _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(Task.FromResult<ClienteEntityDto>(null));
             
             var handler = _fixture.CriarObterClienteHandler();
@@ -69,7 +69,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Should().NotBeNull();
             resultado.Cliente.Should().BeNull();
             
-            // Verificar que o gateway foi chamado com o ID correto
+            // Verificar que o repositório foi chamado com o ID correto
             await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
             // Verificar que os logs foram registrados
@@ -78,13 +78,13 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
         }
 
         [Fact]
-        public async Task Handle_QuandoGatewayLancaExcecao_DeveRegistrarLogEPropagar()
+        public async Task Handle_QuandoRepositorioLancaExcecao_DeveRegistrarLogEPropagar()
         {
             // Arrange
             var clienteId = Guid.NewGuid();
             var excecaoEsperada = new Exception("Erro no banco de dados");
             
-            // Configurar o gateway para lançar uma exceção
+            // Configurar o repositório para lançar uma exceção
             _fixture.RepositorioCliente.ObterPorIdAsync(Arg.Any<Guid>())
                 .Returns<ClienteEntityDto>(x => { throw excecaoEsperada; });
             
@@ -96,7 +96,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("Erro no banco de dados");
             
-            // Verificar que o gateway foi chamado com o ID correto
+            // Verificar que o repositório foi chamado com o ID correto
             await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
             // Verificar que os logs foram registrados
@@ -138,8 +138,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 DataAtualizacao = new DateTime(2023, 6, 30)
             };
             
-            // Configurar o gateway para retornar o cliente específico
-            _fixture.ConfigurarMockClienteGatewayParaObterPorId(clienteId, clienteEsperado);
+            // Configurar o repositório para retornar o cliente específico
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorId(clienteId, clienteEsperado);
             
             var handler = _fixture.CriarObterClienteHandler();
 
@@ -147,10 +147,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var resultado = await handler.Handle(clienteId);
 
             // Assert
-            // Verificar que o gateway foi chamado com o ID correto
+            // Verificar que o repositório foi chamado com o ID correto
             await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
-            // Verificar que o resultado contém exatamente os mesmos dados retornados pelo gateway
+            // Verificar que o resultado contém exatamente os mesmos dados retornados pelo repositório
             resultado.Should().NotBeNull();
             resultado.Cliente.Should().NotBeNull();
             resultado.Cliente.Should().BeEquivalentTo(clienteEsperado);

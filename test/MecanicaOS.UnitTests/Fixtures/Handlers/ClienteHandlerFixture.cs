@@ -365,58 +365,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
 
         #endregion
 
-        #region Métodos de Compatibilidade (para facilitar migração dos testes)
-
-        public void ConfigurarMockClienteGatewayParaObterPorId(Guid id, Cliente cliente)
-        {
-            ConfigurarMockRepositorioClienteParaObterPorId(id, cliente);
-        }
-
-        public void ConfigurarMockClienteGatewayParaObterTodos(List<Cliente> clientes)
-        {
-            ConfigurarMockRepositorioClienteParaObterTodos(clientes);
-        }
-
-        public void ConfigurarMockClienteGatewayParaObterPorDocumento(string documento, Cliente cliente)
-        {
-            ConfigurarMockRepositorioClienteParaObterPorDocumento(documento, cliente);
-        }
-
-        public void ConfigurarMockClienteGatewayParaCadastrar(Cliente cliente)
-        {
-            ConfigurarMockRepositorioClienteParaCadastrar(cliente);
-            
-            // Configurar também endereço e contato se existirem
-            if (cliente.Endereco != null)
-            {
-                ConfigurarMockRepositorioEnderecoParaCadastrar(cliente.Endereco);
-            }
-            if (cliente.Contato != null)
-            {
-                ConfigurarMockRepositorioContatoParaCadastrar(cliente.Contato);
-            }
-        }
-
-        public void ConfigurarMockClienteGatewayParaAtualizar(Cliente cliente)
-        {
-            ConfigurarMockRepositorioClienteParaEditar();
-            
-            // Configurar também endereço e contato se existirem
-            if (cliente.Endereco != null)
-            {
-                ConfigurarMockRepositorioEnderecoParaEditar();
-            }
-            if (cliente.Contato != null)
-            {
-                ConfigurarMockRepositorioContatoParaEditar();
-            }
-        }
-
-        public void ConfigurarMockClienteGatewayParaRemover(Cliente cliente)
-        {
-            ConfigurarMockRepositorioClienteParaDeletar();
-        }
-
+        // Método para configurar endereço e contato para atualização
         public void ConfigurarMockEnderecoeContatoParaAtualizar(Guid enderecoId, Guid contatoId, Guid clienteId)
         {
             var endereco = new Endereco { Id = enderecoId, IdCliente = clienteId };
@@ -425,8 +374,6 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             var contato = new Contato { Id = contatoId, IdCliente = clienteId };
             ConfigurarMockRepositorioContatoParaObterPorId(contatoId, contato);
         }
-
-        #endregion
 
         #region Métodos de Conversão para DTOs
 

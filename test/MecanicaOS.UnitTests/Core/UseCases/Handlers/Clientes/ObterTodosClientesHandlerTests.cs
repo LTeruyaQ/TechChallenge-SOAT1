@@ -81,7 +81,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
         }
 
         [Fact]
-        public async Task Handle_QuandoGatewayLancaExcecao_DeveRegistrarLogEPropagar()
+        public async Task Handle_QuandoRepositorioLancaExcecao_DeveRegistrarLogEPropagar()
         {
             // Arrange
             var excecaoEsperada = new Exception("Erro no banco de dados");

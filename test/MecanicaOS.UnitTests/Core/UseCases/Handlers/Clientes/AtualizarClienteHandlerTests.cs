@@ -33,11 +33,11 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             
             var dto = ClienteHandlerFixture.CriarAtualizarClienteDtoValido();
             
-            // Configurar o gateway para retornar o cliente existente
-            _fixture.ConfigurarMockClienteGatewayParaObterPorId(clienteId, clienteExistente);
+            // Configurar o repositório para retornar o cliente existente
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorId(clienteId, clienteExistente);
             
-            // Configurar o gateway para simular a atualização
-            _fixture.ConfigurarMockClienteGatewayParaAtualizar(clienteExistente);
+            // Configurar o repositório para simular a atualização
+            _fixture.ConfigurarMockRepositorioClienteParaEditar();
             
             var handler = _fixture.CriarAtualizarClienteHandler();
 
@@ -49,7 +49,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Cliente.Should().NotBeNull();
             resultado.Cliente.Should().BeEquivalentTo(clienteExistente);
             
-            // Verificar que o gateway foi chamado para obter e atualizar o cliente
+            // Verificar que o repositório foi chamado para obter e atualizar o cliente
             await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             await _fixture.RepositorioCliente.Received(1).EditarAsync(Arg.Any<ClienteEntityDto>());
             
@@ -68,7 +68,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var clienteId = Guid.NewGuid();
             var dto = ClienteHandlerFixture.CriarAtualizarClienteDtoValido();
             
-            // Configurar o gateway para retornar null (cliente não encontrado)
+            // Configurar o repositório para retornar null (cliente não encontrado)
             _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(Task.FromResult<ClienteEntityDto>(null));
             
             var handler = _fixture.CriarAtualizarClienteHandler();
@@ -79,10 +79,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             await act.Should().ThrowAsync<DadosNaoEncontradosException>()
                 .WithMessage("Cliente não encontrado");
             
-            // Verificar que o gateway foi chamado para obter o cliente
+            // Verificar que o repositório foi chamado para obter o cliente
             await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             
-            // Verificar que o gateway NÃO foi chamado para atualizar o cliente
+            // Verificar que o repositório NÃO foi chamado para atualizar o cliente
             await _fixture.RepositorioCliente.DidNotReceive().EditarAsync(Arg.Any<ClienteEntityDto>());
             
             // Verificar que o commit NÃO foi chamado
@@ -103,11 +103,11 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             
             var dto = ClienteHandlerFixture.CriarAtualizarClienteDtoValido();
             
-            // Configurar o gateway para retornar o cliente existente
-            _fixture.ConfigurarMockClienteGatewayParaObterPorId(clienteId, clienteExistente);
+            // Configurar o repositório para retornar o cliente existente
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorId(clienteId, clienteExistente);
             
-            // Configurar o gateway para simular a atualização
-            _fixture.ConfigurarMockClienteGatewayParaAtualizar(clienteExistente);
+            // Configurar o repositório para simular a atualização
+            _fixture.ConfigurarMockRepositorioClienteParaEditar();
             
             // Configurar o UDT para falhar no commit
             _fixture.ConfigurarMockUdtParaCommitFalha();
@@ -120,7 +120,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             await act.Should().ThrowAsync<PersistirDadosException>()
                 .WithMessage("Erro ao atualizar cliente");
             
-            // Verificar que o gateway foi chamado para obter e atualizar o cliente
+            // Verificar que o repositório foi chamado para obter e atualizar o cliente
             await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             await _fixture.RepositorioCliente.Received(1).EditarAsync(Arg.Any<ClienteEntityDto>());
             
@@ -166,13 +166,13 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 ContatoId = contatoId
             };
             
-            // Configurar o gateway para retornar o cliente existente
-            _fixture.ConfigurarMockClienteGatewayParaObterPorId(clienteId, clienteExistente);
+            // Configurar o repositório para retornar o cliente existente
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorId(clienteId, clienteExistente);
             
-            // Configurar o gateway para simular a atualização
-            _fixture.ConfigurarMockClienteGatewayParaAtualizar(clienteExistente);
+            // Configurar o repositório para simular a atualização
+            _fixture.ConfigurarMockRepositorioClienteParaEditar();
             
-            // Configurar os gateways de endereço e contato
+            // Configurar os repositórios de endereço e contato
             _fixture.ConfigurarMockEnderecoeContatoParaAtualizar(enderecoId, contatoId, clienteId);
             
             var handler = _fixture.CriarAtualizarClienteHandler();
@@ -189,14 +189,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Cliente.Sexo.Should().Be("F");
             resultado.Cliente.DataNascimento.Should().Be("02/02/1990");
             
-            // Verificar que o gateway foi chamado para obter e atualizar o cliente
+            // Verificar que o repositório foi chamado para obter e atualizar o cliente
             await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
             await _fixture.RepositorioCliente.Received(1).EditarAsync(Arg.Any<ClienteEntityDto>());
             
-            // Verificar que o gateway de endereço foi chamado para atualizar o endereço
+            // Verificar que o repositório de endereço foi chamado para atualizar o endereço
             await _fixture.RepositorioEndereco.Received(1).EditarAsync(Arg.Any<EnderecoEntityDto>());
             
-            // Verificar que o gateway de contato foi chamado para atualizar o contato
+            // Verificar que o repositório de contato foi chamado para atualizar o contato
             await _fixture.RepositorioContato.Received(1).EditarAsync(Arg.Any<ContatoEntityDto>());
             
             // Verificar que o commit foi chamado

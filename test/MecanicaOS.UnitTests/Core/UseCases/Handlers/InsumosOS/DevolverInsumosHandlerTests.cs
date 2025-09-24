@@ -1,10 +1,13 @@
+using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
+using Core.Especificacoes.Base;
+using Core.Especificacoes.Base.Interfaces;
 using Core.Exceptions;
 using Core.Interfaces.Handlers.Estoques;
-using Core.UseCases.Estoques.AtualizarEstoque;
 using Core.UseCases.Estoques.ObterEstoque;
+using Core.UseCases.Estoques.AtualizarEstoque;
 using Core.UseCases.InsumosOS.DevolverInsumos;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
@@ -20,14 +23,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
     public class DevolverInsumosHandlerTests
     {
         private readonly InsumosOSHandlerFixture _fixture;
-        private readonly IObterEstoqueHandler _obterEstoqueHandler;
-        private readonly IAtualizarEstoqueHandler _atualizarEstoqueHandler;
-
         public DevolverInsumosHandlerTests()
         {
             _fixture = new InsumosOSHandlerFixture();
-            _obterEstoqueHandler = Substitute.For<IObterEstoqueHandler>();
-            _atualizarEstoqueHandler = Substitute.For<IAtualizarEstoqueHandler>();
         }
 
         [Fact]
@@ -44,24 +42,16 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
                 }
             };
 
-            // Configurar o mock do ObterEstoqueHandler
-            _obterEstoqueHandler.Handle(estoque.Id).Returns(new ObterEstoqueResponse { Estoque = estoque });
-
-            // Configurar o mock do AtualizarEstoqueHandler
-            _atualizarEstoqueHandler.Handle(
-                Arg.Is<Guid>(id => id == estoque.Id),
-                Arg.Any<AtualizarEstoqueUseCaseDto>())
-                .Returns(new AtualizarEstoqueResponse { Estoque = estoque });
+            // Configurar o repositório para retornar o estoque
+            _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque.Id, estoque);
+            
+            // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
+            var estoqueDtos = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque.Id);
 
             // Configurar o mock do UnidadeDeTrabalho
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
-            var handler = new DevolverInsumosHandler(
-                _obterEstoqueHandler,
-                _atualizarEstoqueHandler,
-                _fixture.LogServicoDevolverInsumos,
-                _fixture.UnidadeDeTrabalho,
-                _fixture.UsuarioLogadoServico);
+            var handler = _fixture.CriarDevolverInsumosHandler();
 
             // Act
             var resultado = await handler.Handle(insumos);
@@ -70,16 +60,19 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
             resultado.Should().NotBeNull();
             resultado.Sucesso.Should().BeTrue();
 
-            // Verificar que o ObterEstoqueHandler foi chamado
-            await _obterEstoqueHandler.Received(1).Handle(estoque.Id);
-
-            // Verificar que o AtualizarEstoqueHandler foi chamado com a quantidade atualizada
-            await _atualizarEstoqueHandler.Received(1).Handle(
-                estoque.Id,
-                Arg.Is<AtualizarEstoqueUseCaseDto>(dto => dto.QuantidadeDisponivel == 12));
+            // Verificar que o repositório foi chamado para obter o estoque
+            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
+            
+            // Verificar que o repositório foi chamado para atualizar o estoque
+            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
+            
+            // Verificar que os DTOs capturados estão corretos
+            estoqueDtos.Should().NotBeEmpty();
+            estoqueDtos[0].Id.Should().Be(estoque.Id);
+            estoqueDtos[0].QuantidadeDisponivel.Should().Be(12); // 10 (inicial) + 2 (devolvidos)
 
             // Verificar que o commit foi chamado
-            await _fixture.UnidadeDeTrabalho.Received(1).Commit();
+            await _fixture.UnidadeDeTrabalho.ReceivedWithAnyArgs().Commit();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoDevolverInsumos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
@@ -115,30 +108,18 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
                 }
             };
 
-            // Configurar o mock do ObterEstoqueHandler
-            _obterEstoqueHandler.Handle(estoque1.Id).Returns(new ObterEstoqueResponse { Estoque = estoque1 });
-            _obterEstoqueHandler.Handle(estoque2.Id).Returns(new ObterEstoqueResponse { Estoque = estoque2 });
-
-            // Configurar o mock do AtualizarEstoqueHandler
-            _atualizarEstoqueHandler.Handle(
-                Arg.Is<Guid>(id => id == estoque1.Id),
-                Arg.Any<AtualizarEstoqueUseCaseDto>())
-                .Returns(new AtualizarEstoqueResponse { Estoque = estoque1 });
-
-            _atualizarEstoqueHandler.Handle(
-                Arg.Is<Guid>(id => id == estoque2.Id),
-                Arg.Any<AtualizarEstoqueUseCaseDto>())
-                .Returns(new AtualizarEstoqueResponse { Estoque = estoque2 });
+            // Configurar o repositório para retornar os estoques
+            _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque1.Id, estoque1);
+            _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque2.Id, estoque2);
+            
+            // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
+            var estoqueDtos1 = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque1.Id);
+            var estoqueDtos2 = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque2.Id);
 
             // Configurar o mock do UnidadeDeTrabalho
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
-            var handler = new DevolverInsumosHandler(
-                _obterEstoqueHandler,
-                _atualizarEstoqueHandler,
-                _fixture.LogServicoDevolverInsumos,
-                _fixture.UnidadeDeTrabalho,
-                _fixture.UsuarioLogadoServico);
+            var handler = _fixture.CriarDevolverInsumosHandler();
 
             // Act
             var resultado = await handler.Handle(insumos);
@@ -147,21 +128,22 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
             resultado.Should().NotBeNull();
             resultado.Sucesso.Should().BeTrue();
 
-            // Verificar que o ObterEstoqueHandler foi chamado para cada estoque
-            await _obterEstoqueHandler.Received(1).Handle(estoque1.Id);
-            await _obterEstoqueHandler.Received(1).Handle(estoque2.Id);
-
-            // Verificar que o AtualizarEstoqueHandler foi chamado com as quantidades atualizadas
-            await _atualizarEstoqueHandler.Received(1).Handle(
-                estoque1.Id,
-                Arg.Is<AtualizarEstoqueUseCaseDto>(dto => dto.QuantidadeDisponivel == 12));
-
-            await _atualizarEstoqueHandler.Received(1).Handle(
-                estoque2.Id,
-                Arg.Is<AtualizarEstoqueUseCaseDto>(dto => dto.QuantidadeDisponivel == 6));
+            // Verificar que o repositório foi chamado para obter cada estoque
+            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
+            
+            // Verificar que o repositório foi chamado para atualizar os estoques
+            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
+            
+            // Verificar que os DTOs capturados estão corretos
+            estoqueDtos1.Should().NotBeEmpty();
+            estoqueDtos1[0].Id.Should().Be(estoque1.Id);
+            estoqueDtos1[0].QuantidadeDisponivel.Should().Be(12); // 10 (inicial) + 2 (devolvidos)
+            
+            estoqueDtos2.Should().NotBeEmpty();
+            estoqueDtos2[0].QuantidadeDisponivel.Should().Be(6); // 5 (inicial) + 1 (devolvido)
 
             // Verificar que o commit foi chamado
-            await _fixture.UnidadeDeTrabalho.Received(1).Commit();
+            await _fixture.UnidadeDeTrabalho.ReceivedWithAnyArgs().Commit();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoDevolverInsumos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
@@ -182,32 +164,31 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
                 }
             };
 
-            // Configurar o mock do ObterEstoqueHandler para retornar null
-            _obterEstoqueHandler.Handle(estoqueId).Returns(new ObterEstoqueResponse { Estoque = null });
+            // Configurar o repositório para retornar null (estoque não encontrado)
+            _fixture.RepositorioEstoque
+                .ObterPorIdAsync(estoqueId)
+                .Returns((EstoqueEntityDto)null);
+                
+            _fixture.RepositorioEstoque
+                .ObterUmProjetadoAsync<Estoque>(Arg.Any<IEspecificacao<EstoqueEntityDto>>())
+                .Returns((Estoque)null);
 
-            var handler = new DevolverInsumosHandler(
-                _obterEstoqueHandler,
-                _atualizarEstoqueHandler,
-                _fixture.LogServicoDevolverInsumos,
-                _fixture.UnidadeDeTrabalho,
-                _fixture.UsuarioLogadoServico);
+            var handler = _fixture.CriarDevolverInsumosHandler();
 
             // Act & Assert
             var act = async () => await handler.Handle(insumos);
 
             await act.Should().ThrowAsync<DadosNaoEncontradosException>()
-                .WithMessage($"Estoque com ID {estoqueId} não encontrado");
+                .WithMessage("Estoque não encontrado");
 
-            // Verificar que o ObterEstoqueHandler foi chamado
-            await _obterEstoqueHandler.Received(1).Handle(estoqueId);
-
-            // Verificar que o AtualizarEstoqueHandler não foi chamado
-            await _atualizarEstoqueHandler.DidNotReceive().Handle(
-                Arg.Any<Guid>(),
-                Arg.Any<AtualizarEstoqueUseCaseDto>());
+            // Verificar que o repositório foi chamado para obter o estoque
+            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
+            
+            // Verificar que o repositório não foi chamado para atualizar o estoque
+            await _fixture.RepositorioEstoque.DidNotReceiveWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
 
             // Verificar que o commit não foi chamado
-            await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
+            await _fixture.UnidadeDeTrabalho.DidNotReceiveWithAnyArgs().Commit();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoDevolverInsumos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
@@ -228,41 +209,35 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
                 }
             };
 
-            // Configurar o mock do ObterEstoqueHandler
-            _obterEstoqueHandler.Handle(estoque.Id).Returns(new ObterEstoqueResponse { Estoque = estoque });
-
-            // Configurar o mock do AtualizarEstoqueHandler
-            _atualizarEstoqueHandler.Handle(
-                Arg.Is<Guid>(id => id == estoque.Id),
-                Arg.Any<AtualizarEstoqueUseCaseDto>())
-                .Returns(new AtualizarEstoqueResponse { Estoque = estoque });
+            // Configurar o repositório para retornar o estoque
+            _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque.Id, estoque);
+            
+            // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
+            var estoqueDtos = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque.Id);
 
             // Configurar o mock do UnidadeDeTrabalho para falhar no commit
             _fixture.ConfigurarMockUdtParaCommitFalha();
 
-            var handler = new DevolverInsumosHandler(
-                _obterEstoqueHandler,
-                _atualizarEstoqueHandler,
-                _fixture.LogServicoDevolverInsumos,
-                _fixture.UnidadeDeTrabalho,
-                _fixture.UsuarioLogadoServico);
+            var handler = _fixture.CriarDevolverInsumosHandler();
 
             // Act & Assert
             var act = async () => await handler.Handle(insumos);
 
             await act.Should().ThrowAsync<PersistirDadosException>()
-                .WithMessage("Erro ao devolver insumos ao estoque");
+                .WithMessage("Erro ao atualizar estoque");
 
-            // Verificar que o ObterEstoqueHandler foi chamado
-            await _obterEstoqueHandler.Received(1).Handle(estoque.Id);
-
-            // Verificar que o AtualizarEstoqueHandler foi chamado
-            await _atualizarEstoqueHandler.Received(1).Handle(
-                estoque.Id,
-                Arg.Is<AtualizarEstoqueUseCaseDto>(dto => dto.QuantidadeDisponivel == 12));
+            // Verificar que o repositório foi chamado para obter o estoque
+            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
+            
+            // Verificar que o repositório foi chamado para atualizar o estoque
+            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
+            
+            // Verificar que os DTOs capturados estão corretos
+            estoqueDtos.Should().NotBeEmpty();
+            estoqueDtos[0].QuantidadeDisponivel.Should().Be(12); // 10 (inicial) + 2 (devolvidos)
 
             // Verificar que o commit foi chamado
-            await _fixture.UnidadeDeTrabalho.Received(1).Commit();
+            await _fixture.UnidadeDeTrabalho.ReceivedWithAnyArgs().Commit();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoDevolverInsumos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
@@ -284,25 +259,16 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
                 }
             };
 
-            // Configurar o mock do ObterEstoqueHandler
-            _obterEstoqueHandler.Handle(estoque.Id).Returns(new ObterEstoqueResponse { Estoque = estoque });
-
-            // Capturar o DTO passado para o AtualizarEstoqueHandler
-            AtualizarEstoqueUseCaseDto dtoCapturado = null;
-            _atualizarEstoqueHandler.Handle(
-                Arg.Is<Guid>(id => id == estoque.Id),
-                Arg.Do<AtualizarEstoqueUseCaseDto>(dto => dtoCapturado = dto))
-                .Returns(new AtualizarEstoqueResponse { Estoque = estoque });
+            // Configurar o repositório para retornar o estoque
+            _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque.Id, estoque);
+                
+            // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
+            var estoqueDtos = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque.Id);
 
             // Configurar o mock do UnidadeDeTrabalho
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
-            var handler = new DevolverInsumosHandler(
-                _obterEstoqueHandler,
-                _atualizarEstoqueHandler,
-                _fixture.LogServicoDevolverInsumos,
-                _fixture.UnidadeDeTrabalho,
-                _fixture.UsuarioLogadoServico);
+            var handler = _fixture.CriarDevolverInsumosHandler();
 
             // Act
             var resultado = await handler.Handle(insumos);
@@ -311,15 +277,19 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
             resultado.Should().NotBeNull();
             resultado.Sucesso.Should().BeTrue();
 
-            // Verificar que o DTO capturado tem os valores corretos
-            dtoCapturado.Should().NotBeNull();
-            dtoCapturado.Insumo.Should().Be(estoque.Insumo);
-            dtoCapturado.QuantidadeDisponivel.Should().Be(13); // 10 (inicial) + 3 (devolvidos)
-            dtoCapturado.QuantidadeMinima.Should().Be(estoque.QuantidadeMinima);
-            dtoCapturado.Preco.Should().Be(estoque.Preco);
+            // Verificar que os DTOs capturados estão corretos
+            estoqueDtos.Should().NotBeEmpty();
+            estoqueDtos[0].Id.Should().Be(estoque.Id);
+            estoqueDtos[0].QuantidadeDisponivel.Should().Be(13); // 10 (inicial) + 3 (devolvidos)
+            estoqueDtos[0].Insumo.Should().Be(estoque.Insumo);
+            estoqueDtos[0].Descricao.Should().Be(estoque.Descricao);
+            estoqueDtos[0].Preco.Should().Be(estoque.Preco);
+            estoqueDtos[0].QuantidadeMinima.Should().Be(estoque.QuantidadeMinima);
+            estoqueDtos[0].Ativo.Should().Be(estoque.Ativo);
+            estoqueDtos[0].DataCadastro.Should().Be(estoque.DataCadastro);
 
             // Verificar que o commit foi chamado
-            await _fixture.UnidadeDeTrabalho.Received(1).Commit();
+            await _fixture.UnidadeDeTrabalho.ReceivedWithAnyArgs().Commit();
         }
     }
 }

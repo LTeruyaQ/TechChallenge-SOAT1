@@ -30,8 +30,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var clienteEsperado = ClienteHandlerFixture.CriarClientePessoaFisicaValido();
             clienteEsperado.Documento = documento;
             
-            // Configurar o gateway para retornar o cliente esperado
-            _fixture.ConfigurarMockClienteGatewayParaObterPorDocumento(documento, clienteEsperado);
+            // Configurar o repositório para retornar o cliente esperado
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorDocumento(documento, clienteEsperado);
             
             var handler = _fixture.CriarObterClientePorDocumentoHandler();
 
@@ -43,7 +43,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Cliente.Should().NotBeNull();
             resultado.Cliente.Should().Be(clienteEsperado);
             
-            // Verificar que o gateway foi chamado com o documento correto
+            // Verificar que o repositório foi chamado com o documento correto
             await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que os logs foram registrados
@@ -57,8 +57,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Arrange
             var documento = "999.999.999-99";
             
-            // Configurar o gateway para retornar null (cliente não encontrado)
-            _fixture.ClienteGateway.ObterClientePorDocumentoAsync(documento).Returns((Cliente)null);
+            // Configurar o repositório para retornar null (cliente não encontrado)
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorDocumento(documento, null);
             
             var handler = _fixture.CriarObterClientePorDocumentoHandler();
 
@@ -68,7 +68,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             await act.Should().ThrowAsync<DadosNaoEncontradosException>()
                 .WithMessage($"Cliente de documento {documento} não encontrado");
             
-            // Verificar que o gateway foi chamado com o documento correto
+            // Verificar que o repositório foi chamado com o documento correto
             await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que os logs foram registrados
@@ -90,7 +90,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             await act.Should().ThrowAsync<DadosInvalidosException>()
                 .WithMessage("Deve ser informado o documento do usuario do cliente");
             
-            // Verificar que o gateway NÃO foi chamado
+            // Verificar que o repositório NÃO foi chamado
             await _fixture.RepositorioCliente.DidNotReceive().ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que os logs foram registrados
@@ -99,7 +99,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
         }
 
         [Fact]
-        public async Task Handle_QuandoGatewayLancaExcecao_DeveRegistrarLogEPropagar()
+        public async Task Handle_QuandoRepositorioLancaExcecao_DeveRegistrarLogEPropagar()
         {
             // Arrange
             var documento = "123.456.789-00";
@@ -118,7 +118,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("Erro no banco de dados");
             
-            // Verificar que o gateway foi chamado com o documento correto
+            // Verificar que o repositório foi chamado com o documento correto
             await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
             // Verificar que os logs foram registrados
@@ -160,8 +160,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 DataAtualizacao = new DateTime(2023, 6, 30)
             };
             
-            // Configurar o gateway para retornar o cliente específico
-            _fixture.ConfigurarMockClienteGatewayParaObterPorDocumento(documento, clienteEsperado);
+            // Configurar o repositório para retornar o cliente específico
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorDocumento(documento, clienteEsperado);
             
             var handler = _fixture.CriarObterClientePorDocumentoHandler();
 
@@ -169,10 +169,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var resultado = await handler.Handle(documento);
 
             // Assert
-            // Verificar que o gateway foi chamado com o documento correto
+            // Verificar que o repositório foi chamado com o documento correto
             await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
             
-            // Verificar que o resultado contém exatamente os mesmos dados retornados pelo gateway
+            // Verificar que o resultado contém exatamente os mesmos dados retornados pelo repositório
             resultado.Should().NotBeNull();
             resultado.Cliente.Should().NotBeNull();
             resultado.Cliente.Should().BeSameAs(clienteEsperado);
