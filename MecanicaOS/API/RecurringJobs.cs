@@ -3,6 +3,7 @@ using Hangfire;
 
 namespace API
 {
+    //TODO: ver para onde essa classe vai
     public class RecurringJobs
     {
         private readonly IRecurringJobManager _recurringJobManager;
