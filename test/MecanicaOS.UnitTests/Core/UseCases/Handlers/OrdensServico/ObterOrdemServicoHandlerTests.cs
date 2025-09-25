@@ -1,3 +1,6 @@
+using Core.DTOs.Entidades.OrdemServicos;
+using Core.Entidades;
+using Core.Especificacoes.Base.Interfaces;
 using Core.Exceptions;
 using Core.UseCases.OrdensServico.ObterOrdemServico;
 using FluentAssertions;
@@ -24,7 +27,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             // Arrange
             var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida();
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
 
             var handler = _fixture.CriarObterOrdemServicoHandler();
 
@@ -41,8 +44,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             resultado.OrdemServico.Status.Should().Be(ordemServico.Status);
             resultado.OrdemServico.Descricao.Should().Be(ordemServico.Descricao);
 
-            // Verificar que o gateway foi chamado
-            await _fixture.OrdemServicoGateway.Received(1).ObterPorIdAsync(ordemServico.Id);
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioOrdemServico.Received(1).ObterUmProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>());
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
@@ -55,7 +58,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             // Arrange
             var ordemServicoId = Guid.NewGuid();
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorIdNull(ordemServicoId);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServicoId, null);
 
             // Modificar o handler para lançar exceção quando ordemServico for null
             var handler = new ObterOrdemServicoHandler(
@@ -73,8 +76,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             await act.Should().ThrowAsync<DadosNaoEncontradosException>()
                 .WithMessage("Ordem de serviço não encontrada");
 
-            // Verificar que o gateway foi chamado
-            await _fixture.OrdemServicoGateway.Received(1).ObterPorIdAsync(ordemServicoId);
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioOrdemServico.Received(1).ObterUmProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>());
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
@@ -82,14 +85,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
         }
 
         [Fact]
-        public async Task Handle_ComExcecaoInesperada_DevePropagaExcecao()
+        public async Task Handle_QuandoRepositorioLancaExcecao_DeveRegistrarLogEPropagar()
         {
             // Arrange
             var ordemServicoId = Guid.NewGuid();
+            var excecaoEsperada = new InvalidOperationException("Erro simulado");
 
-            // Configurar o gateway para lançar uma exceção
-            _fixture.OrdemServicoGateway.When(x => x.ObterPorIdAsync(ordemServicoId))
-                .Do(x => { throw new InvalidOperationException("Erro simulado"); });
+            // Configurar o repositório para lançar uma exceção
+            _fixture.RepositorioOrdemServico.ObterUmProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>())
+                .Returns(Task.FromException<OrdemServico>(excecaoEsperada));
 
             var handler = _fixture.CriarObterOrdemServicoHandler();
 

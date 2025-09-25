@@ -1,6 +1,9 @@
+using Core.DTOs.Entidades.OrdemServicos;
+using Core.DTOs.UseCases.Eventos;
 using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
+using Core.Especificacoes.Base.Interfaces;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.Repositorios;
@@ -13,17 +16,23 @@ using Core.UseCases.OrdensServico.ObterOrdemServico;
 using Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus;
 using Core.UseCases.OrdensServico.ObterTodosOrdensServico;
 using Core.UseCases.OrdensServico.RecusarOrcamento;
+using Adapters.Gateways;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MecanicaOS.UnitTests.Fixtures.Handlers
 {
     public class OrdemServicoHandlerFixture
     {
-        // Gateways
+        // Repositórios mockados
+        public IRepositorio<OrdemServicoEntityDto> RepositorioOrdemServico { get; }
+        
+        // Gateways reais
         public IOrdemServicoGateway OrdemServicoGateway { get; }
+        public IEventosGateway EventosGateway { get; }
         
         // UseCases
         public IClienteUseCases ClienteUseCases { get; }
@@ -42,12 +51,14 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         // Outros serviços
         public IUnidadeDeTrabalho UnidadeDeTrabalho { get; }
         public IUsuarioLogadoServico UsuarioLogadoServico { get; }
-        public IEventosGateway EventosGateway { get; }
 
         public OrdemServicoHandlerFixture()
         {
-            // Inicializar gateways
-            OrdemServicoGateway = Substitute.For<IOrdemServicoGateway>();
+            // Inicializar repositórios mockados
+            RepositorioOrdemServico = Substitute.For<IRepositorio<OrdemServicoEntityDto>>();
+            
+            // Inicializar gateways reais usando os repositórios mockados
+            OrdemServicoGateway = new OrdemServicoGateway(RepositorioOrdemServico);
             EventosGateway = Substitute.For<IEventosGateway>();
             
             // Inicializar use cases
@@ -67,6 +78,9 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             // Inicializar outros serviços
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalho>();
             UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServico>();
+            
+            // Configuração padrão para o UDT
+            UnidadeDeTrabalho.Commit().Returns(Task.FromResult(true));
         }
 
         // Métodos para criar handlers
@@ -147,24 +161,50 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             UnidadeDeTrabalho.Commit().Returns(Task.FromResult(false));
         }
 
-        public void ConfigurarMockOrdemServicoGatewayParaObterPorId(Guid id, OrdemServico ordemServico)
+        public void ConfigurarMockRepositorioOrdemServicoParaObterPorId(Guid id, OrdemServico ordemServico)
         {
-            OrdemServicoGateway.ObterPorIdAsync(id).Returns(ordemServico);
+            var dto = ordemServico != null ? ToOrdemServicoDto(ordemServico) : null;
+            RepositorioOrdemServico.ObterPorIdAsync(id).Returns(dto);
+            RepositorioOrdemServico.ObterUmProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>()).Returns(ordemServico);
         }
 
-        public void ConfigurarMockOrdemServicoGatewayParaObterPorIdNull(Guid id)
+        public void ConfigurarMockRepositorioOrdemServicoParaObterTodos(List<OrdemServico> ordensServico)
         {
-            OrdemServicoGateway.ObterPorIdAsync(id).Returns((OrdemServico)null);
+            var dtos = ordensServico.Select(os => ToOrdemServicoDto(os)).ToList();
+            RepositorioOrdemServico.ObterTodosAsync().Returns(dtos);
+            RepositorioOrdemServico.ListarAsync(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>()).Returns(dtos);
         }
 
-        public void ConfigurarMockOrdemServicoGatewayParaObterTodos(List<OrdemServico> ordensServico)
+        public void ConfigurarMockRepositorioOrdemServicoParaObterPorStatus(StatusOrdemServico status, List<OrdemServico> ordensServico)
         {
-            OrdemServicoGateway.ObterTodosAsync().Returns(ordensServico);
+            var dtos = ordensServico.Select(os => ToOrdemServicoDto(os)).ToList();
+            RepositorioOrdemServico.ListarProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>())
+                .Returns(ordensServico);
         }
-
-        public void ConfigurarMockOrdemServicoGatewayParaObterPorStatus(StatusOrdemServico status, List<OrdemServico> ordensServico)
+        
+        public void ConfigurarMockRepositorioOrdemServicoParaCadastrar(OrdemServico ordemServico)
         {
-            OrdemServicoGateway.ObterOrdemServicoPorStatusAsync(status).Returns(ordensServico);
+            var dto = ToOrdemServicoDto(ordemServico);
+            RepositorioOrdemServico.CadastrarAsync(Arg.Any<OrdemServicoEntityDto>()).Returns(dto);
+        }
+        
+        public void ConfigurarMockRepositorioOrdemServicoParaEditar()
+        {
+            RepositorioOrdemServico.EditarAsync(Arg.Any<OrdemServicoEntityDto>()).Returns(Task.CompletedTask);
+        }
+        
+        public void ConfigurarMockRepositorioOrdemServicoParaLancarExcecaoAoEditar(Guid id, Exception excecao)
+        {
+            // Configura o mock para obter a ordem de serviço
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
+            ordemServico.Id = id;
+            ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1);
+            
+            ConfigurarMockRepositorioOrdemServicoParaObterPorId(id, ordemServico);
+            
+            // Configura o mock para lançar exceção ao editar
+            RepositorioOrdemServico.EditarAsync(Arg.Any<OrdemServicoEntityDto>())
+                .Returns(Task.FromException(excecao));
         }
 
         public void ConfigurarMockClienteUseCasesParaObterPorId(Guid id, Cliente cliente)
@@ -296,5 +336,27 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 Descricao = descricao
             };
         }
+        
+        #region Métodos de Conversão para DTOs
+        
+        private static OrdemServicoEntityDto ToOrdemServicoDto(OrdemServico ordemServico)
+        {
+            return new OrdemServicoEntityDto
+            {
+                Id = ordemServico.Id,
+                Ativo = ordemServico.Ativo,
+                DataCadastro = ordemServico.DataCadastro,
+                DataAtualizacao = ordemServico.DataAtualizacao,
+                ClienteId = ordemServico.ClienteId,
+                VeiculoId = ordemServico.VeiculoId,
+                ServicoId = ordemServico.ServicoId,
+                Descricao = ordemServico.Descricao,
+                Status = ordemServico.Status,
+                DataEnvioOrcamento = ordemServico.DataEnvioOrcamento,
+                Orcamento = ordemServico.Orcamento
+            };
+        }
+        
+        #endregion
     }
 }

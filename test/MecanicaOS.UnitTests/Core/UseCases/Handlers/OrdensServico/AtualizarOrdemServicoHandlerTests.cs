@@ -1,3 +1,4 @@
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
@@ -29,7 +30,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
                 StatusOrdemServico.EmExecucao, "Descrição atualizada");
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaEditar();
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
             var handler = _fixture.CriarAtualizarOrdemServicoHandler();
@@ -43,9 +45,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             resultado.OrdemServico.Status.Should().Be(StatusOrdemServico.EmExecucao);
             resultado.OrdemServico.Descricao.Should().Be("Descrição atualizada");
 
-            // Verificar que o gateway foi chamado
-            await _fixture.OrdemServicoGateway.Received(1).EditarAsync(
-                Arg.Is<OrdemServico>(os => 
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioOrdemServico.Received(1).EditarAsync(
+                Arg.Is<OrdemServicoEntityDto>(os => 
                     os.Id == ordemServico.Id && 
                     os.Status == StatusOrdemServico.EmExecucao && 
                     os.Descricao == "Descrição atualizada"));
@@ -67,7 +69,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
                 StatusOrdemServico.EmExecucao);
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaEditar();
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
             var handler = _fixture.CriarAtualizarOrdemServicoHandler();
@@ -81,9 +84,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             resultado.OrdemServico.Status.Should().Be(StatusOrdemServico.EmExecucao);
             resultado.OrdemServico.Descricao.Should().Be(descricaoOriginal);
 
-            // Verificar que o gateway foi chamado
-            await _fixture.OrdemServicoGateway.Received(1).EditarAsync(
-                Arg.Is<OrdemServico>(os => 
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioOrdemServico.Received(1).EditarAsync(
+                Arg.Is<OrdemServicoEntityDto>(os => 
                     os.Id == ordemServico.Id && 
                     os.Status == StatusOrdemServico.EmExecucao && 
                     os.Descricao == descricaoOriginal));
@@ -101,7 +104,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
                 null, "Descrição atualizada");
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaEditar();
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
             var handler = _fixture.CriarAtualizarOrdemServicoHandler();
@@ -115,9 +119,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             resultado.OrdemServico.Status.Should().Be(statusOriginal);
             resultado.OrdemServico.Descricao.Should().Be("Descrição atualizada");
 
-            // Verificar que o gateway foi chamado
-            await _fixture.OrdemServicoGateway.Received(1).EditarAsync(
-                Arg.Is<OrdemServico>(os => 
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioOrdemServico.Received(1).EditarAsync(
+                Arg.Is<OrdemServicoEntityDto>(os => 
                     os.Id == ordemServico.Id && 
                     os.Status == statusOriginal && 
                     os.Descricao == "Descrição atualizada"));
@@ -134,7 +138,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
                 StatusOrdemServico.EmExecucao, "Descrição atualizada");
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorIdNull(ordemServicoId);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServicoId, null);
 
             var handler = _fixture.CriarAtualizarOrdemServicoHandler();
 
@@ -144,8 +148,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             await act.Should().ThrowAsync<DadosNaoEncontradosException>()
                 .WithMessage("Ordem de serviço não encontrada");
 
-            // Verificar que o gateway de edição não foi chamado
-            await _fixture.OrdemServicoGateway.DidNotReceive().EditarAsync(Arg.Any<OrdemServico>());
+            // Verificar que o repositório de edição não foi chamado
+            await _fixture.RepositorioOrdemServico.DidNotReceive().EditarAsync(Arg.Any<OrdemServicoEntityDto>());
 
             // Verificar que o commit não foi chamado
             await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
@@ -163,7 +167,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
                 StatusOrdemServico.EmExecucao, "Descrição atualizada");
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaEditar();
             _fixture.ConfigurarMockUdtParaCommitFalha();
 
             var handler = _fixture.CriarAtualizarOrdemServicoHandler();
@@ -174,8 +179,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             await act.Should().ThrowAsync<PersistirDadosException>()
                 .WithMessage("Erro ao atualizar ordem de serviço");
 
-            // Verificar que o gateway foi chamado
-            await _fixture.OrdemServicoGateway.Received(1).EditarAsync(Arg.Any<OrdemServico>());
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioOrdemServico.Received(1).EditarAsync(Arg.Any<OrdemServicoEntityDto>());
 
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
@@ -194,7 +199,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var dto = OrdemServicoHandlerFixture.CriarAtualizarOrdemServicoDto(
                 StatusOrdemServico.EmExecucao);
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaEditar();
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
             var handler = _fixture.CriarAtualizarOrdemServicoHandler();
@@ -206,9 +212,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             resultado.OrdemServico.DataAtualizacao.Should().NotBe(dataAtualizacaoOriginal);
             resultado.OrdemServico.DataAtualizacao.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
 
-            // Verificar que o gateway foi chamado com a data atualizada
-            await _fixture.OrdemServicoGateway.Received(1).EditarAsync(
-                Arg.Is<OrdemServico>(os => os.DataAtualizacao > dataAtualizacaoOriginal));
+            // Verificar que o repositório foi chamado com a data atualizada
+            await _fixture.RepositorioOrdemServico.Received(1).EditarAsync(
+                Arg.Is<OrdemServicoEntityDto>(os => os.DataAtualizacao > dataAtualizacaoOriginal));
         }
     }
 }

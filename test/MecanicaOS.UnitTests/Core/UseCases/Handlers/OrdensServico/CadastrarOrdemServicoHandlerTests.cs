@@ -1,3 +1,4 @@
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
@@ -34,6 +35,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             _fixture.ConfigurarMockClienteUseCasesParaObterPorId(cliente.Id, cliente);
             _fixture.ConfigurarMockServicoUseCasesParaObterPorId(servico.Id, servico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaCadastrar(OrdemServicoHandlerFixture.CriarOrdemServicoValida());
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
             var handler = _fixture.CriarCadastrarOrdemServicoHandler();
@@ -49,9 +51,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             resultado.OrdemServico.ServicoId.Should().Be(servico.Id);
             resultado.OrdemServico.Status.Should().Be(StatusOrdemServico.Recebida);
 
-            // Verificar que o gateway foi chamado
-            await _fixture.OrdemServicoGateway.Received(1).CadastrarAsync(
-                Arg.Is<OrdemServico>(os => 
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioOrdemServico.Received(1).CadastrarAsync(
+                Arg.Is<OrdemServicoEntityDto>(os => 
                     os.ClienteId == cliente.Id && 
                     os.VeiculoId == veiculo.Id && 
                     os.ServicoId == servico.Id));
@@ -85,8 +87,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             await act.Should().ThrowAsync<DadosNaoEncontradosException>()
                 .WithMessage("Cliente não encontrado");
 
-            // Verificar que o gateway não foi chamado
-            await _fixture.OrdemServicoGateway.DidNotReceive().CadastrarAsync(Arg.Any<OrdemServico>());
+            // Verificar que o repositório não foi chamado
+            await _fixture.RepositorioOrdemServico.DidNotReceive().CadastrarAsync(Arg.Any<OrdemServicoEntityDto>());
 
             // Verificar que o commit não foi chamado
             await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
@@ -118,8 +120,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             await act.Should().ThrowAsync<DadosNaoEncontradosException>()
                 .WithMessage("Serviço não encontrado");
 
-            // Verificar que o gateway não foi chamado
-            await _fixture.OrdemServicoGateway.DidNotReceive().CadastrarAsync(Arg.Any<OrdemServico>());
+            // Verificar que o repositório não foi chamado
+            await _fixture.RepositorioOrdemServico.DidNotReceive().CadastrarAsync(Arg.Any<OrdemServicoEntityDto>());
 
             // Verificar que o commit não foi chamado
             await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
@@ -142,6 +144,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             _fixture.ConfigurarMockClienteUseCasesParaObterPorId(cliente.Id, cliente);
             _fixture.ConfigurarMockServicoUseCasesParaObterPorId(servico.Id, servico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaCadastrar(OrdemServicoHandlerFixture.CriarOrdemServicoValida());
             _fixture.ConfigurarMockUdtParaCommitFalha();
 
             var handler = _fixture.CriarCadastrarOrdemServicoHandler();
@@ -152,8 +155,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             await act.Should().ThrowAsync<PersistirDadosException>()
                 .WithMessage("Erro ao cadastrar ordem de serviço");
 
-            // Verificar que o gateway foi chamado
-            await _fixture.OrdemServicoGateway.Received(1).CadastrarAsync(Arg.Any<OrdemServico>());
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioOrdemServico.Received(1).CadastrarAsync(Arg.Any<OrdemServicoEntityDto>());
 
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
@@ -177,9 +180,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             _fixture.ConfigurarMockClienteUseCasesParaObterPorId(cliente.Id, cliente);
             _fixture.ConfigurarMockServicoUseCasesParaObterPorId(servico.Id, servico);
 
-            // Configurar o gateway para lançar uma exceção
-            _fixture.OrdemServicoGateway.When(x => x.CadastrarAsync(Arg.Any<OrdemServico>()))
-                .Do(x => { throw new InvalidOperationException("Erro simulado"); });
+            // Configurar o repositório para lançar uma exceção
+            _fixture.RepositorioOrdemServico.CadastrarAsync(Arg.Any<OrdemServicoEntityDto>())
+                .Returns(Task.FromException<OrdemServicoEntityDto>(new InvalidOperationException("Erro simulado")));
 
             var handler = _fixture.CriarCadastrarOrdemServicoHandler();
 

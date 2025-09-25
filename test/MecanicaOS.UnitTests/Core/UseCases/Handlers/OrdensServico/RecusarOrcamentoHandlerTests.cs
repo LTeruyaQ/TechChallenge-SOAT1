@@ -1,3 +1,4 @@
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.DTOs.UseCases.Eventos;
 using Core.Entidades;
 using Core.Enumeradores;
@@ -28,7 +29,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
             ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1); // Orçamento enviado ontem
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaEditar();
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
             var handler = _fixture.CriarRecusarOrcamentoHandler();
@@ -40,17 +42,17 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             resultado.Should().NotBeNull();
             resultado.Sucesso.Should().BeTrue();
 
-            // Verificar que o gateway foi chamado para editar com status atualizado
-            await _fixture.OrdemServicoGateway.ReceivedWithAnyArgs().EditarAsync(
-                Arg.Is<OrdemServico>(os => 
+            // Verificar que o repositório foi chamado para editar com status atualizado
+            await _fixture.RepositorioOrdemServico.Received(1).EditarAsync(
+                Arg.Is<OrdemServicoEntityDto>(os => 
                     os.Id == ordemServico.Id && 
                     os.Status == StatusOrdemServico.Cancelada));
 
             // Verificar que o evento foi publicado
-            await _fixture.EventosGateway.ReceivedWithAnyArgs().Publicar(Arg.Any<OrdemServicoCanceladaEventDTO>());
+            await _fixture.EventosGateway.Received(1).Publicar(Arg.Any<OrdemServicoCanceladaEventDTO>());
 
             // Verificar que o commit foi chamado
-            await _fixture.UnidadeDeTrabalho.ReceivedWithAnyArgs().Commit();
+            await _fixture.UnidadeDeTrabalho.Received(1).Commit();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoRecusarOrcamento.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
@@ -63,7 +65,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             // Arrange
             var ordemServicoId = Guid.NewGuid();
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorIdNull(ordemServicoId);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServicoId, null);
 
             var handler = _fixture.CriarRecusarOrcamentoHandler();
 
@@ -73,8 +75,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             await act.Should().ThrowAsync<DadosNaoEncontradosException>()
                 .WithMessage("Ordem de serviço não encontrada");
 
-            // Verificar que o gateway não foi chamado para editar
-            await _fixture.OrdemServicoGateway.DidNotReceive().EditarAsync(Arg.Any<OrdemServico>());
+            // Verificar que o repositório não foi chamado para editar
+            await _fixture.RepositorioOrdemServico.DidNotReceive().EditarAsync(Arg.Any<OrdemServicoEntityDto>());
 
             // Verificar que o evento não foi publicado
             await _fixture.EventosGateway.DidNotReceive().Publicar(Arg.Any<OrdemServicoCanceladaEventDTO>());
@@ -93,9 +95,16 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             // Arrange
             var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.Recebida);
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
-
-            var handler = _fixture.CriarRecusarOrcamentoHandler();
+            // Importante: Configurar o mock para retornar a ordem de serviço, não null
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
+            
+            // Configurar o handler diretamente para garantir o comportamento correto
+            var handler = new RecusarOrcamentoHandler(
+                _fixture.OrdemServicoGateway,
+                _fixture.EventosGateway,
+                _fixture.LogServicoRecusarOrcamento,
+                _fixture.UnidadeDeTrabalho,
+                _fixture.UsuarioLogadoServico);
 
             // Act & Assert
             var act = async () => await handler.Handle(ordemServico.Id);
@@ -103,20 +112,20 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             await act.Should().ThrowAsync<DadosInvalidosException>()
                 .WithMessage("Ordem de serviço não está aguardando aprovação do orçamento");
 
-            // Verificar que o gateway não foi chamado para editar
-            await _fixture.OrdemServicoGateway.DidNotReceive().EditarAsync(Arg.Any<OrdemServico>());
+            // Verificar que o repositório não foi chamado para editar
+            await _fixture.RepositorioOrdemServico.DidNotReceive().EditarAsync(Arg.Any<OrdemServicoEntityDto>());
 
             // Verificar que o evento não foi publicado
             await _fixture.EventosGateway.DidNotReceive().Publicar(Arg.Any<OrdemServicoCanceladaEventDTO>());
 
             // Verificar que o commit não foi chamado
             await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
-
+            
             // Verificar que os logs foram registrados
             _fixture.LogServicoRecusarOrcamento.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
             _fixture.LogServicoRecusarOrcamento.Received(1).LogErro(Arg.Any<string>(), Arg.Any<DadosInvalidosException>());
         }
-
+        
         [Fact]
         public async Task Handle_QuandoCommitFalha_DeveLancarPersistirDadosException()
         {
@@ -124,7 +133,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
             ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1); // Orçamento enviado ontem
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaEditar();
             _fixture.ConfigurarMockUdtParaCommitFalha();
 
             var handler = _fixture.CriarRecusarOrcamentoHandler();
@@ -135,8 +145,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             await act.Should().ThrowAsync<PersistirDadosException>()
                 .WithMessage("Erro ao recusar orçamento");
 
-            // Verificar que o gateway foi chamado para editar
-            await _fixture.OrdemServicoGateway.Received(1).EditarAsync(Arg.Any<OrdemServico>());
+            // Verificar que o repositório foi chamado para editar
+            await _fixture.RepositorioOrdemServico.Received(1).EditarAsync(Arg.Any<OrdemServicoEntityDto>());
 
             // Verificar que o evento foi publicado (mesmo com falha no commit)
             await _fixture.EventosGateway.Received(1).Publicar(Arg.Any<OrdemServicoCanceladaEventDTO>());
@@ -147,6 +157,29 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             // Verificar que os logs foram registrados
             _fixture.LogServicoRecusarOrcamento.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
             _fixture.LogServicoRecusarOrcamento.Received(1).LogErro(Arg.Any<string>(), Arg.Any<PersistirDadosException>());
+        }
+        
+        [Fact]
+        public async Task Handle_QuandoRepositorioLancaExcecao_DeveRegistrarLogEPropagar()
+        {
+            // Arrange
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
+            ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1); // Orçamento enviado ontem
+            var excecaoEsperada = new Exception("Erro no banco de dados");
+            
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaLancarExcecaoAoEditar(ordemServico.Id, excecaoEsperada);
+            
+            var handler = _fixture.CriarRecusarOrcamentoHandler();
+            
+            // Act & Assert
+            var act = async () => await handler.Handle(ordemServico.Id);
+            
+            await act.Should().ThrowAsync<Exception>()
+                .WithMessage("Erro no banco de dados");
+                
+            // Verificar que os logs foram registrados
+            _fixture.LogServicoRecusarOrcamento.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
+            _fixture.LogServicoRecusarOrcamento.Received(1).LogErro(Arg.Any<string>(), excecaoEsperada);
         }
     }
 }

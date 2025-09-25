@@ -1,4 +1,6 @@
+using Core.DTOs.Entidades.OrdemServicos;
 using Core.Entidades;
+using Core.Especificacoes.Base.Interfaces;
 using Core.UseCases.OrdensServico.ObterTodosOrdensServico;
 using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
@@ -30,7 +32,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
                 OrdemServicoHandlerFixture.CriarOrdemServicoValida()
             };
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterTodos(ordensServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterTodos(ordensServico);
 
             var handler = _fixture.CriarObterTodosOrdensServicoHandler();
 
@@ -42,8 +44,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             resultado.OrdensServico.Should().NotBeNull();
             resultado.OrdensServico.Should().HaveCount(3);
             
-            // Verificar que o gateway foi chamado
-            await _fixture.OrdemServicoGateway.Received(1).ObterTodosAsync();
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioOrdemServico.Received(1).ObterTodosAsync();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
@@ -56,7 +58,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             // Arrange
             var ordensServico = new List<OrdemServico>();
 
-            _fixture.ConfigurarMockOrdemServicoGatewayParaObterTodos(ordensServico);
+            _fixture.ConfigurarMockRepositorioOrdemServicoParaObterTodos(ordensServico);
 
             var handler = _fixture.CriarObterTodosOrdensServicoHandler();
 
@@ -68,8 +70,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             resultado.OrdensServico.Should().NotBeNull();
             resultado.OrdensServico.Should().BeEmpty();
             
-            // Verificar que o gateway foi chamado
-            await _fixture.OrdemServicoGateway.Received(1).ObterTodosAsync();
+            // Verificar que o repositório foi chamado
+            await _fixture.RepositorioOrdemServico.Received(1).ObterTodosAsync();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
@@ -77,12 +79,12 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
         }
 
         [Fact]
-        public async Task Handle_ComExcecaoInesperada_DevePropagaExcecao()
+        public async Task Handle_QuandoRepositorioLancaExcecao_DeveRegistrarLogEPropagar()
         {
             // Arrange
-            // Configurar o gateway para lançar uma exceção
-            _fixture.OrdemServicoGateway.ObterTodosAsync()
-                .Returns(Task.FromException<IEnumerable<OrdemServico>>(new InvalidOperationException("Erro simulado")));
+            // Configurar o repositório para lançar uma exceção
+            _fixture.RepositorioOrdemServico.ObterTodosAsync()
+                .Returns(Task.FromException<IEnumerable<OrdemServicoEntityDto>>(new InvalidOperationException("Erro simulado")));
 
             var handler = _fixture.CriarObterTodosOrdensServicoHandler();
 
