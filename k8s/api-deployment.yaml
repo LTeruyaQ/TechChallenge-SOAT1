@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  labels:
+    app: api-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-pod
+  template:
+    metadata:
+      labels:
+        app: api-pod
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: postgres:16-alpine
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Aguardando a inicialização do banco de dados..."
+              until PGPASSWORD=postgres psql -h db-service -U postgres -d mecanicaos -c 'SELECT 1' > /dev/null 2>&1; do
+                echo "Aguardando o PostgreSQL ficar disponível...";
+                sleep 2;
+              done
+              echo "Banco de dados disponível!"
+        - name: run-migrations
+          image: fthalita91/techchallenge-api:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Executando migrações..."
+              dotnet ef database update --project /src/MecanicaOS/Infraestrutura/Infraestrutura.csproj --startup-project /src/MecanicaOS/API/API.csproj
+              echo "Migrações concluídas."
+          envFrom:
+            - configMapRef:
+                name: api-configmap
+      containers:
+        - name: api-container
+          image: fthalita91/techchallenge-api:latest
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: api-configmap
+            - secretRef:
+                name: api-secret
+          resources:
+            requests:
+                cpu: 100m

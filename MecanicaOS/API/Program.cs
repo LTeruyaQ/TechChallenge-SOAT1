@@ -118,8 +118,11 @@ builder.Services.AddHangfireServer();
 
 // Registrar Jobs
 builder.Services.AddScoped<ICompositionRoot, CompositionRoot>();
-builder.Services.AddScoped<VerificarEstoqueJob>();
-builder.Services.AddScoped<VerificarOrcamentoExpiradoJob>();
+
+//TODO: migrar jobs para clean arch
+builder.Services.AddTransient<VerificarEstoqueJob>();
+builder.Services.AddTransient<VerificarOrcamentoExpiradoJob>();
+builder.Services.AddTransient<RecurringJobs>();
 
 // Notificações
 builder.Services.AddMediatR(cfg =>
@@ -200,25 +203,11 @@ app.UseEndpoints(endpoints =>
 app.UseHangfireDashboard("/hangfire");
 #endif
 
-RecurringJob.AddOrUpdate<VerificarEstoqueJob>(
-    recurringJobId: "verificar-estoque",
-    methodCall: job => job.ExecutarAsync(),
-    cronExpression: Cron.Hourly(),
-    options: new RecurringJobOptions
-    {
-        TimeZone = TimeZoneInfo.Local
-    }
-);
-
-RecurringJob.AddOrUpdate<VerificarOrcamentoExpiradoJob>(
-    recurringJobId: "verificar-orcamento-expirado",
-    methodCall: job => job.ExecutarAsync(),
-    cronExpression: Cron.Hourly(),
-    options: new RecurringJobOptions
-    {
-        TimeZone = TimeZoneInfo.Local
-    }
-);
+using (var scope = app.Services.CreateScope())
+{
+    var recurringJobs = scope.ServiceProvider.GetRequiredService<RecurringJobs>();
+    recurringJobs.ScheduleJobs();
+}
 
 try
 {
