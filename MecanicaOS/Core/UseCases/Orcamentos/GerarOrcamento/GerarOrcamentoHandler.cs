@@ -5,10 +5,10 @@ namespace Core.UseCases.Orcamentos.GerarOrcamento
 {
     public class GerarOrcamentoHandler : IGerarOrcamentoHandler
     {
-        private readonly ILogServicoGateway<GerarOrcamentoHandler> _logServicoGateway;
+        private readonly ILogGateway<GerarOrcamentoHandler> _logServicoGateway;
 
         public GerarOrcamentoHandler(
-            ILogServicoGateway<GerarOrcamentoHandler> logServicoGateway,
+            ILogGateway<GerarOrcamentoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
         {

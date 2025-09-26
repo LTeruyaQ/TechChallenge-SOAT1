@@ -11,7 +11,7 @@ namespace Core.UseCases.Veiculos.DeletarVeiculo
 
         public DeletarVeiculoHandler(
             IVeiculoGateway veiculoGateway,
-            ILogServicoGateway<DeletarVeiculoHandler> logServicoGateway,
+            ILogGateway<DeletarVeiculoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

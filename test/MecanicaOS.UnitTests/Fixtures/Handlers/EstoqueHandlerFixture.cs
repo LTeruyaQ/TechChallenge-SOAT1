@@ -28,12 +28,12 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         public IEstoqueGateway EstoqueGateway { get; }
         
         // Serviços mockados
-        public ILogServicoGateway<CadastrarEstoqueHandler> LogServicoCadastrar { get; }
-        public ILogServicoGateway<ObterEstoqueHandler> LogServicoObter { get; }
-        public ILogServicoGateway<ObterTodosEstoquesHandler> LogServicoObterTodos { get; }
-        public ILogServicoGateway<ObterEstoqueCriticoHandler> LogServicoObterCritico { get; }
-        public ILogServicoGateway<AtualizarEstoqueHandler> LogServicoAtualizar { get; }
-        public ILogServicoGateway<DeletarEstoqueHandler> LogServicoDeletar { get; }
+        public ILogGateway<CadastrarEstoqueHandler> LogServicoCadastrar { get; }
+        public ILogGateway<ObterEstoqueHandler> LogServicoObter { get; }
+        public ILogGateway<ObterTodosEstoquesHandler> LogServicoObterTodos { get; }
+        public ILogGateway<ObterEstoqueCriticoHandler> LogServicoObterCritico { get; }
+        public ILogGateway<AtualizarEstoqueHandler> LogServicoAtualizar { get; }
+        public ILogGateway<DeletarEstoqueHandler> LogServicoDeletar { get; }
         public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
         public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
 
@@ -46,12 +46,12 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             EstoqueGateway = new EstoqueGateway(RepositorioEstoque);
             
             // Inicializar serviços mockados
-            LogServicoCadastrar = Substitute.For<ILogServicoGateway<CadastrarEstoqueHandler>>();
-            LogServicoObter = Substitute.For<ILogServicoGateway<ObterEstoqueHandler>>();
-            LogServicoObterTodos = Substitute.For<ILogServicoGateway<ObterTodosEstoquesHandler>>();
-            LogServicoObterCritico = Substitute.For<ILogServicoGateway<ObterEstoqueCriticoHandler>>();
-            LogServicoAtualizar = Substitute.For<ILogServicoGateway<AtualizarEstoqueHandler>>();
-            LogServicoDeletar = Substitute.For<ILogServicoGateway<DeletarEstoqueHandler>>();
+            LogServicoCadastrar = Substitute.For<ILogGateway<CadastrarEstoqueHandler>>();
+            LogServicoObter = Substitute.For<ILogGateway<ObterEstoqueHandler>>();
+            LogServicoObterTodos = Substitute.For<ILogGateway<ObterTodosEstoquesHandler>>();
+            LogServicoObterCritico = Substitute.For<ILogGateway<ObterEstoqueCriticoHandler>>();
+            LogServicoAtualizar = Substitute.For<ILogGateway<AtualizarEstoqueHandler>>();
+            LogServicoDeletar = Substitute.For<ILogGateway<DeletarEstoqueHandler>>();
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
             UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
             

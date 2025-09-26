@@ -11,7 +11,7 @@ namespace Core.UseCases.Servicos.DeletarServico
 
         public DeletarServicoHandler(
             IServicoGateway servicoGateway,
-            ILogServicoGateway<DeletarServicoHandler> logServicoGateway,
+            ILogGateway<DeletarServicoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

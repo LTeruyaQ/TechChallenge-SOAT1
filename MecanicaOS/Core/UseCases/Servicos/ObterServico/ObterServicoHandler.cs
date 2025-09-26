@@ -11,7 +11,7 @@ namespace Core.UseCases.Servicos.ObterServico
 
         public ObterServicoHandler(
             IServicoGateway servicoGateway,
-            ILogServicoGateway<ObterServicoHandler> logServicoGateway,
+            ILogGateway<ObterServicoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

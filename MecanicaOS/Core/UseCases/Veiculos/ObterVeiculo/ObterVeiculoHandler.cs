@@ -11,7 +11,7 @@ namespace Core.UseCases.Veiculos.ObterVeiculo
 
         public ObterVeiculoHandler(
             IVeiculoGateway veiculoGateway,
-            ILogServicoGateway<ObterVeiculoHandler> logServicoGateway,
+            ILogGateway<ObterVeiculoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

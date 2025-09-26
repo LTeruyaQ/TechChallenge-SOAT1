@@ -12,7 +12,7 @@ namespace Core.UseCases.Veiculos.AtualizarVeiculo
 
         public AtualizarVeiculoHandler(
             IVeiculoGateway veiculoGateway,
-            ILogServicoGateway<AtualizarVeiculoHandler> logServicoGateway,
+            ILogGateway<AtualizarVeiculoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

@@ -21,7 +21,7 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
             IUsuarioUseCases usuarioUseCases,
             IServicoSenha servicoSenha,
             IServicoJwt servicoJwt,
-            ILogServicoGateway<AutenticarUsuarioHandler> logServicoGateway,
+            ILogGateway<AutenticarUsuarioHandler> logServicoGateway,
             IClienteUseCases clienteUseCases,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)

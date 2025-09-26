@@ -10,7 +10,7 @@ namespace Core.UseCases.Estoques.ObterTodosEstoques
 
         public ObterTodosEstoquesHandler(
             IEstoqueGateway estoqueGateway,
-            ILogServicoGateway<ObterTodosEstoquesHandler> logServicoGateway,
+            ILogGateway<ObterTodosEstoquesHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

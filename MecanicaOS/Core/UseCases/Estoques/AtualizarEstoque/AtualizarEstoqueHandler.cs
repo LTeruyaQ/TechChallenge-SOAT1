@@ -12,7 +12,7 @@ namespace Core.UseCases.Estoques.AtualizarEstoque
 
         public AtualizarEstoqueHandler(
             IEstoqueGateway estoqueGateway,
-            ILogServicoGateway<AtualizarEstoqueHandler> logServicoGateway,
+            ILogGateway<AtualizarEstoqueHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

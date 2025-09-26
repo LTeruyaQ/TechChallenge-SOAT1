@@ -16,7 +16,7 @@ namespace Core.UseCases.Usuarios.AtualizarUsuario
         public AtualizarUsuarioHandler(
             IUsuarioGateway usuarioGateway,
             IServicoSenha servicoSenha,
-            ILogServicoGateway<AtualizarUsuarioHandler> logServicoGateway,
+            ILogGateway<AtualizarUsuarioHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

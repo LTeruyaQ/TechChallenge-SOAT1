@@ -11,7 +11,7 @@ namespace Core.UseCases.Clientes.RemoverCliente
 
         public RemoverClienteHandler(
             IClienteGateway clienteGateway,
-            ILogServicoGateway<RemoverClienteHandler> logServicoGateway,
+            ILogGateway<RemoverClienteHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

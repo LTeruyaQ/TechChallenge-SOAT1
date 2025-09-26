@@ -10,7 +10,7 @@ namespace Core.UseCases.Veiculos.ObterVeiculoPorPlaca
 
         public ObterVeiculoPorPlacaHandler(
             IVeiculoGateway veiculoGateway,
-            ILogServicoGateway<ObterVeiculoPorPlacaHandler> logServicoGateway,
+            ILogGateway<ObterVeiculoPorPlacaHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

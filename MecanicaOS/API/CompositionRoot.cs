@@ -88,7 +88,6 @@ using Infraestrutura.Logs;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Servicos;
 using MediatR;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace API
@@ -250,10 +249,10 @@ namespace API
             return new EventosGateway(eventosPublisher);
         }
 
-        public ILogServicoGateway<T> CriarLogServicoGateway<T>() where T : class
+        public ILogGateway<T> CriarLogServicoGateway<T>() where T : class
         {
             var logServico = new LogServico<T>(_idCorrelacionalService, NullLogger<T>.Instance, _usuarioLogadoServico);
-            return new LogServicoGateway<T>(logServico);
+            return new LogGateway<T>(logServico);
         }
 
         public IUnidadeDeTrabalhoGateway CriarUnidadeDeTrabalhoGateway()

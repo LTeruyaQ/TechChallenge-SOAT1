@@ -12,7 +12,7 @@ namespace Core.UseCases.Servicos.EditarServico
 
         public EditarServicoHandler(
             IServicoGateway servicoGateway,
-            ILogServicoGateway<EditarServicoHandler> logServicoGateway,
+            ILogGateway<EditarServicoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

@@ -13,7 +13,7 @@ namespace Core.UseCases.Estoques.CadastrarEstoque
 
         public CadastrarEstoqueHandler(
             IEstoqueGateway estoqueGateway,
-            ILogServicoGateway<CadastrarEstoqueHandler> logServicoGateway,
+            ILogGateway<CadastrarEstoqueHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

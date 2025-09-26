@@ -10,7 +10,7 @@ namespace Core.UseCases.Servicos.ObterTodosServicos
 
         public ObterTodosServicosHandler(
             IServicoGateway servicoGateway,
-            ILogServicoGateway<ObterTodosServicosHandler> logServicoGateway,
+            ILogGateway<ObterTodosServicosHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

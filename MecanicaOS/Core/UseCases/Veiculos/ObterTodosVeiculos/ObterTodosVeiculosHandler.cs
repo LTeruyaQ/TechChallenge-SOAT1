@@ -10,7 +10,7 @@ namespace Core.UseCases.Veiculos.ObterTodosVeiculos
 
         public ObterTodosVeiculosHandler(
             IVeiculoGateway veiculoGateway,
-            ILogServicoGateway<ObterTodosVeiculosHandler> logServicoGateway,
+            ILogGateway<ObterTodosVeiculosHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

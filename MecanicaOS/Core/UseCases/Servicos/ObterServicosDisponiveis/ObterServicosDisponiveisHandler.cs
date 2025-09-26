@@ -10,7 +10,7 @@ namespace Core.UseCases.Servicos.ObterServicosDisponiveis
 
         public ObterServicosDisponiveisHandler(
             IServicoGateway servicoGateway,
-            ILogServicoGateway<ObterServicosDisponiveisHandler> logServicoGateway,
+            ILogGateway<ObterServicosDisponiveisHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

@@ -33,13 +33,13 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         public IServicoGateway ServicoGateway { get; }
         
         // LogServices
-        public ILogServicoGateway<CadastrarServicoHandler> LogServicoCadastrar { get; }
-        public ILogServicoGateway<EditarServicoHandler> LogServicoEditar { get; }
-        public ILogServicoGateway<DeletarServicoHandler> LogServicoDeletar { get; }
-        public ILogServicoGateway<ObterServicoHandler> LogServicoObter { get; }
-        public ILogServicoGateway<ObterTodosServicosHandler> LogServicoObterTodos { get; }
-        public ILogServicoGateway<ObterServicoPorNomeHandler> LogServicoObterPorNome { get; }
-        public ILogServicoGateway<ObterServicosDisponiveisHandler> LogServicoObterDisponiveis { get; }
+        public ILogGateway<CadastrarServicoHandler> LogServicoCadastrar { get; }
+        public ILogGateway<EditarServicoHandler> LogServicoEditar { get; }
+        public ILogGateway<DeletarServicoHandler> LogServicoDeletar { get; }
+        public ILogGateway<ObterServicoHandler> LogServicoObter { get; }
+        public ILogGateway<ObterTodosServicosHandler> LogServicoObterTodos { get; }
+        public ILogGateway<ObterServicoPorNomeHandler> LogServicoObterPorNome { get; }
+        public ILogGateway<ObterServicosDisponiveisHandler> LogServicoObterDisponiveis { get; }
         
         // Outros serviços
         public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
@@ -54,13 +54,13 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             ServicoGateway = new ServicoGateway(RepositorioServico);
             
             // Inicializar log services
-            LogServicoCadastrar = Substitute.For<ILogServicoGateway<CadastrarServicoHandler>>();
-            LogServicoEditar = Substitute.For<ILogServicoGateway<EditarServicoHandler>>();
-            LogServicoDeletar = Substitute.For<ILogServicoGateway<DeletarServicoHandler>>();
-            LogServicoObter = Substitute.For<ILogServicoGateway<ObterServicoHandler>>();
-            LogServicoObterTodos = Substitute.For<ILogServicoGateway<ObterTodosServicosHandler>>();
-            LogServicoObterPorNome = Substitute.For<ILogServicoGateway<ObterServicoPorNomeHandler>>();
-            LogServicoObterDisponiveis = Substitute.For<ILogServicoGateway<ObterServicosDisponiveisHandler>>();
+            LogServicoCadastrar = Substitute.For<ILogGateway<CadastrarServicoHandler>>();
+            LogServicoEditar = Substitute.For<ILogGateway<EditarServicoHandler>>();
+            LogServicoDeletar = Substitute.For<ILogGateway<DeletarServicoHandler>>();
+            LogServicoObter = Substitute.For<ILogGateway<ObterServicoHandler>>();
+            LogServicoObterTodos = Substitute.For<ILogGateway<ObterTodosServicosHandler>>();
+            LogServicoObterPorNome = Substitute.For<ILogGateway<ObterServicoPorNomeHandler>>();
+            LogServicoObterDisponiveis = Substitute.For<ILogGateway<ObterServicosDisponiveisHandler>>();
             
             // Inicializar outros serviços
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();

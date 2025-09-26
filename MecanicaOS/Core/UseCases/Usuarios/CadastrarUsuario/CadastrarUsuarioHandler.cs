@@ -19,7 +19,7 @@ namespace Core.UseCases.Usuarios.CadastrarUsuario
         public CadastrarUsuarioHandler(
             IUsuarioGateway usuarioGateway,
             IClienteUseCases clienteUseCases,
-            ILogServicoGateway<CadastrarUsuarioHandler> logServicoGateway,
+            ILogGateway<CadastrarUsuarioHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway,
             IServicoSenha servicoSenha)

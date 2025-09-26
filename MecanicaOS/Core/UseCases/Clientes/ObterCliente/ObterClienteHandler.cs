@@ -10,7 +10,7 @@ namespace Core.UseCases.Clientes.ObterCliente
 
         public ObterClienteHandler(
             IClienteGateway clienteGateway,
-            ILogServicoGateway<ObterClienteHandler> logServicoGateway,
+            ILogGateway<ObterClienteHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

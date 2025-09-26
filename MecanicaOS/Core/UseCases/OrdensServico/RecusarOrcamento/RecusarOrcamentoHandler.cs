@@ -15,7 +15,7 @@ namespace Core.UseCases.OrdensServico.RecusarOrcamento
         public RecusarOrcamentoHandler(
             IOrdemServicoGateway ordemServicoGateway,
             IEventosGateway eventosGateway,
-            ILogServicoGateway<RecusarOrcamentoHandler> logServicoGateway,
+            ILogGateway<RecusarOrcamentoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

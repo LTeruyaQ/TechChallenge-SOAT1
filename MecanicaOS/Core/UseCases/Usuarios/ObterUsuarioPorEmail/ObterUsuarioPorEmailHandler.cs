@@ -11,7 +11,7 @@ namespace Core.UseCases.Usuarios.ObterUsuarioPorEmail
 
         public ObterUsuarioPorEmailHandler(
             IUsuarioGateway usuarioGateway,
-            ILogServicoGateway<ObterUsuarioPorEmailHandler> logServicoGateway,
+            ILogGateway<ObterUsuarioPorEmailHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

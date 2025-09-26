@@ -17,7 +17,7 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
         public CadastrarInsumosHandler(
             IOrdemServicoUseCases ordemServicoUseCases,
             IEstoqueUseCases estoqueUseCases,
-            ILogServicoGateway<CadastrarInsumosHandler> logServicoGateway,
+            ILogGateway<CadastrarInsumosHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway,
             IVerificarEstoqueJobGateway verificarEstoqueJobGateway)

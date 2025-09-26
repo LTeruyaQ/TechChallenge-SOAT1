@@ -37,8 +37,8 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         
         // Serviços
         public IVerificarEstoqueJobGateway VerificarEstoqueJobGateway { get; }
-        public ILogServicoGateway<CadastrarInsumosHandler> LogServicoCadastrar { get; }
-        public ILogServicoGateway<DevolverInsumosHandler> LogServicoDevolverInsumos { get; }
+        public ILogGateway<CadastrarInsumosHandler> LogServicoCadastrar { get; }
+        public ILogGateway<DevolverInsumosHandler> LogServicoDevolverInsumos { get; }
         public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
         public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
         
@@ -56,8 +56,8 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         {
             // Inicializar serviços mockados
             VerificarEstoqueJobGateway = Substitute.For<IVerificarEstoqueJobGateway>();
-            LogServicoCadastrar = Substitute.For<ILogServicoGateway<CadastrarInsumosHandler>>();
-            LogServicoDevolverInsumos = Substitute.For<ILogServicoGateway<DevolverInsumosHandler>>();
+            LogServicoCadastrar = Substitute.For<ILogGateway<CadastrarInsumosHandler>>();
+            LogServicoDevolverInsumos = Substitute.For<ILogGateway<DevolverInsumosHandler>>();
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
             UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
             
@@ -75,9 +75,9 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             InsumosGateway = new InsumosGateway(RepositorioInsumoOS);
             
             // Criar log services para handlers
-            var logServicoObterOS = Substitute.For<ILogServicoGateway<ObterOrdemServicoHandler>>();
-            var logServicoObterEstoque = Substitute.For<ILogServicoGateway<ObterEstoqueHandler>>();
-            var logServicoAtualizarEstoque = Substitute.For<ILogServicoGateway<AtualizarEstoqueHandler>>();
+            var logServicoObterOS = Substitute.For<ILogGateway<ObterOrdemServicoHandler>>();
+            var logServicoObterEstoque = Substitute.For<ILogGateway<ObterEstoqueHandler>>();
+            var logServicoAtualizarEstoque = Substitute.For<ILogGateway<AtualizarEstoqueHandler>>();
             
             // Criar handlers reais
             ObterOrdemServicoHandler = new ObterOrdemServicoHandler(

@@ -11,7 +11,7 @@ namespace Core.UseCases.Estoques.ObterEstoque
 
         public ObterEstoqueHandler(
             IEstoqueGateway estoqueGateway,
-            ILogServicoGateway<ObterEstoqueHandler> logServicoGateway,
+            ILogGateway<ObterEstoqueHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

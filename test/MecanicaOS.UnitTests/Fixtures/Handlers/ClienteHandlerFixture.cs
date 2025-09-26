@@ -33,12 +33,12 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         public IContatoGateway ContatoGateway { get; }
         
         // Serviços mockados
-        public ILogServicoGateway<CadastrarClienteHandler> LogServicoCadastrar { get; }
-        public ILogServicoGateway<AtualizarClienteHandler> LogServicoAtualizar { get; }
-        public ILogServicoGateway<ObterClienteHandler> LogServicoObter { get; }
-        public ILogServicoGateway<ObterTodosClientesHandler> LogServicoObterTodos { get; }
-        public ILogServicoGateway<ObterClientePorDocumentoHandler> LogServicoObterPorDocumento { get; }
-        public ILogServicoGateway<RemoverClienteHandler> LogServicoRemover { get; }
+        public ILogGateway<CadastrarClienteHandler> LogServicoCadastrar { get; }
+        public ILogGateway<AtualizarClienteHandler> LogServicoAtualizar { get; }
+        public ILogGateway<ObterClienteHandler> LogServicoObter { get; }
+        public ILogGateway<ObterTodosClientesHandler> LogServicoObterTodos { get; }
+        public ILogGateway<ObterClientePorDocumentoHandler> LogServicoObterPorDocumento { get; }
+        public ILogGateway<RemoverClienteHandler> LogServicoRemover { get; }
         public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
         public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
 
@@ -55,12 +55,12 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             ContatoGateway = new ContatoGateway(RepositorioContato);
             
             // Inicializar serviços mockados
-            LogServicoCadastrar = Substitute.For<ILogServicoGateway<CadastrarClienteHandler>>();
-            LogServicoAtualizar = Substitute.For<ILogServicoGateway<AtualizarClienteHandler>>();
-            LogServicoObter = Substitute.For<ILogServicoGateway<ObterClienteHandler>>();
-            LogServicoObterTodos = Substitute.For<ILogServicoGateway<ObterTodosClientesHandler>>();
-            LogServicoObterPorDocumento = Substitute.For<ILogServicoGateway<ObterClientePorDocumentoHandler>>();
-            LogServicoRemover = Substitute.For<ILogServicoGateway<RemoverClienteHandler>>();
+            LogServicoCadastrar = Substitute.For<ILogGateway<CadastrarClienteHandler>>();
+            LogServicoAtualizar = Substitute.For<ILogGateway<AtualizarClienteHandler>>();
+            LogServicoObter = Substitute.For<ILogGateway<ObterClienteHandler>>();
+            LogServicoObterTodos = Substitute.For<ILogGateway<ObterTodosClientesHandler>>();
+            LogServicoObterPorDocumento = Substitute.For<ILogGateway<ObterClientePorDocumentoHandler>>();
+            LogServicoRemover = Substitute.For<ILogGateway<RemoverClienteHandler>>();
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
             UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
             

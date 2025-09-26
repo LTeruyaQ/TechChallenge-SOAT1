@@ -19,7 +19,7 @@ namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
             IOrdemServicoGateway ordemServicoGateway,
             IClienteUseCases clienteUseCases,
             IServicoUseCases servicoUseCases,
-            ILogServicoGateway<CadastrarOrdemServicoHandler> logServicoGateway,
+            ILogGateway<CadastrarOrdemServicoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

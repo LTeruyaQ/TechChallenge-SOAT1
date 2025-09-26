@@ -13,7 +13,7 @@ namespace Core.UseCases.Servicos.CadastrarServico
 
         public CadastrarServicoHandler(
             IServicoGateway servicoGateway,
-            ILogServicoGateway<CadastrarServicoHandler> logServicoGateway,
+            ILogGateway<CadastrarServicoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

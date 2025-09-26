@@ -13,7 +13,7 @@ namespace Core.UseCases.Veiculos.CadastrarVeiculo
 
         public CadastrarVeiculoHandler(
             IVeiculoGateway veiculoGateway,
-            ILogServicoGateway<CadastrarVeiculoHandler> logServicoGateway,
+            ILogGateway<CadastrarVeiculoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

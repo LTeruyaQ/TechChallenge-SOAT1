@@ -11,7 +11,7 @@ namespace Core.UseCases.Usuarios.ObterTodosUsuarios
 
         public ObterTodosUsuariosHandler(
             IUsuarioGateway usuarioGateway,
-            ILogServicoGateway<ObterTodosUsuariosHandler> logServicoGateway,
+            ILogGateway<ObterTodosUsuariosHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

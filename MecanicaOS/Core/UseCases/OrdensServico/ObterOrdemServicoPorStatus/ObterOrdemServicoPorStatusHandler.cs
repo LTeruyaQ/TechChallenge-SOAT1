@@ -11,7 +11,7 @@ namespace Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus
 
         public ObterOrdemServicoPorStatusHandler(
             IOrdemServicoGateway ordemServicoGateway,
-            ILogServicoGateway<ObterOrdemServicoPorStatusHandler> logServicoGateway,
+            ILogGateway<ObterOrdemServicoPorStatusHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

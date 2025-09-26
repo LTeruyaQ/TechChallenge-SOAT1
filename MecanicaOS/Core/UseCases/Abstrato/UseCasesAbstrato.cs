@@ -4,11 +4,11 @@ namespace Core.UseCases.Abstrato
 {
     public abstract class UseCasesHandlerAbstrato<T> where T : class
     {
-        private readonly ILogServicoGateway<T> _logServicoGateway;
+        private readonly ILogGateway<T> _logServicoGateway;
         private readonly IUnidadeDeTrabalhoGateway _udtGateway;
         protected readonly IUsuarioLogadoServicoGateway _usuarioLogadoServicoGateway;
 
-        protected UseCasesHandlerAbstrato(ILogServicoGateway<T> logServicoGateway, IUnidadeDeTrabalhoGateway udtGateway, IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+        protected UseCasesHandlerAbstrato(ILogGateway<T> logServicoGateway, IUnidadeDeTrabalhoGateway udtGateway, IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
         {
             _logServicoGateway = logServicoGateway ?? throw new ArgumentNullException(nameof(logServicoGateway));
             _udtGateway = udtGateway ?? throw new ArgumentNullException(nameof(udtGateway));

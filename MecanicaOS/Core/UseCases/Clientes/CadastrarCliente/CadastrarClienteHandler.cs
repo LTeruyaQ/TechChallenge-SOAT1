@@ -17,7 +17,7 @@ namespace Core.UseCases.Clientes.CadastrarCliente
             IClienteGateway clienteGateway,
             IEnderecoGateway enderecoGateway,
             IContatoGateway contatoGateway,
-            ILogServicoGateway<CadastrarClienteHandler> logServicoGateway,
+            ILogGateway<CadastrarClienteHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

@@ -10,7 +10,7 @@ namespace Core.UseCases.Estoques.ObterEstoqueCritico
 
         public ObterEstoqueCriticoHandler(
             IEstoqueGateway estoqueGateway,
-            ILogServicoGateway<ObterEstoqueCriticoHandler> logServicoGateway,
+            ILogGateway<ObterEstoqueCriticoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

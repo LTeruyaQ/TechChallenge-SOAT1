@@ -11,7 +11,7 @@ namespace Core.UseCases.Usuarios.DeletarUsuario
 
         public DeletarUsuarioHandler(
             IUsuarioGateway usuarioGateway,
-            ILogServicoGateway<DeletarUsuarioHandler> logServicoGateway,
+            ILogGateway<DeletarUsuarioHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

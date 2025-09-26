@@ -1,6 +1,6 @@
 namespace Core.Interfaces.Gateways
 {
-    public interface ILogServicoGateway<T> where T : class
+    public interface ILogGateway<T> where T : class
     {
         void LogInicio(string metodo, object? props = null);
         void LogFim(string metodo, object? retorno = null);

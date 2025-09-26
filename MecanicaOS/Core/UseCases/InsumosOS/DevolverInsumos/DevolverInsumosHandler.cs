@@ -16,7 +16,7 @@ namespace Core.UseCases.InsumosOS.DevolverInsumos
         public DevolverInsumosHandler(
             IObterEstoqueHandler obterEstoqueHandler,
             IAtualizarEstoqueHandler atualizarEstoqueHandler,
-            ILogServicoGateway<DevolverInsumosHandler> logServicoGateway,
+            ILogGateway<DevolverInsumosHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

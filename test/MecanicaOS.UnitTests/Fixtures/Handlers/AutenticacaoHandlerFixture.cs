@@ -16,7 +16,7 @@ public class AutenticacaoHandlerFixture : UseCasesFixtureBase
     public IClienteUseCases ClienteUseCases { get; }
     public IServicoSenha ServicoSenha { get; }
     public IServicoJwt ServicoJwt { get; }
-    public ILogServicoGateway<AutenticarUsuarioHandler> LogAutenticacao { get; }
+    public ILogGateway<AutenticarUsuarioHandler> LogAutenticacao { get; }
     public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
     public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
 
@@ -26,7 +26,7 @@ public class AutenticacaoHandlerFixture : UseCasesFixtureBase
         ClienteUseCases = Substitute.For<IClienteUseCases>();
         ServicoSenha = Substitute.For<IServicoSenha>();
         ServicoJwt = Substitute.For<IServicoJwt>();
-        LogAutenticacao = Substitute.For<ILogServicoGateway<AutenticarUsuarioHandler>>();
+        LogAutenticacao = Substitute.For<ILogGateway<AutenticarUsuarioHandler>>();
         UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
         UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
     }

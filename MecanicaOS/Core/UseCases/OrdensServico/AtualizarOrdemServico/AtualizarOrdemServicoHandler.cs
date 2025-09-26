@@ -13,7 +13,7 @@ namespace Core.UseCases.OrdensServico.AtualizarOrdemServico
 
         public AtualizarOrdemServicoHandler(
             IOrdemServicoGateway ordemServicoGateway,
-            ILogServicoGateway<AtualizarOrdemServicoHandler> logServicoGateway,
+            ILogGateway<AtualizarOrdemServicoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

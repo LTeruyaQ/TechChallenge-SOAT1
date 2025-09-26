@@ -11,13 +11,13 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
 {
     public class OrcamentoHandlerFixture
     {
-        public ILogServicoGateway<GerarOrcamentoHandler> LogServico { get; }
+        public ILogGateway<GerarOrcamentoHandler> LogServico { get; }
         public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
         public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
 
         public OrcamentoHandlerFixture()
         {
-            LogServico = Substitute.For<ILogServicoGateway<GerarOrcamentoHandler>>();
+            LogServico = Substitute.For<ILogGateway<GerarOrcamentoHandler>>();
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
             UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
         }

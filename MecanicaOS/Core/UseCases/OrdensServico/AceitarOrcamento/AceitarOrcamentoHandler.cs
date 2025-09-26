@@ -12,7 +12,7 @@ namespace Core.UseCases.OrdensServico.AceitarOrcamento
 
         public AceitarOrcamentoHandler(
             IOrdemServicoGateway ordemServicoGateway,
-            ILogServicoGateway<AceitarOrcamentoHandler> logServicoGateway,
+            ILogGateway<AceitarOrcamentoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
@@ -31,11 +31,9 @@ namespace Core.UseCases.OrdensServico.AceitarOrcamento
                 var ordemServico = await _ordemServicoGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
 
-                // Validar se está em status adequado para aceitar orçamento
                 if (ordemServico.Status != StatusOrdemServico.AguardandoAprovação)
                     throw new DadosInvalidosException("Ordem de serviço não está aguardando aprovação do orçamento");
 
-                // Verificar se orçamento não expirou (exemplo: 7 dias)
                 if (ordemServico.DataEnvioOrcamento.HasValue &&
                     ordemServico.DataEnvioOrcamento.Value.AddDays(7) < DateTime.UtcNow)
                     throw new DadosInvalidosException("Orçamento expirado");

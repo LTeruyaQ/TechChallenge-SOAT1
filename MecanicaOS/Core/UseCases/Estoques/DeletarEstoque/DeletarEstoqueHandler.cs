@@ -11,7 +11,7 @@ namespace Core.UseCases.Estoques.DeletarEstoque
 
         public DeletarEstoqueHandler(
             IEstoqueGateway estoqueGateway,
-            ILogServicoGateway<DeletarEstoqueHandler> logServicoGateway,
+            ILogGateway<DeletarEstoqueHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

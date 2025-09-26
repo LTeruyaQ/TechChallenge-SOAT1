@@ -17,7 +17,7 @@ namespace Core.UseCases.Clientes.AtualizarCliente
             IClienteGateway clienteGateway,
             IEnderecoGateway enderecoGateway,
             IContatoGateway contatoGateway,
-            ILogServicoGateway<AtualizarClienteHandler> logServicoGateway,
+            ILogGateway<AtualizarClienteHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)

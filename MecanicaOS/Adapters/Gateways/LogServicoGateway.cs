@@ -3,11 +3,11 @@ using Core.Interfaces.Servicos;
 
 namespace Adapters.Gateways
 {
-    public class LogServicoGateway<T> : ILogServicoGateway<T> where T : class
+    public class LogGateway<T> : ILogGateway<T> where T : class
     {
         private readonly ILogServico<T> _logServico;
 
-        public LogServicoGateway(ILogServico<T> logServico)
+        public LogGateway(ILogServico<T> logServico)
         {
             _logServico = logServico ?? throw new ArgumentNullException(nameof(logServico));
         }

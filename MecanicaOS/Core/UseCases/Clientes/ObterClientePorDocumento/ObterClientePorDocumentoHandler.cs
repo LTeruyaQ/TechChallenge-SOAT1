@@ -12,7 +12,7 @@ namespace Core.UseCases.Clientes.ObterClientePorDocumento
 
         public ObterClientePorDocumentoHandler(
             IClienteGateway clienteGateway,
-            ILogServicoGateway<ObterClientePorDocumentoHandler> logServicoGateway,
+            ILogGateway<ObterClientePorDocumentoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
