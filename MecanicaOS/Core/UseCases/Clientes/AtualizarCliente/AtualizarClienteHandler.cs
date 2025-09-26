@@ -27,7 +27,7 @@ namespace Core.UseCases.Clientes.AtualizarCliente
             _enderecoGateway = enderecoGateway ?? throw new ArgumentNullException(nameof(enderecoGateway));
         }
 
-        public async Task<AtualizarClienteResponse> Handle(Guid id, AtualizarClienteUseCaseDto request)
+        public async Task<Cliente> Handle(Guid id, AtualizarClienteUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
@@ -53,7 +53,7 @@ namespace Core.UseCases.Clientes.AtualizarCliente
 
                 LogFim(metodo, cliente);
 
-                return new AtualizarClienteResponse { Cliente = cliente };
+                return cliente;
             }
             catch (Exception e)
             {

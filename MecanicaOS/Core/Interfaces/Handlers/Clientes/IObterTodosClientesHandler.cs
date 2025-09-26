@@ -1,4 +1,4 @@
-using Core.UseCases.Clientes.ObterTodosClientes;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Clientes
 {
@@ -10,7 +10,7 @@ namespace Core.Interfaces.Handlers.Clientes
         /// <summary>
         /// Manipula a operação de obtenção de todos os clientes
         /// </summary>
-        /// <returns>Resposta contendo a lista de clientes</returns>
-        Task<ObterTodosClientesResponse> Handle();
+        /// <returns>Lista de clientes</returns>
+        Task<IEnumerable<Cliente>> Handle();
     }
 }

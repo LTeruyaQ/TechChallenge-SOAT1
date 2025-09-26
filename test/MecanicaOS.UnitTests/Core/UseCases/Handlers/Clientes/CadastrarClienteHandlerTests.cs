@@ -56,11 +56,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Cliente.Should().NotBeNull();
-            resultado.Cliente.Id.Should().NotBeEmpty();
-            resultado.Cliente.Nome.Should().Be(dto.Nome);
-            resultado.Cliente.Documento.Should().Be(dto.Documento);
-            resultado.Cliente.TipoCliente.Should().Be(dto.TipoCliente);
+            resultado.Id.Should().NotBeEmpty();
+            resultado.Nome.Should().Be(dto.Nome);
+            resultado.Documento.Should().Be(dto.Documento);
+            resultado.TipoCliente.Should().Be(dto.TipoCliente);
             
             // Verificar que o repositório foi chamado para verificar se o cliente já existe
             await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
@@ -308,8 +307,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             
             // Verificar o resultado
             resultado.Should().NotBeNull();
-            resultado.Cliente.Should().NotBeNull();
-            resultado.Cliente.Id.Should().NotBeEmpty();
+            resultado.Id.Should().NotBeEmpty();
         }
 
         [Theory]
@@ -346,8 +344,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Cliente.Should().NotBeNull();
-            resultado.Cliente.TipoCliente.Should().Be(tipoCliente);
+            resultado.TipoCliente.Should().Be(tipoCliente);
             
             // Verificar que o cliente passado tem o tipo correto
             clienteDtoPassado.Should().NotBeNull();

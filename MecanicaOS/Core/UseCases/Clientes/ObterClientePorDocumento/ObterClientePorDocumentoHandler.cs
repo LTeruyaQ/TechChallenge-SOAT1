@@ -20,7 +20,7 @@ namespace Core.UseCases.Clientes.ObterClientePorDocumento
             _clienteGateway = clienteGateway ?? throw new ArgumentNullException(nameof(clienteGateway));
         }
 
-        public async Task<ObterClientePorDocumentoResponse> Handle(string documento)
+        public async Task<Cliente> Handle(string documento)
         {
             const string metodo = nameof(Handle);
             LogInicio(metodo, documento);
@@ -33,7 +33,7 @@ namespace Core.UseCases.Clientes.ObterClientePorDocumento
                 if (await _clienteGateway.ObterClientePorDocumentoAsync(documento) is Cliente cliente)
                 {
                     LogFim(metodo, cliente);
-                    return new ObterClientePorDocumentoResponse { Cliente = cliente };
+                    return cliente;
                 }
 
                 throw new DadosNaoEncontradosException($"Cliente de documento {documento} não encontrado");

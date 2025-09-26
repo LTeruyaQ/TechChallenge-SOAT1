@@ -36,38 +36,32 @@ namespace Core.UseCases.Clientes
 
         public async Task<Cliente> AtualizarUseCaseAsync(Guid id, AtualizarClienteUseCaseDto request)
         {
-            var response = await _atualizarClienteHandler.Handle(id, request);
-            return response.Cliente;
+            return await _atualizarClienteHandler.Handle(id, request);
         }
 
         public async Task<Cliente> CadastrarUseCaseAsync(CadastrarClienteUseCaseDto request)
         {
-            var response = await _cadastrarClienteHandler.Handle(request);
-            return response.Cliente;
+            return await _cadastrarClienteHandler.Handle(request);
         }
 
         public async Task<Cliente> ObterPorDocumentoUseCaseAsync(string documento)
         {
-            var response = await _obterClientePorDocumentoHandler.Handle(documento);
-            return response.Cliente;
+            return await _obterClientePorDocumentoHandler.Handle(documento);
         }
 
         public async Task<Cliente> ObterPorIdUseCaseAsync(Guid id)
         {
-            var response = await _obterClienteHandler.Handle(id);
-            return response.Cliente;
+            return await _obterClienteHandler.Handle(id);
         }
 
         public async Task<IEnumerable<Cliente>> ObterTodosUseCaseAsync()
         {
-            var response = await _obterTodosClientesHandler.Handle();
-            return response.Clientes;
+            return await _obterTodosClientesHandler.Handle();
         }
 
         public async Task<bool> RemoverUseCaseAsync(Guid id)
         {
-            var response = await _removerClienteHandler.Handle(id);
-            return response.Sucesso;
+            return await _removerClienteHandler.Handle(id);
         }
     }
 }

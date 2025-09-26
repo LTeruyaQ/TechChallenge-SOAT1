@@ -41,9 +41,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Clientes.Should().NotBeNull();
-            resultado.Clientes.Should().HaveCount(2);
-            resultado.Clientes.Should().BeEquivalentTo(clientes);
+            resultado.Should().HaveCount(2);
+            resultado.Should().BeEquivalentTo(clientes);
             
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioCliente.Received(1).ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
@@ -69,8 +68,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Clientes.Should().NotBeNull();
-            resultado.Clientes.Should().BeEmpty();
+            resultado.Should().BeEmpty();
             
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioCliente.Received(1).ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
@@ -132,13 +130,12 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             
             // Verificar que o resultado contém exatamente os mesmos dados retornados pelo gateway
             resultado.Should().NotBeNull();
-            resultado.Clientes.Should().NotBeNull();
-            resultado.Clientes.Should().HaveCount(2);
-            resultado.Clientes.Should().BeEquivalentTo(clientes);
+            resultado.Should().HaveCount(2);
+            resultado.Should().BeEquivalentTo(clientes);
             
             // Verificar que os nomes específicos estão presentes
-            resultado.Clientes.Should().Contain(c => c.Nome == "Cliente Específico 1");
-            resultado.Clientes.Should().Contain(c => c.Nome == "Cliente Específico 2");
+            resultado.Should().Contain(c => c.Nome == "Cliente Específico 1");
+            resultado.Should().Contain(c => c.Nome == "Cliente Específico 2");
         }
     }
 }

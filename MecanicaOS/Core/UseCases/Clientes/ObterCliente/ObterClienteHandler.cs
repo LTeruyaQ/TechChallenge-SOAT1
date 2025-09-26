@@ -1,3 +1,4 @@
+using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Clientes;
 using Core.UseCases.Abstrato;
@@ -18,7 +19,7 @@ namespace Core.UseCases.Clientes.ObterCliente
             _clienteGateway = clienteGateway ?? throw new ArgumentNullException(nameof(clienteGateway));
         }
 
-        public async Task<ObterClienteResponse> Handle(Guid id)
+        public async Task<Cliente?> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
@@ -36,7 +37,7 @@ namespace Core.UseCases.Clientes.ObterCliente
 
                 LogFim(metodo, clienteComVeiculo);
 
-                return new ObterClienteResponse { Cliente = clienteComVeiculo };
+                return clienteComVeiculo;
             }
             catch (Exception e)
             {

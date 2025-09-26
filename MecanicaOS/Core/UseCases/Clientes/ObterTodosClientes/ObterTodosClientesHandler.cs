@@ -1,3 +1,4 @@
+using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Clientes;
 using Core.UseCases.Abstrato;
@@ -18,7 +19,7 @@ namespace Core.UseCases.Clientes.ObterTodosClientes
             _clienteGateway = clienteGateway ?? throw new ArgumentNullException(nameof(clienteGateway));
         }
 
-        public async Task<ObterTodosClientesResponse> Handle()
+        public async Task<IEnumerable<Cliente>> Handle()
         {
             string metodo = nameof(Handle);
 
@@ -30,7 +31,7 @@ namespace Core.UseCases.Clientes.ObterTodosClientes
 
                 LogFim(metodo, clientesComVeiculos);
 
-                return new ObterTodosClientesResponse { Clientes = clientesComVeiculos };
+                return clientesComVeiculos;
             }
             catch (Exception e)
             {

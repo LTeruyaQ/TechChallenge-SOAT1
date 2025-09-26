@@ -27,7 +27,7 @@ namespace Core.UseCases.Clientes.CadastrarCliente
             _enderecoGateway = enderecoGateway ?? throw new ArgumentNullException(nameof(enderecoGateway));
         }
 
-        public async Task<CadastrarClienteResponse> Handle(CadastrarClienteUseCaseDto request)
+        public async Task<Cliente> Handle(CadastrarClienteUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
@@ -64,7 +64,7 @@ namespace Core.UseCases.Clientes.CadastrarCliente
 
                 LogFim(metodo, cliente);
 
-                return new CadastrarClienteResponse { Cliente = cliente };
+                return cliente;
             }
             catch (Exception e)
             {

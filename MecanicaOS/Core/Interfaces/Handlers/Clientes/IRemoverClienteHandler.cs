@@ -1,4 +1,3 @@
-using Core.UseCases.Clientes.RemoverCliente;
 
 namespace Core.Interfaces.Handlers.Clientes
 {
@@ -11,7 +10,7 @@ namespace Core.Interfaces.Handlers.Clientes
         /// Manipula a operação de remoção de cliente
         /// </summary>
         /// <param name="id">ID do cliente a ser removido</param>
-        /// <returns>Resposta indicando o sucesso da operação</returns>
-        Task<RemoverClienteResponse> Handle(Guid id);
+        /// <returns>Indica se a operação foi bem-sucedida</returns>
+        Task<bool> Handle(Guid id);
     }
 }

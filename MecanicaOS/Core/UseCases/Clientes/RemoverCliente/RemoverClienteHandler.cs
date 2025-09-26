@@ -19,7 +19,7 @@ namespace Core.UseCases.Clientes.RemoverCliente
             _clienteGateway = clienteGateway ?? throw new ArgumentNullException(nameof(clienteGateway));
         }
 
-        public async Task<RemoverClienteResponse> Handle(Guid id)
+        public async Task<bool> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
@@ -38,7 +38,7 @@ namespace Core.UseCases.Clientes.RemoverCliente
 
                 LogFim(metodo, sucesso);
 
-                return new RemoverClienteResponse { Sucesso = sucesso };
+                return sucesso;
             }
             catch (Exception e)
             {

@@ -51,8 +51,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var resultado = await handler.Handle(clienteId);
 
             // Assert
-            resultado.Should().NotBeNull();
-            resultado.Sucesso.Should().BeTrue();
+            resultado.Should().BeTrue();
             
             // Verificar que o repositório foi chamado para obter e remover o cliente
             await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
@@ -243,8 +242,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
             
             // Verificar o resultado
-            resultado.Should().NotBeNull();
-            resultado.Sucesso.Should().BeTrue();
+            resultado.Should().BeTrue();
         }
     }
 }

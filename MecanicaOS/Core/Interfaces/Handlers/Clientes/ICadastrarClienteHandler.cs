@@ -1,5 +1,5 @@
 using Core.DTOs.UseCases.Cliente;
-using Core.UseCases.Clientes.CadastrarCliente;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Clientes
 {
@@ -12,7 +12,7 @@ namespace Core.Interfaces.Handlers.Clientes
         /// Manipula a operação de cadastro de cliente
         /// </summary>
         /// <param name="request">DTO com os dados do cliente a ser cadastrado</param>
-        /// <returns>Resposta contendo o cliente cadastrado</returns>
-        Task<CadastrarClienteResponse> Handle(CadastrarClienteUseCaseDto request);
+        /// <returns>Cliente cadastrado</returns>
+        Task<Cliente> Handle(CadastrarClienteUseCaseDto request);
     }
 }

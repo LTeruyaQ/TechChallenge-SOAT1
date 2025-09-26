@@ -46,8 +46,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Cliente.Should().NotBeNull();
-            resultado.Cliente.Should().BeEquivalentTo(clienteExistente);
+            resultado.Should().BeEquivalentTo(clienteExistente);
             
             // Verificar que o repositório foi chamado para obter e atualizar o cliente
             await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
@@ -182,12 +181,11 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Cliente.Should().NotBeNull();
             
             // Verificar que os dados do cliente foram atualizados corretamente
-            resultado.Cliente.Nome.Should().Be("Nome Atualizado");
-            resultado.Cliente.Sexo.Should().Be("F");
-            resultado.Cliente.DataNascimento.Should().Be("02/02/1990");
+            resultado.Nome.Should().Be("Nome Atualizado");
+            resultado.Sexo.Should().Be("F");
+            resultado.DataNascimento.Should().Be("02/02/1990");
             
             // Verificar que o repositório foi chamado para obter e atualizar o cliente
             await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);

@@ -1,4 +1,4 @@
-using Core.UseCases.Clientes.ObterClientePorDocumento;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Clientes
 {
@@ -11,7 +11,7 @@ namespace Core.Interfaces.Handlers.Clientes
         /// Manipula a operação de obtenção de cliente por documento
         /// </summary>
         /// <param name="documento">Documento do cliente a ser obtido</param>
-        /// <returns>Resposta contendo o cliente encontrado</returns>
-        Task<ObterClientePorDocumentoResponse> Handle(string documento);
+        /// <returns>Cliente encontrado</returns>
+        Task<Cliente> Handle(string documento);
     }
 }
