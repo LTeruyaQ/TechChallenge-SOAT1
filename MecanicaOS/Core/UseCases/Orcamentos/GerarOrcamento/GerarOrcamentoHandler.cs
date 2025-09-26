@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.Orcamento;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Orcamentos;
 
@@ -15,7 +16,7 @@ namespace Core.UseCases.Orcamentos.GerarOrcamento
             _logServicoGateway = logServicoGateway ?? throw new ArgumentNullException(nameof(logServicoGateway));
         }
 
-        public GerarOrcamentoResponse Handle(GerarOrcamentoUseCase useCase)
+        public decimal Handle(GerarOrcamentoUseCase useCase)
         {
             string metodo = nameof(Handle);
 
@@ -27,7 +28,7 @@ namespace Core.UseCases.Orcamentos.GerarOrcamento
 
                 decimal valorTotal = precoServico + precoInsumos;
 
-                return new GerarOrcamentoResponse { ValorOrcamento = valorTotal };
+                return valorTotal;
             }
             catch (Exception e)
             {

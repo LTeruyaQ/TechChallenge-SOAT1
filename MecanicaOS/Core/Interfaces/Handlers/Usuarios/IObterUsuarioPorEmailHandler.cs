@@ -1,4 +1,4 @@
-using Core.UseCases.Usuarios.ObterUsuarioPorEmail;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Usuarios
 {
@@ -11,7 +11,7 @@ namespace Core.Interfaces.Handlers.Usuarios
         /// Manipula a operação de obtenção de usuário por email
         /// </summary>
         /// <param name="email">Email do usuário a ser obtido</param>
-        /// <returns>Resposta contendo o usuário encontrado</returns>
-        Task<ObterUsuarioPorEmailResponse> Handle(string email);
+        /// <returns>Usuário encontrado ou null</returns>
+        Task<Usuario?> Handle(string email);
     }
 }

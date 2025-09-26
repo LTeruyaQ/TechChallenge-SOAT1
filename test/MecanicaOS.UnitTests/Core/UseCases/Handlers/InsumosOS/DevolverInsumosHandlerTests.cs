@@ -1,22 +1,9 @@
 using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
-using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
-using Core.Especificacoes.Base;
 using Core.Especificacoes.Base.Interfaces;
 using Core.Exceptions;
-using Core.Interfaces.Handlers.Estoques;
-using Core.UseCases.Estoques.ObterEstoque;
-using Core.UseCases.Estoques.AtualizarEstoque;
-using Core.UseCases.InsumosOS.DevolverInsumos;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 {
@@ -44,7 +31,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Configurar o repositório para retornar o estoque
             _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque.Id, estoque);
-            
+
             // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
             var estoqueDtos = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque.Id);
 
@@ -57,15 +44,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
             var resultado = await handler.Handle(insumos);
 
             // Assert
-            resultado.Should().NotBeNull();
-            resultado.Sucesso.Should().BeTrue();
+            resultado.Should().BeTrue();
 
             // Verificar que o repositório foi chamado para obter o estoque
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
-            
+
             // Verificar que o repositório foi chamado para atualizar o estoque
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
-            
+
             // Verificar que os DTOs capturados estão corretos
             estoqueDtos.Should().NotBeEmpty();
             estoqueDtos[0].Id.Should().Be(estoque.Id);
@@ -111,7 +97,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
             // Configurar o repositório para retornar os estoques
             _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque1.Id, estoque1);
             _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque2.Id, estoque2);
-            
+
             // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
             var estoqueDtos1 = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque1.Id);
             var estoqueDtos2 = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque2.Id);
@@ -125,20 +111,19 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
             var resultado = await handler.Handle(insumos);
 
             // Assert
-            resultado.Should().NotBeNull();
-            resultado.Sucesso.Should().BeTrue();
+            resultado.Should().BeTrue();
 
             // Verificar que o repositório foi chamado para obter cada estoque
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
-            
+
             // Verificar que o repositório foi chamado para atualizar os estoques
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
-            
+
             // Verificar que os DTOs capturados estão corretos
             estoqueDtos1.Should().NotBeEmpty();
             estoqueDtos1[0].Id.Should().Be(estoque1.Id);
             estoqueDtos1[0].QuantidadeDisponivel.Should().Be(12); // 10 (inicial) + 2 (devolvidos)
-            
+
             estoqueDtos2.Should().NotBeEmpty();
             estoqueDtos2[0].QuantidadeDisponivel.Should().Be(6); // 5 (inicial) + 1 (devolvido)
 
@@ -168,7 +153,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
             _fixture.RepositorioEstoque
                 .ObterPorIdAsync(estoqueId)
                 .Returns((EstoqueEntityDto)null);
-                
+
             _fixture.RepositorioEstoque
                 .ObterUmProjetadoAsync<Estoque>(Arg.Any<IEspecificacao<EstoqueEntityDto>>())
                 .Returns((Estoque)null);
@@ -183,7 +168,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Verificar que o repositório foi chamado para obter o estoque
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
-            
+
             // Verificar que o repositório não foi chamado para atualizar o estoque
             await _fixture.RepositorioEstoque.DidNotReceiveWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
 
@@ -211,7 +196,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Configurar o repositório para retornar o estoque
             _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque.Id, estoque);
-            
+
             // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
             var estoqueDtos = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque.Id);
 
@@ -228,10 +213,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Verificar que o repositório foi chamado para obter o estoque
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
-            
+
             // Verificar que o repositório foi chamado para atualizar o estoque
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
-            
+
             // Verificar que os DTOs capturados estão corretos
             estoqueDtos.Should().NotBeEmpty();
             estoqueDtos[0].QuantidadeDisponivel.Should().Be(12); // 10 (inicial) + 2 (devolvidos)
@@ -261,7 +246,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Configurar o repositório para retornar o estoque
             _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque.Id, estoque);
-                
+
             // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
             var estoqueDtos = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque.Id);
 
@@ -274,8 +259,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
             var resultado = await handler.Handle(insumos);
 
             // Assert
-            resultado.Should().NotBeNull();
-            resultado.Sucesso.Should().BeTrue();
+            resultado.Should().BeTrue();
 
             // Verificar que os DTOs capturados estão corretos
             estoqueDtos.Should().NotBeEmpty();

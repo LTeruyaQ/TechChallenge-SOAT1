@@ -19,7 +19,7 @@ namespace Core.UseCases.Usuarios.ObterUsuarioPorEmail
             _usuarioGateway = usuarioGateway ?? throw new ArgumentNullException(nameof(usuarioGateway));
         }
 
-        public async Task<ObterUsuarioPorEmailResponse> Handle(string email)
+        public async Task<Usuario?> Handle(string email)
         {
             var metodo = nameof(Handle);
 
@@ -34,7 +34,7 @@ namespace Core.UseCases.Usuarios.ObterUsuarioPorEmail
 
                 LogFim(metodo, usuario);
 
-                return new ObterUsuarioPorEmailResponse { Usuario = usuario };
+                return usuario;
             }
             catch (Exception e)
             {

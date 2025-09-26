@@ -1,14 +1,6 @@
 using Core.DTOs.Entidades.OrdemServicos;
 using Core.Entidades;
-using Core.Especificacoes.Base.Interfaces;
-using Core.UseCases.OrdensServico.ObterTodosOrdensServico;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 {
@@ -41,15 +33,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.OrdensServico.Should().NotBeNull();
-            resultado.OrdensServico.Should().HaveCount(3);
-            
+            resultado.Should().HaveCount(3);
+
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioOrdemServico.Received(1).ObterTodosAsync();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
-            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<ObterTodosOrdensServicoResponse>());
+            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<OrdemServico>());
         }
 
         [Fact]
@@ -67,15 +58,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.OrdensServico.Should().NotBeNull();
-            resultado.OrdensServico.Should().BeEmpty();
-            
+            resultado.Should().BeEmpty();
+
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioOrdemServico.Received(1).ObterTodosAsync();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
-            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<ObterTodosOrdensServicoResponse>());
+            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<OrdemServico>());
         }
 
         [Fact]

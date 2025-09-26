@@ -1,4 +1,4 @@
-using Core.UseCases.Servicos.ObterServicosDisponiveis;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Servicos
 {
@@ -10,7 +10,7 @@ namespace Core.Interfaces.Handlers.Servicos
         /// <summary>
         /// Manipula a operação de obtenção de serviços disponíveis
         /// </summary>
-        /// <returns>Resposta contendo a lista de serviços disponíveis</returns>
-        Task<ObterServicosDisponiveisResponse> Handle();
+        /// <returns>Lista de serviços disponíveis</returns>
+        Task<IEnumerable<Servico>> Handle();
     }
 }

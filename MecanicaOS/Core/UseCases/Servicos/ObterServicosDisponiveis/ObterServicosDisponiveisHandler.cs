@@ -1,3 +1,4 @@
+using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Servicos;
 using Core.UseCases.Abstrato;
@@ -18,7 +19,7 @@ namespace Core.UseCases.Servicos.ObterServicosDisponiveis
             _servicoGateway = servicoGateway ?? throw new ArgumentNullException(nameof(servicoGateway));
         }
 
-        public async Task<ObterServicosDisponiveisResponse> Handle()
+        public async Task<IEnumerable<Servico>> Handle()
         {
             string metodo = nameof(Handle);
 
@@ -28,9 +29,8 @@ namespace Core.UseCases.Servicos.ObterServicosDisponiveis
 
                 var servicos = await _servicoGateway.ObterServicoDisponivelAsync();
 
-                var response = new ObterServicosDisponiveisResponse { Servicos = servicos };
-                LogFim(metodo, response);
-                return response;
+                LogFim(metodo, servicos);
+                return servicos;
             }
             catch (Exception e)
             {

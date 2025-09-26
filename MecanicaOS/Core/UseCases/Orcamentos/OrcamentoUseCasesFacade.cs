@@ -1,7 +1,7 @@
+using Core.DTOs.UseCases.Orcamento;
 using Core.Entidades;
 using Core.Interfaces.Handlers.Orcamentos;
 using Core.Interfaces.UseCases;
-using Core.UseCases.Orcamentos.GerarOrcamento;
 
 namespace Core.UseCases.Orcamentos
 {
@@ -21,8 +21,7 @@ namespace Core.UseCases.Orcamentos
         public decimal GerarOrcamentoUseCase(OrdemServico ordemServico)
         {
             var useCase = new GerarOrcamentoUseCase(ordemServico);
-            var response = _gerarOrcamentoHandler.Handle(useCase);
-            return response.ValorOrcamento;
+            return _gerarOrcamentoHandler.Handle(useCase);
         }
     }
 }

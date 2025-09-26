@@ -19,7 +19,7 @@ namespace Core.UseCases.Estoques.DeletarEstoque
             _estoqueGateway = estoqueGateway ?? throw new ArgumentNullException(nameof(estoqueGateway));
         }
 
-        public async Task<DeletarEstoqueResponse> Handle(Guid id)
+        public async Task<bool> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
@@ -32,13 +32,13 @@ namespace Core.UseCases.Estoques.DeletarEstoque
 
                 await _estoqueGateway.DeletarAsync(estoque);
                 var sucesso = await Commit();
-                
+
                 if (!sucesso)
                     throw new PersistirDadosException("Erro ao deletar estoque");
 
                 LogFim(metodo, sucesso);
 
-                return new DeletarEstoqueResponse { Sucesso = sucesso };
+                return sucesso;
             }
             catch (Exception e)
             {

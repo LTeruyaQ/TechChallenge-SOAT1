@@ -1,21 +1,15 @@
+using Adapters.Gateways;
 using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Estoques.AtualizarEstoque;
 using Core.UseCases.Estoques.CadastrarEstoque;
 using Core.UseCases.Estoques.DeletarEstoque;
 using Core.UseCases.Estoques.ObterEstoque;
 using Core.UseCases.Estoques.ObterEstoqueCritico;
 using Core.UseCases.Estoques.ObterTodosEstoques;
-using Adapters.Gateways;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MecanicaOS.UnitTests.Fixtures.Handlers
 {
@@ -23,10 +17,10 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
     {
         // Repositório mockado
         public IRepositorio<EstoqueEntityDto> RepositorioEstoque { get; }
-        
+
         // Gateway real
         public IEstoqueGateway EstoqueGateway { get; }
-        
+
         // Serviços mockados
         public ILogGateway<CadastrarEstoqueHandler> LogServicoCadastrar { get; }
         public ILogGateway<ObterEstoqueHandler> LogServicoObter { get; }
@@ -41,10 +35,10 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         {
             // Inicializar repositório mockado
             RepositorioEstoque = Substitute.For<IRepositorio<EstoqueEntityDto>>();
-            
+
             // Inicializar gateway real usando o repositório mockado
             EstoqueGateway = new EstoqueGateway(RepositorioEstoque);
-            
+
             // Inicializar serviços mockados
             LogServicoCadastrar = Substitute.For<ILogGateway<CadastrarEstoqueHandler>>();
             LogServicoObter = Substitute.For<ILogGateway<ObterEstoqueHandler>>();
@@ -54,7 +48,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             LogServicoDeletar = Substitute.For<ILogGateway<DeletarEstoqueHandler>>();
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
             UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
-            
+
             // Configuração padrão para o UDT
             UnidadeDeTrabalho.Commit().Returns(Task.FromResult(true));
         }

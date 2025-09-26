@@ -19,8 +19,7 @@ namespace Core.UseCases.Autenticacao
 
         public async Task<AutenticacaoDto> AutenticarUseCaseAsync(AutenticacaoUseCaseDto request)
         {
-            var response = await _autenticarUsuarioHandler.Handle(request);
-            return response.Autenticacao;
+            return await _autenticarUsuarioHandler.Handle(request);
         }
     }
 }

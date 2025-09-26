@@ -119,8 +119,9 @@ namespace Adapters.Gateways
                 }).ToList()
             };
 
-            if(dto.InsumosOS.Any())
-                ordemServico.InsumosOS = dto.InsumosOS.Select(insumoDto => {
+            if (dto.InsumosOS.Any())
+                ordemServico.InsumosOS = dto.InsumosOS.Select(insumoDto =>
+                {
                     var insumo = new InsumoOS
                     {
                         Id = insumoDto.Id,
@@ -132,7 +133,7 @@ namespace Adapters.Gateways
                         Quantidade = insumoDto.Quantidade
                     };
 
-                    if(insumoDto.Estoque is not null)
+                    if (insumoDto.Estoque is not null)
                         insumo.Estoque = new Estoque
                         {
                             Id = insumoDto.Estoque.Id,
@@ -149,7 +150,7 @@ namespace Adapters.Gateways
                     return insumo;
                 });
 
-            if(dto.Cliente is not null)
+            if (dto.Cliente is not null)
             {
                 ordemServico.Cliente = new Cliente
                 {
@@ -161,7 +162,7 @@ namespace Adapters.Gateways
                     Documento = dto.Cliente.Documento
                 };
 
-                if(dto.Cliente.Contato is not null)
+                if (dto.Cliente.Contato is not null)
                 {
                     ordemServico.Cliente.Contato = new Contato
                     {

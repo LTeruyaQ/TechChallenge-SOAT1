@@ -19,7 +19,7 @@ namespace Core.UseCases.Usuarios.DeletarUsuario
             _usuarioGateway = usuarioGateway ?? throw new ArgumentNullException(nameof(usuarioGateway));
         }
 
-        public async Task<DeletarUsuarioResponse> Handle(Guid id)
+        public async Task<bool> Handle(Guid id)
         {
             var metodo = nameof(Handle);
 
@@ -38,7 +38,7 @@ namespace Core.UseCases.Usuarios.DeletarUsuario
 
                 LogFim(metodo, sucesso);
 
-                return new DeletarUsuarioResponse { Sucesso = sucesso };
+                return sucesso;
             }
             catch (Exception e)
             {

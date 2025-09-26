@@ -1,5 +1,5 @@
 using Core.DTOs.UseCases.Usuario;
-using Core.UseCases.Usuarios.AtualizarUsuario;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Usuarios
 {
@@ -13,7 +13,7 @@ namespace Core.Interfaces.Handlers.Usuarios
         /// </summary>
         /// <param name="id">ID do usuário a ser atualizado</param>
         /// <param name="request">DTO com os dados atualizados do usuário</param>
-        /// <returns>Resposta contendo o usuário atualizado</returns>
-        Task<AtualizarUsuarioResponse> Handle(Guid id, AtualizarUsuarioUseCaseDto request);
+        /// <returns>Usuário atualizado</returns>
+        Task<Usuario> Handle(Guid id, AtualizarUsuarioUseCaseDto request);
     }
 }

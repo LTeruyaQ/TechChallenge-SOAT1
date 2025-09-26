@@ -1,4 +1,4 @@
-using Core.UseCases.OrdensServico.ObterTodosOrdensServico;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.OrdensServico
 {
@@ -10,7 +10,7 @@ namespace Core.Interfaces.Handlers.OrdensServico
         /// <summary>
         /// Manipula a operação de obtenção de todas as ordens de serviço
         /// </summary>
-        /// <returns>Resposta contendo a lista de ordens de serviço</returns>
-        Task<ObterTodosOrdensServicoResponse> Handle();
+        /// <returns>Lista de ordens de serviço</returns>
+        Task<IEnumerable<OrdemServico>> Handle();
     }
 }

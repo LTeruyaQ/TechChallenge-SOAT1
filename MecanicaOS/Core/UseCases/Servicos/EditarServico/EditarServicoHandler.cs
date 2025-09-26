@@ -1,4 +1,5 @@
 using Core.DTOs.UseCases.Servico;
+using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Servicos;
@@ -20,7 +21,7 @@ namespace Core.UseCases.Servicos.EditarServico
             _servicoGateway = servicoGateway ?? throw new ArgumentNullException(nameof(servicoGateway));
         }
 
-        public async Task<EditarServicoResponse> Handle(Guid id, EditarServicoUseCaseDto request)
+        public async Task<Servico> Handle(Guid id, EditarServicoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
@@ -31,10 +32,10 @@ namespace Core.UseCases.Servicos.EditarServico
                 // Validar dados
                 if (string.IsNullOrWhiteSpace(request.Nome))
                     throw new DadosInvalidosException("Nome é obrigatório");
-                
+
                 if (string.IsNullOrWhiteSpace(request.Descricao))
                     throw new DadosInvalidosException("Descrição é obrigatória");
-                
+
                 if (request.Valor <= 0)
                     throw new DadosInvalidosException("Valor deve ser maior que zero");
 
@@ -52,9 +53,8 @@ namespace Core.UseCases.Servicos.EditarServico
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao editar serviço");
 
-                var response = new EditarServicoResponse { Servico = servico };
-                LogFim(metodo, response);
-                return response;
+                LogFim(metodo, servico);
+                return servico;
             }
             catch (Exception e)
             {

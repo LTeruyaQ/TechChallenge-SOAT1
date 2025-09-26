@@ -1,15 +1,8 @@
 using Core.DTOs.Entidades.OrdemServicos;
-using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
-using Core.UseCases.OrdensServico.AtualizarOrdemServico;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 {
@@ -41,15 +34,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.OrdemServico.Should().NotBeNull();
-            resultado.OrdemServico.Status.Should().Be(StatusOrdemServico.EmExecucao);
-            resultado.OrdemServico.Descricao.Should().Be("Descrição atualizada");
+            resultado.Should().NotBeNull();
+            resultado.Status.Should().Be(StatusOrdemServico.EmExecucao);
+            resultado.Descricao.Should().Be("Descrição atualizada");
 
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioOrdemServico.Received(1).EditarAsync(
-                Arg.Is<OrdemServicoEntityDto>(os => 
-                    os.Id == ordemServico.Id && 
-                    os.Status == StatusOrdemServico.EmExecucao && 
+                Arg.Is<OrdemServicoEntityDto>(os =>
+                    os.Id == ordemServico.Id &&
+                    os.Status == StatusOrdemServico.EmExecucao &&
                     os.Descricao == "Descrição atualizada"));
 
             // Verificar que o commit foi chamado
@@ -80,15 +73,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.OrdemServico.Should().NotBeNull();
-            resultado.OrdemServico.Status.Should().Be(StatusOrdemServico.EmExecucao);
-            resultado.OrdemServico.Descricao.Should().Be(descricaoOriginal);
+            resultado.Should().NotBeNull();
+            resultado.Status.Should().Be(StatusOrdemServico.EmExecucao);
+            resultado.Descricao.Should().Be(descricaoOriginal);
 
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioOrdemServico.Received(1).EditarAsync(
-                Arg.Is<OrdemServicoEntityDto>(os => 
-                    os.Id == ordemServico.Id && 
-                    os.Status == StatusOrdemServico.EmExecucao && 
+                Arg.Is<OrdemServicoEntityDto>(os =>
+                    os.Id == ordemServico.Id &&
+                    os.Status == StatusOrdemServico.EmExecucao &&
                     os.Descricao == descricaoOriginal));
 
             // Verificar que o commit foi chamado
@@ -115,15 +108,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.OrdemServico.Should().NotBeNull();
-            resultado.OrdemServico.Status.Should().Be(statusOriginal);
-            resultado.OrdemServico.Descricao.Should().Be("Descrição atualizada");
+            resultado.Should().NotBeNull();
+            resultado.Status.Should().Be(statusOriginal);
+            resultado.Descricao.Should().Be("Descrição atualizada");
 
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioOrdemServico.Received(1).EditarAsync(
-                Arg.Is<OrdemServicoEntityDto>(os => 
-                    os.Id == ordemServico.Id && 
-                    os.Status == statusOriginal && 
+                Arg.Is<OrdemServicoEntityDto>(os =>
+                    os.Id == ordemServico.Id &&
+                    os.Status == statusOriginal &&
                     os.Descricao == "Descrição atualizada"));
 
             // Verificar que o commit foi chamado
@@ -209,8 +202,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var resultado = await handler.Handle(ordemServico.Id, dto);
 
             // Assert
-            resultado.OrdemServico.DataAtualizacao.Should().NotBe(dataAtualizacaoOriginal);
-            resultado.OrdemServico.DataAtualizacao.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+            resultado.DataAtualizacao.Should().NotBe(dataAtualizacaoOriginal);
+            resultado.DataAtualizacao.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
 
             // Verificar que o repositório foi chamado com a data atualizada
             await _fixture.RepositorioOrdemServico.Received(1).EditarAsync(

@@ -1,13 +1,6 @@
 using Core.DTOs.Entidades.Servico;
-using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
-using Core.UseCases.Servicos.ObterServicoPorNome;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 {
@@ -39,19 +32,19 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Servico.Should().NotBeNull();
-            resultado.Servico.Nome.Should().Be(nome);
-            resultado.Servico.Id.Should().Be(servico.Id);
-            resultado.Servico.Descricao.Should().Be(servico.Descricao);
-            resultado.Servico.Valor.Should().Be(servico.Valor);
-            resultado.Servico.Disponivel.Should().Be(servico.Disponivel);
+            resultado.Should().NotBeNull();
+            resultado.Nome.Should().Be(nome);
+            resultado.Id.Should().Be(servico.Id);
+            resultado.Descricao.Should().Be(servico.Descricao);
+            resultado.Valor.Should().Be(servico.Valor);
+            resultado.Disponivel.Should().Be(servico.Disponivel);
 
             // Verificar que o repositório foi chamado com a especificação correta
             await _fixture.RepositorioServico.Received(1).ObterUmProjetadoSemRastreamentoAsync<Servico>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ServicoEntityDto>>());
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorNome.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<string>());
-            _fixture.LogServicoObterPorNome.Received(1).LogFim(Arg.Any<string>(), Arg.Any<ObterServicoPorNomeResponse>());
+            _fixture.LogServicoObterPorNome.Received(1).LogFim(Arg.Any<string>(), Arg.Any<Servico>());
         }
 
         [Fact]
@@ -72,14 +65,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Servico.Should().BeNull();
+            resultado.Should().BeNull();
 
             // Verificar que o repositório foi chamado com a especificação correta
             await _fixture.RepositorioServico.Received(1).ObterUmProjetadoSemRastreamentoAsync<Servico>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ServicoEntityDto>>());
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorNome.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<string>());
-            _fixture.LogServicoObterPorNome.Received(1).LogFim(Arg.Any<string>(), Arg.Any<ObterServicoPorNomeResponse>());
+            _fixture.LogServicoObterPorNome.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Theory]
@@ -96,13 +89,13 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Servico.Should().BeNull();
-            
+            resultado.Should().BeNull();
+
             // Para nomes inválidos, o handler não chama o repositório
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorNome.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<string>());
-            _fixture.LogServicoObterPorNome.Received(1).LogFim(Arg.Any<string>(), Arg.Any<ObterServicoPorNomeResponse>());
+            _fixture.LogServicoObterPorNome.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Fact]

@@ -1,22 +1,16 @@
+using Adapters.Gateways;
 using Core.DTOs.Entidades.Cliente;
 using Core.DTOs.UseCases.Cliente;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Clientes.AtualizarCliente;
 using Core.UseCases.Clientes.CadastrarCliente;
 using Core.UseCases.Clientes.ObterCliente;
 using Core.UseCases.Clientes.ObterClientePorDocumento;
 using Core.UseCases.Clientes.ObterTodosClientes;
 using Core.UseCases.Clientes.RemoverCliente;
-using Adapters.Gateways;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MecanicaOS.UnitTests.Fixtures.Handlers
 {
@@ -26,12 +20,12 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         public IRepositorio<ClienteEntityDto> RepositorioCliente { get; }
         public IRepositorio<EnderecoEntityDto> RepositorioEndereco { get; }
         public IRepositorio<ContatoEntityDto> RepositorioContato { get; }
-        
+
         // Gateways reais
         public IClienteGateway ClienteGateway { get; }
         public IEnderecoGateway EnderecoGateway { get; }
         public IContatoGateway ContatoGateway { get; }
-        
+
         // Serviços mockados
         public ILogGateway<CadastrarClienteHandler> LogServicoCadastrar { get; }
         public ILogGateway<AtualizarClienteHandler> LogServicoAtualizar { get; }
@@ -48,12 +42,12 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             RepositorioCliente = Substitute.For<IRepositorio<ClienteEntityDto>>();
             RepositorioEndereco = Substitute.For<IRepositorio<EnderecoEntityDto>>();
             RepositorioContato = Substitute.For<IRepositorio<ContatoEntityDto>>();
-            
+
             // Inicializar gateways reais usando os repositórios mockados
             ClienteGateway = new ClienteGateway(RepositorioCliente);
             EnderecoGateway = new EnderecoGateway(RepositorioEndereco);
             ContatoGateway = new ContatoGateway(RepositorioContato);
-            
+
             // Inicializar serviços mockados
             LogServicoCadastrar = Substitute.For<ILogGateway<CadastrarClienteHandler>>();
             LogServicoAtualizar = Substitute.For<ILogGateway<AtualizarClienteHandler>>();
@@ -63,7 +57,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             LogServicoRemover = Substitute.For<ILogGateway<RemoverClienteHandler>>();
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
             UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
-            
+
             // Configuração padrão para o UDT
             UnidadeDeTrabalho.Commit().Returns(Task.FromResult(true));
         }
@@ -370,7 +364,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         {
             var endereco = new Endereco { Id = enderecoId, IdCliente = clienteId };
             ConfigurarMockRepositorioEnderecoParaObterPorId(enderecoId, endereco);
-            
+
             var contato = new Contato { Id = contatoId, IdCliente = clienteId };
             ConfigurarMockRepositorioContatoParaObterPorId(contatoId, contato);
         }

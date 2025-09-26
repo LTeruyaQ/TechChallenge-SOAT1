@@ -1,4 +1,3 @@
-using Core.UseCases.Veiculos.DeletarVeiculo;
 
 namespace Core.Interfaces.Handlers.Veiculos
 {
@@ -11,7 +10,7 @@ namespace Core.Interfaces.Handlers.Veiculos
         /// Manipula a operação de deleção de veículo
         /// </summary>
         /// <param name="id">ID do veículo a ser deletado</param>
-        /// <returns>Resposta indicando o sucesso da operação</returns>
-        Task<DeletarVeiculoResponse> Handle(Guid id);
+        /// <returns>Indica se a operação foi bem-sucedida</returns>
+        Task<bool> Handle(Guid id);
     }
 }

@@ -8,8 +8,6 @@ using Core.Interfaces.Repositorios;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
 using Hangfire;
-using Infraestrutura.Dados;
-using MediatR;
 using System.Text;
 
 namespace API.Jobs;

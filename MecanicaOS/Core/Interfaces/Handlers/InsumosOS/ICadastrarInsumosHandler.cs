@@ -1,5 +1,5 @@
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
-using Core.UseCases.InsumosOS.CadastrarInsumos;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.InsumosOS
 {
@@ -13,7 +13,7 @@ namespace Core.Interfaces.Handlers.InsumosOS
         /// </summary>
         /// <param name="ordemServicoId">ID da ordem de serviço</param>
         /// <param name="request">Lista de DTOs com os dados dos insumos a serem cadastrados</param>
-        /// <returns>Resposta contendo os insumos cadastrados</returns>
-        Task<CadastrarInsumosResponse> Handle(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request);
+        /// <returns>Lista de insumos cadastrados</returns>
+        Task<List<InsumoOS>> Handle(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request);
     }
 }

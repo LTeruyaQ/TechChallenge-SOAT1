@@ -19,7 +19,7 @@ namespace Core.UseCases.Veiculos.DeletarVeiculo
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<DeletarVeiculoResponse> Handle(Guid id)
+        public async Task<bool> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
@@ -38,7 +38,7 @@ namespace Core.UseCases.Veiculos.DeletarVeiculo
 
                 LogFim(metodo, sucesso);
 
-                return new DeletarVeiculoResponse { Sucesso = sucesso };
+                return sucesso;
             }
             catch (Exception e)
             {

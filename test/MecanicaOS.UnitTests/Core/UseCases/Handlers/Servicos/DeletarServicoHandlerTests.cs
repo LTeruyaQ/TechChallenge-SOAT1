@@ -1,14 +1,7 @@
 using Core.DTOs.Entidades.Servico;
-using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 using Core.Exceptions;
-using Core.UseCases.Servicos.DeletarServico;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 {
@@ -36,8 +29,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
             var resultado = await handler.Handle(servico.Id);
 
             // Assert
-            resultado.Should().NotBeNull();
-            resultado.Sucesso.Should().BeTrue();
+            resultado.Should().BeTrue();
 
             // Verificar que o repositório foi chamado para deletar (através do gateway real)
             await _fixture.RepositorioServico.Received(1).DeletarAsync(Arg.Any<ServicoEntityDto>());
@@ -47,7 +39,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoDeletar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
-            _fixture.LogServicoDeletar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<DeletarServicoResponse>());
+            _fixture.LogServicoDeletar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<Servico>());
         }
 
         [Fact]

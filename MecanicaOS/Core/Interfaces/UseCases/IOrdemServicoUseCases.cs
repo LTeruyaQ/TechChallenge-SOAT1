@@ -1,4 +1,4 @@
-﻿using Core.DTOs.UseCases.OrdemServico;
+using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 
@@ -6,7 +6,7 @@ namespace Core.Interfaces.UseCases
 {
     public interface IOrdemServicoUseCases
     {
-        Task AceitarOrcamentoUseCaseAsync(Guid id);
+        Task<bool> AceitarOrcamentoUseCaseAsync(Guid id);
         Task<OrdemServico> AtualizarUseCaseAsync(Guid id, AtualizarOrdemServicoUseCaseDto request);
         Task<OrdemServico> CadastrarUseCaseAsync(CadastrarOrdemServicoUseCaseDto request);
         Task<OrdemServico?> ObterPorIdUseCaseAsync(Guid id);

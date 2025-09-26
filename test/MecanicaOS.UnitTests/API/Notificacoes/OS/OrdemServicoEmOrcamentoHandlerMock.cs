@@ -5,11 +5,6 @@ using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MecanicaOS.UnitTests.API.Notificacoes.OS
 {
@@ -21,7 +16,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
         private readonly IServicoEmail _emailServico;
         private readonly ILogServico<OrdemServicoEmOrcamentoHandlerMock> _logServico;
         private readonly IOrdemServicoController _ordemServicoController;
-        
+
         public OrdemServicoEmOrcamentoHandlerMock(ICompositionRoot compositionRoot)
         {
             _emailServico = compositionRoot.CriarServicoEmail();
@@ -38,7 +33,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 _logServico.LogInicio(metodo, notification.OrdemServicoId);
 
                 await _ordemServicoController.CalcularOrcamentoAsync(notification.OrdemServicoId);
-                
+
                 var os = await _ordemServicoController.ObterPorId(notification.OrdemServicoId);
 
                 await EnviarOrcamentoAsync(os);

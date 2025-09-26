@@ -1,14 +1,7 @@
 using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
 using Core.Especificacoes.Base.Interfaces;
-using Core.UseCases.Clientes.ObterTodosClientes;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 {
@@ -30,10 +23,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 ClienteHandlerFixture.CriarClientePessoaFisicaValido(),
                 ClienteHandlerFixture.CriarClientePessoaJuridicaValido()
             };
-            
+
             // Configurar o repositório para retornar a lista de clientes
             _fixture.ConfigurarMockRepositorioClienteParaObterTodos(clientes);
-            
+
             var handler = _fixture.CriarObterTodosClientesHandler();
 
             // Act
@@ -43,10 +36,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Should().NotBeNull();
             resultado.Should().HaveCount(2);
             resultado.Should().BeEquivalentTo(clientes);
-            
+
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioCliente.Received(1).ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
-            
+
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>());
             _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
@@ -57,10 +50,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
         {
             // Arrange
             var listaVazia = new List<Cliente>();
-            
+
             // Configurar o repositório para retornar uma lista vazia
             _fixture.ConfigurarMockRepositorioClienteParaObterTodos(listaVazia);
-            
+
             var handler = _fixture.CriarObterTodosClientesHandler();
 
             // Act
@@ -69,10 +62,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Assert
             resultado.Should().NotBeNull();
             resultado.Should().BeEmpty();
-            
+
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioCliente.Received(1).ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
-            
+
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>());
             _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
@@ -83,22 +76,22 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
         {
             // Arrange
             var excecaoEsperada = new Exception("Erro no banco de dados");
-            
+
             // Configurar o repositório para lançar uma exceção
             _fixture.RepositorioCliente.ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>())
                 .Returns(Task.FromException<IEnumerable<Cliente>>(excecaoEsperada));
-            
+
             var handler = _fixture.CriarObterTodosClientesHandler();
 
             // Act & Assert
             var act = async () => await handler.Handle();
-            
+
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("Erro no banco de dados");
-            
+
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioCliente.Received(1).ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
-            
+
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>());
             _fixture.LogServicoObterTodos.Received(1).LogErro(Arg.Any<string>(), excecaoEsperada);
@@ -110,15 +103,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Arrange
             var cliente1 = ClienteHandlerFixture.CriarClientePessoaFisicaValido();
             cliente1.Nome = "Cliente Específico 1";
-            
+
             var cliente2 = ClienteHandlerFixture.CriarClientePessoaJuridicaValido();
             cliente2.Nome = "Cliente Específico 2";
-            
+
             var clientes = new List<Cliente> { cliente1, cliente2 };
-            
+
             // Configurar o repositório para retornar a lista específica
             _fixture.ConfigurarMockRepositorioClienteParaObterTodos(clientes);
-            
+
             var handler = _fixture.CriarObterTodosClientesHandler();
 
             // Act
@@ -127,12 +120,12 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Assert
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioCliente.Received(1).ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
-            
+
             // Verificar que o resultado contém exatamente os mesmos dados retornados pelo gateway
             resultado.Should().NotBeNull();
             resultado.Should().HaveCount(2);
             resultado.Should().BeEquivalentTo(clientes);
-            
+
             // Verificar que os nomes específicos estão presentes
             resultado.Should().Contain(c => c.Nome == "Cliente Específico 1");
             resultado.Should().Contain(c => c.Nome == "Cliente Específico 2");

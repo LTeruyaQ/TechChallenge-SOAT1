@@ -41,37 +41,32 @@ namespace Core.UseCases.OrdensServico
 
         public async Task<OrdemServico> CadastrarUseCaseAsync(CadastrarOrdemServicoUseCaseDto request)
         {
-            var response = await _cadastrarOrdemServicoHandler.Handle(request);
-            return response.OrdemServico;
+            return await _cadastrarOrdemServicoHandler.Handle(request);
         }
 
         public async Task<OrdemServico> AtualizarUseCaseAsync(Guid id, AtualizarOrdemServicoUseCaseDto request)
         {
-            var response = await _atualizarOrdemServicoHandler.Handle(id, request);
-            return response.OrdemServico;
+            return await _atualizarOrdemServicoHandler.Handle(id, request);
         }
 
         public async Task<OrdemServico?> ObterPorIdUseCaseAsync(Guid id)
         {
-            var response = await _obterOrdemServicoHandler.Handle(id);
-            return response.OrdemServico;
+            return await _obterOrdemServicoHandler.Handle(id);
         }
 
         public async Task<IEnumerable<OrdemServico>> ObterTodosUseCaseAsync()
         {
-            var response = await _obterTodosOrdensServicoHandler.Handle();
-            return response.OrdensServico;
+            return await _obterTodosOrdensServicoHandler.Handle();
         }
 
         public async Task<IEnumerable<OrdemServico>> ObterPorStatusUseCaseAsync(StatusOrdemServico status)
         {
-            var response = await _obterOrdemServicoPorStatusHandler.Handle(status);
-            return response.OrdensServico;
+            return await _obterOrdemServicoPorStatusHandler.Handle(status);
         }
 
-        public async Task AceitarOrcamentoUseCaseAsync(Guid id)
+        public async Task<bool> AceitarOrcamentoUseCaseAsync(Guid id)
         {
-            await _aceitarOrcamentoHandler.Handle(id);
+            return await _aceitarOrcamentoHandler.Handle(id);
         }
 
         public async Task RecusarOrcamentoUseCaseAsync(Guid id)

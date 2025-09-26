@@ -1,3 +1,4 @@
+using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Veiculos;
 using Core.UseCases.Abstrato;
@@ -18,7 +19,7 @@ namespace Core.UseCases.Veiculos.ObterVeiculoPorPlaca
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<ObterVeiculoPorPlacaResponse> Handle(string placa)
+        public async Task<Veiculo?> Handle(string placa)
         {
             string metodo = nameof(Handle);
 
@@ -31,7 +32,7 @@ namespace Core.UseCases.Veiculos.ObterVeiculoPorPlaca
 
                 LogFim(metodo, veiculo);
 
-                return new ObterVeiculoPorPlacaResponse { Veiculo = veiculo };
+                return veiculo;
             }
             catch (Exception e)
             {

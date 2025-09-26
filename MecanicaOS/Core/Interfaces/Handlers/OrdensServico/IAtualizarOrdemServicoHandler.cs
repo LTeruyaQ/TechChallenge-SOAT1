@@ -1,5 +1,5 @@
 using Core.DTOs.UseCases.OrdemServico;
-using Core.UseCases.OrdensServico.AtualizarOrdemServico;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.OrdensServico
 {
@@ -13,7 +13,7 @@ namespace Core.Interfaces.Handlers.OrdensServico
         /// </summary>
         /// <param name="id">ID da ordem de serviço a ser atualizada</param>
         /// <param name="request">DTO com os dados atualizados da ordem de serviço</param>
-        /// <returns>Resposta contendo a ordem de serviço atualizada</returns>
-        Task<AtualizarOrdemServicoResponse> Handle(Guid id, AtualizarOrdemServicoUseCaseDto request);
+        /// <returns>Ordem de serviço atualizada</returns>
+        Task<OrdemServico> Handle(Guid id, AtualizarOrdemServicoUseCaseDto request);
     }
 }

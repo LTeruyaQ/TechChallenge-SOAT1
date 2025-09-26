@@ -33,7 +33,7 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
             _clienteUseCases = clienteUseCases ?? throw new ArgumentNullException(nameof(clienteUseCases));
         }
 
-        public async Task<AutenticarUsuarioResponse> Handle(AutenticacaoUseCaseDto request)
+        public async Task<AutenticacaoDto> Handle(AutenticacaoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
@@ -62,9 +62,8 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
                     Permissoes = permissoes.ToList()
                 };
 
-                var response = new AutenticarUsuarioResponse { Autenticacao = autenticacaoDto };
-                LogFim(metodo, response);
-                return response;
+                LogFim(metodo, autenticacaoDto);
+                return autenticacaoDto;
             }
             catch (Exception ex)
             {

@@ -1,4 +1,4 @@
-using Core.UseCases.Servicos.ObterServicoPorNome;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Servicos
 {
@@ -11,7 +11,7 @@ namespace Core.Interfaces.Handlers.Servicos
         /// Manipula a operação de obtenção de serviço por nome
         /// </summary>
         /// <param name="nome">Nome do serviço a ser obtido</param>
-        /// <returns>Resposta contendo o serviço encontrado</returns>
-        Task<ObterServicoPorNomeResponse> Handle(string nome);
+        /// <returns>Serviço encontrado ou null se não encontrado</returns>
+        Task<Servico?> Handle(string nome);
     }
 }

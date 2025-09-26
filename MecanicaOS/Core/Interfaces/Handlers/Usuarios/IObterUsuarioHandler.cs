@@ -1,4 +1,4 @@
-using Core.UseCases.Usuarios.ObterUsuario;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Usuarios
 {
@@ -11,7 +11,7 @@ namespace Core.Interfaces.Handlers.Usuarios
         /// Manipula a operação de obtenção de usuário por ID
         /// </summary>
         /// <param name="id">ID do usuário a ser obtido</param>
-        /// <returns>Resposta contendo o usuário encontrado</returns>
-        Task<ObterUsuarioResponse> Handle(Guid id);
+        /// <returns>Usuário encontrado ou null</returns>
+        Task<Usuario?> Handle(Guid id);
     }
 }

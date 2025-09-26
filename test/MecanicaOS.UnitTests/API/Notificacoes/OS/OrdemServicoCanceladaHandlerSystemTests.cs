@@ -1,30 +1,12 @@
 using API.Notificacoes.OS;
-using Core.DTOs.Entidades;
-using Core.DTOs.Entidades.Autenticacao;
 using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.Entidades.OrdemServicos;
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
-using Core.DTOs.Responses.OrdemServico;
-using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
-using Core.DTOs.Responses.Estoque;
-using Core.Entidades;
-using Core.Enumeradores;
-using Core.Interfaces.Controllers;
-using Core.Interfaces.Gateways;
-using Core.Interfaces.root;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
-using FluentAssertions;
-using MediatR;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 using Core.Interfaces.Eventos;
+using Core.Interfaces.Gateways;
+using Core.Interfaces.Repositorios;
+using Core.Interfaces.root;
+using MediatR;
 
 namespace MecanicaOS.UnitTests.API.Notificacoes.OS
 {
@@ -47,7 +29,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
         public OrdemServicoCanceladaHandlerSystemTests()
         {
             _fixture = new OrdemServicoCanceladaHandlerFixture();
-            
+
             // Configurar mocks para todos os componentes necessários
             _estoqueGateway = Substitute.For<IEstoqueGateway>();
             _estoqueRepositorio = Substitute.For<IRepositorio<EstoqueEntityDto>>();
@@ -56,7 +38,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             _unidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalho>();
             _mediator = Substitute.For<IMediator>();
             _eventosGateway = Substitute.For<IEventosGateway>();
-            
+
             // Configurar CompositionRoot
             _compositionRoot = Substitute.For<ICompositionRoot>();
             _compositionRoot.CriarOrdemServicoController().Returns(_fixture.OrdemServicoController);
@@ -80,7 +62,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             var estoqueId1 = Guid.NewGuid();
             var estoqueId2 = Guid.NewGuid();
             var evento = _fixture.CriarEvento(ordemServicoId);
-            
+
             // Criar DTOs de estoque simulando o banco de dados
             var estoqueDto1 = new EstoqueEntityDto
             {
@@ -92,7 +74,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 Ativo = true,
                 DataCadastro = DateTime.Now.AddDays(-30)
             };
-            
+
             var estoqueDto2 = new EstoqueEntityDto
             {
                 Id = estoqueId2,
@@ -103,27 +85,27 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 Ativo = true,
                 DataCadastro = DateTime.Now.AddDays(-30)
             };
-            
+
             // Configurar repositório de estoque
             _estoqueRepositorio.ObterPorIdAsync(estoqueId1).Returns(estoqueDto1);
             _estoqueRepositorio.ObterPorIdAsync(estoqueId2).Returns(estoqueDto2);
-            
+
             // Configurar insumos da ordem de serviço
             var insumosInfo = new List<(Guid EstoqueId, int Quantidade)>
             {
                 (estoqueId1, 3),
                 (estoqueId2, 2)
             };
-            
+
             var ordemServico = _fixture.CriarOrdemServicoComInsumosEspecificos(ordemServicoId, insumosInfo);
             _fixture.OrdemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Configurar comportamento do InsumoOSController para usar o gateway real
             _fixture.InsumoOSController.DevolverInsumosAoEstoque(Arg.Any<IEnumerable<DevolverInsumoOSRequest>>())
                 .Returns(callInfo =>
                 {
                     var requests = callInfo.Arg<IEnumerable<DevolverInsumoOSRequest>>();
-                    
+
                     // Simular a atualização real do estoque no banco de dados
                     foreach (var request in requests)
                     {
@@ -138,16 +120,16 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                             estoqueDto2.DataAtualizacao = DateTime.Now;
                         }
                     }
-                    
+
                     // Simular commit no banco de dados
                     _unidadeDeTrabalho.Commit().Returns(Task.FromResult(true));
-                    
+
                     // Garantir que o commit seja chamado
                     _unidadeDeTrabalho.Commit();
-                    
+
                     return Task.CompletedTask;
                 });
-            
+
             // Configurar handler com o CompositionRoot
             var handler = new OrdemServicoCanceladaHandler(_compositionRoot);
 
@@ -158,10 +140,10 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Verificar que o estoque foi atualizado corretamente
             estoqueDto1.QuantidadeDisponivel.Should().Be(13); // 10 + 3
             estoqueDto2.QuantidadeDisponivel.Should().Be(17); // 15 + 2
-            
+
             // Verificar que o commit foi chamado
             await _unidadeDeTrabalho.Received(1).Commit();
-            
+
             // Verificar logs
             _fixture.LogServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
             _fixture.LogServico.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
@@ -174,20 +156,20 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             var ordemServicoId = Guid.NewGuid();
             var estoqueId = Guid.NewGuid();
             var evento = _fixture.CriarEvento(ordemServicoId);
-            
+
             // Configurar insumos da ordem de serviço
             var insumosInfo = new List<(Guid EstoqueId, int Quantidade)>
             {
                 (estoqueId, 5)
             };
-            
+
             var ordemServico = _fixture.CriarOrdemServicoComInsumosEspecificos(ordemServicoId, insumosInfo);
             _fixture.OrdemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Simular falha no commit
             var exception = new Exception("Erro ao commitar transação");
             _unidadeDeTrabalho.Commit().Returns(Task.FromException<bool>(exception));
-            
+
             // Configurar comportamento do InsumoOSController
             _fixture.InsumoOSController.DevolverInsumosAoEstoque(Arg.Any<IEnumerable<DevolverInsumoOSRequest>>())
                 .Returns(callInfo =>
@@ -195,15 +177,15 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                     // Simular erro no commit
                     throw exception;
                 });
-            
+
             // Configurar handler com o CompositionRoot
             var handler = new OrdemServicoCanceladaHandler(_compositionRoot);
 
             // Act & Assert
             var act = async () => await handler.Handle(evento, CancellationToken.None);
-            
+
             await act.Should().ThrowAsync<Exception>().WithMessage("Erro ao commitar transação");
-            
+
             // Verificar logs
             _fixture.LogServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
             _fixture.LogServico.Received(1).LogErro(Arg.Any<string>(), exception);
@@ -218,7 +200,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             var estoqueIdExistente = Guid.NewGuid();
             var estoqueIdInexistente = Guid.NewGuid();
             var evento = _fixture.CriarEvento(ordemServicoId);
-            
+
             // Criar DTO de estoque existente
             var estoqueDto = new EstoqueEntityDto
             {
@@ -229,27 +211,27 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 Preco = 45.90M,
                 Ativo = true
             };
-            
+
             // Configurar repositório para retornar estoque existente e null para inexistente
             _estoqueRepositorio.ObterPorIdAsync(estoqueIdExistente).Returns(estoqueDto);
             _estoqueRepositorio.ObterPorIdAsync(estoqueIdInexistente).Returns((EstoqueEntityDto)null);
-            
+
             // Configurar insumos da ordem de serviço (um existente e um inexistente)
             var insumosInfo = new List<(Guid EstoqueId, int Quantidade)>
             {
                 (estoqueIdExistente, 3),
                 (estoqueIdInexistente, 2)
             };
-            
+
             var ordemServico = _fixture.CriarOrdemServicoComInsumosEspecificos(ordemServicoId, insumosInfo);
             _fixture.OrdemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Configurar comportamento do InsumoOSController para lidar com estoque inexistente
             _fixture.InsumoOSController.DevolverInsumosAoEstoque(Arg.Any<IEnumerable<DevolverInsumoOSRequest>>())
                 .Returns(callInfo =>
                 {
                     var requests = callInfo.Arg<IEnumerable<DevolverInsumoOSRequest>>();
-                    
+
                     // Simular a atualização apenas do estoque existente
                     foreach (var request in requests)
                     {
@@ -258,10 +240,10 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                             estoqueDto.QuantidadeDisponivel += request.Quantidade;
                         }
                     }
-                    
+
                     return Task.CompletedTask;
                 });
-            
+
             // Configurar handler com o CompositionRoot
             var handler = new OrdemServicoCanceladaHandler(_compositionRoot);
 
@@ -271,7 +253,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Assert
             // Verificar que o estoque existente foi atualizado
             estoqueDto.QuantidadeDisponivel.Should().Be(13); // 10 + 3
-            
+
             // Verificar logs
             _fixture.LogServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
             _fixture.LogServico.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
@@ -284,7 +266,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             var ordemServicoId = Guid.NewGuid();
             var estoqueId = Guid.NewGuid();
             var evento = _fixture.CriarEvento(ordemServicoId);
-            
+
             // Criar DTO de estoque desativado
             var estoqueDto = new EstoqueEntityDto
             {
@@ -295,31 +277,31 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 Preco = 0M,
                 Ativo = false // Estoque desativado
             };
-            
+
             // Configurar repositório
             _estoqueRepositorio.ObterPorIdAsync(estoqueId).Returns(estoqueDto);
-            
+
             // Configurar insumos da ordem de serviço
             var insumosInfo = new List<(Guid EstoqueId, int Quantidade)>
             {
                 (estoqueId, 3)
             };
-            
+
             var ordemServico = _fixture.CriarOrdemServicoComInsumosEspecificos(ordemServicoId, insumosInfo);
             _fixture.OrdemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Configurar comportamento do InsumoOSController
             _fixture.InsumoOSController.DevolverInsumosAoEstoque(Arg.Any<IEnumerable<DevolverInsumoOSRequest>>())
                 .Returns(callInfo =>
                 {
                     var requests = callInfo.Arg<IEnumerable<DevolverInsumoOSRequest>>();
-                    
+
                     // Não atualizar estoque desativado (simulando comportamento real)
                     // Na implementação real, isso seria tratado no gateway ou use case
-                    
+
                     return Task.CompletedTask;
                 });
-            
+
             // Configurar handler com o CompositionRoot
             var handler = new OrdemServicoCanceladaHandler(_compositionRoot);
 
@@ -329,10 +311,10 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Assert
             // Verificar que o estoque desativado não foi atualizado
             estoqueDto.QuantidadeDisponivel.Should().Be(5); // Mantém o valor original
-            
+
             // Verificar que o método foi chamado (o handler não sabe que o estoque está desativado)
             await _fixture.InsumoOSController.Received(1).DevolverInsumosAoEstoque(Arg.Any<IEnumerable<DevolverInsumoOSRequest>>());
-            
+
             // Verificar logs
             _fixture.LogServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
             _fixture.LogServico.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());

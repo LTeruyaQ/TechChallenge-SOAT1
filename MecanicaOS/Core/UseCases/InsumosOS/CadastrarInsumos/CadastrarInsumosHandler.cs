@@ -28,7 +28,7 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
             _verificarEstoqueJobGateway = verificarEstoqueJobGateway ?? throw new ArgumentNullException(nameof(verificarEstoqueJobGateway));
         }
 
-        public async Task<CadastrarInsumosResponse> Handle(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request)
+        public async Task<List<InsumoOS>> Handle(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request)
         {
             string metodo = nameof(Handle);
 
@@ -76,10 +76,9 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao cadastrar insumos na ordem de serviço");
 
-                var response = new CadastrarInsumosResponse { InsumosOS = insumosOS.ToList() };
-                LogFim(metodo, response);
+                LogFim(metodo, insumosOS);
 
-                return response;
+                return insumosOS.ToList();
             }
             catch (Exception e)
             {

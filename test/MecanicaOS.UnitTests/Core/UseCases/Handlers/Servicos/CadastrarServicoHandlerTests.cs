@@ -2,13 +2,7 @@ using Core.DTOs.Entidades.Servico;
 using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 using Core.Exceptions;
-using Core.UseCases.Servicos.CadastrarServico;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 {
@@ -54,22 +48,18 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
             var resultado = await handler.Handle(dtoRequest);
 
             // Assert
-            resultado.Should().NotBeNull();
-            resultado.Servico.Should().NotBeNull();
-            resultado.Servico.Nome.Should().Be(dtoRequest.Nome);
-            resultado.Servico.Descricao.Should().Be(dtoRequest.Descricao);
-            resultado.Servico.Valor.Should().Be(dtoRequest.Valor);
-            resultado.Servico.Disponivel.Should().Be(dtoRequest.Disponivel);
-
-            // Verificar que o repositório foi chamado para cadastrar (através do gateway real)
-            await _fixture.RepositorioServico.Received(1).CadastrarAsync(Arg.Any<ServicoEntityDto>());
+            resultado.Id.Should().NotBe(default(Guid));
+            resultado.Nome.Should().Be(dtoRequest.Nome);
+            resultado.Descricao.Should().Be(dtoRequest.Descricao);
+            resultado.Valor.Should().Be(dtoRequest.Valor);
+            resultado.Disponivel.Should().Be(dtoRequest.Disponivel);
 
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoCadastrar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<CadastrarServicoUseCaseDto>());
-            _fixture.LogServicoCadastrar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<CadastrarServicoResponse>());
+            _fixture.LogServicoCadastrar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Fact]

@@ -1,4 +1,4 @@
-using Core.UseCases.Estoques.ObterEstoque;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Estoques
 {
@@ -11,7 +11,7 @@ namespace Core.Interfaces.Handlers.Estoques
         /// Manipula a operação de obtenção de estoque por ID
         /// </summary>
         /// <param name="id">ID do estoque a ser obtido</param>
-        /// <returns>Resposta contendo o estoque encontrado</returns>
-        Task<ObterEstoqueResponse> Handle(Guid id);
+        /// <returns>Estoque encontrado</returns>
+        Task<Estoque> Handle(Guid id);
     }
 }

@@ -1,13 +1,10 @@
+using Adapters.Gateways;
 using Core.DTOs.Entidades.Servico;
 using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
-using Core.Enumeradores;
-using Core.Especificacoes.Base.Interfaces;
-using Core.Especificacoes.Servico;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Servicos;
 using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Servicos.CadastrarServico;
 using Core.UseCases.Servicos.DeletarServico;
 using Core.UseCases.Servicos.EditarServico;
@@ -15,12 +12,6 @@ using Core.UseCases.Servicos.ObterServico;
 using Core.UseCases.Servicos.ObterServicoPorNome;
 using Core.UseCases.Servicos.ObterServicosDisponiveis;
 using Core.UseCases.Servicos.ObterTodosServicos;
-using Adapters.Gateways;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MecanicaOS.UnitTests.Fixtures.Handlers
 {
@@ -28,10 +19,10 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
     {
         // Repositórios
         public IRepositorio<ServicoEntityDto> RepositorioServico { get; }
-        
+
         // Gateways
         public IServicoGateway ServicoGateway { get; }
-        
+
         // LogServices
         public ILogGateway<CadastrarServicoHandler> LogServicoCadastrar { get; }
         public ILogGateway<EditarServicoHandler> LogServicoEditar { get; }
@@ -40,7 +31,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         public ILogGateway<ObterTodosServicosHandler> LogServicoObterTodos { get; }
         public ILogGateway<ObterServicoPorNomeHandler> LogServicoObterPorNome { get; }
         public ILogGateway<ObterServicosDisponiveisHandler> LogServicoObterDisponiveis { get; }
-        
+
         // Outros serviços
         public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
         public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
@@ -49,10 +40,10 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         {
             // Inicializar repositórios mockados
             RepositorioServico = Substitute.For<IRepositorio<ServicoEntityDto>>();
-            
+
             // Inicializar gateway real usando o repositório mockado
             ServicoGateway = new ServicoGateway(RepositorioServico);
-            
+
             // Inicializar log services
             LogServicoCadastrar = Substitute.For<ILogGateway<CadastrarServicoHandler>>();
             LogServicoEditar = Substitute.For<ILogGateway<EditarServicoHandler>>();
@@ -61,7 +52,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             LogServicoObterTodos = Substitute.For<ILogGateway<ObterTodosServicosHandler>>();
             LogServicoObterPorNome = Substitute.For<ILogGateway<ObterServicoPorNomeHandler>>();
             LogServicoObterDisponiveis = Substitute.For<ILogGateway<ObterServicosDisponiveisHandler>>();
-            
+
             // Inicializar outros serviços
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
             UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
@@ -183,23 +174,23 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 .ListarProjetadoAsync<Servico>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ServicoEntityDto>>())
                 .Returns(servicos);
         }
-        
+
         public void ConfigurarMockRepositorioParaCadastrar(Servico servico)
         {
             var dto = ToDto(servico);
             RepositorioServico.CadastrarAsync(Arg.Any<ServicoEntityDto>()).Returns(dto);
         }
-        
+
         public void ConfigurarMockRepositorioParaEditar()
         {
             RepositorioServico.EditarAsync(Arg.Any<ServicoEntityDto>()).Returns(Task.CompletedTask);
         }
-        
+
         public void ConfigurarMockRepositorioParaDeletar()
         {
             RepositorioServico.DeletarAsync(Arg.Any<ServicoEntityDto>()).Returns(Task.CompletedTask);
         }
-        
+
         // Métodos de compatibilidade com o gateway (para facilitar migração dos testes)
         public void ConfigurarMockServicoGatewayParaObterPorId(Guid id, Servico servico)
         {
@@ -266,7 +257,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 Disponivel = disponivel
             };
         }
-        
+
         // Métodos de conversão entre Servico e ServicoEntityDto
         public static ServicoEntityDto ToDto(Servico servico)
         {
@@ -282,7 +273,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 Disponivel = servico.Disponivel
             };
         }
-        
+
         public static Servico FromDto(ServicoEntityDto dto)
         {
             return new Servico

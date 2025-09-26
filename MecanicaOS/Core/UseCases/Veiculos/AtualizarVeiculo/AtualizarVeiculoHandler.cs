@@ -1,4 +1,5 @@
 using Core.DTOs.UseCases.Veiculo;
+using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Veiculos;
@@ -20,7 +21,7 @@ namespace Core.UseCases.Veiculos.AtualizarVeiculo
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<AtualizarVeiculoResponse> Handle(Guid id, AtualizarVeiculoUseCaseDto request)
+        public async Task<Veiculo> Handle(Guid id, AtualizarVeiculoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
@@ -48,7 +49,7 @@ namespace Core.UseCases.Veiculos.AtualizarVeiculo
 
                 LogFim(metodo, veiculo);
 
-                return new AtualizarVeiculoResponse { Veiculo = veiculo };
+                return veiculo;
             }
             catch (Exception e)
             {

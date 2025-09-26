@@ -36,38 +36,32 @@ namespace Core.UseCases.Estoques
 
         public async Task<Estoque> CadastrarUseCaseAsync(CadastrarEstoqueUseCaseDto request)
         {
-            var response = await _cadastrarEstoqueHandler.Handle(request);
-            return response.Estoque;
+            return await _cadastrarEstoqueHandler.Handle(request);
         }
 
         public async Task<Estoque> AtualizarUseCaseAsync(Guid id, AtualizarEstoqueUseCaseDto request)
         {
-            var response = await _atualizarEstoqueHandler.Handle(id, request);
-            return response.Estoque;
+            return await _atualizarEstoqueHandler.Handle(id, request);
         }
 
         public async Task<bool> DeletarUseCaseAsync(Guid id)
         {
-            var response = await _deletarEstoqueHandler.Handle(id);
-            return response.Sucesso;
+            return await _deletarEstoqueHandler.Handle(id);
         }
 
         public async Task<Estoque> ObterPorIdUseCaseAsync(Guid id)
         {
-            var response = await _obterEstoqueHandler.Handle(id);
-            return response.Estoque;
+            return await _obterEstoqueHandler.Handle(id);
         }
 
         public async Task<IEnumerable<Estoque>> ObterTodosUseCaseAsync()
         {
-            var response = await _obterTodosEstoquesHandler.Handle();
-            return response.Estoques;
+            return await _obterTodosEstoquesHandler.Handle();
         }
 
         public async Task<IEnumerable<Estoque>> ObterEstoqueCriticoUseCaseAsync()
         {
-            var response = await _obterEstoqueCriticoHandler.Handle();
-            return response.EstoquesCriticos;
+            return await _obterEstoqueCriticoHandler.Handle();
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Core.UseCases.Estoques.CadastrarEstoque
             _estoqueGateway = estoqueGateway ?? throw new ArgumentNullException(nameof(estoqueGateway));
         }
 
-        public async Task<CadastrarEstoqueResponse> Handle(CadastrarEstoqueUseCaseDto request)
+        public async Task<Estoque> Handle(CadastrarEstoqueUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
@@ -52,7 +52,7 @@ namespace Core.UseCases.Estoques.CadastrarEstoque
 
                 LogFim(metodo, estoque);
 
-                return new CadastrarEstoqueResponse { Estoque = estoque };
+                return estoque;
             }
             catch (Exception e)
             {

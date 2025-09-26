@@ -1,4 +1,3 @@
-using Core.UseCases.Servicos.DeletarServico;
 
 namespace Core.Interfaces.Handlers.Servicos
 {
@@ -11,7 +10,7 @@ namespace Core.Interfaces.Handlers.Servicos
         /// Manipula a operação de deleção de serviço
         /// </summary>
         /// <param name="id">ID do serviço a ser deletado</param>
-        /// <returns>Resposta indicando o sucesso da operação</returns>
-        Task<DeletarServicoResponse> Handle(Guid id);
+        /// <returns>Indica se a operação foi bem-sucedida</returns>
+        Task<bool> Handle(Guid id);
     }
 }

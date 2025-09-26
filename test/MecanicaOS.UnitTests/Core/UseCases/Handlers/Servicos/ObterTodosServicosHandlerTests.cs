@@ -1,14 +1,6 @@
 using Core.DTOs.Entidades.Servico;
-using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
-using Core.UseCases.Servicos.ObterTodosServicos;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 {
@@ -41,15 +33,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Servicos.Should().NotBeNull();
-            resultado.Servicos.Should().HaveCount(3);
-            
+            resultado.Should().NotBeNull();
+            resultado.Should().HaveCount(3);
+
             // Verificar que o gateway foi chamado
             await _fixture.RepositorioServico.Received(1).ObterTodosAsync();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
-            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<ObterTodosServicosResponse>());
+            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Fact]
@@ -67,15 +59,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Servicos.Should().NotBeNull();
-            resultado.Servicos.Should().BeEmpty();
-            
+            resultado.Should().NotBeNull();
+            resultado.Should().BeEmpty();
+
             // Verificar que o gateway foi chamado
             await _fixture.RepositorioServico.Received(1).ObterTodosAsync();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
-            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<ObterTodosServicosResponse>());
+            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Fact]

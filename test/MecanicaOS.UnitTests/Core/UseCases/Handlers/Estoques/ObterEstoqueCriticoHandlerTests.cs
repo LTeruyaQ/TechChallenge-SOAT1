@@ -1,15 +1,7 @@
 using Core.DTOs.Entidades.Estoque;
 using Core.Entidades;
 using Core.Especificacoes.Base.Interfaces;
-using Core.UseCases.Estoques.ObterEstoqueCritico;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
 {
@@ -49,10 +41,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             };
 
             var estoquesCriticos = new List<Estoque> { estoque1, estoque2 };
-            
+
             // Configurar o repositório para retornar a lista de estoques críticos
             _fixture.ConfigurarMockRepositorioEstoqueParaObterEstoqueCritico(estoquesCriticos);
-            
+
             var handler = _fixture.CriarObterEstoqueCriticoHandler();
 
             // Act
@@ -60,13 +52,13 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.EstoquesCriticos.Should().NotBeNull();
-            resultado.EstoquesCriticos.Should().HaveCount(2);
-            resultado.EstoquesCriticos.Should().BeEquivalentTo(estoquesCriticos);
-            
+            resultado.Should().NotBeNull();
+            resultado.Should().HaveCount(2);
+            resultado.Should().BeEquivalentTo(estoquesCriticos);
+
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioEstoque.Received(1).ListarProjetadoAsync<Estoque>(Arg.Any<IEspecificacao<EstoqueEntityDto>>());
-            
+
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterCritico.Received(1).LogInicio(Arg.Any<string>());
             _fixture.LogServicoObterCritico.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
@@ -77,10 +69,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
         {
             // Arrange
             var listaVazia = new List<Estoque>();
-            
+
             // Configurar o repositório para retornar uma lista vazia
             _fixture.ConfigurarMockRepositorioEstoqueParaObterEstoqueCritico(listaVazia);
-            
+
             var handler = _fixture.CriarObterEstoqueCriticoHandler();
 
             // Act
@@ -88,12 +80,12 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.EstoquesCriticos.Should().NotBeNull();
-            resultado.EstoquesCriticos.Should().BeEmpty();
-            
+            resultado.Should().NotBeNull();
+            resultado.Should().BeEmpty();
+
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioEstoque.Received(1).ListarProjetadoAsync<Estoque>(Arg.Any<IEspecificacao<EstoqueEntityDto>>());
-            
+
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterCritico.Received(1).LogInicio(Arg.Any<string>());
             _fixture.LogServicoObterCritico.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
@@ -104,22 +96,22 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
         {
             // Arrange
             var excecaoEsperada = new Exception("Erro no banco de dados");
-            
+
             // Configurar o repositório para lançar uma exceção
             _fixture.RepositorioEstoque.ListarProjetadoAsync<Estoque>(Arg.Any<IEspecificacao<EstoqueEntityDto>>())
                 .Returns(Task.FromException<IEnumerable<Estoque>>(excecaoEsperada));
-            
+
             var handler = _fixture.CriarObterEstoqueCriticoHandler();
 
             // Act & Assert
             var act = async () => await handler.Handle();
-            
+
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("Erro no banco de dados");
-            
+
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioEstoque.Received(1).ListarProjetadoAsync<Estoque>(Arg.Any<IEspecificacao<EstoqueEntityDto>>());
-            
+
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterCritico.Received(1).LogInicio(Arg.Any<string>());
             _fixture.LogServicoObterCritico.Received(1).LogErro(Arg.Any<string>(), excecaoEsperada);
@@ -156,10 +148,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             };
 
             var estoquesCriticos = new List<Estoque> { estoque1, estoque2 };
-            
+
             // Configurar o repositório para retornar a lista específica
             _fixture.ConfigurarMockRepositorioEstoqueParaObterEstoqueCritico(estoquesCriticos);
-            
+
             var handler = _fixture.CriarObterEstoqueCriticoHandler();
 
             // Act
@@ -168,15 +160,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             // Assert
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioEstoque.Received(1).ListarProjetadoAsync<Estoque>(Arg.Any<IEspecificacao<EstoqueEntityDto>>());
-            
+
             // Verificar que o resultado contém exatamente os mesmos dados retornados pelo gateway
             resultado.Should().NotBeNull();
-            resultado.EstoquesCriticos.Should().NotBeNull();
-            resultado.EstoquesCriticos.Should().HaveCount(2);
-            resultado.EstoquesCriticos.Should().BeEquivalentTo(estoquesCriticos);
-            
+            resultado.Should().NotBeNull();
+            resultado.Should().HaveCount(2);
+            resultado.Should().BeEquivalentTo(estoquesCriticos);
+
             // Verificar os dados do primeiro estoque
-            var primeiroCritico = resultado.EstoquesCriticos.First(e => e.Insumo == "Produto Crítico 1");
+            var primeiroCritico = resultado.First(e => e.Insumo == "Produto Crítico 1");
             primeiroCritico.Insumo.Should().Be("Produto Crítico 1");
             primeiroCritico.Descricao.Should().Be("Descrição do produto crítico 1");
             primeiroCritico.QuantidadeDisponivel.Should().Be(5);
@@ -185,9 +177,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             primeiroCritico.Ativo.Should().BeTrue();
             primeiroCritico.DataCadastro.Should().Be(new DateTime(2023, 1, 15));
             primeiroCritico.DataAtualizacao.Should().Be(new DateTime(2023, 6, 30));
-            
+
             // Verificar os dados do segundo estoque
-            var segundoCritico = resultado.EstoquesCriticos.First(e => e.Insumo == "Produto Crítico 2");
+            var segundoCritico = resultado.First(e => e.Insumo == "Produto Crítico 2");
             segundoCritico.Insumo.Should().Be("Produto Crítico 2");
             segundoCritico.Descricao.Should().Be("Descrição do produto crítico 2");
             segundoCritico.QuantidadeDisponivel.Should().Be(2);

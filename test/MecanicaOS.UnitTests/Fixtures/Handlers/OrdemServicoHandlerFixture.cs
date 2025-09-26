@@ -1,5 +1,5 @@
+using Adapters.Gateways;
 using Core.DTOs.Entidades.OrdemServicos;
-using Core.DTOs.UseCases.Eventos;
 using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
@@ -7,7 +7,6 @@ using Core.Especificacoes.Base.Interfaces;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.OrdensServico.AceitarOrcamento;
 using Core.UseCases.OrdensServico.AtualizarOrdemServico;
@@ -16,12 +15,6 @@ using Core.UseCases.OrdensServico.ObterOrdemServico;
 using Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus;
 using Core.UseCases.OrdensServico.ObterTodosOrdensServico;
 using Core.UseCases.OrdensServico.RecusarOrcamento;
-using Adapters.Gateways;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MecanicaOS.UnitTests.Fixtures.Handlers
 {
@@ -29,16 +22,16 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
     {
         // Repositórios mockados
         public IRepositorio<OrdemServicoEntityDto> RepositorioOrdemServico { get; }
-        
+
         // Gateways reais
         public IOrdemServicoGateway OrdemServicoGateway { get; }
         public IEventosGateway EventosGateway { get; }
-        
+
         // UseCases
         public IClienteUseCases ClienteUseCases { get; }
         public IServicoUseCases ServicoUseCases { get; }
         public IVeiculoUseCases VeiculoUseCases { get; }
-        
+
         // LogServices
         public ILogGateway<CadastrarOrdemServicoHandler> LogServicoCadastrar { get; }
         public ILogGateway<AtualizarOrdemServicoHandler> LogServicoAtualizar { get; }
@@ -47,7 +40,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         public ILogGateway<ObterOrdemServicoPorStatusHandler> LogServicoObterPorStatus { get; }
         public ILogGateway<AceitarOrcamentoHandler> LogServicoAceitarOrcamento { get; }
         public ILogGateway<RecusarOrcamentoHandler> LogServicoRecusarOrcamento { get; }
-        
+
         // Outros serviços
         public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
         public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
@@ -56,16 +49,16 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         {
             // Inicializar repositórios mockados
             RepositorioOrdemServico = Substitute.For<IRepositorio<OrdemServicoEntityDto>>();
-            
+
             // Inicializar gateways reais usando os repositórios mockados
             OrdemServicoGateway = new OrdemServicoGateway(RepositorioOrdemServico);
             EventosGateway = Substitute.For<IEventosGateway>();
-            
+
             // Inicializar use cases
             ClienteUseCases = Substitute.For<IClienteUseCases>();
             ServicoUseCases = Substitute.For<IServicoUseCases>();
             VeiculoUseCases = Substitute.For<IVeiculoUseCases>();
-            
+
             // Inicializar log services
             LogServicoCadastrar = Substitute.For<ILogGateway<CadastrarOrdemServicoHandler>>();
             LogServicoAtualizar = Substitute.For<ILogGateway<AtualizarOrdemServicoHandler>>();
@@ -74,11 +67,11 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             LogServicoObterPorStatus = Substitute.For<ILogGateway<ObterOrdemServicoPorStatusHandler>>();
             LogServicoAceitarOrcamento = Substitute.For<ILogGateway<AceitarOrcamentoHandler>>();
             LogServicoRecusarOrcamento = Substitute.For<ILogGateway<RecusarOrcamentoHandler>>();
-            
+
             // Inicializar outros serviços
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
             UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
-            
+
             // Configuração padrão para o UDT
             UnidadeDeTrabalho.Commit().Returns(Task.FromResult(true));
         }
@@ -181,27 +174,27 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             RepositorioOrdemServico.ListarProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>())
                 .Returns(ordensServico);
         }
-        
+
         public void ConfigurarMockRepositorioOrdemServicoParaCadastrar(OrdemServico ordemServico)
         {
             var dto = ToOrdemServicoDto(ordemServico);
             RepositorioOrdemServico.CadastrarAsync(Arg.Any<OrdemServicoEntityDto>()).Returns(dto);
         }
-        
+
         public void ConfigurarMockRepositorioOrdemServicoParaEditar()
         {
             RepositorioOrdemServico.EditarAsync(Arg.Any<OrdemServicoEntityDto>()).Returns(Task.CompletedTask);
         }
-        
+
         public void ConfigurarMockRepositorioOrdemServicoParaLancarExcecaoAoEditar(Guid id, Exception excecao)
         {
             // Configura o mock para obter a ordem de serviço
             var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
             ordemServico.Id = id;
             ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1);
-            
+
             ConfigurarMockRepositorioOrdemServicoParaObterPorId(id, ordemServico);
-            
+
             // Configura o mock para lançar exceção ao editar
             RepositorioOrdemServico.EditarAsync(Arg.Any<OrdemServicoEntityDto>())
                 .Returns(Task.FromException(excecao));
@@ -253,7 +246,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 DataCadastro = DateTime.UtcNow.AddDays(-5),
                 DataAtualizacao = DateTime.UtcNow.AddDays(-3),
                 InsumosOS = new List<InsumoOS>(),
-                DataEnvioOrcamento = status == StatusOrdemServico.AguardandoAprovação ? 
+                DataEnvioOrcamento = status == StatusOrdemServico.AguardandoAprovação ?
                     DateTime.UtcNow.AddDays(-2) : null
             };
         }
@@ -336,9 +329,9 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 Descricao = descricao
             };
         }
-        
+
         #region Métodos de Conversão para DTOs
-        
+
         private static OrdemServicoEntityDto ToOrdemServicoDto(OrdemServico ordemServico)
         {
             return new OrdemServicoEntityDto
@@ -356,7 +349,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 Orcamento = ordemServico.Orcamento
             };
         }
-        
+
         #endregion
     }
 }

@@ -1,4 +1,4 @@
-using Core.UseCases.Veiculos.ObterVeiculoPorPlaca;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Veiculos
 {
@@ -11,7 +11,7 @@ namespace Core.Interfaces.Handlers.Veiculos
         /// Manipula a operação de obtenção de veículo por placa
         /// </summary>
         /// <param name="placa">Placa do veículo</param>
-        /// <returns>Resposta contendo o veículo encontrado</returns>
-        Task<ObterVeiculoPorPlacaResponse> Handle(string placa);
+        /// <returns>Veículo encontrado ou null</returns>
+        Task<Veiculo?> Handle(string placa);
     }
 }

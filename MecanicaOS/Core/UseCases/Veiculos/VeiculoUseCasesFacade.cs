@@ -39,44 +39,37 @@ namespace Core.UseCases.Veiculos
 
         public async Task<Veiculo> AtualizarUseCaseAsync(Guid id, AtualizarVeiculoUseCaseDto request)
         {
-            var response = await _atualizarVeiculoHandler.Handle(id, request);
-            return response.Veiculo;
+            return await _atualizarVeiculoHandler.Handle(id, request);
         }
 
         public async Task<Veiculo> CadastrarUseCaseAsync(CadastrarVeiculoUseCaseDto request)
         {
-            var response = await _cadastrarVeiculoHandler.Handle(request);
-            return response.Veiculo;
+            return await _cadastrarVeiculoHandler.Handle(request);
         }
 
         public async Task<Veiculo> ObterPorIdUseCaseAsync(Guid id)
         {
-            var response = await _obterVeiculoHandler.Handle(id);
-            return response.Veiculo;
+            return await _obterVeiculoHandler.Handle(id);
         }
 
         public async Task<IEnumerable<Veiculo>> ObterPorClienteUseCaseAsync(Guid clienteId)
         {
-            var response = await _obterVeiculoPorClienteHandler.Handle(clienteId);
-            return response.Veiculos;
+            return await _obterVeiculoPorClienteHandler.Handle(clienteId);
         }
 
         public async Task<Veiculo?> ObterPorPlacaUseCaseAsync(string placa)
         {
-            var response = await _obterVeiculoPorPlacaHandler.Handle(placa);
-            return response.Veiculo;
+            return await _obterVeiculoPorPlacaHandler.Handle(placa);
         }
 
         public async Task<IEnumerable<Veiculo>> ObterTodosUseCaseAsync()
         {
-            var response = await _obterTodosVeiculosHandler.Handle();
-            return response.Veiculos;
+            return await _obterTodosVeiculosHandler.Handle();
         }
 
         public async Task<bool> DeletarUseCaseAsync(Guid id)
         {
-            var response = await _deletarVeiculoHandler.Handle(id);
-            return response.Sucesso;
+            return await _deletarVeiculoHandler.Handle(id);
         }
     }
 }

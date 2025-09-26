@@ -1,5 +1,5 @@
 using Core.DTOs.UseCases.Estoque;
-using Core.UseCases.Estoques.AtualizarEstoque;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Estoques
 {
@@ -13,7 +13,7 @@ namespace Core.Interfaces.Handlers.Estoques
         /// </summary>
         /// <param name="id">ID do estoque a ser atualizado</param>
         /// <param name="request">DTO com os dados atualizados do estoque</param>
-        /// <returns>Resposta contendo o estoque atualizado</returns>
-        Task<AtualizarEstoqueResponse> Handle(Guid id, AtualizarEstoqueUseCaseDto request);
+        /// <returns>Estoque atualizado</returns>
+        Task<Estoque> Handle(Guid id, AtualizarEstoqueUseCaseDto request);
     }
 }

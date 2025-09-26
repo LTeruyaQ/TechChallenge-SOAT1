@@ -25,7 +25,7 @@ namespace Core.UseCases.Usuarios.AtualizarUsuario
             _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
         }
 
-        public async Task<AtualizarUsuarioResponse> Handle(Guid id, AtualizarUsuarioUseCaseDto request)
+        public async Task<Usuario> Handle(Guid id, AtualizarUsuarioUseCaseDto request)
         {
             var metodo = nameof(Handle);
 
@@ -55,7 +55,7 @@ namespace Core.UseCases.Usuarios.AtualizarUsuario
 
                 LogFim(metodo, usuario);
 
-                return new AtualizarUsuarioResponse { Usuario = usuario };
+                return usuario;
             }
             catch (Exception e)
             {

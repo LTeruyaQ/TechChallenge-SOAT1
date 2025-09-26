@@ -21,8 +21,7 @@ namespace Core.UseCases.InsumosOS
 
         public async Task<IEnumerable<InsumoOS>> CadastrarInsumosUseCaseAsync(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request)
         {
-            var response = await _cadastrarInsumosHandler.Handle(ordemServicoId, request);
-            return response.InsumosOS;
+            return await _cadastrarInsumosHandler.Handle(ordemServicoId, request);
         }
 
         public async Task DevolverInsumosAoEstoqueUseCaseAsync(IEnumerable<DevolverInsumoOSRequest> insumosOS)

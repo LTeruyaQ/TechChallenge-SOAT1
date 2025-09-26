@@ -4,12 +4,6 @@ using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MecanicaOS.UnitTests.API.Notificacoes.OS
 {
@@ -21,7 +15,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
         private readonly ILogServico<OrdemServicoFinalizadaHandlerMock> _logServico;
         private readonly IServicoEmail _emailServico;
         private readonly IOrdemServicoController _ordemServicoController;
-        
+
         public OrdemServicoFinalizadaHandlerMock(ICompositionRoot compositionRoot)
         {
             _logServico = compositionRoot.CriarLogService<OrdemServicoFinalizadaHandlerMock>();

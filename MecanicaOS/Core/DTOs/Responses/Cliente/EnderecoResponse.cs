@@ -2,7 +2,7 @@ using Core.DTOs.Entidades.Cliente;
 
 namespace Core.DTOs.Responses.Cliente;
 
-public class EnderecoResponse 
+public class EnderecoResponse
 {
     public string? Rua { get; set; }
     public string? Bairro { get; set; }

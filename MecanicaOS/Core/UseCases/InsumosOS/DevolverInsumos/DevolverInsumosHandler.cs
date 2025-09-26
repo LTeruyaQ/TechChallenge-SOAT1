@@ -25,7 +25,7 @@ namespace Core.UseCases.InsumosOS.DevolverInsumos
             _atualizarEstoqueHandler = atualizarEstoqueHandler ?? throw new ArgumentNullException(nameof(atualizarEstoqueHandler));
         }
 
-        public async Task<DevolverInsumosResponse> Handle(IEnumerable<DevolverInsumoOSRequest> insumosOS)
+        public async Task<bool> Handle(IEnumerable<DevolverInsumoOSRequest> insumosOS)
         {
             string metodo = nameof(Handle);
 
@@ -35,9 +35,9 @@ namespace Core.UseCases.InsumosOS.DevolverInsumos
 
                 foreach (var insumoOS in insumosOS)
                 {
-                    var estoqueResponse = await _obterEstoqueHandler.Handle(insumoOS.EstoqueId);
-                    var estoque = estoqueResponse.Estoque
-                        ?? throw new DadosNaoEncontradosException($"Estoque com ID {insumoOS.EstoqueId} não encontrado");
+                    var estoque = await _obterEstoqueHandler.Handle(insumoOS.EstoqueId);
+                    if (estoque == null)
+                        throw new DadosNaoEncontradosException($"Estoque com ID {insumoOS.EstoqueId} não encontrado");
 
                     estoque.QuantidadeDisponivel += insumoOS.Quantidade;
 
@@ -55,7 +55,7 @@ namespace Core.UseCases.InsumosOS.DevolverInsumos
 
                 LogFim(metodo, true);
 
-                return new DevolverInsumosResponse { Sucesso = true };
+                return true;
             }
             catch (Exception e)
             {

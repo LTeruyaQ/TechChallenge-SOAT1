@@ -1,4 +1,3 @@
-using Core.UseCases.Estoques.DeletarEstoque;
 
 namespace Core.Interfaces.Handlers.Estoques
 {
@@ -11,7 +10,7 @@ namespace Core.Interfaces.Handlers.Estoques
         /// Manipula a operação de deleção de estoque
         /// </summary>
         /// <param name="id">ID do estoque a ser deletado</param>
-        /// <returns>Resposta indicando o sucesso da operação</returns>
-        Task<DeletarEstoqueResponse> Handle(Guid id);
+        /// <returns>Indica se a operação foi bem-sucedida</returns>
+        Task<bool> Handle(Guid id);
     }
 }

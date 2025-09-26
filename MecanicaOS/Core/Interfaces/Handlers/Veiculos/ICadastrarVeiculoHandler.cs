@@ -1,5 +1,5 @@
 using Core.DTOs.UseCases.Veiculo;
-using Core.UseCases.Veiculos.CadastrarVeiculo;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Veiculos
 {
@@ -12,7 +12,7 @@ namespace Core.Interfaces.Handlers.Veiculos
         /// Manipula a operação de cadastro de veículo
         /// </summary>
         /// <param name="request">DTO com os dados do veículo a ser cadastrado</param>
-        /// <returns>Resposta contendo o veículo cadastrado</returns>
-        Task<CadastrarVeiculoResponse> Handle(CadastrarVeiculoUseCaseDto request);
+        /// <returns>Veículo cadastrado</returns>
+        Task<Veiculo> Handle(CadastrarVeiculoUseCaseDto request);
     }
 }

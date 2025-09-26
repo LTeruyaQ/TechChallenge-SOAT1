@@ -1,4 +1,4 @@
-using Core.UseCases.Veiculos.ObterVeiculoPorCliente;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Veiculos
 {
@@ -11,7 +11,7 @@ namespace Core.Interfaces.Handlers.Veiculos
         /// Manipula a operação de obtenção de veículos por cliente
         /// </summary>
         /// <param name="clienteId">ID do cliente</param>
-        /// <returns>Resposta contendo a lista de veículos do cliente</returns>
-        Task<ObterVeiculoPorClienteResponse> Handle(Guid clienteId);
+        /// <returns>Lista de veículos do cliente</returns>
+        Task<IEnumerable<Veiculo>> Handle(Guid clienteId);
     }
 }

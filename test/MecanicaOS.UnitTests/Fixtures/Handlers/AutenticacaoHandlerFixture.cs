@@ -1,4 +1,3 @@
-using Core.DTOs.UseCases.Autenticacao;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Gateways;

@@ -1,5 +1,5 @@
+using Core.Entidades;
 using Core.Enumeradores;
-using Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus;
 
 namespace Core.Interfaces.Handlers.OrdensServico
 {
@@ -12,7 +12,7 @@ namespace Core.Interfaces.Handlers.OrdensServico
         /// Manipula a operação de obtenção de ordens de serviço por status
         /// </summary>
         /// <param name="status">Status das ordens de serviço a serem obtidas</param>
-        /// <returns>Resposta contendo a lista de ordens de serviço com o status especificado</returns>
-        Task<ObterOrdemServicoPorStatusResponse> Handle(StatusOrdemServico status);
+        /// <returns>Lista de ordens de serviço com o status especificado</returns>
+        Task<IEnumerable<OrdemServico>> Handle(StatusOrdemServico status);
     }
 }

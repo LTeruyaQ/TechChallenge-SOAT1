@@ -12,7 +12,7 @@ public class OrdemServicoFinalizadaHandler : INotificationHandler<OrdemServicoFi
     private readonly ILogServico<OrdemServicoFinalizadaHandler> _logServico;
     private readonly IServicoEmail _emailServico;
     private readonly IOrdemServicoController _ordemServicoController;
-    
+
     public OrdemServicoFinalizadaHandler(ICompositionRoot compositionRoot)
     {
         _logServico = compositionRoot.CriarLogService<OrdemServicoFinalizadaHandler>();

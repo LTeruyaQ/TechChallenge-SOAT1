@@ -1,5 +1,5 @@
 using Core.DTOs.UseCases.Usuario;
-using Core.UseCases.Usuarios.CadastrarUsuario;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Usuarios
 {
@@ -12,7 +12,7 @@ namespace Core.Interfaces.Handlers.Usuarios
         /// Manipula a operação de cadastro de usuário
         /// </summary>
         /// <param name="request">DTO com os dados do usuário a ser cadastrado</param>
-        /// <returns>Resposta contendo o usuário cadastrado</returns>
-        Task<CadastrarUsuarioResponse> Handle(CadastrarUsuarioUseCaseDto request);
+        /// <returns>Usuário cadastrado</returns>
+        Task<Usuario> Handle(CadastrarUsuarioUseCaseDto request);
     }
 }

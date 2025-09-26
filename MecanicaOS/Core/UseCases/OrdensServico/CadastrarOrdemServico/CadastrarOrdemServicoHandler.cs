@@ -29,7 +29,7 @@ namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
             _servicoUseCases = servicoUseCases ?? throw new ArgumentNullException(nameof(servicoUseCases));
         }
 
-        public async Task<CadastrarOrdemServicoResponse> Handle(CadastrarOrdemServicoUseCaseDto request)
+        public async Task<OrdemServico> Handle(CadastrarOrdemServicoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
@@ -62,7 +62,7 @@ namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
 
                 LogFim(metodo, ordemServico);
 
-                return new CadastrarOrdemServicoResponse { OrdemServico = ordemServico };
+                return ordemServico;
             }
             catch (Exception e)
             {

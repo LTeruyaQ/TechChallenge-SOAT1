@@ -1,3 +1,4 @@
+using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.OrdensServico;
@@ -19,7 +20,7 @@ namespace Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
         }
 
-        public async Task<ObterOrdemServicoPorStatusResponse> Handle(StatusOrdemServico status)
+        public async Task<IEnumerable<OrdemServico>> Handle(StatusOrdemServico status)
         {
             string metodo = nameof(Handle);
 
@@ -28,11 +29,10 @@ namespace Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus
                 LogInicio(metodo, status);
 
                 var ordensServico = await _ordemServicoGateway.ObterOrdemServicoPorStatusAsync(status);
-                
-                var response = new ObterOrdemServicoPorStatusResponse { OrdensServico = ordensServico };
-                LogFim(metodo, response);
 
-                return response;
+                LogFim(metodo, ordensServico);
+
+                return ordensServico;
             }
             catch (Exception e)
             {

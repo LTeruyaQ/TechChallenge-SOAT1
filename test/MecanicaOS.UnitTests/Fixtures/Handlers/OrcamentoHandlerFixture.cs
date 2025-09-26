@@ -3,9 +3,6 @@ using Core.Enumeradores;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Orcamentos;
 using Core.UseCases.Orcamentos.GerarOrcamento;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
 
 namespace MecanicaOS.UnitTests.Fixtures.Handlers
 {

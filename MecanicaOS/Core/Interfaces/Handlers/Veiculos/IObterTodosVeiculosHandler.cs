@@ -1,4 +1,4 @@
-using Core.UseCases.Veiculos.ObterTodosVeiculos;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Veiculos
 {
@@ -10,7 +10,7 @@ namespace Core.Interfaces.Handlers.Veiculos
         /// <summary>
         /// Manipula a operação de obtenção de todos os veículos
         /// </summary>
-        /// <returns>Resposta contendo a lista de veículos</returns>
-        Task<ObterTodosVeiculosResponse> Handle();
+        /// <returns>Lista de veículos</returns>
+        Task<IEnumerable<Veiculo>> Handle();
     }
 }

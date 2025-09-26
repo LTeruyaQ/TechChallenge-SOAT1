@@ -1,14 +1,11 @@
 using API.Notificacoes.OS;
+using Core.DTOs.Responses.Estoque;
 using Core.DTOs.Responses.OrdemServico;
 using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
-using Core.DTOs.Responses.Estoque;
 using Core.Enumeradores;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
 
 namespace MecanicaOS.UnitTests.API.Notificacoes.OS
 {

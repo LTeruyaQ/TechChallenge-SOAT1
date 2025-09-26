@@ -1,6 +1,7 @@
 using API;
 using API.Jobs;
 using API.Middlewares;
+using API.Notificacoes.OS;
 using Core.DTOs.Config;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
@@ -9,7 +10,6 @@ using Hangfire.PostgreSql;
 using Infraestrutura.Dados;
 using Infraestrutura.Dados.Extensions;
 using Infraestrutura.Logs;
-using API.Notificacoes.OS;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;

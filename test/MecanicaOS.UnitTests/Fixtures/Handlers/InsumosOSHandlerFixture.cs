@@ -2,11 +2,9 @@ using Adapters.Gateways;
 using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.Entidades.OrdemServicos;
 using Core.DTOs.UseCases.Estoque;
-using Core.DTOs.UseCases.OrdemServico;
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.Enumeradores;
-using Core.Especificacoes.Base;
 using Core.Especificacoes.Base.Interfaces;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
@@ -14,17 +12,12 @@ using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.Handlers.InsumosOS;
 using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Estoques.AtualizarEstoque;
 using Core.UseCases.Estoques.ObterEstoque;
 using Core.UseCases.InsumosOS.CadastrarInsumos;
 using Core.UseCases.InsumosOS.DevolverInsumos;
 using Core.UseCases.OrdensServico.ObterOrdemServico;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MecanicaOS.UnitTests.Fixtures.Handlers
 {
@@ -34,19 +27,19 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         public IObterOrdemServicoHandler ObterOrdemServicoHandler { get; private set; }
         public IObterEstoqueHandler ObterEstoqueHandler { get; private set; }
         public IAtualizarEstoqueHandler AtualizarEstoqueHandler { get; private set; }
-        
+
         // Serviços
         public IVerificarEstoqueJobGateway VerificarEstoqueJobGateway { get; }
         public ILogGateway<CadastrarInsumosHandler> LogServicoCadastrar { get; }
         public ILogGateway<DevolverInsumosHandler> LogServicoDevolverInsumos { get; }
         public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
         public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
-        
+
         // Repositórios (mockados)
         public IRepositorio<OrdemServicoEntityDto> RepositorioOrdemServico { get; }
         public IRepositorio<EstoqueEntityDto> RepositorioEstoque { get; }
         public IRepositorio<InsumoOSEntityDto> RepositorioInsumoOS { get; }
-        
+
         // Gateways reais
         public IOrdemServicoGateway OrdemServicoGateway { get; }
         public IEstoqueGateway EstoqueGateway { get; }
@@ -60,38 +53,38 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             LogServicoDevolverInsumos = Substitute.For<ILogGateway<DevolverInsumosHandler>>();
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
             UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
-            
+
             // Configurar UnidadeDeTrabalho para sucesso por padrão
             UnidadeDeTrabalho.Commit().Returns(Task.FromResult(true));
-            
+
             // Inicializar repositórios mockados
             RepositorioOrdemServico = Substitute.For<IRepositorio<OrdemServicoEntityDto>>();
             RepositorioEstoque = Substitute.For<IRepositorio<EstoqueEntityDto>>();
             RepositorioInsumoOS = Substitute.For<IRepositorio<InsumoOSEntityDto>>();
-            
+
             // Criar gateways reais com repositórios mockados
             OrdemServicoGateway = new OrdemServicoGateway(RepositorioOrdemServico);
             EstoqueGateway = new EstoqueGateway(RepositorioEstoque);
             InsumosGateway = new InsumosGateway(RepositorioInsumoOS);
-            
+
             // Criar log services para handlers
             var logServicoObterOS = Substitute.For<ILogGateway<ObterOrdemServicoHandler>>();
             var logServicoObterEstoque = Substitute.For<ILogGateway<ObterEstoqueHandler>>();
             var logServicoAtualizarEstoque = Substitute.For<ILogGateway<AtualizarEstoqueHandler>>();
-            
+
             // Criar handlers reais
             ObterOrdemServicoHandler = new ObterOrdemServicoHandler(
                 OrdemServicoGateway,
                 logServicoObterOS,
                 UnidadeDeTrabalho,
                 UsuarioLogadoServico);
-                
+
             ObterEstoqueHandler = new ObterEstoqueHandler(
                 EstoqueGateway,
                 logServicoObterEstoque,
                 UnidadeDeTrabalho,
                 UsuarioLogadoServico);
-                
+
             AtualizarEstoqueHandler = new AtualizarEstoqueHandler(
                 EstoqueGateway,
                 logServicoAtualizarEstoque,
@@ -104,17 +97,17 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             // Criar mocks para as interfaces IOrdemServicoUseCases e IEstoqueUseCases
             var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
             var estoqueUseCases = Substitute.For<IEstoqueUseCases>();
-            
+
             // Configurar os mocks para usar os handlers reais
             ordemServicoUseCases.ObterPorIdUseCaseAsync(Arg.Any<Guid>())
-                .Returns(callInfo => ObterOrdemServicoHandler.Handle(callInfo.Arg<Guid>()).Result.OrdemServico);
-                
+                .Returns(callInfo => ObterOrdemServicoHandler.Handle(callInfo.Arg<Guid>()).Result);
+
             estoqueUseCases.ObterPorIdUseCaseAsync(Arg.Any<Guid>())
-                .Returns(callInfo => ObterEstoqueHandler.Handle(callInfo.Arg<Guid>()).Result.Estoque);
-                
+                .Returns(callInfo => ObterEstoqueHandler.Handle(callInfo.Arg<Guid>()).Result);
+
             estoqueUseCases.AtualizarUseCaseAsync(Arg.Any<Guid>(), Arg.Any<AtualizarEstoqueUseCaseDto>())
-                .Returns(callInfo => AtualizarEstoqueHandler.Handle(callInfo.Arg<Guid>(), callInfo.Arg<AtualizarEstoqueUseCaseDto>()).Result.Estoque);
-            
+                .Returns(callInfo => AtualizarEstoqueHandler.Handle(callInfo.Arg<Guid>(), callInfo.Arg<AtualizarEstoqueUseCaseDto>()).Result);
+
             return new CadastrarInsumosHandler(
                 ordemServicoUseCases,
                 estoqueUseCases,
@@ -140,25 +133,21 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             var ordemServicoDto = new OrdemServicoEntityDto
             {
                 Id = ordemServico.Id,
-                ClienteId = ordemServico.ClienteId,
-                VeiculoId = ordemServico.VeiculoId,
-                ServicoId = ordemServico.ServicoId,
                 Descricao = ordemServico.Descricao,
                 Status = ordemServico.Status,
                 DataCadastro = ordemServico.DataCadastro,
-                DataAtualizacao = ordemServico.DataAtualizacao,
-                Ativo = ordemServico.Ativo
+                DataAtualizacao = ordemServico.DataAtualizacao
             };
-            
+
             // Configurar o repositório para retornar o DTO quando consultado por ID
             RepositorioOrdemServico
                 .ObterPorIdAsync(ordemServicoId)
                 .Returns(ordemServicoDto);
-                
+
             // Configurar o repositório para retornar a entidade quando projetada
             RepositorioOrdemServico
                 .ObterUmProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>())
-                .Returns(ordemServico);
+                .Returns(Task.FromResult(ordemServico));
         }
 
         public void ConfigurarMockEstoqueRepositorioParaObterPorId(Guid estoqueId, Estoque estoque)
@@ -176,29 +165,31 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 DataCadastro = estoque.DataCadastro,
                 DataAtualizacao = estoque.DataAtualizacao
             };
-            
+
             // Configurar o repositório para retornar o DTO quando consultado por ID
             RepositorioEstoque
                 .ObterPorIdAsync(estoqueId)
                 .Returns(estoqueDto);
-                
+
             // Configurar o repositório para retornar a entidade quando projetada
             RepositorioEstoque
                 .ObterUmProjetadoAsync<Estoque>(Arg.Any<IEspecificacao<EstoqueEntityDto>>())
-                .Returns(estoque);
+                .Returns(Task.FromResult(estoque));
         }
 
         public List<EstoqueEntityDto> ConfigurarMockEstoqueRepositorioParaAtualizar(Guid estoqueId)
         {
             // Lista para capturar os DTOs enviados ao repositório
             var dtosCapturados = new List<EstoqueEntityDto>();
-            
+
             // Configurar o repositório para capturar o DTO e retornar sucesso
             RepositorioEstoque
                 .When(x => x.EditarAsync(Arg.Any<EstoqueEntityDto>()))
-                .Do(callInfo => {
+                .Do(callInfo =>
+                {
                     var dto = callInfo.Arg<EstoqueEntityDto>();
-                    if (dto.Id == estoqueId) {
+                    if (dto.Id == estoqueId)
+                    {
                         dtosCapturados.Add(dto);
                     }
                 });
@@ -206,7 +197,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             RepositorioEstoque
                 .EditarAsync(Arg.Any<EstoqueEntityDto>())
                 .Returns(Task.CompletedTask);
-                
+
             return dtosCapturados;
         }
 
@@ -221,16 +212,17 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 .When(x => x.Commit())
                 .Do(_ => { throw new PersistirDadosException("Erro ao atualizar estoque"); });
         }
-        
+
         public List<InsumoOSEntityDto> ConfigurarMockInsumoOSRepositorioParaInserir()
         {
             // Lista para capturar os DTOs enviados ao repositório
             var dtosCapturados = new List<InsumoOSEntityDto>();
-            
+
             // Configurar o repositório para capturar o DTO e retornar sucesso
             RepositorioInsumoOS
                 .When(x => x.CadastrarAsync(Arg.Any<InsumoOSEntityDto>()))
-                .Do(callInfo => {
+                .Do(callInfo =>
+                {
                     var dto = callInfo.Arg<InsumoOSEntityDto>();
                     dtosCapturados.Add(dto);
                 });
@@ -238,10 +230,10 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             RepositorioInsumoOS
                 .CadastrarAsync(Arg.Any<InsumoOSEntityDto>())
                 .Returns(callInfo => Task.FromResult(callInfo.Arg<InsumoOSEntityDto>()));
-                
+
             return dtosCapturados;
         }
-        
+
 
         public static OrdemServico CriarOrdemServicoValida()
         {

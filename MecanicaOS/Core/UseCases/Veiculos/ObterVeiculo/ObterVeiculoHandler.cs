@@ -1,3 +1,4 @@
+using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Veiculos;
@@ -19,7 +20,7 @@ namespace Core.UseCases.Veiculos.ObterVeiculo
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<ObterVeiculoResponse> Handle(Guid id)
+        public async Task<Veiculo> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
@@ -32,7 +33,7 @@ namespace Core.UseCases.Veiculos.ObterVeiculo
 
                 LogFim(metodo, veiculo);
 
-                return new ObterVeiculoResponse { Veiculo = veiculo };
+                return veiculo;
             }
             catch (Exception e)
             {

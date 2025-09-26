@@ -1,3 +1,4 @@
+using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Servicos;
@@ -19,7 +20,7 @@ namespace Core.UseCases.Servicos.ObterServico
             _servicoGateway = servicoGateway ?? throw new ArgumentNullException(nameof(servicoGateway));
         }
 
-        public async Task<ObterServicoResponse> Handle(Guid id)
+        public async Task<Servico> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
@@ -31,9 +32,8 @@ namespace Core.UseCases.Servicos.ObterServico
                 if (servico == null)
                     throw new DadosNaoEncontradosException("Serviço não encontrado");
 
-                var response = new ObterServicoResponse { Servico = servico };
-                LogFim(metodo, response);
-                return response;
+                LogFim(metodo, servico);
+                return servico;
             }
             catch (Exception e)
             {

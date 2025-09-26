@@ -1,3 +1,4 @@
+using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Veiculos;
 using Core.UseCases.Abstrato;
@@ -18,7 +19,7 @@ namespace Core.UseCases.Veiculos.ObterVeiculoPorCliente
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<ObterVeiculoPorClienteResponse> Handle(Guid clienteId)
+        public async Task<IEnumerable<Veiculo>> Handle(Guid clienteId)
         {
             string metodo = nameof(Handle);
 
@@ -29,7 +30,7 @@ namespace Core.UseCases.Veiculos.ObterVeiculoPorCliente
                 var veiculos = await _veiculoGateway.ObterVeiculoPorClienteAsync(clienteId);
                 LogFim(metodo, veiculos);
 
-                return new ObterVeiculoPorClienteResponse { Veiculos = veiculos };
+                return veiculos;
             }
             catch (Exception e)
             {

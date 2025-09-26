@@ -1,4 +1,4 @@
-using Core.UseCases.Estoques.ObterTodosEstoques;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Estoques
 {
@@ -10,7 +10,7 @@ namespace Core.Interfaces.Handlers.Estoques
         /// <summary>
         /// Manipula a operação de obtenção de todos os estoques
         /// </summary>
-        /// <returns>Resposta contendo a lista de estoques</returns>
-        Task<ObterTodosEstoquesResponse> Handle();
+        /// <returns>Lista de estoques</returns>
+        Task<IEnumerable<Estoque>> Handle();
     }
 }

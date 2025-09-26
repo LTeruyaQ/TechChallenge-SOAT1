@@ -30,7 +30,7 @@ namespace Core.UseCases.Usuarios.CadastrarUsuario
             _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
         }
 
-        public async Task<CadastrarUsuarioResponse> Handle(CadastrarUsuarioUseCaseDto request)
+        public async Task<Usuario> Handle(CadastrarUsuarioUseCaseDto request)
         {
             var metodo = nameof(Handle);
 
@@ -61,7 +61,7 @@ namespace Core.UseCases.Usuarios.CadastrarUsuario
 
                 LogFim(metodo, usuario);
 
-                return new CadastrarUsuarioResponse { Usuario = usuario };
+                return usuario;
             }
             catch (Exception e)
             {

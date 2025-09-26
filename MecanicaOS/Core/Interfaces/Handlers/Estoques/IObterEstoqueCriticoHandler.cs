@@ -1,4 +1,4 @@
-using Core.UseCases.Estoques.ObterEstoqueCritico;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Estoques
 {
@@ -10,7 +10,7 @@ namespace Core.Interfaces.Handlers.Estoques
         /// <summary>
         /// Manipula a operação de obtenção de estoques críticos
         /// </summary>
-        /// <returns>Resposta contendo a lista de estoques críticos</returns>
-        Task<ObterEstoqueCriticoResponse> Handle();
+        /// <returns>Lista de estoques críticos</returns>
+        Task<IEnumerable<Estoque>> Handle();
     }
 }

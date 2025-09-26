@@ -1,29 +1,17 @@
 using API.Notificacoes.OS;
-using Core.DTOs.Entidades;
-using Core.DTOs.Entidades.Autenticacao;
 using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.Entidades.OrdemServicos;
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
+using Core.DTOs.Responses.Estoque;
 using Core.DTOs.Responses.OrdemServico;
 using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
-using Core.DTOs.Responses.Estoque;
-using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.Gateways;
-using Core.Interfaces.root;
 using Core.Interfaces.Repositorios;
+using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
-using FluentAssertions;
 using MediatR;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.API.Notificacoes.OS
 {
@@ -51,11 +39,11 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             _estoqueGateway = Substitute.For<IEstoqueGateway>();
             _logServico = Substitute.For<ILogServico<OrdemServicoCanceladaHandler>>();
             _mediator = Substitute.For<IMediator>();
-            
+
             // Configurar controllers
             _ordemServicoController = Substitute.For<IOrdemServicoController>();
             _insumosOSController = Substitute.For<IInsumoOSController>();
-            
+
             // Configurar CompositionRoot
             _compositionRoot = Substitute.For<ICompositionRoot>();
             _compositionRoot.CriarOrdemServicoController().Returns(_ordemServicoController);
@@ -66,7 +54,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             _compositionRoot.CriarRepositorio<InsumoOSEntityDto>().Returns(_insumoOSRepositorio);
             _compositionRoot.CriarRepositorio<OrdemServicoEntityDto>().Returns(_ordemServicoRepositorio);
             _compositionRoot.CriarUnidadeDeTrabalho().Returns(_unidadeDeTrabalho);
-            
+
             // Criar o handler
             _handler = new OrdemServicoCanceladaHandler(_compositionRoot);
         }
@@ -78,7 +66,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             var ordemServicoId = Guid.NewGuid();
             var estoqueId1 = Guid.NewGuid();
             var estoqueId2 = Guid.NewGuid();
-            
+
             // Criar DTOs de estoque simulando o banco de dados
             var estoqueDto1 = new EstoqueEntityDto
             {
@@ -90,7 +78,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 Ativo = true,
                 DataCadastro = DateTime.Now.AddDays(-30)
             };
-            
+
             var estoqueDto2 = new EstoqueEntityDto
             {
                 Id = estoqueId2,
@@ -101,18 +89,18 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 Ativo = true,
                 DataCadastro = DateTime.Now.AddDays(-30)
             };
-            
+
             // Configurar repositório de estoque
             _estoqueRepositorio.ObterPorIdAsync(estoqueId1).Returns(estoqueDto1);
             _estoqueRepositorio.ObterPorIdAsync(estoqueId2).Returns(estoqueDto2);
-            
+
             // Configurar insumos da ordem de serviço
             var insumos = new List<InsumoOSResponse>
             {
-                new InsumoOSResponse 
-                { 
-                    OrdemServicoId = ordemServicoId, 
-                    EstoqueId = estoqueId1, 
+                new InsumoOSResponse
+                {
+                    OrdemServicoId = ordemServicoId,
+                    EstoqueId = estoqueId1,
                     Quantidade = 3,
                     Estoque = new EstoqueResponse
                     {
@@ -122,10 +110,10 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                         QuantidadeDisponivel = 10
                     }
                 },
-                new InsumoOSResponse 
-                { 
-                    OrdemServicoId = ordemServicoId, 
-                    EstoqueId = estoqueId2, 
+                new InsumoOSResponse
+                {
+                    OrdemServicoId = ordemServicoId,
+                    EstoqueId = estoqueId2,
                     Quantidade = 2,
                     Estoque = new EstoqueResponse
                     {
@@ -136,7 +124,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                     }
                 }
             };
-            
+
             // Configurar ordem de serviço
             var ordemServico = new OrdemServicoResponse
             {
@@ -144,16 +132,16 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 Status = StatusOrdemServico.Cancelada,
                 Insumos = insumos
             };
-            
+
             // Configurar comportamento do controller de ordem de serviço
             _ordemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Simular o comportamento real do InsumoOSController.DevolverInsumosAoEstoque
             _insumosOSController.DevolverInsumosAoEstoque(Arg.Any<IEnumerable<DevolverInsumoOSRequest>>())
                 .Returns(callInfo =>
                 {
                     var requests = callInfo.Arg<IEnumerable<DevolverInsumoOSRequest>>();
-                    
+
                     // Simular a atualização real do estoque no banco de dados
                     foreach (var request in requests)
                     {
@@ -166,13 +154,13 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                             estoqueDto2.QuantidadeDisponivel += request.Quantidade;
                         }
                     }
-                    
+
                     // Simular commit no banco de dados
                     _unidadeDeTrabalho.Commit().Returns(Task.FromResult(true));
-                    
+
                     return Task.CompletedTask;
                 });
-            
+
             // Configurar evento de cancelamento
             var evento = new OrdemServicoCanceladaEvent(ordemServicoId);
 
@@ -183,7 +171,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Verificar que o estoque foi atualizado corretamente no "banco de dados"
             estoqueDto1.QuantidadeDisponivel.Should().Be(13); // 10 (inicial) + 3 (devolvido)
             estoqueDto2.QuantidadeDisponivel.Should().Be(17); // 15 (inicial) + 2 (devolvido)
-            
+
             // Verificar que os logs foram registrados
             _logServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
             _logServico.Received(1).LogFim(Arg.Any<string>());
@@ -195,18 +183,18 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Arrange
             var ordemServicoId = Guid.NewGuid();
             var estoqueId = Guid.NewGuid();
-            
+
             // Configurar insumos da ordem de serviço
             var insumos = new List<InsumoOSResponse>
             {
-                new InsumoOSResponse 
-                { 
-                    OrdemServicoId = ordemServicoId, 
-                    EstoqueId = estoqueId, 
+                new InsumoOSResponse
+                {
+                    OrdemServicoId = ordemServicoId,
+                    EstoqueId = estoqueId,
                     Quantidade = 3
                 }
             };
-            
+
             // Configurar ordem de serviço
             var ordemServico = new OrdemServicoResponse
             {
@@ -214,23 +202,23 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 Status = StatusOrdemServico.Cancelada,
                 Insumos = insumos
             };
-            
+
             // Configurar comportamento do controller de ordem de serviço
             _ordemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Simular erro no banco de dados
             var dbException = new Exception("Erro de conexão com o banco de dados");
             _insumosOSController.DevolverInsumosAoEstoque(Arg.Any<IEnumerable<DevolverInsumoOSRequest>>())
                 .Returns(Task.FromException<object>(dbException));
-            
+
             // Configurar evento de cancelamento
             var evento = new OrdemServicoCanceladaEvent(ordemServicoId);
 
             // Act & Assert
             var act = async () => await _handler.Handle(evento, CancellationToken.None);
-            
+
             await act.Should().ThrowAsync<Exception>();
-            
+
             // Verificar que os logs foram registrados corretamente
             _logServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
             _logServico.Received(1).LogErro(Arg.Any<string>(), dbException);
@@ -243,18 +231,18 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Arrange
             var ordemServicoId = Guid.NewGuid();
             var estoqueId = Guid.NewGuid();
-            
+
             // Configurar insumos da ordem de serviço
             var insumos = new List<InsumoOSResponse>
             {
-                new InsumoOSResponse 
-                { 
-                    OrdemServicoId = ordemServicoId, 
-                    EstoqueId = estoqueId, 
+                new InsumoOSResponse
+                {
+                    OrdemServicoId = ordemServicoId,
+                    EstoqueId = estoqueId,
                     Quantidade = 5
                 }
             };
-            
+
             // Configurar ordem de serviço
             var ordemServico = new OrdemServicoResponse
             {
@@ -262,14 +250,14 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 Status = StatusOrdemServico.Cancelada,
                 Insumos = insumos
             };
-            
+
             // Configurar comportamento do controller de ordem de serviço
             _ordemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Configurar comportamento do mediator (se existir na implementação real)
             // Este é um teste adicional que verifica se algum evento é publicado após a devolução
             // Se não houver publicação de eventos na implementação real, este teste pode ser removido
-            
+
             // Configurar evento de cancelamento
             var evento = new OrdemServicoCanceladaEvent(ordemServicoId);
 
@@ -279,12 +267,12 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Assert
             // Verificar que o método de devolução foi chamado
             await _insumosOSController.Received(1).DevolverInsumosAoEstoque(
-                Arg.Is<IEnumerable<DevolverInsumoOSRequest>>(requests => 
-                    requests.Count() == 1 && 
-                    requests.First().EstoqueId == estoqueId && 
+                Arg.Is<IEnumerable<DevolverInsumoOSRequest>>(requests =>
+                    requests.Count() == 1 &&
+                    requests.First().EstoqueId == estoqueId &&
                     requests.First().Quantidade == 5)
             );
-            
+
             // Verificar que os logs foram registrados corretamente
             _logServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
             _logServico.Received(1).LogFim(Arg.Any<string>());

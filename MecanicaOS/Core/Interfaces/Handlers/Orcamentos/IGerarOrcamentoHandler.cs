@@ -1,4 +1,5 @@
-using Core.UseCases.Orcamentos.GerarOrcamento;
+
+using Core.DTOs.UseCases.Orcamento;
 
 namespace Core.Interfaces.Handlers.Orcamentos
 {
@@ -11,7 +12,7 @@ namespace Core.Interfaces.Handlers.Orcamentos
         /// Manipula a operação de geração de orçamento
         /// </summary>
         /// <param name="useCase">Dados para geração do orçamento</param>
-        /// <returns>Resposta contendo o valor do orçamento</returns>
-        GerarOrcamentoResponse Handle(GerarOrcamentoUseCase useCase);
+        /// <returns>Valor do orçamento</returns>
+        decimal Handle(GerarOrcamentoUseCase useCase);
     }
 }

@@ -1,13 +1,8 @@
 using API.Notificacoes.OS;
-using Core.DTOs.Responses.OrdemServico;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
 using MediatR;
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MecanicaOS.UnitTests.API.Notificacoes.OS
 {
@@ -18,7 +13,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
     {
         private readonly IOrdemServicoController _ordemServicoController;
         private readonly ILogServico<OrdemServicoFinalizadaHandlerMock> _logServico;
-        
+
         public OrdemServicoFinalizadaHandlerThrowsException(ICompositionRoot compositionRoot)
         {
             _ordemServicoController = compositionRoot.CriarOrdemServicoController();

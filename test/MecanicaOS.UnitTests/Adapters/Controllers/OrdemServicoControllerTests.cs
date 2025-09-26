@@ -1,16 +1,11 @@
 using Adapters.Controllers;
 using Core.DTOs.Requests.OrdemServico;
-using Core.DTOs.Responses.OrdemServico;
 using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
-using Core.Interfaces.Controllers;
 using Core.Interfaces.Presenters;
 using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
-using NSubstitute;
-using FluentAssertions;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -26,12 +21,12 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             _ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
             _ordemServicoPresenter = Substitute.For<IOrdemServicoPresenter>();
             _compositionRoot = Substitute.For<ICompositionRoot>();
-            
+
             _compositionRoot.CriarOrdemServicoUseCases().Returns(_ordemServicoUseCases);
             _ordemServicoController = new OrdemServicoController(_compositionRoot);
-            
+
             // Usar reflexão para injetar o presenter mockado
-            var presenterField = typeof(OrdemServicoController).GetField("_ordemServicoPresenter", 
+            var presenterField = typeof(OrdemServicoController).GetField("_ordemServicoPresenter",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             presenterField?.SetValue(_ordemServicoController, _ordemServicoPresenter);
         }

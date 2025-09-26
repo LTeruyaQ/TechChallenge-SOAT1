@@ -1,4 +1,3 @@
-using Core.UseCases.OrdensServico.AceitarOrcamento;
 
 namespace Core.Interfaces.Handlers.OrdensServico
 {
@@ -11,7 +10,7 @@ namespace Core.Interfaces.Handlers.OrdensServico
         /// Manipula a operação de aceitação de orçamento
         /// </summary>
         /// <param name="id">ID da ordem de serviço cujo orçamento será aceito</param>
-        /// <returns>Resposta indicando o sucesso da operação</returns>
-        Task<AceitarOrcamentoResponse> Handle(Guid id);
+        /// <returns>Indica se a operação foi bem-sucedida</returns>
+        Task<bool> Handle(Guid id);
     }
 }

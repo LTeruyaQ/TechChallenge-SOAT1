@@ -1,4 +1,4 @@
-using Core.UseCases.OrdensServico.ObterOrdemServico;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.OrdensServico
 {
@@ -11,7 +11,7 @@ namespace Core.Interfaces.Handlers.OrdensServico
         /// Manipula a operação de obtenção de ordem de serviço por ID
         /// </summary>
         /// <param name="id">ID da ordem de serviço a ser obtida</param>
-        /// <returns>Resposta contendo a ordem de serviço encontrada</returns>
-        Task<ObterOrdemServicoResponse> Handle(Guid id);
+        /// <returns>Ordem de serviço encontrada ou null se não encontrada</returns>
+        Task<OrdemServico?> Handle(Guid id);
     }
 }

@@ -39,43 +39,37 @@ namespace Core.UseCases.Servicos
 
         public async Task<Servico> CadastrarServicoUseCaseAsync(CadastrarServicoUseCaseDto request)
         {
-            var response = await _cadastrarServicoHandler.Handle(request);
-            return response.Servico;
+            return await _cadastrarServicoHandler.Handle(request);
         }
 
-        public async Task DeletarServicoUseCaseAsync(Guid id)
+        public async Task<bool> DeletarServicoUseCaseAsync(Guid id)
         {
-            await _deletarServicoHandler.Handle(id);
+            return await _deletarServicoHandler.Handle(id);
         }
 
         public async Task<Servico> EditarServicoUseCaseAsync(Guid id, EditarServicoUseCaseDto request)
         {
-            var response = await _editarServicoHandler.Handle(id, request);
-            return response.Servico;
+            return await _editarServicoHandler.Handle(id, request);
         }
 
         public async Task<Servico> ObterServicoPorIdUseCaseAsync(Guid id)
         {
-            var response = await _obterServicoHandler.Handle(id);
-            return response.Servico!;
+            return await _obterServicoHandler.Handle(id);
         }
 
         public async Task<Servico?> ObterServicoPorNomeUseCaseAsync(string nome)
         {
-            var response = await _obterServicoPorNomeHandler.Handle(nome);
-            return response.Servico;
+            return await _obterServicoPorNomeHandler.Handle(nome);
         }
 
         public async Task<IEnumerable<Servico>> ObterServicosDisponiveisUseCaseAsync()
         {
-            var response = await _obterServicosDisponiveisHandler.Handle();
-            return response.Servicos;
+            return await _obterServicosDisponiveisHandler.Handle();
         }
 
         public async Task<IEnumerable<Servico>> ObterTodosUseCaseAsync()
         {
-            var response = await _obterTodosServicosHandler.Handle();
-            return response.Servicos;
+            return await _obterTodosServicosHandler.Handle();
         }
     }
 }

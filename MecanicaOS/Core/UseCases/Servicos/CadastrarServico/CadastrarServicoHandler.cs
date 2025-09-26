@@ -21,7 +21,7 @@ namespace Core.UseCases.Servicos.CadastrarServico
             _servicoGateway = servicoGateway ?? throw new ArgumentNullException(nameof(servicoGateway));
         }
 
-        public async Task<CadastrarServicoResponse> Handle(CadastrarServicoUseCaseDto request)
+        public async Task<Servico> Handle(CadastrarServicoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
@@ -31,10 +31,10 @@ namespace Core.UseCases.Servicos.CadastrarServico
 
                 if (string.IsNullOrWhiteSpace(request.Nome))
                     throw new DadosInvalidosException("Nome é obrigatório");
-                
+
                 if (string.IsNullOrWhiteSpace(request.Descricao))
                     throw new DadosInvalidosException("Descrição é obrigatória");
-                
+
                 if (request.Valor <= 0)
                     throw new DadosInvalidosException("Valor deve ser maior que zero");
 
@@ -55,9 +55,8 @@ namespace Core.UseCases.Servicos.CadastrarServico
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao cadastrar serviço");
 
-                var response = new CadastrarServicoResponse { Servico = servico };
-                LogFim(metodo, response);
-                return response;
+                LogFim(metodo, servico);
+                return servico;
             }
             catch (Exception e)
             {

@@ -1,4 +1,3 @@
-using Core.UseCases.Usuarios.DeletarUsuario;
 
 namespace Core.Interfaces.Handlers.Usuarios
 {
@@ -11,7 +10,7 @@ namespace Core.Interfaces.Handlers.Usuarios
         /// Manipula a operação de deleção de usuário
         /// </summary>
         /// <param name="id">ID do usuário a ser deletado</param>
-        /// <returns>Resposta indicando o sucesso da operação</returns>
-        Task<DeletarUsuarioResponse> Handle(Guid id);
+        /// <returns>Indica se a operação foi bem-sucedida</returns>
+        Task<bool> Handle(Guid id);
     }
 }

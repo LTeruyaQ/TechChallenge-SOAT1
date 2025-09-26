@@ -1,3 +1,4 @@
+using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Servicos;
 using Core.UseCases.Abstrato;
@@ -18,7 +19,7 @@ namespace Core.UseCases.Servicos.ObterServicoPorNome
             _servicoGateway = servicoGateway ?? throw new ArgumentNullException(nameof(servicoGateway));
         }
 
-        public async Task<ObterServicoPorNomeResponse> Handle(string nome)
+        public async Task<Servico?> Handle(string nome)
         {
             string metodo = nameof(Handle);
 
@@ -29,14 +30,13 @@ namespace Core.UseCases.Servicos.ObterServicoPorNome
                 if (string.IsNullOrWhiteSpace(nome))
                 {
                     LogFim(metodo, null);
-                    return new ObterServicoPorNomeResponse { Servico = null };
+                    return null;
                 }
 
                 var servico = await _servicoGateway.ObterServicosDisponiveisPorNomeAsync(nome);
 
-                var response = new ObterServicoPorNomeResponse { Servico = servico };
-                LogFim(metodo, response);
-                return response;
+                LogFim(metodo, servico);
+                return servico;
             }
             catch (Exception e)
             {

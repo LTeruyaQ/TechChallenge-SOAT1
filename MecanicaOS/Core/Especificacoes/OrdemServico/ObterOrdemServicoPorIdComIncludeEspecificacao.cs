@@ -39,7 +39,7 @@ public class ObterOrdemServicoPorIdComIncludeEspecificacao : EspecificacaoBase<O
                 DataAtualizacao = os.Servico.DataAtualizacao
             },
             VeiculoId = os.VeiculoId,
-            Veiculo = new Entidades.Veiculo() 
+            Veiculo = new Entidades.Veiculo()
             {
                 Id = os.Veiculo.Id,
                 Placa = os.Veiculo.Placa,

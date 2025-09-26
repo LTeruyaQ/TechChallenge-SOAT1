@@ -1,5 +1,5 @@
 using Core.DTOs.UseCases.Servico;
-using Core.UseCases.Servicos.CadastrarServico;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Servicos
 {
@@ -12,7 +12,7 @@ namespace Core.Interfaces.Handlers.Servicos
         /// Manipula a operação de cadastro de serviço
         /// </summary>
         /// <param name="request">DTO com os dados do serviço a ser cadastrado</param>
-        /// <returns>Resposta contendo o serviço cadastrado</returns>
-        Task<CadastrarServicoResponse> Handle(CadastrarServicoUseCaseDto request);
+        /// <returns>Serviço cadastrado</returns>
+        Task<Servico> Handle(CadastrarServicoUseCaseDto request);
     }
 }

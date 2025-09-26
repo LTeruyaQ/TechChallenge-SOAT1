@@ -1,4 +1,5 @@
 using Core.DTOs.UseCases.Estoque;
+using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Estoques;
@@ -20,7 +21,7 @@ namespace Core.UseCases.Estoques.AtualizarEstoque
             _estoqueGateway = estoqueGateway ?? throw new ArgumentNullException(nameof(estoqueGateway));
         }
 
-        public async Task<AtualizarEstoqueResponse> Handle(Guid id, AtualizarEstoqueUseCaseDto request)
+        public async Task<Estoque> Handle(Guid id, AtualizarEstoqueUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
@@ -46,7 +47,7 @@ namespace Core.UseCases.Estoques.AtualizarEstoque
 
                 LogFim(metodo, estoque);
 
-                return new AtualizarEstoqueResponse { Estoque = estoque };
+                return estoque;
             }
             catch (Exception e)
             {

@@ -24,7 +24,7 @@ namespace Core.UseCases.OrdensServico.RecusarOrcamento
             _eventosGateway = eventosGateway ?? throw new ArgumentNullException(nameof(eventosGateway));
         }
 
-        public async Task<RecusarOrcamentoResponse> Handle(Guid id)
+        public async Task<bool> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
@@ -43,7 +43,7 @@ namespace Core.UseCases.OrdensServico.RecusarOrcamento
                 ordemServico.DataAtualizacao = DateTime.UtcNow;
 
                 await _ordemServicoGateway.EditarAsync(ordemServico);
-                
+
                 // Publicar evento de ordem de serviço cancelada
                 await _eventosGateway.Publicar(new OrdemServicoCanceladaEventDTO(ordemServico.Id));
 
@@ -52,7 +52,7 @@ namespace Core.UseCases.OrdensServico.RecusarOrcamento
 
                 LogFim(metodo, ordemServico);
 
-                return new RecusarOrcamentoResponse { Sucesso = true };
+                return true;
             }
             catch (Exception e)
             {

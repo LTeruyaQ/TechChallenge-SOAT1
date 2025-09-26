@@ -1,17 +1,13 @@
 using API.Notificacoes.OS;
 using Core.DTOs.Responses.Cliente;
+using Core.DTOs.Responses.Estoque;
 using Core.DTOs.Responses.OrdemServico;
 using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Core.DTOs.Responses.Servico;
-using Core.DTOs.Responses.Estoque;
 using Core.Enumeradores;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MecanicaOS.UnitTests.API.Notificacoes.OS
 {
@@ -30,13 +26,13 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             ServicoEmail = Substitute.For<IServicoEmail>();
             LogServico = Substitute.For<ILogServico<OrdemServicoEmOrcamentoHandler>>();
             LogServicoMock = Substitute.For<ILogServico<OrdemServicoEmOrcamentoHandlerMock>>();
-            
+
             CompositionRoot = Substitute.For<ICompositionRoot>();
             CompositionRoot.CriarOrdemServicoController().Returns(OrdemServicoController);
             CompositionRoot.CriarServicoEmail().Returns(ServicoEmail);
             CompositionRoot.CriarLogService<OrdemServicoEmOrcamentoHandler>().Returns(LogServico);
             CompositionRoot.CriarLogService<OrdemServicoEmOrcamentoHandlerMock>().Returns(LogServicoMock);
-            
+
             Handler = new OrdemServicoEmOrcamentoHandlerMock(CompositionRoot);
         }
 
@@ -75,7 +71,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
         public List<InsumoOSResponse> CriarInsumos(Guid ordemServicoId, int quantidade = 2)
         {
             var insumos = new List<InsumoOSResponse>();
-            
+
             for (int i = 0; i < quantidade; i++)
             {
                 insumos.Add(new InsumoOSResponse
@@ -86,12 +82,12 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                     Estoque = new EstoqueResponse
                     {
                         Id = Guid.NewGuid(),
-                        Insumo = $"Insumo {i+1}",
+                        Insumo = $"Insumo {i + 1}",
                         Preco = 25.0 * (i + 1)
                     }
                 });
             }
-            
+
             return insumos;
         }
 

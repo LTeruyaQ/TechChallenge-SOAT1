@@ -95,7 +95,7 @@ namespace Adapters.Controllers
             var ordemServico = await _ordemServicoUseCases.ObterPorIdUseCaseAsync(ordemServicoId);
 
             var orcamento = _orcamentoUseCases.GerarOrcamentoUseCase(ordemServico);
-            
+
             await _ordemServicoUseCases.AtualizarUseCaseAsync(ordemServicoId, new AtualizarOrdemServicoUseCaseDto
             {
                 Status = StatusOrdemServico.AguardandoAprovação,

@@ -3,13 +3,9 @@ using Core.DTOs.Requests.Veiculo;
 using Core.DTOs.Responses.Veiculo;
 using Core.DTOs.UseCases.Veiculo;
 using Core.Entidades;
-using Core.Interfaces.Controllers;
 using Core.Interfaces.Presenters;
 using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
-using NSubstitute;
-using FluentAssertions;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -25,12 +21,12 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             _veiculoUseCases = Substitute.For<IVeiculoUseCases>();
             _veiculoPresenter = Substitute.For<IVeiculoPresenter>();
             _compositionRoot = Substitute.For<ICompositionRoot>();
-            
+
             _compositionRoot.CriarVeiculoUseCases().Returns(_veiculoUseCases);
             _veiculoController = new VeiculoController(_compositionRoot);
-            
+
             // Usar reflexão para injetar o presenter mockado
-            var presenterField = typeof(VeiculoController).GetField("_veiculoPresenter", 
+            var presenterField = typeof(VeiculoController).GetField("_veiculoPresenter",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             presenterField?.SetValue(_veiculoController, _veiculoPresenter);
         }

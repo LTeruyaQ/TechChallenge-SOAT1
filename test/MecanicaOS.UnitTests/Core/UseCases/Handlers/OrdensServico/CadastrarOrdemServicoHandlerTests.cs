@@ -3,13 +3,7 @@ using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
-using Core.UseCases.OrdensServico.CadastrarOrdemServico;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 {
@@ -45,17 +39,17 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.OrdemServico.Should().NotBeNull();
-            resultado.OrdemServico.ClienteId.Should().Be(cliente.Id);
-            resultado.OrdemServico.VeiculoId.Should().Be(veiculo.Id);
-            resultado.OrdemServico.ServicoId.Should().Be(servico.Id);
-            resultado.OrdemServico.Status.Should().Be(StatusOrdemServico.Recebida);
+            resultado.Should().NotBeNull();
+            resultado.ClienteId.Should().Be(cliente.Id);
+            resultado.VeiculoId.Should().Be(veiculo.Id);
+            resultado.ServicoId.Should().Be(servico.Id);
+            resultado.Status.Should().Be(StatusOrdemServico.Recebida);
 
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioOrdemServico.Received(1).CadastrarAsync(
-                Arg.Is<OrdemServicoEntityDto>(os => 
-                    os.ClienteId == cliente.Id && 
-                    os.VeiculoId == veiculo.Id && 
+                Arg.Is<OrdemServicoEntityDto>(os =>
+                    os.ClienteId == cliente.Id &&
+                    os.VeiculoId == veiculo.Id &&
                     os.ServicoId == servico.Id));
 
             // Verificar que o commit foi chamado

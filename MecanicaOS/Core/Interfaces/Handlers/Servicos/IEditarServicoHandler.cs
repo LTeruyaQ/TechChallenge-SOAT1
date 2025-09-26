@@ -1,5 +1,5 @@
 using Core.DTOs.UseCases.Servico;
-using Core.UseCases.Servicos.EditarServico;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Servicos
 {
@@ -13,7 +13,7 @@ namespace Core.Interfaces.Handlers.Servicos
         /// </summary>
         /// <param name="id">ID do serviço a ser editado</param>
         /// <param name="request">DTO com os dados atualizados do serviço</param>
-        /// <returns>Resposta contendo o serviço atualizado</returns>
-        Task<EditarServicoResponse> Handle(Guid id, EditarServicoUseCaseDto request);
+        /// <returns>Serviço atualizado</returns>
+        Task<Servico> Handle(Guid id, EditarServicoUseCaseDto request);
     }
 }

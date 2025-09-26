@@ -2,13 +2,9 @@ using Adapters.Controllers;
 using Core.DTOs.Requests.Autenticacao;
 using Core.DTOs.Responses.Autenticacao;
 using Core.DTOs.UseCases.Autenticacao;
-using Core.Interfaces.Controllers;
 using Core.Interfaces.Presenters;
 using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
-using NSubstitute;
-using FluentAssertions;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -24,12 +20,12 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             _autenticacaoUseCases = Substitute.For<IAutenticacaoUseCases>();
             _autenticacaoPresenter = Substitute.For<IAutenticacaoPresenter>();
             _compositionRoot = Substitute.For<ICompositionRoot>();
-            
+
             _compositionRoot.CriarAutenticacaoUseCases().Returns(_autenticacaoUseCases);
             _autenticacaoController = new AutenticacaoController(_compositionRoot);
-            
+
             // Usar reflexão para injetar o presenter mockado
-            var presenterField = typeof(AutenticacaoController).GetField("_autenticacaoPresenter", 
+            var presenterField = typeof(AutenticacaoController).GetField("_autenticacaoPresenter",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             presenterField?.SetValue(_autenticacaoController, _autenticacaoPresenter);
         }

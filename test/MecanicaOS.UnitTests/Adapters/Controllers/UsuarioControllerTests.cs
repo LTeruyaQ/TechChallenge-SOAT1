@@ -4,13 +4,9 @@ using Core.DTOs.Responses.Usuario;
 using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Enumeradores;
-using Core.Interfaces.Controllers;
 using Core.Interfaces.Presenters;
 using Core.Interfaces.root;
 using Core.Interfaces.UseCases;
-using NSubstitute;
-using FluentAssertions;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -26,12 +22,12 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             _usuarioUseCases = Substitute.For<IUsuarioUseCases>();
             _usuarioPresenter = Substitute.For<IUsuarioPresenter>();
             _compositionRoot = Substitute.For<ICompositionRoot>();
-            
+
             _compositionRoot.CriarUsuarioUseCases().Returns(_usuarioUseCases);
             _usuarioController = new UsuarioController(_compositionRoot);
-            
+
             // Usar reflexão para injetar o presenter mockado
-            var presenterField = typeof(UsuarioController).GetField("_usuarioPresenter", 
+            var presenterField = typeof(UsuarioController).GetField("_usuarioPresenter",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             presenterField?.SetValue(_usuarioController, _usuarioPresenter);
         }

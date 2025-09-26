@@ -2,7 +2,6 @@
 using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Core.DTOs.Responses.Servico;
 using Core.DTOs.Responses.Veiculo;
-using Core.Entidades;
 using Core.Enumeradores;
 
 namespace Core.DTOs.Responses.OrdemServico;

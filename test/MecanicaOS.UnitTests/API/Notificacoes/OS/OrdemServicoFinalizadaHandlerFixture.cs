@@ -7,9 +7,6 @@ using Core.Enumeradores;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
-using NSubstitute;
-using System;
-using System.Threading.Tasks;
 
 namespace MecanicaOS.UnitTests.API.Notificacoes.OS
 {
@@ -28,13 +25,13 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             ServicoEmail = Substitute.For<IServicoEmail>();
             LogServico = Substitute.For<ILogServico<OrdemServicoFinalizadaHandler>>();
             LogServicoMock = Substitute.For<ILogServico<OrdemServicoFinalizadaHandlerMock>>();
-            
+
             CompositionRoot = Substitute.For<ICompositionRoot>();
             CompositionRoot.CriarOrdemServicoController().Returns(OrdemServicoController);
             CompositionRoot.CriarServicoEmail().Returns(ServicoEmail);
             CompositionRoot.CriarLogService<OrdemServicoFinalizadaHandler>().Returns(LogServico);
             CompositionRoot.CriarLogService<OrdemServicoFinalizadaHandlerMock>().Returns(LogServicoMock);
-            
+
             Handler = new OrdemServicoFinalizadaHandlerMock(CompositionRoot);
         }
 

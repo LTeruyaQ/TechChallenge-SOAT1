@@ -1,10 +1,8 @@
-using API;
 using Core.DTOs.Responses.OrdemServico;
 using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
-using Infraestrutura.Dados;
 using MediatR;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -32,7 +30,7 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
             _logServico.LogInicio(metodo, notification.OrdemServicoId);
 
             await _ordemServicoController.CalcularOrcamentoAsync(notification.OrdemServicoId);
-            
+
             var os = await _ordemServicoController.ObterPorId(notification.OrdemServicoId);
 
             await EnviarOrcamentoAsync(os);

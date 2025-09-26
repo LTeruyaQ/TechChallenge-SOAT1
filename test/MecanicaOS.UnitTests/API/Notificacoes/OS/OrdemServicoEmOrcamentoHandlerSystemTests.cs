@@ -1,20 +1,9 @@
-using API.Notificacoes.OS;
-using Core.DTOs.Responses.OrdemServico;
-using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Core.DTOs.Responses.Estoque;
+using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Core.Interfaces.Controllers;
-using Core.Interfaces.Servicos;
 using Core.Interfaces.root;
-using FluentAssertions;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using Core.Interfaces.Servicos;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.API.Notificacoes.OS
 {
@@ -30,7 +19,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             _fixture = new OrdemServicoEmOrcamentoHandlerFixture();
             _ordemServicoController = _fixture.OrdemServicoController;
             _servicoEmail = _fixture.ServicoEmail;
-            
+
             _compositionRoot = Substitute.For<ICompositionRoot>();
             _compositionRoot.CriarOrdemServicoController().Returns(_ordemServicoController);
             _compositionRoot.CriarServicoEmail().Returns(_servicoEmail);
@@ -43,14 +32,14 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Arrange
             var ordemServicoId = Guid.NewGuid();
             var evento = _fixture.CriarEvento(ordemServicoId);
-            
+
             var ordemServico = _fixture.CriarOrdemServicoComOrcamento(ordemServicoId);
             _ordemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Criar diretório de templates se não existir
             var templateDir = Path.Combine(AppContext.BaseDirectory, "Templates");
             Directory.CreateDirectory(templateDir);
-            
+
             // Criar arquivo de template
             var templatePath = Path.Combine(templateDir, "EmailOrcamentoOS.html");
             var templateContent = @"
@@ -79,15 +68,15 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 </html>
             ";
             File.WriteAllText(templatePath, templateContent, Encoding.UTF8);
-            
+
             string emailCapturado = null;
-            
+
             _servicoEmail.EnviarAsync(
                 Arg.Any<string[]>(),
                 Arg.Any<string>(),
                 Arg.Do<string>(conteudo => emailCapturado = conteudo)
             ).Returns(Task.CompletedTask);
-            
+
             var handler = new OrdemServicoEmOrcamentoHandlerMock(_compositionRoot);
 
             // Act
@@ -96,24 +85,24 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Assert
             // Verificar que o orçamento foi calculado
             await _ordemServicoController.Received(1).CalcularOrcamentoAsync(ordemServicoId);
-            
+
             // Verificar que os detalhes da OS foram obtidos
             await _ordemServicoController.Received(1).ObterPorId(ordemServicoId);
-            
+
             // Verificar que o email foi enviado
             await _servicoEmail.Received(1).EnviarAsync(
                 Arg.Is<string[]>(emails => emails.Length == 1 && emails[0] == ordemServico.Cliente.Contato.Email),
                 Arg.Is<string>(assunto => assunto == "Orçamento de Serviço"),
                 Arg.Any<string>()
             );
-            
+
             // Verificar conteúdo do email
             emailCapturado.Should().NotBeNull();
             emailCapturado.Should().Contain(ordemServico.Cliente.Nome);
             emailCapturado.Should().Contain(ordemServico.Servico.Nome);
             emailCapturado.Should().Contain(ordemServico.Servico.Valor.ToString("N2"));
             emailCapturado.Should().Contain(ordemServico.Orcamento!.Value.ToString("N2"));
-            
+
             // Verificar que o template foi processado corretamente
             emailCapturado.Should().NotContain("{{NOME_CLIENTE}}");
             emailCapturado.Should().NotContain("{{NOME_SERVICO}}");
@@ -121,11 +110,11 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             emailCapturado.Should().NotContain("{{VALOR_TOTAL}}");
             emailCapturado.Should().NotContain("{{#each INSUMOS}}");
             emailCapturado.Should().NotContain("{{/each}}");
-            
+
             // Verificar logs
             _fixture.LogServicoMock.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
             _fixture.LogServicoMock.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
-            
+
             // Limpar o arquivo de template após o teste
             File.Delete(templatePath);
         }
@@ -136,25 +125,25 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Arrange
             var ordemServicoId = Guid.NewGuid();
             var evento = _fixture.CriarEvento(ordemServicoId);
-            
+
             var ordemServico = _fixture.CriarOrdemServicoComOrcamento(ordemServicoId);
             _ordemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Criar um handler personalizado para este teste que lance uma exceção
             var handler = new OrdemServicoEmOrcamentoHandlerThrowsException(_compositionRoot);
-            
+
             // Act & Assert
             var act = async () => await handler.Handle(evento, CancellationToken.None);
-            
+
             // Deve lançar uma exceção porque o template não existe
             await act.Should().ThrowAsync<FileNotFoundException>();
-            
+
             // Verificar que o orçamento foi calculado
             await _ordemServicoController.Received(1).CalcularOrcamentoAsync(ordemServicoId);
-            
+
             // Verificar que os detalhes da OS foram obtidos
             await _ordemServicoController.Received(1).ObterPorId(ordemServicoId);
-            
+
             // Verificar logs
             _fixture.LogServicoMock.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
             _fixture.LogServicoMock.Received(1).LogErro(Arg.Any<string>(), Arg.Any<Exception>());
@@ -166,12 +155,12 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Arrange
             var ordemServicoId = Guid.NewGuid();
             var evento = _fixture.CriarEvento(ordemServicoId);
-            
+
             // Criar ordem de serviço com valores específicos
             var valorServico = 150.75M;
             var valorOrcamento = 325.50M; // Valor do serviço + valor dos insumos
             var ordemServico = _fixture.CriarOrdemServicoComOrcamento(ordemServicoId, valorServico, valorOrcamento);
-            
+
             // Configurar insumos com valores específicos
             ordemServico.InsumosOS = new List<InsumoOSResponse>
             {
@@ -202,26 +191,26 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             };
             // Valor total dos insumos: 91.00 + 83.75 = 174.75
             // Valor total do orçamento: 150.75 (serviço) + 174.75 (insumos) = 325.50
-            
+
             _ordemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Criar diretório de templates se não existir
             var templateDir = Path.Combine(AppContext.BaseDirectory, "Templates");
             Directory.CreateDirectory(templateDir);
-            
+
             // Criar arquivo de template
             var templatePath = Path.Combine(templateDir, "EmailOrcamentoOS.html");
             var templateContent = @"<p>Valor Total: R$ {{VALOR_TOTAL}}</p>";
             File.WriteAllText(templatePath, templateContent, Encoding.UTF8);
-            
+
             string emailCapturado = null;
-            
+
             _servicoEmail.EnviarAsync(
                 Arg.Any<string[]>(),
                 Arg.Any<string>(),
                 Arg.Do<string>(conteudo => emailCapturado = conteudo)
             ).Returns(Task.CompletedTask);
-            
+
             var handler = new OrdemServicoEmOrcamentoHandlerMock(_compositionRoot);
 
             // Act
@@ -234,11 +223,11 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                 Arg.Any<string>(),
                 Arg.Any<string>()
             );
-            
+
             // Verificar que o valor total no email está correto
             emailCapturado.Should().NotBeNull();
             emailCapturado.Should().Contain("325,50"); // Formatado como 325,50 (pt-BR)
-            
+
             // Limpar o arquivo de template após o teste
             File.Delete(templatePath);
         }

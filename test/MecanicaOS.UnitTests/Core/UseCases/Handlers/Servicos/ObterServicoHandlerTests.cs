@@ -1,14 +1,7 @@
 using Core.DTOs.Entidades.Servico;
-using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 using Core.Exceptions;
-using Core.UseCases.Servicos.ObterServico;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 {
@@ -36,19 +29,19 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Servico.Should().NotBeNull();
-            resultado.Servico.Id.Should().Be(servico.Id);
-            resultado.Servico.Nome.Should().Be(servico.Nome);
-            resultado.Servico.Descricao.Should().Be(servico.Descricao);
-            resultado.Servico.Valor.Should().Be(servico.Valor);
-            resultado.Servico.Disponivel.Should().Be(servico.Disponivel);
+            resultado.Should().NotBeNull();
+            resultado.Id.Should().Be(servico.Id);
+            resultado.Nome.Should().Be(servico.Nome);
+            resultado.Descricao.Should().Be(servico.Descricao);
+            resultado.Valor.Should().Be(servico.Valor);
+            resultado.Disponivel.Should().Be(servico.Disponivel);
 
             // Verificar que o repositório foi chamado (através do gateway real)
             await _fixture.RepositorioServico.Received(1).ObterPorIdAsync(servico.Id);
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
-            _fixture.LogServicoObter.Received(1).LogFim(Arg.Any<string>(), Arg.Any<ObterServicoResponse>());
+            _fixture.LogServicoObter.Received(1).LogFim(Arg.Any<string>(), Arg.Any<Servico>());
         }
 
         [Fact]

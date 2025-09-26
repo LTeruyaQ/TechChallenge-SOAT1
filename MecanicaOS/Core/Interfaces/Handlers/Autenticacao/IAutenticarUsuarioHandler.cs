@@ -1,5 +1,4 @@
 using Core.DTOs.UseCases.Autenticacao;
-using Core.UseCases.Autenticacao.AutenticarUsuario;
 
 namespace Core.Interfaces.Handlers.Autenticacao
 {
@@ -12,7 +11,7 @@ namespace Core.Interfaces.Handlers.Autenticacao
         /// Manipula a operação de autenticação de usuário
         /// </summary>
         /// <param name="request">DTO com os dados de autenticação</param>
-        /// <returns>Resposta contendo os dados de autenticação e token</returns>
-        Task<AutenticarUsuarioResponse> Handle(AutenticacaoUseCaseDto request);
+        /// <returns>Dados de autenticação e token</returns>
+        Task<AutenticacaoDto> Handle(AutenticacaoUseCaseDto request);
     }
 }

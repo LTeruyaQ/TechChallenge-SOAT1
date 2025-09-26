@@ -19,7 +19,7 @@ namespace Core.UseCases.Usuarios.ObterUsuario
             _usuarioGateway = usuarioGateway ?? throw new ArgumentNullException(nameof(usuarioGateway));
         }
 
-        public async Task<ObterUsuarioResponse> Handle(Guid id)
+        public async Task<Usuario?> Handle(Guid id)
         {
             var metodo = nameof(Handle);
 
@@ -34,7 +34,7 @@ namespace Core.UseCases.Usuarios.ObterUsuario
 
                 LogFim(metodo, usuario);
 
-                return new ObterUsuarioResponse { Usuario = usuario };
+                return usuario;
             }
             catch (Exception e)
             {

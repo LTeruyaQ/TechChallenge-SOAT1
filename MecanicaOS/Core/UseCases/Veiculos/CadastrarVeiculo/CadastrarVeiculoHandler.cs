@@ -21,7 +21,7 @@ namespace Core.UseCases.Veiculos.CadastrarVeiculo
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }
 
-        public async Task<CadastrarVeiculoResponse> Handle(CadastrarVeiculoUseCaseDto request)
+        public async Task<Veiculo> Handle(CadastrarVeiculoUseCaseDto request)
         {
             string metodo = nameof(Handle);
 
@@ -47,7 +47,7 @@ namespace Core.UseCases.Veiculos.CadastrarVeiculo
 
                 LogFim(metodo, veiculo);
 
-                return new CadastrarVeiculoResponse { Veiculo = veiculo };
+                return veiculo;
             }
             catch (Exception e)
             {

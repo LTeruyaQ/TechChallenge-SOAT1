@@ -1,4 +1,4 @@
-using Core.UseCases.Servicos.ObterServico;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Servicos
 {
@@ -11,7 +11,7 @@ namespace Core.Interfaces.Handlers.Servicos
         /// Manipula a operação de obtenção de serviço por ID
         /// </summary>
         /// <param name="id">ID do serviço a ser obtido</param>
-        /// <returns>Resposta contendo o serviço encontrado</returns>
-        Task<ObterServicoResponse> Handle(Guid id);
+        /// <returns>Serviço encontrado</returns>
+        Task<Servico> Handle(Guid id);
     }
 }

@@ -3,12 +3,7 @@ using Core.Entidades;
 using Core.Especificacoes.Base.Interfaces;
 using Core.Exceptions;
 using Core.UseCases.OrdensServico.ObterOrdemServico;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 {
@@ -36,20 +31,20 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.OrdemServico.Should().NotBeNull();
-            resultado.OrdemServico.Id.Should().Be(ordemServico.Id);
-            resultado.OrdemServico.ClienteId.Should().Be(ordemServico.ClienteId);
-            resultado.OrdemServico.VeiculoId.Should().Be(ordemServico.VeiculoId);
-            resultado.OrdemServico.ServicoId.Should().Be(ordemServico.ServicoId);
-            resultado.OrdemServico.Status.Should().Be(ordemServico.Status);
-            resultado.OrdemServico.Descricao.Should().Be(ordemServico.Descricao);
+            resultado.Should().NotBeNull();
+            resultado.Id.Should().Be(ordemServico.Id);
+            resultado.ClienteId.Should().Be(ordemServico.ClienteId);
+            resultado.VeiculoId.Should().Be(ordemServico.VeiculoId);
+            resultado.ServicoId.Should().Be(ordemServico.ServicoId);
+            resultado.Status.Should().Be(ordemServico.Status);
+            resultado.Descricao.Should().Be(ordemServico.Descricao);
 
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioOrdemServico.Received(1).ObterUmProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>());
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
-            _fixture.LogServicoObter.Received(1).LogFim(Arg.Any<string>(), Arg.Any<ObterOrdemServicoResponse>());
+            _fixture.LogServicoObter.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Fact]

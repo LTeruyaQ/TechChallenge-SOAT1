@@ -1,4 +1,4 @@
-using Core.UseCases.Servicos.ObterTodosServicos;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Servicos
 {
@@ -10,7 +10,7 @@ namespace Core.Interfaces.Handlers.Servicos
         /// <summary>
         /// Manipula a operação de obtenção de todos os serviços
         /// </summary>
-        /// <returns>Resposta contendo a lista de serviços</returns>
-        Task<ObterTodosServicosResponse> Handle();
+        /// <returns>Lista de serviços</returns>
+        Task<IEnumerable<Servico>> Handle();
     }
 }

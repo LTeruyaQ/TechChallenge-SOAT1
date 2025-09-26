@@ -36,38 +36,32 @@ namespace Core.UseCases.Usuarios
 
         public async Task<Usuario> AtualizarUseCaseAsync(Guid id, AtualizarUsuarioUseCaseDto request)
         {
-            var response = await _atualizarUsuarioHandler.Handle(id, request);
-            return response.Usuario;
+            return await _atualizarUsuarioHandler.Handle(id, request);
         }
 
         public async Task<Usuario> CadastrarUseCaseAsync(CadastrarUsuarioUseCaseDto request)
         {
-            var response = await _cadastrarUsuarioHandler.Handle(request);
-            return response.Usuario;
+            return await _cadastrarUsuarioHandler.Handle(request);
         }
 
         public async Task<bool> DeletarUseCaseAsync(Guid id)
         {
-            var response = await _deletarUsuarioHandler.Handle(id);
-            return response.Sucesso;
+            return await _deletarUsuarioHandler.Handle(id);
         }
 
         public async Task<Usuario?> ObterPorEmailUseCaseAsync(string email)
         {
-            var response = await _obterUsuarioPorEmailHandler.Handle(email);
-            return response.Usuario;
+            return await _obterUsuarioPorEmailHandler.Handle(email);
         }
 
         public async Task<Usuario?> ObterPorIdUseCaseAsync(Guid id)
         {
-            var response = await _obterUsuarioHandler.Handle(id);
-            return response.Usuario;
+            return await _obterUsuarioHandler.Handle(id);
         }
 
         public async Task<IEnumerable<Usuario>> ObterTodosUseCaseAsync()
         {
-            var response = await _obterTodosUsuariosHandler.Handle();
-            return response.Usuarios;
+            return await _obterTodosUsuariosHandler.Handle();
         }
     }
 }

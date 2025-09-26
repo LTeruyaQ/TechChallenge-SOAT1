@@ -19,7 +19,7 @@ namespace Core.UseCases.Servicos.DeletarServico
             _servicoGateway = servicoGateway ?? throw new ArgumentNullException(nameof(servicoGateway));
         }
 
-        public async Task<DeletarServicoResponse> Handle(Guid id)
+        public async Task<bool> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
@@ -35,9 +35,8 @@ namespace Core.UseCases.Servicos.DeletarServico
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao deletar serviço");
 
-                var response = new DeletarServicoResponse { Sucesso = true };
-                LogFim(metodo, response);
-                return response;
+                LogFim(metodo, true);
+                return true;
             }
             catch (Exception e)
             {

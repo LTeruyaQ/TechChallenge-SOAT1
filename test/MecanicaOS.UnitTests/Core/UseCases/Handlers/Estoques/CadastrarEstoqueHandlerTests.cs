@@ -2,14 +2,7 @@ using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.UseCases.Estoque;
 using Core.Entidades;
 using Core.Exceptions;
-using Core.UseCases.Estoques.CadastrarEstoque;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
 {
@@ -39,11 +32,11 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 DataCadastro = DateTime.UtcNow,
                 DataAtualizacao = DateTime.UtcNow
             };
-            
+
             // Configurar o repositório para simular o cadastro
             _fixture.ConfigurarMockRepositorioEstoqueParaCadastrar(estoqueEsperado);
             _fixture.RepositorioEstoque.ObterTodosAsync().Returns(new List<EstoqueEntityDto>());
-            
+
             var handler = _fixture.CriarCadastrarEstoqueHandler();
 
             // Act
@@ -51,14 +44,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Estoque.Should().NotBeNull();
-            
+            resultado.Should().NotBeNull();
+
             // Verificar que o gateway foi chamado com os dados corretos
             await _fixture.RepositorioEstoque.Received(1).CadastrarAsync(Arg.Any<EstoqueEntityDto>());
-            
+
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
-            
+
             // Verificar que os logs foram registrados
             _fixture.LogServicoCadastrar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<CadastrarEstoqueUseCaseDto>());
             _fixture.LogServicoCadastrar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<Estoque>());
@@ -79,10 +72,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 Preco = 10.00m,
                 Ativo = true
             };
-            
+
             // Configurar o repositório para retornar um estoque com o mesmo nome
-            var estoquesDto = new List<EstoqueEntityDto> 
-            { 
+            var estoquesDto = new List<EstoqueEntityDto>
+            {
                 new EstoqueEntityDto
                 {
                     Id = estoqueExistente.Id,
@@ -95,24 +88,24 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 }
             };
             _fixture.RepositorioEstoque.ObterTodosAsync().Returns(estoquesDto);
-            
+
             var handler = _fixture.CriarCadastrarEstoqueHandler();
 
             // Act & Assert
             var act = async () => await handler.Handle(request);
-            
+
             await act.Should().ThrowAsync<DadosJaCadastradosException>()
                 .WithMessage("Produto já cadastrado");
-            
+
             // Verificar que o gateway foi chamado para obter todos os estoques
             await _fixture.RepositorioEstoque.Received(1).ObterTodosAsync();
-            
+
             // Verificar que o gateway NÃO foi chamado para cadastrar
             await _fixture.RepositorioEstoque.DidNotReceive().CadastrarAsync(Arg.Any<EstoqueEntityDto>());
-            
+
             // Verificar que o commit NÃO foi chamado
             await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
-            
+
             // Verificar que os logs foram registrados
             _fixture.LogServicoCadastrar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<CadastrarEstoqueUseCaseDto>());
             _fixture.LogServicoCadastrar.Received(1).LogErro(Arg.Any<string>(), Arg.Any<DadosJaCadastradosException>());
@@ -123,27 +116,27 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
         {
             // Arrange
             var request = EstoqueHandlerFixture.CriarCadastrarEstoqueUseCaseDtoValido();
-            
+
             // Configurar o repositório para simular o cadastro
             _fixture.RepositorioEstoque.ObterTodosAsync().Returns(new List<EstoqueEntityDto>());
-            
+
             // Configurar o UDT para falhar no commit
             _fixture.ConfigurarMockUdtParaCommitFalha();
-            
+
             var handler = _fixture.CriarCadastrarEstoqueHandler();
 
             // Act & Assert
             var act = async () => await handler.Handle(request);
-            
+
             await act.Should().ThrowAsync<PersistirDadosException>()
                 .WithMessage("Erro ao cadastrar estoque");
-            
+
             // Verificar que o gateway foi chamado para cadastrar
             await _fixture.RepositorioEstoque.Received(1).CadastrarAsync(Arg.Any<EstoqueEntityDto>());
-            
+
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
-            
+
             // Verificar que os logs foram registrados
             _fixture.LogServicoCadastrar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<CadastrarEstoqueUseCaseDto>());
             _fixture.LogServicoCadastrar.Received(1).LogErro(Arg.Any<string>(), Arg.Any<PersistirDadosException>());
@@ -162,16 +155,16 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 QuantidadeMinima = 10,
                 Preco = 123.45m
             };
-            
+
             // Capturar o estoque que será passado para o gateway
             Estoque estoqueCadastrado = null;
-            
+
             // Configurar o repositório para capturar o objeto passado
             _fixture.RepositorioEstoque.ObterTodosAsync().Returns(new List<EstoqueEntityDto>());
-            
+
             // Configurar o repositório para retornar o DTO quando CadastrarAsync for chamado
             _fixture.RepositorioEstoque.CadastrarAsync(Arg.Any<EstoqueEntityDto>())
-                .Returns(callInfo => 
+                .Returns(callInfo =>
                 {
                     var dto = callInfo.Arg<EstoqueEntityDto>();
                     var novoDto = new EstoqueEntityDto
@@ -186,7 +179,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                         DataAtualizacao = DateTime.UtcNow,
                         Ativo = true
                     };
-                    
+
                     // Criar o objeto estoqueCadastrado para uso nos asserts
                     estoqueCadastrado = new Estoque
                     {
@@ -200,10 +193,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                         DataAtualizacao = novoDto.DataAtualizacao,
                         Ativo = novoDto.Ativo
                     };
-                    
+
                     return novoDto;
                 });
-            
+
             var handler = _fixture.CriarCadastrarEstoqueHandler();
 
             // Act
@@ -212,7 +205,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             // Assert
             // Verificar que o gateway foi chamado
             await _fixture.RepositorioEstoque.Received(1).CadastrarAsync(Arg.Any<EstoqueEntityDto>());
-            
+
             // Verificar que os dados foram passados corretamente para o gateway
             estoqueCadastrado.Should().NotBeNull();
             estoqueCadastrado.Insumo.Should().Be("Produto Específico para Teste");
@@ -220,16 +213,16 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             estoqueCadastrado.QuantidadeDisponivel.Should().Be(42);
             estoqueCadastrado.QuantidadeMinima.Should().Be(10);
             estoqueCadastrado.Preco.Should().Be(123.45m);
-            
+
             // Verificar que o resultado contém os mesmos dados
             resultado.Should().NotBeNull();
-            resultado.Estoque.Should().NotBeNull();
+            resultado.Should().NotBeNull();
             // Verificar apenas as propriedades importantes, não o objeto completo
-            resultado.Estoque.Insumo.Should().Be("Produto Específico para Teste");
-            resultado.Estoque.Descricao.Should().Be("Descrição específica para teste de trânsito de dados");
-            resultado.Estoque.QuantidadeDisponivel.Should().Be(42);
-            resultado.Estoque.QuantidadeMinima.Should().Be(10);
-            resultado.Estoque.Preco.Should().Be(123.45m);
+            resultado.Insumo.Should().Be("Produto Específico para Teste");
+            resultado.Descricao.Should().Be("Descrição específica para teste de trânsito de dados");
+            resultado.QuantidadeDisponivel.Should().Be(42);
+            resultado.QuantidadeMinima.Should().Be(10);
+            resultado.Preco.Should().Be(123.45m);
         }
     }
 }

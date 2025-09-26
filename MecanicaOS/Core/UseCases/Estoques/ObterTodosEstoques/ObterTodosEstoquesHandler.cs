@@ -1,3 +1,4 @@
+using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Estoques;
 using Core.UseCases.Abstrato;
@@ -18,7 +19,7 @@ namespace Core.UseCases.Estoques.ObterTodosEstoques
             _estoqueGateway = estoqueGateway ?? throw new ArgumentNullException(nameof(estoqueGateway));
         }
 
-        public async Task<ObterTodosEstoquesResponse> Handle()
+        public async Task<IEnumerable<Estoque>> Handle()
         {
             string metodo = nameof(Handle);
 
@@ -30,7 +31,7 @@ namespace Core.UseCases.Estoques.ObterTodosEstoques
 
                 LogFim(metodo, estoques);
 
-                return new ObterTodosEstoquesResponse { Estoques = estoques };
+                return estoques;
             }
             catch (Exception e)
             {

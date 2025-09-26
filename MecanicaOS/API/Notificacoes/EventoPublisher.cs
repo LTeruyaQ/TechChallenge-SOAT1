@@ -1,6 +1,6 @@
+using API.Notificacoes.OS;
 using Core.DTOs.UseCases.Eventos;
 using Core.Interfaces.Eventos;
-using API.Notificacoes.OS;
 using MediatR;
 
 namespace API.Notificacoes

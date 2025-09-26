@@ -1,17 +1,9 @@
-using API.Notificacoes.OS;
 using Core.DTOs.Responses.Cliente;
 using Core.DTOs.Responses.OrdemServico;
 using Core.DTOs.Responses.Servico;
 using Core.DTOs.Responses.Veiculo;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.Servicos;
-using FluentAssertions;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.API.Notificacoes.OS
 {
@@ -36,12 +28,12 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Arrange
             var ordemServicoId = Guid.NewGuid();
             var evento = _fixture.CriarEvento(ordemServicoId);
-            
+
             var ordemServico = _fixture.CriarOrdemServicoFinalizada(ordemServicoId);
             _ordemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             string emailCapturado = null;
-            
+
             _servicoEmail.EnviarAsync(
                 Arg.Any<string[]>(),
                 Arg.Any<string>(),
@@ -54,21 +46,21 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Assert
             // Verificar que os detalhes da OS foram obtidos
             await _ordemServicoController.Received(1).ObterPorId(ordemServicoId);
-            
+
             // Verificar que o email foi enviado
             await _servicoEmail.Received(1).EnviarAsync(
                 Arg.Any<string[]>(),
                 Arg.Any<string>(),
                 Arg.Any<string>()
             );
-            
+
             // Verificar conteúdo do email
             emailCapturado.Should().NotBeNull();
             emailCapturado.Should().Contain(ordemServico.Cliente.Nome);
             emailCapturado.Should().Contain(ordemServico.Servico.Nome);
             emailCapturado.Should().Contain(ordemServico.Veiculo.Modelo);
             emailCapturado.Should().Contain(ordemServico.Veiculo.Placa);
-            
+
             // Verificar logs
             _fixture.LogServicoMock.Received(1).LogInicio("Handle", ordemServicoId);
             _fixture.LogServicoMock.Received(1).LogFim("Handle", Arg.Any<object>());
@@ -80,10 +72,10 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Arrange
             var ordemServicoId = Guid.NewGuid();
             var evento = _fixture.CriarEvento(ordemServicoId);
-            
+
             var ordemServico = _fixture.CriarOrdemServicoSemEmail(ordemServicoId);
             _ordemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Configurar o serviço de email para lançar uma exceção
             _servicoEmail.EnviarAsync(
                 Arg.Any<string[]>(),
@@ -93,13 +85,13 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
 
             // Act & Assert
             var act = async () => await _handler.Handle(evento, CancellationToken.None);
-            
+
             // Deve lançar uma exceção porque não há email para enviar
             await act.Should().ThrowAsync<Exception>();
-            
+
             // Verificar que os detalhes da OS foram obtidos
             await _ordemServicoController.Received(1).ObterPorId(ordemServicoId);
-            
+
             // Verificar logs
             _fixture.LogServicoMock.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
             _fixture.LogServicoMock.Received(1).LogErro(Arg.Any<string>(), Arg.Any<Exception>());
@@ -111,7 +103,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Arrange
             var ordemServicoId = Guid.NewGuid();
             var evento = _fixture.CriarEvento(ordemServicoId);
-            
+
             // Criar ordem de serviço com valores específicos para identificar no teste
             var ordemServico = new OrdemServicoResponse
             {
@@ -141,13 +133,13 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                     Ano = "2023"
                 }
             };
-            
+
             // Configurar o controller para retornar a ordem de serviço com valores específicos
             _ordemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-            
+
             // Capturar o conteúdo do email para verificar se os dados foram passados corretamente
             string emailCapturado = null;
-            
+
             _servicoEmail.EnviarAsync(
                 Arg.Any<string[]>(),
                 Arg.Any<string>(),
@@ -160,21 +152,21 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             // Assert
             // Verificar que os detalhes da OS foram obtidos com o ID correto
             await _ordemServicoController.Received(1).ObterPorId(ordemServicoId);
-            
+
             // Verificar que o email foi enviado
             await _servicoEmail.Received(1).EnviarAsync(
                 Arg.Any<string[]>(),
                 Arg.Any<string>(),
                 Arg.Any<string>()
             );
-            
+
             // Verificar que o conteúdo do email contém os dados corretos da ordem de serviço
             emailCapturado.Should().NotBeNull();
             emailCapturado.Should().Contain("Cliente Teste Especial");
             emailCapturado.Should().Contain("Serviço Especial de Teste");
             emailCapturado.Should().Contain("Civic Especial");
             emailCapturado.Should().Contain("XYZ-9876");
-            
+
             // Verificar logs
             _fixture.LogServicoMock.Received(1).LogInicio("Handle", ordemServicoId);
             _fixture.LogServicoMock.Received(1).LogFim("Handle", Arg.Any<object>());

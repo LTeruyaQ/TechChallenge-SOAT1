@@ -1,3 +1,4 @@
+using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.OrdensServico;
@@ -8,7 +9,7 @@ namespace Core.UseCases.OrdensServico.ObterOrdemServico
     public class ObterOrdemServicoHandler : UseCasesHandlerAbstrato<ObterOrdemServicoHandler>, IObterOrdemServicoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
-        
+
         // Propriedade para controlar se deve lançar exceção quando ordemServico for null (apenas para testes)
         public bool ThrowWhenNull { get; set; } = false;
 
@@ -22,7 +23,7 @@ namespace Core.UseCases.OrdensServico.ObterOrdemServico
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
         }
 
-        public async Task<ObterOrdemServicoResponse> Handle(Guid id)
+        public async Task<OrdemServico?> Handle(Guid id)
         {
             string metodo = nameof(Handle);
 
@@ -31,14 +32,13 @@ namespace Core.UseCases.OrdensServico.ObterOrdemServico
                 LogInicio(metodo, id);
 
                 var ordemServico = await _ordemServicoGateway.ObterPorIdAsync(id);
-                
+
                 if (ThrowWhenNull && ordemServico == null)
                     throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
 
-                var response = new ObterOrdemServicoResponse { OrdemServico = ordemServico };
-                LogFim(metodo, response);
+                LogFim(metodo, ordemServico);
 
-                return response;
+                return ordemServico;
             }
             catch (Exception e)
             {

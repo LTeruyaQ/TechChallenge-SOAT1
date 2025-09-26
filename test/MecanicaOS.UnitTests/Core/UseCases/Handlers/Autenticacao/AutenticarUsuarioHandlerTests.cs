@@ -33,21 +33,20 @@ public class AutenticarUsuarioHandlerTests
 
         // Assert
         resultado.Should().NotBeNull();
-        resultado.Autenticacao.Should().NotBeNull();
-        resultado.Autenticacao.Token.Should().Be("token_jwt_valido");
-        resultado.Autenticacao.Usuario.Should().NotBeNull();
-        resultado.Autenticacao.Usuario.Email.Should().Be(usuario.Email);
-        resultado.Autenticacao.Permissoes.Should().NotBeEmpty();
-        resultado.Autenticacao.Permissoes.Should().Contain("administrador");
+        resultado.Token.Should().Be("token_jwt_valido");
+        resultado.Usuario.Should().NotBeNull();
+        resultado.Usuario.Email.Should().Be(usuario.Email);
+        resultado.Permissoes.Should().NotBeEmpty();
+        resultado.Permissoes.Should().Contain("administrador");
 
         // Verificar que os serviços foram chamados
         await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
         _fixture.ServicoSenha.Received(1).VerificarSenha(request.Senha, usuario.Senha);
         _fixture.ServicoJwt.Received(1).GerarToken(
-            usuario.Id, 
-            usuario.Email, 
-            usuario.TipoUsuario.ToString(), 
-            Arg.Any<string>(), 
+            usuario.Id,
+            usuario.Email,
+            usuario.TipoUsuario.ToString(),
+            Arg.Any<string>(),
             Arg.Is<IEnumerable<string>>(p => p.Contains("administrador")));
 
         // Verificar que os logs foram registrados
@@ -60,14 +59,14 @@ public class AutenticarUsuarioHandlerTests
     {
         // Arrange
         var request = AutenticacaoUseCasesFixture.CriarAutenticacaoUseCaseDtoComEmailInvalido();
-        
+
         _fixture.ConfigurarMockUsuarioUseCasesParaEmailInexistente();
-        
+
         var handler = _fixture.CriarAutenticarUsuarioHandler();
 
         // Act & Assert
         var act = async () => await handler.Handle(request);
-        
+
         await act.Should().ThrowAsync<DadosInvalidosException>()
             .WithMessage("Usuário ou senha inválidos");
 
@@ -75,10 +74,10 @@ public class AutenticarUsuarioHandlerTests
         await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
         _fixture.ServicoSenha.DidNotReceive().VerificarSenha(Arg.Any<string>(), Arg.Any<string>());
         _fixture.ServicoJwt.DidNotReceive().GerarToken(
-            Arg.Any<Guid>(), 
-            Arg.Any<string>(), 
-            Arg.Any<string>(), 
-            Arg.Any<string>(), 
+            Arg.Any<Guid>(),
+            Arg.Any<string>(),
+            Arg.Any<string>(),
+            Arg.Any<string>(),
             Arg.Any<IEnumerable<string>>());
 
         // Verificar que os logs foram registrados
@@ -92,15 +91,15 @@ public class AutenticarUsuarioHandlerTests
         // Arrange
         var request = AutenticacaoUseCasesFixture.CriarAutenticacaoUseCaseDtoComSenhaInvalida();
         var usuario = AutenticacaoUseCasesFixture.CriarUsuarioAtivoValido();
-        
+
         _fixture.ConfigurarMockUsuarioUseCasesParaAutenticacaoValida(usuario);
         _fixture.ConfigurarMockServicoSenhaParaSenhaInvalida();
-        
+
         var handler = _fixture.CriarAutenticarUsuarioHandler();
 
         // Act & Assert
         var act = async () => await handler.Handle(request);
-        
+
         await act.Should().ThrowAsync<DadosInvalidosException>()
             .WithMessage("Usuário ou senha inválidos");
 
@@ -108,10 +107,10 @@ public class AutenticarUsuarioHandlerTests
         await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
         _fixture.ServicoSenha.Received(1).VerificarSenha(request.Senha, usuario.Senha);
         _fixture.ServicoJwt.DidNotReceive().GerarToken(
-            Arg.Any<Guid>(), 
-            Arg.Any<string>(), 
-            Arg.Any<string>(), 
-            Arg.Any<string>(), 
+            Arg.Any<Guid>(),
+            Arg.Any<string>(),
+            Arg.Any<string>(),
+            Arg.Any<string>(),
             Arg.Any<IEnumerable<string>>());
 
         // Verificar que os logs foram registrados
@@ -129,37 +128,35 @@ public class AutenticarUsuarioHandlerTests
         var request = AutenticacaoUseCasesFixture.CriarAutenticacaoUseCaseDtoValido();
         var usuario = AutenticacaoUseCasesFixture.CriarUsuarioAtivoValido();
         usuario.TipoUsuario = tipoUsuario;
-        
+
         if (tipoUsuario == TipoUsuario.Cliente)
         {
             usuario.ClienteId = Guid.NewGuid();
             _fixture.ConfigurarMockClienteUseCasesParaClienteValido(usuario.ClienteId.Value);
         }
-        
+
         _fixture.ConfigurarMockUsuarioUseCasesParaAutenticacaoValida(usuario);
         _fixture.ConfigurarMockServicoSenhaParaSenhaValida();
         _fixture.ConfigurarMockServicoJwt("token_jwt_valido");
-        
+
         var handler = _fixture.CriarAutenticarUsuarioHandler();
 
         // Act
         var resultado = await handler.Handle(request);
 
         // Assert
-        resultado.Should().NotBeNull();
-        resultado.Autenticacao.Should().NotBeNull();
-        resultado.Autenticacao.Usuario.TipoUsuario.Should().Be(tipoUsuario);
-        resultado.Autenticacao.Permissoes.Should().NotBeEmpty();
-        resultado.Autenticacao.Permissoes.Should().Contain(permissaoEsperada);
+        resultado.Usuario.TipoUsuario.Should().Be(tipoUsuario);
+        resultado.Permissoes.Should().NotBeEmpty();
+        resultado.Permissoes.Should().Contain(permissaoEsperada);
 
         // Verificar que os serviços foram chamados
         await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
         _fixture.ServicoSenha.Received(1).VerificarSenha(request.Senha, usuario.Senha);
         _fixture.ServicoJwt.Received(1).GerarToken(
-            usuario.Id, 
-            usuario.Email, 
-            usuario.TipoUsuario.ToString(), 
-            Arg.Any<string>(), 
+            usuario.Id,
+            usuario.Email,
+            usuario.TipoUsuario.ToString(),
+            Arg.Any<string>(),
             Arg.Is<IEnumerable<string>>(p => p.Contains(permissaoEsperada)));
 
         // Verificar que os logs foram registrados
@@ -176,12 +173,12 @@ public class AutenticarUsuarioHandlerTests
             Email = null,
             Senha = null
         };
-        
+
         var handler = _fixture.CriarAutenticarUsuarioHandler();
 
         // Act & Assert
         var act = async () => await handler.Handle(request);
-        
+
         await act.Should().ThrowAsync<DadosInvalidosException>();
 
         // Verificar que os logs foram registrados

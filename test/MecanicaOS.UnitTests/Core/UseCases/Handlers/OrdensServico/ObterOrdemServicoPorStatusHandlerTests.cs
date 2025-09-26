@@ -2,14 +2,7 @@ using Core.DTOs.Entidades.OrdemServicos;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Especificacoes.Base.Interfaces;
-using Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 {
@@ -47,16 +40,15 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.OrdensServico.Should().NotBeNull();
-            resultado.OrdensServico.Should().HaveCount(2);
-            resultado.OrdensServico.Should().AllSatisfy(os => os.Status.Should().Be(status));
-            
+            resultado.Should().HaveCount(2);
+            resultado.Should().AllSatisfy(os => os.Status.Should().Be(status));
+
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioOrdemServico.Received(1).ListarProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>());
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorStatus.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<StatusOrdemServico>());
-            _fixture.LogServicoObterPorStatus.Received(1).LogFim(Arg.Any<string>(), Arg.Any<ObterOrdemServicoPorStatusResponse>());
+            _fixture.LogServicoObterPorStatus.Received(1).LogFim(Arg.Any<string>(), Arg.Any<OrdemServico>());
         }
 
         [Fact]
@@ -75,15 +67,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.OrdensServico.Should().NotBeNull();
-            resultado.OrdensServico.Should().BeEmpty();
-            
+            resultado.Should().BeEmpty();
+
             // Verificar que o repositório foi chamado
             await _fixture.RepositorioOrdemServico.Received(1).ListarProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>());
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorStatus.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<StatusOrdemServico>());
-            _fixture.LogServicoObterPorStatus.Received(1).LogFim(Arg.Any<string>(), Arg.Any<ObterOrdemServicoPorStatusResponse>());
+            _fixture.LogServicoObterPorStatus.Received(1).LogFim(Arg.Any<string>(), Arg.Any<OrdemServico>());
         }
 
         [Fact]
@@ -91,7 +82,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
         {
             // Arrange
             var status = StatusOrdemServico.Recebida;
-            
+
             // Configurar o repositório para lançar uma exceção
             _fixture.RepositorioOrdemServico.ListarProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>())
                 .Returns(Task.FromException<IEnumerable<OrdemServico>>(new InvalidOperationException("Erro simulado")));

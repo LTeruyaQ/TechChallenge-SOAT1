@@ -1,4 +1,4 @@
-﻿using Core.DTOs.UseCases.Servico;
+using Core.DTOs.UseCases.Servico;
 using Core.Entidades;
 
 namespace Core.Interfaces.UseCases
@@ -6,7 +6,7 @@ namespace Core.Interfaces.UseCases
     public interface IServicoUseCases
     {
         Task<Servico> CadastrarServicoUseCaseAsync(CadastrarServicoUseCaseDto request);
-        Task DeletarServicoUseCaseAsync(Guid id);
+        Task<bool> DeletarServicoUseCaseAsync(Guid id);
         Task<Servico> EditarServicoUseCaseAsync(Guid id, EditarServicoUseCaseDto request);
         Task<Servico> ObterServicoPorIdUseCaseAsync(Guid id);
         Task<Servico?> ObterServicoPorNomeUseCaseAsync(string nome);

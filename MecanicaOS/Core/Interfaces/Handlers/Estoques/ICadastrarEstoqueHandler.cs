@@ -1,5 +1,5 @@
 using Core.DTOs.UseCases.Estoque;
-using Core.UseCases.Estoques.CadastrarEstoque;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Estoques
 {
@@ -12,7 +12,7 @@ namespace Core.Interfaces.Handlers.Estoques
         /// Manipula a operação de cadastro de estoque
         /// </summary>
         /// <param name="request">DTO com os dados do estoque a ser cadastrado</param>
-        /// <returns>Resposta contendo o estoque cadastrado</returns>
-        Task<CadastrarEstoqueResponse> Handle(CadastrarEstoqueUseCaseDto request);
+        /// <returns>Estoque cadastrado</returns>
+        Task<Estoque> Handle(CadastrarEstoqueUseCaseDto request);
     }
 }

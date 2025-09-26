@@ -1,20 +1,9 @@
 using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.Entidades.OrdemServicos;
-using Core.DTOs.UseCases.Estoque;
-using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
-using Core.Especificacoes.Base;
 using Core.Especificacoes.Base.Interfaces;
 using Core.Exceptions;
-using Core.UseCases.InsumosOS.CadastrarInsumos;
-using FluentAssertions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
-using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 {
@@ -37,16 +26,16 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Configurar o repositório para retornar a ordem de serviço
             _fixture.ConfigurarMockOrdemServicoRepositorioParaObterPorId(ordemServico.Id, ordemServico);
-            
+
             // Configurar o repositório para retornar o estoque
             _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque.Id, estoque);
-            
+
             // Capturar os DTOs que serão enviados ao repositório de insumos
             var insumosOSDtos = _fixture.ConfigurarMockInsumoOSRepositorioParaInserir();
-            
+
             // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
             var estoqueDtos = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque.Id);
-            
+
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
             var handler = _fixture.CriarCadastrarInsumosHandler();
@@ -56,34 +45,34 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.InsumosOS.Should().NotBeNull();
-            resultado.InsumosOS.Should().HaveCount(1);
+            resultado.Should().NotBeNull();
+            resultado.Should().HaveCount(1);
 
-            var insumoOS = resultado.InsumosOS.First();
+            var insumoOS = resultado.First();
             insumoOS.OrdemServicoId.Should().Be(ordemServico.Id);
             insumoOS.EstoqueId.Should().Be(estoque.Id);
             insumoOS.Quantidade.Should().Be(2);
 
             // Verificar que o repositório de estoque foi chamado para atualização
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
-            
+
             // Verificar que os DTOs capturados estão corretos
             estoqueDtos.Should().NotBeEmpty();
             estoqueDtos[0].QuantidadeDisponivel.Should().Be(8);
             estoqueDtos[0].Id.Should().Be(estoque.Id);
             estoqueDtos[0].Insumo.Should().Be(estoque.Insumo);
-            
+
             // Verificar o resultado retornado pelo handler
-            resultado.InsumosOS.First().OrdemServicoId.Should().Be(ordemServico.Id);
-            resultado.InsumosOS.First().EstoqueId.Should().Be(estoque.Id);
-            resultado.InsumosOS.First().Quantidade.Should().Be(2);
+            resultado.First().OrdemServicoId.Should().Be(ordemServico.Id);
+            resultado.First().EstoqueId.Should().Be(estoque.Id);
+            resultado.First().Quantidade.Should().Be(2);
 
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.ReceivedWithAnyArgs().Commit();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoCadastrar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
-            _fixture.LogServicoCadastrar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<CadastrarInsumosResponse>());
+            _fixture.LogServicoCadastrar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Fact]
@@ -98,7 +87,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
             _fixture.RepositorioOrdemServico
                 .ObterPorIdAsync(ordemServicoId)
                 .Returns((OrdemServicoEntityDto)null);
-                
+
             _fixture.RepositorioOrdemServico
                 .ObterUmProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>())
                 .Returns((OrdemServico)null);
@@ -129,7 +118,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Configurar o repositório para retornar a ordem de serviço
             _fixture.ConfigurarMockOrdemServicoRepositorioParaObterPorId(ordemServico.Id, ordemServico);
-            
+
             // Configurar o repositório para retornar o estoque
             _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque.Id, estoque);
 
@@ -143,7 +132,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Verificar que o repositório de estoque não foi chamado para atualização
             await _fixture.RepositorioEstoque.DidNotReceiveWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
-            
+
             // Verificar que o repositório de insumos não foi chamado para inserção
             await _fixture.RepositorioInsumoOS.DidNotReceiveWithAnyArgs().CadastrarAsync(Arg.Any<InsumoOSEntityDto>());
 
@@ -165,16 +154,16 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Configurar o repositório para retornar a ordem de serviço
             _fixture.ConfigurarMockOrdemServicoRepositorioParaObterPorId(ordemServico.Id, ordemServico);
-            
+
             // Configurar o repositório para retornar o estoque
             _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque.Id, estoque);
-            
+
             // Capturar os DTOs que serão enviados ao repositório de insumos
             var insumosOSDtos = _fixture.ConfigurarMockInsumoOSRepositorioParaInserir();
-            
+
             // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
             var estoqueDtos = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque.Id);
-            
+
             _fixture.ConfigurarMockUdtParaCommitFalha();
 
             var handler = _fixture.CriarCadastrarInsumosHandler();
@@ -202,7 +191,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
         {
             // Arrange
             var ordemServico = InsumosOSHandlerFixture.CriarOrdemServicoValida();
-            
+
             var estoque1 = InsumosOSHandlerFixture.CriarEstoqueValido(10, 2);
             var estoque2 = new Estoque
             {
@@ -220,14 +209,14 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Configurar o repositório para retornar a ordem de serviço
             _fixture.ConfigurarMockOrdemServicoRepositorioParaObterPorId(ordemServico.Id, ordemServico);
-                
+
             // Configurar o repositório para retornar os estoques
             _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque1.Id, estoque1);
             _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque2.Id, estoque2);
-            
+
             // Capturar os DTOs que serão enviados ao repositório de insumos
             var insumosOSDtos = _fixture.ConfigurarMockInsumoOSRepositorioParaInserir();
-            
+
             // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
             var estoqueDtos = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque1.Id);
             _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque2.Id);
@@ -240,23 +229,23 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.InsumosOS.Should().NotBeNull();
-            resultado.InsumosOS.Should().HaveCount(2);
+            resultado.Should().NotBeNull();
+            resultado.Should().HaveCount(2);
 
             // Verificar que o repositório de estoque foi chamado para atualização
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
-            
+
             // Verificar o resultado retornado pelo handler
-            resultado.InsumosOS.Should().HaveCount(2);
-            resultado.InsumosOS.ElementAt(0).OrdemServicoId.Should().Be(ordemServico.Id);
-            resultado.InsumosOS.ElementAt(1).OrdemServicoId.Should().Be(ordemServico.Id);
+            resultado.Should().HaveCount(2);
+            resultado.ElementAt(0).OrdemServicoId.Should().Be(ordemServico.Id);
+            resultado.ElementAt(1).OrdemServicoId.Should().Be(ordemServico.Id);
 
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.ReceivedWithAnyArgs().Commit();
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoCadastrar.ReceivedWithAnyArgs().LogInicio(Arg.Any<string>(), Arg.Any<object>());
-            _fixture.LogServicoCadastrar.ReceivedWithAnyArgs().LogFim(Arg.Any<string>(), Arg.Any<CadastrarInsumosResponse>());
+            _fixture.LogServicoCadastrar.ReceivedWithAnyArgs().LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Fact]
@@ -269,16 +258,16 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Configurar o repositório para retornar a ordem de serviço
             _fixture.ConfigurarMockOrdemServicoRepositorioParaObterPorId(ordemServico.Id, ordemServico);
-            
+
             // Configurar o repositório para retornar o estoque
             _fixture.ConfigurarMockEstoqueRepositorioParaObterPorId(estoque.Id, estoque);
-            
+
             // Capturar os DTOs que serão enviados ao repositório de insumos
             var insumosOSDtos = _fixture.ConfigurarMockInsumoOSRepositorioParaInserir();
-            
+
             // Capturar os DTOs que serão enviados ao repositório de estoque para atualização
             var estoqueDtos = _fixture.ConfigurarMockEstoqueRepositorioParaAtualizar(estoque.Id);
-            
+
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
             var handler = _fixture.CriarCadastrarInsumosHandler();
@@ -288,16 +277,16 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.InsumosOS.Should().NotBeNull();
-            resultado.InsumosOS.Should().HaveCount(1);
+            resultado.Should().NotBeNull();
+            resultado.Should().HaveCount(1);
 
             // Verificar que o repositório de estoque foi chamado para atualização
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
-            
+
             // Verificar que os DTOs capturados estão corretos
             estoqueDtos.Should().NotBeEmpty();
             estoqueDtos[0].QuantidadeDisponivel.Should().Be(3);
-            
+
             // Verificar que o verificador de estoque foi chamado
             await _fixture.VerificarEstoqueJobGateway.ReceivedWithAnyArgs().VerificarEstoqueAsync();
 
@@ -306,7 +295,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoCadastrar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
-            _fixture.LogServicoCadastrar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<CadastrarInsumosResponse>());
+            _fixture.LogServicoCadastrar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
     }

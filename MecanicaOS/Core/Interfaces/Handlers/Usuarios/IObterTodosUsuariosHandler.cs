@@ -1,4 +1,4 @@
-using Core.UseCases.Usuarios.ObterTodosUsuarios;
+using Core.Entidades;
 
 namespace Core.Interfaces.Handlers.Usuarios
 {
@@ -10,7 +10,7 @@ namespace Core.Interfaces.Handlers.Usuarios
         /// <summary>
         /// Manipula a operação de obtenção de todos os usuários
         /// </summary>
-        /// <returns>Resposta contendo a lista de usuários</returns>
-        Task<ObterTodosUsuariosResponse> Handle();
+        /// <returns>Lista de usuários</returns>
+        Task<IEnumerable<Usuario>> Handle();
     }
 }
