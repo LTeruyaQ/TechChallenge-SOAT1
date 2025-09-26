@@ -1,8 +1,7 @@
 using Core.Entidades;
 using Core.Enumeradores;
+using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Orcamentos;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Orcamentos.GerarOrcamento;
 using NSubstitute;
 using System;
@@ -12,15 +11,15 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
 {
     public class OrcamentoHandlerFixture
     {
-        public ILogServico<GerarOrcamentoHandler> LogServico { get; }
-        public IUnidadeDeTrabalho UnidadeDeTrabalho { get; }
-        public IUsuarioLogadoServico UsuarioLogadoServico { get; }
+        public ILogServicoGateway<GerarOrcamentoHandler> LogServico { get; }
+        public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
+        public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
 
         public OrcamentoHandlerFixture()
         {
-            LogServico = Substitute.For<ILogServico<GerarOrcamentoHandler>>();
-            UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalho>();
-            UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServico>();
+            LogServico = Substitute.For<ILogServicoGateway<GerarOrcamentoHandler>>();
+            UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
+            UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
         }
 
         public IGerarOrcamentoHandler CriarGerarOrcamentoHandler()

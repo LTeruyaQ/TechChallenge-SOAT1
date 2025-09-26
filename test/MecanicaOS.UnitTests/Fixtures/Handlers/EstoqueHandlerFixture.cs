@@ -28,14 +28,14 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         public IEstoqueGateway EstoqueGateway { get; }
         
         // Serviços mockados
-        public ILogServico<CadastrarEstoqueHandler> LogServicoCadastrar { get; }
-        public ILogServico<ObterEstoqueHandler> LogServicoObter { get; }
-        public ILogServico<ObterTodosEstoquesHandler> LogServicoObterTodos { get; }
-        public ILogServico<ObterEstoqueCriticoHandler> LogServicoObterCritico { get; }
-        public ILogServico<AtualizarEstoqueHandler> LogServicoAtualizar { get; }
-        public ILogServico<DeletarEstoqueHandler> LogServicoDeletar { get; }
-        public IUnidadeDeTrabalho UnidadeDeTrabalho { get; }
-        public IUsuarioLogadoServico UsuarioLogadoServico { get; }
+        public ILogServicoGateway<CadastrarEstoqueHandler> LogServicoCadastrar { get; }
+        public ILogServicoGateway<ObterEstoqueHandler> LogServicoObter { get; }
+        public ILogServicoGateway<ObterTodosEstoquesHandler> LogServicoObterTodos { get; }
+        public ILogServicoGateway<ObterEstoqueCriticoHandler> LogServicoObterCritico { get; }
+        public ILogServicoGateway<AtualizarEstoqueHandler> LogServicoAtualizar { get; }
+        public ILogServicoGateway<DeletarEstoqueHandler> LogServicoDeletar { get; }
+        public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
+        public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
 
         public EstoqueHandlerFixture()
         {
@@ -46,14 +46,14 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             EstoqueGateway = new EstoqueGateway(RepositorioEstoque);
             
             // Inicializar serviços mockados
-            LogServicoCadastrar = Substitute.For<ILogServico<CadastrarEstoqueHandler>>();
-            LogServicoObter = Substitute.For<ILogServico<ObterEstoqueHandler>>();
-            LogServicoObterTodos = Substitute.For<ILogServico<ObterTodosEstoquesHandler>>();
-            LogServicoObterCritico = Substitute.For<ILogServico<ObterEstoqueCriticoHandler>>();
-            LogServicoAtualizar = Substitute.For<ILogServico<AtualizarEstoqueHandler>>();
-            LogServicoDeletar = Substitute.For<ILogServico<DeletarEstoqueHandler>>();
-            UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalho>();
-            UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServico>();
+            LogServicoCadastrar = Substitute.For<ILogServicoGateway<CadastrarEstoqueHandler>>();
+            LogServicoObter = Substitute.For<ILogServicoGateway<ObterEstoqueHandler>>();
+            LogServicoObterTodos = Substitute.For<ILogServicoGateway<ObterTodosEstoquesHandler>>();
+            LogServicoObterCritico = Substitute.For<ILogServicoGateway<ObterEstoqueCriticoHandler>>();
+            LogServicoAtualizar = Substitute.For<ILogServicoGateway<AtualizarEstoqueHandler>>();
+            LogServicoDeletar = Substitute.For<ILogServicoGateway<DeletarEstoqueHandler>>();
+            UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
+            UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
             
             // Configuração padrão para o UDT
             UnidadeDeTrabalho.Commit().Returns(Task.FromResult(true));

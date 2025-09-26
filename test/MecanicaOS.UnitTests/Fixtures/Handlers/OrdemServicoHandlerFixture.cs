@@ -40,17 +40,17 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         public IVeiculoUseCases VeiculoUseCases { get; }
         
         // LogServices
-        public ILogServico<CadastrarOrdemServicoHandler> LogServicoCadastrar { get; }
-        public ILogServico<AtualizarOrdemServicoHandler> LogServicoAtualizar { get; }
-        public ILogServico<ObterOrdemServicoHandler> LogServicoObter { get; }
-        public ILogServico<ObterTodosOrdensServicoHandler> LogServicoObterTodos { get; }
-        public ILogServico<ObterOrdemServicoPorStatusHandler> LogServicoObterPorStatus { get; }
-        public ILogServico<AceitarOrcamentoHandler> LogServicoAceitarOrcamento { get; }
-        public ILogServico<RecusarOrcamentoHandler> LogServicoRecusarOrcamento { get; }
+        public ILogServicoGateway<CadastrarOrdemServicoHandler> LogServicoCadastrar { get; }
+        public ILogServicoGateway<AtualizarOrdemServicoHandler> LogServicoAtualizar { get; }
+        public ILogServicoGateway<ObterOrdemServicoHandler> LogServicoObter { get; }
+        public ILogServicoGateway<ObterTodosOrdensServicoHandler> LogServicoObterTodos { get; }
+        public ILogServicoGateway<ObterOrdemServicoPorStatusHandler> LogServicoObterPorStatus { get; }
+        public ILogServicoGateway<AceitarOrcamentoHandler> LogServicoAceitarOrcamento { get; }
+        public ILogServicoGateway<RecusarOrcamentoHandler> LogServicoRecusarOrcamento { get; }
         
         // Outros serviços
-        public IUnidadeDeTrabalho UnidadeDeTrabalho { get; }
-        public IUsuarioLogadoServico UsuarioLogadoServico { get; }
+        public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
+        public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
 
         public OrdemServicoHandlerFixture()
         {
@@ -67,17 +67,17 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             VeiculoUseCases = Substitute.For<IVeiculoUseCases>();
             
             // Inicializar log services
-            LogServicoCadastrar = Substitute.For<ILogServico<CadastrarOrdemServicoHandler>>();
-            LogServicoAtualizar = Substitute.For<ILogServico<AtualizarOrdemServicoHandler>>();
-            LogServicoObter = Substitute.For<ILogServico<ObterOrdemServicoHandler>>();
-            LogServicoObterTodos = Substitute.For<ILogServico<ObterTodosOrdensServicoHandler>>();
-            LogServicoObterPorStatus = Substitute.For<ILogServico<ObterOrdemServicoPorStatusHandler>>();
-            LogServicoAceitarOrcamento = Substitute.For<ILogServico<AceitarOrcamentoHandler>>();
-            LogServicoRecusarOrcamento = Substitute.For<ILogServico<RecusarOrcamentoHandler>>();
+            LogServicoCadastrar = Substitute.For<ILogServicoGateway<CadastrarOrdemServicoHandler>>();
+            LogServicoAtualizar = Substitute.For<ILogServicoGateway<AtualizarOrdemServicoHandler>>();
+            LogServicoObter = Substitute.For<ILogServicoGateway<ObterOrdemServicoHandler>>();
+            LogServicoObterTodos = Substitute.For<ILogServicoGateway<ObterTodosOrdensServicoHandler>>();
+            LogServicoObterPorStatus = Substitute.For<ILogServicoGateway<ObterOrdemServicoPorStatusHandler>>();
+            LogServicoAceitarOrcamento = Substitute.For<ILogServicoGateway<AceitarOrcamentoHandler>>();
+            LogServicoRecusarOrcamento = Substitute.For<ILogServicoGateway<RecusarOrcamentoHandler>>();
             
             // Inicializar outros serviços
-            UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalho>();
-            UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServico>();
+            UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
+            UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
             
             // Configuração padrão para o UDT
             UnidadeDeTrabalho.Commit().Returns(Task.FromResult(true));

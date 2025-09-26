@@ -33,14 +33,14 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         public IContatoGateway ContatoGateway { get; }
         
         // Serviços mockados
-        public ILogServico<CadastrarClienteHandler> LogServicoCadastrar { get; }
-        public ILogServico<AtualizarClienteHandler> LogServicoAtualizar { get; }
-        public ILogServico<ObterClienteHandler> LogServicoObter { get; }
-        public ILogServico<ObterTodosClientesHandler> LogServicoObterTodos { get; }
-        public ILogServico<ObterClientePorDocumentoHandler> LogServicoObterPorDocumento { get; }
-        public ILogServico<RemoverClienteHandler> LogServicoRemover { get; }
-        public IUnidadeDeTrabalho UnidadeDeTrabalho { get; }
-        public IUsuarioLogadoServico UsuarioLogadoServico { get; }
+        public ILogServicoGateway<CadastrarClienteHandler> LogServicoCadastrar { get; }
+        public ILogServicoGateway<AtualizarClienteHandler> LogServicoAtualizar { get; }
+        public ILogServicoGateway<ObterClienteHandler> LogServicoObter { get; }
+        public ILogServicoGateway<ObterTodosClientesHandler> LogServicoObterTodos { get; }
+        public ILogServicoGateway<ObterClientePorDocumentoHandler> LogServicoObterPorDocumento { get; }
+        public ILogServicoGateway<RemoverClienteHandler> LogServicoRemover { get; }
+        public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
+        public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
 
         public ClienteHandlerFixture()
         {
@@ -55,14 +55,14 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             ContatoGateway = new ContatoGateway(RepositorioContato);
             
             // Inicializar serviços mockados
-            LogServicoCadastrar = Substitute.For<ILogServico<CadastrarClienteHandler>>();
-            LogServicoAtualizar = Substitute.For<ILogServico<AtualizarClienteHandler>>();
-            LogServicoObter = Substitute.For<ILogServico<ObterClienteHandler>>();
-            LogServicoObterTodos = Substitute.For<ILogServico<ObterTodosClientesHandler>>();
-            LogServicoObterPorDocumento = Substitute.For<ILogServico<ObterClientePorDocumentoHandler>>();
-            LogServicoRemover = Substitute.For<ILogServico<RemoverClienteHandler>>();
-            UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalho>();
-            UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServico>();
+            LogServicoCadastrar = Substitute.For<ILogServicoGateway<CadastrarClienteHandler>>();
+            LogServicoAtualizar = Substitute.For<ILogServicoGateway<AtualizarClienteHandler>>();
+            LogServicoObter = Substitute.For<ILogServicoGateway<ObterClienteHandler>>();
+            LogServicoObterTodos = Substitute.For<ILogServicoGateway<ObterTodosClientesHandler>>();
+            LogServicoObterPorDocumento = Substitute.For<ILogServicoGateway<ObterClientePorDocumentoHandler>>();
+            LogServicoRemover = Substitute.For<ILogServicoGateway<RemoverClienteHandler>>();
+            UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
+            UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
             
             // Configuração padrão para o UDT
             UnidadeDeTrabalho.Commit().Returns(Task.FromResult(true));

@@ -1,8 +1,8 @@
 using Core.DTOs.UseCases.Autenticacao;
 using Core.Entidades;
 using Core.Enumeradores;
+using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Autenticacao;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Autenticacao.AutenticarUsuario;
@@ -16,9 +16,9 @@ public class AutenticacaoHandlerFixture : UseCasesFixtureBase
     public IClienteUseCases ClienteUseCases { get; }
     public IServicoSenha ServicoSenha { get; }
     public IServicoJwt ServicoJwt { get; }
-    public ILogServico<AutenticarUsuarioHandler> LogAutenticacao { get; }
-    public IUnidadeDeTrabalho UnidadeDeTrabalho { get; }
-    public IUsuarioLogadoServico UsuarioLogadoServico { get; }
+    public ILogServicoGateway<AutenticarUsuarioHandler> LogAutenticacao { get; }
+    public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
+    public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
 
     public AutenticacaoHandlerFixture()
     {
@@ -26,9 +26,9 @@ public class AutenticacaoHandlerFixture : UseCasesFixtureBase
         ClienteUseCases = Substitute.For<IClienteUseCases>();
         ServicoSenha = Substitute.For<IServicoSenha>();
         ServicoJwt = Substitute.For<IServicoJwt>();
-        LogAutenticacao = Substitute.For<ILogServico<AutenticarUsuarioHandler>>();
-        UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalho>();
-        UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServico>();
+        LogAutenticacao = Substitute.For<ILogServicoGateway<AutenticarUsuarioHandler>>();
+        UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
+        UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
     }
 
     public IAutenticarUsuarioHandler CriarAutenticarUsuarioHandler()

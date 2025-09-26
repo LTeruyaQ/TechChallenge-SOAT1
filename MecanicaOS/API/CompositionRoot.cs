@@ -1,6 +1,5 @@
 using Adapters.Controllers;
 using Adapters.Gateways;
-using Adapters.Gateways.Adaptadores;
 using Adapters.Presenters;
 using API.Jobs;
 using API.Notificacoes;

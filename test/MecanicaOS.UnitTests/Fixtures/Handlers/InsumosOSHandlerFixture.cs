@@ -37,10 +37,10 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         
         // Serviços
         public IVerificarEstoqueJobGateway VerificarEstoqueJobGateway { get; }
-        public ILogServico<CadastrarInsumosHandler> LogServicoCadastrar { get; }
-        public ILogServico<DevolverInsumosHandler> LogServicoDevolverInsumos { get; }
-        public IUnidadeDeTrabalho UnidadeDeTrabalho { get; }
-        public IUsuarioLogadoServico UsuarioLogadoServico { get; }
+        public ILogServicoGateway<CadastrarInsumosHandler> LogServicoCadastrar { get; }
+        public ILogServicoGateway<DevolverInsumosHandler> LogServicoDevolverInsumos { get; }
+        public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
+        public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
         
         // Repositórios (mockados)
         public IRepositorio<OrdemServicoEntityDto> RepositorioOrdemServico { get; }
@@ -56,10 +56,10 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         {
             // Inicializar serviços mockados
             VerificarEstoqueJobGateway = Substitute.For<IVerificarEstoqueJobGateway>();
-            LogServicoCadastrar = Substitute.For<ILogServico<CadastrarInsumosHandler>>();
-            LogServicoDevolverInsumos = Substitute.For<ILogServico<DevolverInsumosHandler>>();
-            UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalho>();
-            UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServico>();
+            LogServicoCadastrar = Substitute.For<ILogServicoGateway<CadastrarInsumosHandler>>();
+            LogServicoDevolverInsumos = Substitute.For<ILogServicoGateway<DevolverInsumosHandler>>();
+            UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
+            UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
             
             // Configurar UnidadeDeTrabalho para sucesso por padrão
             UnidadeDeTrabalho.Commit().Returns(Task.FromResult(true));
@@ -75,9 +75,9 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             InsumosGateway = new InsumosGateway(RepositorioInsumoOS);
             
             // Criar log services para handlers
-            var logServicoObterOS = Substitute.For<ILogServico<ObterOrdemServicoHandler>>();
-            var logServicoObterEstoque = Substitute.For<ILogServico<ObterEstoqueHandler>>();
-            var logServicoAtualizarEstoque = Substitute.For<ILogServico<AtualizarEstoqueHandler>>();
+            var logServicoObterOS = Substitute.For<ILogServicoGateway<ObterOrdemServicoHandler>>();
+            var logServicoObterEstoque = Substitute.For<ILogServicoGateway<ObterEstoqueHandler>>();
+            var logServicoAtualizarEstoque = Substitute.For<ILogServicoGateway<AtualizarEstoqueHandler>>();
             
             // Criar handlers reais
             ObterOrdemServicoHandler = new ObterOrdemServicoHandler(
