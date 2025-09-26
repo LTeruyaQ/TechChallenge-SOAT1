@@ -157,7 +157,7 @@ public class ServicoUseCasesIntegrationTests
         var servicoId = Guid.NewGuid();
 
         var servicoUseCases = _fixture.CriarServicoUseCases();
-        servicoUseCases.DeletarServicoUseCaseAsync(servicoId).Returns(Task.CompletedTask);
+        servicoUseCases.DeletarServicoUseCaseAsync(servicoId).Returns(Task.FromResult(true));
 
         // Act
         await servicoUseCases.DeletarServicoUseCaseAsync(servicoId);

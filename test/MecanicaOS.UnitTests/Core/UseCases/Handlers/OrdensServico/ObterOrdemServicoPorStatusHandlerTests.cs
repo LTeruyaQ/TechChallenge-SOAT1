@@ -35,7 +35,6 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             var handler = _fixture.CriarObterOrdemServicoPorStatusHandler();
 
-            // Act
             var resultado = await handler.Handle(status);
 
             // Assert
@@ -48,13 +47,12 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorStatus.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<StatusOrdemServico>());
-            _fixture.LogServicoObterPorStatus.Received(1).LogFim(Arg.Any<string>(), Arg.Any<OrdemServico>());
+            _fixture.LogServicoObterPorStatus.Received(1).LogFim(Arg.Any<string>(), Arg.Any<IEnumerable<OrdemServico>>());
         }
 
         [Fact]
         public async Task Handle_ComStatusSemOrdens_DeveRetornarListaVazia()
         {
-            // Arrange
             var status = StatusOrdemServico.Cancelada;
             var ordensServico = new List<OrdemServico>();
 
@@ -74,7 +72,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorStatus.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<StatusOrdemServico>());
-            _fixture.LogServicoObterPorStatus.Received(1).LogFim(Arg.Any<string>(), Arg.Any<OrdemServico>());
+            _fixture.LogServicoObterPorStatus.Received(1).LogFim(Arg.Any<string>(), Arg.Any<IEnumerable<OrdemServico>>());
         }
 
         [Fact]

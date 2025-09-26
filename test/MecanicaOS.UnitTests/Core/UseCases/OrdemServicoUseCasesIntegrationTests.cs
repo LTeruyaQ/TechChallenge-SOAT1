@@ -169,7 +169,7 @@ public class OrdemServicoUseCasesIntegrationTests
         var ordemServicoId = Guid.NewGuid();
 
         var ordemServicoUseCases = _fixture.CriarOrdemServicoUseCases();
-        ordemServicoUseCases.AceitarOrcamentoUseCaseAsync(ordemServicoId).Returns(Task.CompletedTask);
+        ordemServicoUseCases.AceitarOrcamentoUseCaseAsync(ordemServicoId).Returns(Task.FromResult(true));
 
         // Act
         await ordemServicoUseCases.AceitarOrcamentoUseCaseAsync(ordemServicoId);
@@ -202,7 +202,7 @@ public class OrdemServicoUseCasesIntegrationTests
 
         var ordemServicoUseCases = _fixture.CriarOrdemServicoUseCases();
         ordemServicoUseCases.AceitarOrcamentoUseCaseAsync(ordemServicoId)
-            .Returns(Task.FromException(new OrcamentoExpiradoException("Orçamento expirado")));
+            .Returns(Task.FromException<bool>(new OrcamentoExpiradoException("Orçamento expirado")));
 
         // Act & Assert
         await ordemServicoUseCases.Invoking(x => x.AceitarOrcamentoUseCaseAsync(ordemServicoId))

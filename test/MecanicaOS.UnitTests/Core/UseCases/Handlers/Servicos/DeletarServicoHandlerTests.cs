@@ -39,7 +39,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoDeletar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
-            _fixture.LogServicoDeletar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<Servico>());
+            _fixture.LogServicoDeletar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<bool>());
         }
 
         [Fact]

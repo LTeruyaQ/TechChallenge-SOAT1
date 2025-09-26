@@ -32,7 +32,6 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Should().NotBeNull();
             resultado.Nome.Should().Be(nome);
             resultado.Id.Should().Be(servico.Id);
             resultado.Descricao.Should().Be(servico.Descricao);
@@ -64,7 +63,6 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
             var resultado = await handler.Handle(nome);
 
             // Assert
-            resultado.Should().NotBeNull();
             resultado.Should().BeNull();
 
             // Verificar que o repositório foi chamado com a especificação correta
@@ -88,7 +86,6 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
             var resultado = await handler.Handle(nome);
 
             // Assert
-            resultado.Should().NotBeNull();
             resultado.Should().BeNull();
 
             // Para nomes inválidos, o handler não chama o repositório

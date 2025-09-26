@@ -40,7 +40,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
-            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<OrdemServico>());
+            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<IEnumerable<OrdemServico>>());
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<object>());
-            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<OrdemServico>());
+            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<IEnumerable<OrdemServico>>());
         }
 
         [Fact]
