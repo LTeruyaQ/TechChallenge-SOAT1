@@ -1,7 +1,5 @@
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.OrdensServico;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.ObterTodosOrdensServico
@@ -12,10 +10,10 @@ namespace Core.UseCases.OrdensServico.ObterTodosOrdensServico
 
         public ObterTodosOrdensServicoHandler(
             IOrdemServicoGateway ordemServicoGateway,
-            ILogServico<ObterTodosOrdensServicoHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            ILogServicoGateway<ObterTodosOrdensServicoHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
         }

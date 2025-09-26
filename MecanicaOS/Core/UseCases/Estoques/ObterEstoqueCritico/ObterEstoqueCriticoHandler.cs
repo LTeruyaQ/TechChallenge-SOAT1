@@ -1,7 +1,5 @@
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Estoques;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Estoques.ObterEstoqueCritico
@@ -12,10 +10,10 @@ namespace Core.UseCases.Estoques.ObterEstoqueCritico
 
         public ObterEstoqueCriticoHandler(
             IEstoqueGateway estoqueGateway,
-            ILogServico<ObterEstoqueCriticoHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            ILogServicoGateway<ObterEstoqueCriticoHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _estoqueGateway = estoqueGateway ?? throw new ArgumentNullException(nameof(estoqueGateway));
         }

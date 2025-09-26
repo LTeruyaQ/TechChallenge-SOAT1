@@ -1,8 +1,6 @@
 using Core.Enumeradores;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.OrdensServico;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus
@@ -13,10 +11,10 @@ namespace Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus
 
         public ObterOrdemServicoPorStatusHandler(
             IOrdemServicoGateway ordemServicoGateway,
-            ILogServico<ObterOrdemServicoPorStatusHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            ILogServicoGateway<ObterOrdemServicoPorStatusHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
         }

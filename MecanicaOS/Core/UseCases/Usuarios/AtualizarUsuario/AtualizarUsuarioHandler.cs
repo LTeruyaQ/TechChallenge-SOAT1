@@ -3,7 +3,6 @@ using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Usuarios;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
@@ -17,10 +16,10 @@ namespace Core.UseCases.Usuarios.AtualizarUsuario
         public AtualizarUsuarioHandler(
             IUsuarioGateway usuarioGateway,
             IServicoSenha servicoSenha,
-            ILogServico<AtualizarUsuarioHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            ILogServicoGateway<AtualizarUsuarioHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _usuarioGateway = usuarioGateway ?? throw new ArgumentNullException(nameof(usuarioGateway));
             _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));

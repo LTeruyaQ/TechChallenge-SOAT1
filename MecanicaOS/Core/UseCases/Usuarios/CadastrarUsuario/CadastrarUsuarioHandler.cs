@@ -4,7 +4,6 @@ using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Usuarios;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Abstrato;
@@ -20,11 +19,11 @@ namespace Core.UseCases.Usuarios.CadastrarUsuario
         public CadastrarUsuarioHandler(
             IUsuarioGateway usuarioGateway,
             IClienteUseCases clienteUseCases,
-            IServicoSenha servicoSenha,
-            ILogServico<CadastrarUsuarioHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            ILogServicoGateway<CadastrarUsuarioHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway,
+            IServicoSenha servicoSenha)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _usuarioGateway = usuarioGateway ?? throw new ArgumentNullException(nameof(usuarioGateway));
             _clienteUseCases = clienteUseCases ?? throw new ArgumentNullException(nameof(clienteUseCases));

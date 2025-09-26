@@ -1,7 +1,5 @@
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Veiculos;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Veiculos.ObterTodosVeiculos
@@ -12,10 +10,10 @@ namespace Core.UseCases.Veiculos.ObterTodosVeiculos
 
         public ObterTodosVeiculosHandler(
             IVeiculoGateway veiculoGateway,
-            ILogServico<ObterTodosVeiculosHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            ILogServicoGateway<ObterTodosVeiculosHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _veiculoGateway = veiculoGateway ?? throw new ArgumentNullException(nameof(veiculoGateway));
         }

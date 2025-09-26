@@ -1,35 +1,34 @@
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
+using Core.Interfaces.Gateways;
 
 namespace Core.UseCases.Abstrato
 {
     public abstract class UseCasesHandlerAbstrato<T> where T : class
     {
-        private readonly ILogServico<T> _logServico;
-        private readonly IUnidadeDeTrabalho _udt;
-        protected readonly IUsuarioLogadoServico _usuarioLogadoServico;
+        private readonly ILogServicoGateway<T> _logServicoGateway;
+        private readonly IUnidadeDeTrabalhoGateway _udtGateway;
+        protected readonly IUsuarioLogadoServicoGateway _usuarioLogadoServicoGateway;
 
-        protected UseCasesHandlerAbstrato(ILogServico<T> logServico, IUnidadeDeTrabalho udt, IUsuarioLogadoServico usuarioLogadoServico)
+        protected UseCasesHandlerAbstrato(ILogServicoGateway<T> logServicoGateway, IUnidadeDeTrabalhoGateway udtGateway, IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
         {
-            _logServico = logServico ?? throw new ArgumentNullException(nameof(logServico));
-            _udt = udt ?? throw new ArgumentNullException(nameof(udt));
-            _usuarioLogadoServico = usuarioLogadoServico ?? throw new ArgumentNullException(nameof(usuarioLogadoServico));
+            _logServicoGateway = logServicoGateway ?? throw new ArgumentNullException(nameof(logServicoGateway));
+            _udtGateway = udtGateway ?? throw new ArgumentNullException(nameof(udtGateway));
+            _usuarioLogadoServicoGateway = usuarioLogadoServicoGateway ?? throw new ArgumentNullException(nameof(usuarioLogadoServicoGateway));
         }
 
         protected async Task<bool> Commit()
         {
-            return await _udt.Commit();
+            return await _udtGateway.Commit();
         }
 
         #region Logs
         protected void LogInicio(string metodo, object? props = null)
-           => _logServico.LogInicio(metodo, props);
+           => _logServicoGateway.LogInicio(metodo, props);
 
         protected void LogFim(string metodo, object? retorno = null)
-            => _logServico.LogFim(metodo, retorno);
+            => _logServicoGateway.LogFim(metodo, retorno);
 
         protected void LogErro(string metodo, Exception ex)
-            => _logServico.LogErro(metodo, ex);
+            => _logServicoGateway.LogErro(metodo, ex);
         #endregion
     }
 }

@@ -4,8 +4,6 @@ using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.OrdensServico;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Abstrato;
 
@@ -21,10 +19,10 @@ namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
             IOrdemServicoGateway ordemServicoGateway,
             IClienteUseCases clienteUseCases,
             IServicoUseCases servicoUseCases,
-            ILogServico<CadastrarOrdemServicoHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            ILogServicoGateway<CadastrarOrdemServicoHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
             _clienteUseCases = clienteUseCases ?? throw new ArgumentNullException(nameof(clienteUseCases));

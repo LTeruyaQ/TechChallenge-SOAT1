@@ -3,8 +3,6 @@ using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.OrdensServico;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.RecusarOrcamento
@@ -17,10 +15,10 @@ namespace Core.UseCases.OrdensServico.RecusarOrcamento
         public RecusarOrcamentoHandler(
             IOrdemServicoGateway ordemServicoGateway,
             IEventosGateway eventosGateway,
-            ILogServico<RecusarOrcamentoHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            ILogServicoGateway<RecusarOrcamentoHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
             _eventosGateway = eventosGateway ?? throw new ArgumentNullException(nameof(eventosGateway));

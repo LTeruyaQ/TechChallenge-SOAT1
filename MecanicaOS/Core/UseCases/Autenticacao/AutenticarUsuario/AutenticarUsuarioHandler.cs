@@ -2,8 +2,8 @@ using Core.DTOs.UseCases.Autenticacao;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
+using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Autenticacao;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Abstrato;
@@ -21,11 +21,11 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
             IUsuarioUseCases usuarioUseCases,
             IServicoSenha servicoSenha,
             IServicoJwt servicoJwt,
-            ILogServico<AutenticarUsuarioHandler> logServico,
+            ILogServicoGateway<AutenticarUsuarioHandler> logServicoGateway,
             IClienteUseCases clienteUseCases,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _usuarioUseCases = usuarioUseCases ?? throw new ArgumentNullException(nameof(usuarioUseCases));
             _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));

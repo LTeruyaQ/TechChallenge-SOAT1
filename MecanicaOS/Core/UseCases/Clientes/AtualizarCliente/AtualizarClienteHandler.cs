@@ -3,8 +3,6 @@ using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Clientes;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Clientes.AtualizarCliente
@@ -19,10 +17,10 @@ namespace Core.UseCases.Clientes.AtualizarCliente
             IClienteGateway clienteGateway,
             IEnderecoGateway enderecoGateway,
             IContatoGateway contatoGateway,
-            ILogServico<AtualizarClienteHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            ILogServicoGateway<AtualizarClienteHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _clienteGateway = clienteGateway ?? throw new ArgumentNullException(nameof(clienteGateway));
             _contatoGateway = contatoGateway ?? throw new ArgumentNullException(nameof(contatoGateway));

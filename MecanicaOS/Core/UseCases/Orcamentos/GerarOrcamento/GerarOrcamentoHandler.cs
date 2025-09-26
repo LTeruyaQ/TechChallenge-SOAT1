@@ -1,19 +1,18 @@
+using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Orcamentos;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 
 namespace Core.UseCases.Orcamentos.GerarOrcamento
 {
     public class GerarOrcamentoHandler : IGerarOrcamentoHandler
     {
-        private readonly ILogServico<GerarOrcamentoHandler> _logServico;
+        private readonly ILogServicoGateway<GerarOrcamentoHandler> _logServicoGateway;
 
         public GerarOrcamentoHandler(
-            ILogServico<GerarOrcamentoHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
+            ILogServicoGateway<GerarOrcamentoHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
         {
-            _logServico = logServico ?? throw new ArgumentNullException(nameof(logServico));
+            _logServicoGateway = logServicoGateway ?? throw new ArgumentNullException(nameof(logServicoGateway));
         }
 
         public GerarOrcamentoResponse Handle(GerarOrcamentoUseCase useCase)

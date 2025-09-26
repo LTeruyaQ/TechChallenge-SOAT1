@@ -1,8 +1,6 @@
 using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Usuarios;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.ObterUsuario
@@ -13,10 +11,10 @@ namespace Core.UseCases.Usuarios.ObterUsuario
 
         public ObterUsuarioHandler(
             IUsuarioGateway usuarioGateway,
-            ILogServico<ObterUsuarioHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            ILogServicoGateway<ObterUsuarioHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _usuarioGateway = usuarioGateway ?? throw new ArgumentNullException(nameof(usuarioGateway));
         }

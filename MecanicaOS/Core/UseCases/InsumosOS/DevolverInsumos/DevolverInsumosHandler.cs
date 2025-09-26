@@ -1,10 +1,9 @@
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.DTOs.UseCases.Estoque;
 using Core.Exceptions;
+using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.Handlers.InsumosOS;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.InsumosOS.DevolverInsumos
@@ -17,10 +16,10 @@ namespace Core.UseCases.InsumosOS.DevolverInsumos
         public DevolverInsumosHandler(
             IObterEstoqueHandler obterEstoqueHandler,
             IAtualizarEstoqueHandler atualizarEstoqueHandler,
-            ILogServico<DevolverInsumosHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico)
-            : base(logServico, udt, usuarioLogadoServico)
+            ILogServicoGateway<DevolverInsumosHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _obterEstoqueHandler = obterEstoqueHandler ?? throw new ArgumentNullException(nameof(obterEstoqueHandler));
             _atualizarEstoqueHandler = atualizarEstoqueHandler ?? throw new ArgumentNullException(nameof(atualizarEstoqueHandler));
@@ -38,7 +37,7 @@ namespace Core.UseCases.InsumosOS.DevolverInsumos
                 {
                     var estoqueResponse = await _obterEstoqueHandler.Handle(insumoOS.EstoqueId);
                     var estoque = estoqueResponse.Estoque
-                        ?? throw new DadosNaoEncontradosException($"Estoque com ID {insumoOS.EstoqueId} n„o encontrado");
+                        ?? throw new DadosNaoEncontradosException($"Estoque com ID {insumoOS.EstoqueId} n√£o encontrado");
 
                     estoque.QuantidadeDisponivel += insumoOS.Quantidade;
 

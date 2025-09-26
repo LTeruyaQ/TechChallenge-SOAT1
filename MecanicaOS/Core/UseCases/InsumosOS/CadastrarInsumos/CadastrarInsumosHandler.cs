@@ -4,8 +4,6 @@ using Core.Entidades;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.InsumosOS;
-using Core.Interfaces.Repositorios;
-using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Abstrato;
 
@@ -19,11 +17,11 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
         public CadastrarInsumosHandler(
             IOrdemServicoUseCases ordemServicoUseCases,
             IEstoqueUseCases estoqueUseCases,
-            ILogServico<CadastrarInsumosHandler> logServico,
-            IUnidadeDeTrabalho udt,
-            IUsuarioLogadoServico usuarioLogadoServico,
+            ILogServicoGateway<CadastrarInsumosHandler> logServicoGateway,
+            IUnidadeDeTrabalhoGateway udtGateway,
+            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway,
             IVerificarEstoqueJobGateway verificarEstoqueJobGateway)
-            : base(logServico, udt, usuarioLogadoServico)
+            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _ordemServicoUseCases = ordemServicoUseCases ?? throw new ArgumentNullException(nameof(ordemServicoUseCases));
             _estoqueUseCases = estoqueUseCases ?? throw new ArgumentNullException(nameof(estoqueUseCases));
