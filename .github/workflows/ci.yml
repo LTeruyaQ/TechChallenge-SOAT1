@@ -75,4 +75,5 @@ jobs:
           body: "Este Pull Request foi gerado automaticamente pela nossa pipeline de CI. Por favor, revise as alterações."
           branch: ${{ github.ref_name }}
           base: main
+          draft: true
 # Fim do workflow de CI
