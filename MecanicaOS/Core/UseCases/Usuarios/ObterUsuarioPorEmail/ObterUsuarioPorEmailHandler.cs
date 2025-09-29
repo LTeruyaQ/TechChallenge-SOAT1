@@ -29,9 +29,6 @@ namespace Core.UseCases.Usuarios.ObterUsuarioPorEmail
 
                 var usuario = await _usuarioGateway.ObterPorEmailAsync(email);
 
-                if (usuario is not null)
-                    IsNotGetSenha(usuario);
-
                 LogFim(metodo, usuario);
 
                 return usuario;
@@ -41,11 +38,6 @@ namespace Core.UseCases.Usuarios.ObterUsuarioPorEmail
                 LogErro(metodo, e);
                 throw;
             }
-        }
-
-        private static void IsNotGetSenha(Usuario usuario)
-        {
-            usuario.Senha = string.Empty;
         }
     }
 }
