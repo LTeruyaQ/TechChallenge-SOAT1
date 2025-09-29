@@ -2,7 +2,6 @@ using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Autenticacao;
-using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Autenticacao.AutenticarUsuario;
 using MecanicaOS.UnitTests.Fixtures.UseCases;
@@ -13,8 +12,7 @@ public class AutenticacaoHandlerFixture : UseCasesFixtureBase
 {
     public IUsuarioUseCases UsuarioUseCases { get; }
     public IClienteUseCases ClienteUseCases { get; }
-    public IServicoSenha ServicoSenha { get; }
-    public IServicoJwt ServicoJwt { get; }
+    public ISegurancaGateway SegurancaGateway { get; }
     public ILogGateway<AutenticarUsuarioHandler> LogAutenticacao { get; }
     public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
     public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
@@ -23,8 +21,7 @@ public class AutenticacaoHandlerFixture : UseCasesFixtureBase
     {
         UsuarioUseCases = Substitute.For<IUsuarioUseCases>();
         ClienteUseCases = Substitute.For<IClienteUseCases>();
-        ServicoSenha = Substitute.For<IServicoSenha>();
-        ServicoJwt = Substitute.For<IServicoJwt>();
+        SegurancaGateway = Substitute.For<ISegurancaGateway>();
         LogAutenticacao = Substitute.For<ILogGateway<AutenticarUsuarioHandler>>();
         UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
         UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
@@ -34,8 +31,7 @@ public class AutenticacaoHandlerFixture : UseCasesFixtureBase
     {
         return new AutenticarUsuarioHandler(
             UsuarioUseCases,
-            ServicoSenha,
-            ServicoJwt,
+            SegurancaGateway,
             LogAutenticacao,
             ClienteUseCases,
             UnidadeDeTrabalho,
@@ -53,19 +49,19 @@ public class AutenticacaoHandlerFixture : UseCasesFixtureBase
         UsuarioUseCases.ObterPorEmailUseCaseAsync(Arg.Any<string>()).Returns((Usuario?)null);
     }
 
-    public void ConfigurarMockServicoSenhaParaSenhaValida()
+    public void ConfigurarMockSegurancaGatewayParaSenhaValida()
     {
-        ServicoSenha.VerificarSenha(Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+        SegurancaGateway.VerificarSenha(Arg.Any<string>(), Arg.Any<string>()).Returns(true);
     }
 
-    public void ConfigurarMockServicoSenhaParaSenhaInvalida()
+    public void ConfigurarMockSegurancaGatewayParaSenhaInvalida()
     {
-        ServicoSenha.VerificarSenha(Arg.Any<string>(), Arg.Any<string>()).Returns(false);
+        SegurancaGateway.VerificarSenha(Arg.Any<string>(), Arg.Any<string>()).Returns(false);
     }
 
-    public void ConfigurarMockServicoJwt(string token = "token_jwt_valido")
+    public void ConfigurarMockSegurancaGatewayParaGerarToken(string token = "token_jwt_valido")
     {
-        ServicoJwt.GerarToken(Arg.Any<Guid>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IEnumerable<string>>()).Returns(token);
+        SegurancaGateway.GerarToken(Arg.Any<Guid>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Guid?>(), Arg.Any<IEnumerable<string>>()).Returns(token);
     }
 
     public void ConfigurarMockClienteUseCasesParaClienteValido(Guid clienteId, string nomeCliente = "Cliente Teste")

@@ -23,8 +23,8 @@ public class AutenticarUsuarioHandlerTests
         var usuario = AutenticacaoUseCasesFixture.CriarUsuarioAtivoValido();
 
         _fixture.ConfigurarMockUsuarioUseCasesParaAutenticacaoValida(usuario);
-        _fixture.ConfigurarMockServicoSenhaParaSenhaValida();
-        _fixture.ConfigurarMockServicoJwt("token_jwt_valido");
+        _fixture.ConfigurarMockSegurancaGatewayParaSenhaValida();
+        _fixture.ConfigurarMockSegurancaGatewayParaGerarToken("token_jwt_valido");
 
         var handler = _fixture.CriarAutenticarUsuarioHandler();
 
@@ -41,12 +41,12 @@ public class AutenticarUsuarioHandlerTests
 
         // Verificar que os serviços foram chamados
         await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
-        _fixture.ServicoSenha.Received(1).VerificarSenha(request.Senha, usuario.Senha);
-        _fixture.ServicoJwt.Received(1).GerarToken(
+        _fixture.SegurancaGateway.Received(1).VerificarSenha(request.Senha, usuario.Senha);
+        _fixture.SegurancaGateway.Received(1).GerarToken(
             usuario.Id,
             usuario.Email,
             usuario.TipoUsuario.ToString(),
-            Arg.Any<string>(),
+            Arg.Any<Guid?>(),
             Arg.Is<IEnumerable<string>>(p => p.Contains("administrador")));
 
         // Verificar que os logs foram registrados
@@ -72,12 +72,12 @@ public class AutenticarUsuarioHandlerTests
 
         // Verificar que os serviços foram chamados
         await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
-        _fixture.ServicoSenha.DidNotReceive().VerificarSenha(Arg.Any<string>(), Arg.Any<string>());
-        _fixture.ServicoJwt.DidNotReceive().GerarToken(
+        _fixture.SegurancaGateway.DidNotReceive().VerificarSenha(Arg.Any<string>(), Arg.Any<string>());
+        _fixture.SegurancaGateway.DidNotReceive().GerarToken(
             Arg.Any<Guid>(),
             Arg.Any<string>(),
             Arg.Any<string>(),
-            Arg.Any<string>(),
+            Arg.Any<Guid?>(),
             Arg.Any<IEnumerable<string>>());
 
         // Verificar que os logs foram registrados
@@ -93,7 +93,7 @@ public class AutenticarUsuarioHandlerTests
         var usuario = AutenticacaoUseCasesFixture.CriarUsuarioAtivoValido();
 
         _fixture.ConfigurarMockUsuarioUseCasesParaAutenticacaoValida(usuario);
-        _fixture.ConfigurarMockServicoSenhaParaSenhaInvalida();
+        _fixture.ConfigurarMockSegurancaGatewayParaSenhaInvalida();
 
         var handler = _fixture.CriarAutenticarUsuarioHandler();
 
@@ -105,12 +105,12 @@ public class AutenticarUsuarioHandlerTests
 
         // Verificar que os serviços foram chamados
         await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
-        _fixture.ServicoSenha.Received(1).VerificarSenha(request.Senha, usuario.Senha);
-        _fixture.ServicoJwt.DidNotReceive().GerarToken(
+        _fixture.SegurancaGateway.Received(1).VerificarSenha(request.Senha, usuario.Senha);
+        _fixture.SegurancaGateway.DidNotReceive().GerarToken(
             Arg.Any<Guid>(),
             Arg.Any<string>(),
             Arg.Any<string>(),
-            Arg.Any<string>(),
+            Arg.Any<Guid?>(),
             Arg.Any<IEnumerable<string>>());
 
         // Verificar que os logs foram registrados
@@ -136,8 +136,8 @@ public class AutenticarUsuarioHandlerTests
         }
 
         _fixture.ConfigurarMockUsuarioUseCasesParaAutenticacaoValida(usuario);
-        _fixture.ConfigurarMockServicoSenhaParaSenhaValida();
-        _fixture.ConfigurarMockServicoJwt("token_jwt_valido");
+        _fixture.ConfigurarMockSegurancaGatewayParaSenhaValida();
+        _fixture.ConfigurarMockSegurancaGatewayParaGerarToken("token_jwt_valido");
 
         var handler = _fixture.CriarAutenticarUsuarioHandler();
 
@@ -151,12 +151,12 @@ public class AutenticarUsuarioHandlerTests
 
         // Verificar que os serviços foram chamados
         await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
-        _fixture.ServicoSenha.Received(1).VerificarSenha(request.Senha, usuario.Senha);
-        _fixture.ServicoJwt.Received(1).GerarToken(
+        _fixture.SegurancaGateway.Received(1).VerificarSenha(request.Senha, usuario.Senha);
+        _fixture.SegurancaGateway.Received(1).GerarToken(
             usuario.Id,
             usuario.Email,
             usuario.TipoUsuario.ToString(),
-            Arg.Any<string>(),
+            Arg.Any<Guid?>(),
             Arg.Is<IEnumerable<string>>(p => p.Contains(permissaoEsperada)));
 
         // Verificar que os logs foram registrados

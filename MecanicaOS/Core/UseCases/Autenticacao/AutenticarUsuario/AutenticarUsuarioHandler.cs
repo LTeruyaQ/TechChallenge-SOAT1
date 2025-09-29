@@ -4,7 +4,6 @@ using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Autenticacao;
-using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
 using Core.UseCases.Abstrato;
 
@@ -14,13 +13,11 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
     {
         private readonly IUsuarioUseCases _usuarioUseCases;
         private readonly IClienteUseCases _clienteUseCases;
-        private readonly IServicoSenha _servicoSenha;
-        private readonly IServicoJwt _servicoJwt;
+        private readonly ISegurancaGateway _segurancaGateway;
 
         public AutenticarUsuarioHandler(
             IUsuarioUseCases usuarioUseCases,
-            IServicoSenha servicoSenha,
-            IServicoJwt servicoJwt,
+            ISegurancaGateway segurancaGateway,
             ILogGateway<AutenticarUsuarioHandler> logServicoGateway,
             IClienteUseCases clienteUseCases,
             IUnidadeDeTrabalhoGateway udtGateway,
@@ -28,8 +25,7 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _usuarioUseCases = usuarioUseCases ?? throw new ArgumentNullException(nameof(usuarioUseCases));
-            _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
-            _servicoJwt = servicoJwt ?? throw new ArgumentNullException(nameof(servicoJwt));
+            _segurancaGateway = segurancaGateway ?? throw new ArgumentNullException(nameof(segurancaGateway));
             _clienteUseCases = clienteUseCases ?? throw new ArgumentNullException(nameof(clienteUseCases));
         }
 
@@ -49,11 +45,11 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
                 if (usuario is null)
                     throw new DadosInvalidosException("Usuário ou senha inválidos");
 
-                if (!_servicoSenha.VerificarSenha(request.Senha, usuario.Senha))
+                if (!_segurancaGateway.VerificarSenha(request.Senha, usuario.Senha))
                     throw new DadosInvalidosException("Usuário ou senha inválidos");
 
                 var permissoes = ObterPermissoesDoUsuario(usuario);
-                var token = _servicoJwt.GerarToken(usuario.Id, usuario.Email, usuario.TipoUsuario.ToString(), null, permissoes);
+                var token = _segurancaGateway.GerarToken(usuario.Id, usuario.Email, usuario.TipoUsuario.ToString(), null, permissoes);
 
                 var autenticacaoDto = new AutenticacaoDto
                 {

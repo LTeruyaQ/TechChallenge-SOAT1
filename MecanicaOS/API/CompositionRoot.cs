@@ -766,20 +766,25 @@ namespace API
 
         #region Criação de Handlers Individuais - Autenticação
 
+        public ISegurancaGateway CriarSegurancaGateway()
+        {
+            var servicoSenha = new ServicoSenha();
+            var servicoJwt = CriarServicoJwt();
+            return new SegurancaGateway(servicoSenha, servicoJwt);
+        }
+
         public IAutenticarUsuarioHandler CriarAutenticarUsuarioHandler()
         {
             var usuarioUseCases = CriarUsuarioUseCases();
             var clienteUseCases = CriarClienteUseCases();
-            var servicoSenha = new ServicoSenha();
-            var servicoJwt = CriarServicoJwt();
+            var segurancaGateway = CriarSegurancaGateway();
             var logServicoGateway = CriarLogServicoGateway<AutenticarUsuarioHandler>();
             var udtGateway = CriarUnidadeDeTrabalhoGateway();
             var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
 
             return new AutenticarUsuarioHandler(
                 usuarioUseCases,
-                servicoSenha,
-                servicoJwt,
+                segurancaGateway,
                 logServicoGateway,
                 clienteUseCases,
                 udtGateway,
