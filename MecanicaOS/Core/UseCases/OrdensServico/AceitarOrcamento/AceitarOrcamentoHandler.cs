@@ -31,7 +31,7 @@ namespace Core.UseCases.OrdensServico.AceitarOrcamento
                 var ordemServico = await _ordemServicoGateway.ObterPorIdAsync(id)
                     ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
 
-                if (ordemServico.Status != StatusOrdemServico.AguardandoAprovação)
+                if (ordemServico.Status != StatusOrdemServico.AguardandoAprovacao)
                     throw new DadosInvalidosException("Ordem de serviço não está aguardando aprovação do orçamento");
 
                 if (ordemServico.DataEnvioOrcamento.HasValue &&

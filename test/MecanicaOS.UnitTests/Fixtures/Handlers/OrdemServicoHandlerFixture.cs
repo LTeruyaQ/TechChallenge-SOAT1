@@ -189,7 +189,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         public void ConfigurarMockRepositorioOrdemServicoParaLancarExcecaoAoEditar(Guid id, Exception excecao)
         {
             // Configura o mock para obter a ordem de serviço
-            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovacao);
             ordemServico.Id = id;
             ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1);
 
@@ -246,7 +246,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 DataCadastro = DateTime.UtcNow.AddDays(-5),
                 DataAtualizacao = DateTime.UtcNow.AddDays(-3),
                 InsumosOS = new List<InsumoOS>(),
-                DataEnvioOrcamento = status == StatusOrdemServico.AguardandoAprovação ?
+                DataEnvioOrcamento = status == StatusOrdemServico.AguardandoAprovacao ?
                     DateTime.UtcNow.AddDays(-2) : null
             };
         }

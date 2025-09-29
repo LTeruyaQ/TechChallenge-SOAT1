@@ -25,7 +25,7 @@ public class OrdemServicoEspecificacaoTests
         os3.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-10);
 
         var os4 = OrdemServicoFixture.CriarOrdemServicoEntityDtoValido();
-        os4.Status = StatusOrdemServico.AguardandoAprovação;
+        os4.Status = StatusOrdemServico.AguardandoAprovacao;
         os4.Id = Guid.NewGuid();
         os4.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-2); // Not expired
 
@@ -58,7 +58,7 @@ public class OrdemServicoEspecificacaoTests
     [InlineData(StatusOrdemServico.Recebida)]
     [InlineData(StatusOrdemServico.EmExecucao)]
     [InlineData(StatusOrdemServico.Finalizada)]
-    [InlineData(StatusOrdemServico.AguardandoAprovação)]
+    [InlineData(StatusOrdemServico.AguardandoAprovacao)]
     [InlineData(StatusOrdemServico.Cancelada)]
     public void ObterOrdemServicoPorStatusEspecificacao_ComDiferentesStatus_DeveFiltrarCorretamente(StatusOrdemServico status)
     {
@@ -143,10 +143,10 @@ public class OrdemServicoEspecificacaoTests
             OrdemServicoFixture.CriarOrdemServicoEntityDtoValido()
         };
 
-        ordensServico[0].Status = StatusOrdemServico.AguardandoAprovação;
+        ordensServico[0].Status = StatusOrdemServico.AguardandoAprovacao;
         ordensServico[0].DataEnvioOrcamento = DateTime.UtcNow.AddDays(-5); // Expirado (mais de 3 dias)
 
-        ordensServico[1].Status = StatusOrdemServico.AguardandoAprovação;
+        ordensServico[1].Status = StatusOrdemServico.AguardandoAprovacao;
         ordensServico[1].DataEnvioOrcamento = DateTime.UtcNow.AddDays(-2); // Não expirado (menos de 3 dias)
 
         // Act
@@ -154,7 +154,7 @@ public class OrdemServicoEspecificacaoTests
 
         // Assert
         resultado.Should().HaveCount(1, "deve retornar apenas orçamentos expirados");
-        resultado.Should().OnlyContain(os => os.Status == StatusOrdemServico.AguardandoAprovação,
+        resultado.Should().OnlyContain(os => os.Status == StatusOrdemServico.AguardandoAprovacao,
             "deve conter apenas ordens com status AguardandoAprovação");
     }
 
@@ -169,7 +169,7 @@ public class OrdemServicoEspecificacaoTests
             OrdemServicoFixture.CriarOrdemServicoEntityDtoValido()
         };
 
-        ordensServico[0].Status = StatusOrdemServico.AguardandoAprovação;
+        ordensServico[0].Status = StatusOrdemServico.AguardandoAprovacao;
         ordensServico[0].DataEnvioOrcamento = DateTime.UtcNow.AddDays(-2); // Não expirado (menos de 3 dias)
 
         // Act
@@ -191,10 +191,10 @@ public class OrdemServicoEspecificacaoTests
             OrdemServicoFixture.CriarOrdemServicoEntityDtoValido()
         };
 
-        ordensServico[0].Status = StatusOrdemServico.AguardandoAprovação;
+        ordensServico[0].Status = StatusOrdemServico.AguardandoAprovacao;
         ordensServico[0].DataEnvioOrcamento = DateTime.UtcNow.AddDays(-4); // Expirado (mais de 3 dias)
 
-        ordensServico[1].Status = StatusOrdemServico.AguardandoAprovação;
+        ordensServico[1].Status = StatusOrdemServico.AguardandoAprovacao;
         ordensServico[1].DataEnvioOrcamento = DateTime.UtcNow.AddDays(-2); // Não expirado (menos de 3 dias)
 
         // Act

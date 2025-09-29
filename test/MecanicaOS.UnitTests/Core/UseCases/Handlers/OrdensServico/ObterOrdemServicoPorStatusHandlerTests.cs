@@ -20,7 +20,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
         [InlineData(StatusOrdemServico.EmDiagnostico)]
         [InlineData(StatusOrdemServico.EmExecucao)]
         [InlineData(StatusOrdemServico.Finalizada)]
-        [InlineData(StatusOrdemServico.AguardandoAprovação)]
+        [InlineData(StatusOrdemServico.AguardandoAprovacao)]
         [InlineData(StatusOrdemServico.Cancelada)]
         public async Task Handle_ComStatusValido_DeveRetornarOrdensComStatus(StatusOrdemServico status)
         {

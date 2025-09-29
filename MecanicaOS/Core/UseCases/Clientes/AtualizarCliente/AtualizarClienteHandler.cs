@@ -92,9 +92,9 @@ namespace Core.UseCases.Clientes.AtualizarCliente
 
             if (await _contatoGateway.ObterPorIdAsync(contatoCliente.ContatoId) is Contato contato)
             {
-                contato.Telefone = contatoCliente.Telefone;
-                contato.IdCliente = contatoCliente.Id.Value;
-                contato.Email = contatoCliente.Email;
+                contato.Telefone = contatoCliente.Telefone ?? string.Empty;
+                contato.IdCliente = contatoCliente.Id ?? Guid.Empty;
+                contato.Email = contatoCliente.Email ?? string.Empty;
                 contato.MarcarComoAtualizada();
 
                 await _contatoGateway.EditarAsync(contato);

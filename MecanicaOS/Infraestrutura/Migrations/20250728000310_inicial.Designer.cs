@@ -13,7 +13,7 @@ namespace Infraestrutura.Migrations
 {
     [DbContext(typeof(MecanicaContexto))]
     [Migration("20250728000310_inicial")]
-    partial class inicial
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

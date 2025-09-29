@@ -19,7 +19,6 @@ namespace Core.UseCases.OrdensServico
         private readonly IObterOrdemServicoPorStatusHandler _obterOrdemServicoPorStatusHandler;
         private readonly IAceitarOrcamentoHandler _aceitarOrcamentoHandler;
         private readonly IRecusarOrcamentoHandler _recusarOrcamentoHandler;
-        private readonly ICalcularOrcamentoHandler _calcularOrcamentoHandler;
 
         public OrdemServicoUseCasesFacade(
             ICadastrarOrdemServicoHandler cadastrarOrdemServicoHandler,

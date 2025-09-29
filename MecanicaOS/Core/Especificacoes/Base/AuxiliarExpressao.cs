@@ -24,13 +24,29 @@ namespace Core.Especificacoes.Base
                     if (expressaoMembro != null)
                     {
                         VisitarExpressaoMembro(expressaoMembro, pilha);
-                        VisitarExpressaoMembro(lambda.Body as MemberExpression, pilha);
+                        var lambdaBodyMembro = lambda.Body as MemberExpression;
+                        if (lambdaBodyMembro != null)
+                        {
+                            VisitarExpressaoMembro(lambdaBodyMembro, pilha);
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Expressão lambda.Body não é MemberExpression: {lambda.Body.GetType().Name}");
+                        }
                     }
                 }
             }
             else if (unario != null && unario.NodeType == ExpressionType.Convert)
             {
-                VisitarExpressaoMembro(unario.Operand as MemberExpression, pilha);
+                var unarioOperandMembro = unario.Operand as MemberExpression;
+                if (unarioOperandMembro != null)
+                {
+                    VisitarExpressaoMembro(unarioOperandMembro, pilha);
+                }
+                else
+                {
+                    throw new ArgumentException($"Expressão unario.Operand não é MemberExpression: {unario.Operand.GetType().Name}");
+                }
             }
             else
             {

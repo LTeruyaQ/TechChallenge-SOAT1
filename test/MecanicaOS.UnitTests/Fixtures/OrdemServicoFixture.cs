@@ -118,7 +118,7 @@ public static class OrdemServicoFixture
             ServicoId = servicoDto.Id,
             Servico = servicoDto,
             Descricao = "Manutenção preventiva completa",
-            Status = StatusOrdemServico.AguardandoAprovação,
+            Status = StatusOrdemServico.AguardandoAprovacao,
             Orcamento = 450.00m,
             DataEnvioOrcamento = DateTime.Now.AddDays(-3),
             InsumosOS = new List<InsumoOSEntityDto>(),

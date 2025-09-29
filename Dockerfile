@@ -1,45 +1,33 @@
-# Estágio de restauração e build
+# Etapa 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copia apenas arquivos de projeto para restaurar dependências
+# Copia os arquivos de projeto e restaura dependências
 COPY ["MecanicaOS/API/API.csproj", "MecanicaOS/API/"]
-COPY ["MecanicaOS/Infraestrutura/Infraestrutura.csproj", "MecanicaOS/Infraestrutura/"]
 COPY ["MecanicaOS/Adapters/Adapters.csproj", "MecanicaOS/Adapters/"]
-COPY ["MecanicaOS/Aplicacao/Aplicacao.csproj", "MecanicaOS/Aplicacao/"]
-
-# Restaura dependências
-RUN dotnet new sln -n MecanicaOS \
-    && dotnet sln MecanicaOS.sln add MecanicaOS/API/API.csproj \
-    && dotnet sln MecanicaOS.sln add MecanicaOS/Infraestrutura/Infraestrutura.csproj \
-    && dotnet sln MecanicaOS.sln add MecanicaOS/Adapters/Adapters.csproj \
-    && dotnet sln MecanicaOS.sln add MecanicaOS/Aplicacao/Aplicacao.csproj \
-    && dotnet restore "MecanicaOS.sln" --ignore-failed-sources
+COPY ["MecanicaOS/Infraestrutura/Infraestrutura.csproj", "MecanicaOS/Infraestrutura/"]
+RUN dotnet restore "MecanicaOS/API/API.csproj"
 
 # Copia todo o código-fonte
 COPY . .
 
-# Publica a aplicação
-WORKDIR /src/MecanicaOS/API
-RUN dotnet publish "API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR "/src/MecanicaOS/API"
+RUN dotnet publish "API.csproj" -c Release -o /app/publish
 
-# Estágio final: imagem enxuta para produção
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+# Etapa 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 
-# Instala dependências do sistema
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgdiplus libc6-dev libx11-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copia arquivos publicados
+# Copia os arquivos publicados
 COPY --from=build /app/publish .
 
-# Expondo porta padrão
+# Garante que os templates de e-mail estejam presentes
+COPY --from=build /src/MecanicaOS/API/Templates ./Templates
+
+# Expondo a porta padrão do Kestrel
 EXPOSE 80
 
-# Variáveis de ambiente configuráveis
-ENV ASPNETCORE_ENVIRONMENT=Production
+# Variável de ambiente para ASP.NET Core
 ENV ASPNETCORE_URLS=http://+:80
 
 ENTRYPOINT ["dotnet", "API.dll"]

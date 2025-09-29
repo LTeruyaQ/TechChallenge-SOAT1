@@ -43,7 +43,7 @@ public class UsuarioLogadoServico : IUsuarioLogadoServico
     }
 
     public string? Email => Usuario?.FindFirst(ClaimTypes.Email)?.Value;
-    public string? Nome => Usuario?.FindFirst(ClaimTypes.Name)?.Value;
+    public string Nome => Usuario?.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
 
     public TipoUsuario? TipoUsuario
     {

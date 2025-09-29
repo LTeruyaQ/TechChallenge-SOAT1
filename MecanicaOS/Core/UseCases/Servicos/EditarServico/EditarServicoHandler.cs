@@ -44,8 +44,15 @@ namespace Core.UseCases.Servicos.EditarServico
 
                 servico.Nome = request.Nome;
                 servico.Descricao = request.Descricao;
+
+                if (!request.Valor.HasValue)
+                    throw new DadosInvalidosException("Valor é obrigatório");
                 servico.Valor = request.Valor.Value;
+
+                if (!request.Disponivel.HasValue)
+                    throw new DadosInvalidosException("Disponível é obrigatório");
                 servico.Disponivel = request.Disponivel.Value;
+
                 servico.DataAtualizacao = DateTime.UtcNow;
 
                 await _servicoGateway.EditarAsync(servico);

@@ -4,7 +4,7 @@ public enum StatusOrdemServico
 {
     Recebida,
     EmDiagnostico,
-    AguardandoAprovação,
+    AguardandoAprovacao,
     EmExecucao,
     Finalizada,
     Entregue,

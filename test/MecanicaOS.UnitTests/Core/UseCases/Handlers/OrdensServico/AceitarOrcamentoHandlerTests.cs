@@ -19,7 +19,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
         public async Task Handle_ComOrdemServicoValida_DeveAtualizarStatusParaEmExecucao()
         {
             // Arrange
-            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovacao);
             ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1); // Orçamento enviado ontem
 
             _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
@@ -105,7 +105,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
         public async Task Handle_ComOrcamentoExpirado_DeveLancarDadosInvalidosException()
         {
             // Arrange
-            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovacao);
             ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-8); // Orçamento enviado há 8 dias (expirado)
 
             _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
@@ -133,7 +133,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
         public async Task Handle_QuandoCommitFalha_DeveLancarPersistirDadosException()
         {
             // Arrange
-            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovacao);
             ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1); // Orçamento enviado ontem
 
             _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);

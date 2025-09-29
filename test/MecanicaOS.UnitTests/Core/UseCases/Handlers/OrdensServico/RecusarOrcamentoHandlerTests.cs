@@ -21,7 +21,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
         public async Task Handle_ComOrdemServicoValida_DeveAtualizarStatusParaCancelada()
         {
             // Arrange
-            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovacao);
             ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1); // Orçamento enviado ontem
 
             _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
@@ -124,7 +124,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
         public async Task Handle_QuandoCommitFalha_DeveLancarPersistirDadosException()
         {
             // Arrange
-            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovacao);
             ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1); // Orçamento enviado ontem
 
             _fixture.ConfigurarMockRepositorioOrdemServicoParaObterPorId(ordemServico.Id, ordemServico);
@@ -157,7 +157,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
         public async Task Handle_QuandoRepositorioLancaExcecao_DeveRegistrarLogEPropagar()
         {
             // Arrange
-            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovação);
+            var ordemServico = OrdemServicoHandlerFixture.CriarOrdemServicoValida(StatusOrdemServico.AguardandoAprovacao);
             ordemServico.DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1); // Orçamento enviado ontem
             var excecaoEsperada = new Exception("Erro no banco de dados");
 

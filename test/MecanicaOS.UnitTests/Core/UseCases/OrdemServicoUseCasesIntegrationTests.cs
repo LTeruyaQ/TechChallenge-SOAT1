@@ -138,7 +138,7 @@ public class OrdemServicoUseCasesIntegrationTests
     [Theory]
     [InlineData(StatusOrdemServico.Recebida)]
     [InlineData(StatusOrdemServico.EmDiagnostico)]
-    [InlineData(StatusOrdemServico.AguardandoAprovação)]
+    [InlineData(StatusOrdemServico.AguardandoAprovacao)]
     [InlineData(StatusOrdemServico.EmExecucao)]
     [InlineData(StatusOrdemServico.Finalizada)]
     [InlineData(StatusOrdemServico.Cancelada)]

@@ -16,7 +16,7 @@ namespace Core.DTOs.Responses.Cliente
         public string? DataCadastro { get; set; }
         public string? DataAtualizacao { get; set; }
         public IEnumerable<VeiculoResponse>? Veiculos { get; set; }
-        public ContatoResponse Contato { get; set; }
-        public EnderecoResponse Endereco { get; set; }
+        public ContatoResponse? Contato { get; set; }
+        public EnderecoResponse? Endereco { get; set; }
     }
 }

@@ -51,7 +51,10 @@ namespace Core.UseCases.Clientes
 
         public async Task<Cliente> ObterPorIdUseCaseAsync(Guid id)
         {
-            return await _obterClienteHandler.Handle(id);
+            var cliente = await _obterClienteHandler.Handle(id);
+            if (cliente is null)
+                throw new InvalidOperationException($"Cliente com ID '{id}' não encontrado.");
+            return cliente;
         }
 
         public async Task<IEnumerable<Cliente>> ObterTodosUseCaseAsync()

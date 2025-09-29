@@ -64,7 +64,7 @@ public class OrdemServicoUseCasesFixture : UseCasesFixtureBase
             VeiculoId = Guid.NewGuid(),
             ServicoId = Guid.NewGuid(),
             Descricao = "Reparo na transmissão",
-            Status = StatusOrdemServico.AguardandoAprovação,
+            Status = StatusOrdemServico.AguardandoAprovacao,
             DataEnvioOrcamento = DateTime.UtcNow.AddDays(-1),
             DataCadastro = DateTime.UtcNow.AddDays(-2),
             DataAtualizacao = DateTime.UtcNow.AddDays(-1),

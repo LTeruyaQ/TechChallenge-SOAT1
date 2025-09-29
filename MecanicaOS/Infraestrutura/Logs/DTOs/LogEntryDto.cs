@@ -2,13 +2,13 @@
 {
     public class LogEntryDto
     {
-        public string Nivel { get; set; }
-        public string Classe { get; set; }
-        public string Metodo { get; set; }
-        public string Etapa { get; set; }
-        public string CorrelationId { get; set; }
-        public object Dados { get; set; }
+        public string? Nivel { get; set; } = string.Empty;
+        public string? Classe { get; set; } = string.Empty;
+        public string? Metodo { get; set; } = string.Empty;
+        public string Etapa { get; set; } = string.Empty;
+        public string? CorrelationId { get; set; } = string.Empty;
+        public object Dados { get; set; } = new object();
         public DateTime Timestamp { get; set; }
-        public string Usuario { get; set; }
+        public string? Usuario { get; set; } = string.Empty;
     }
 }

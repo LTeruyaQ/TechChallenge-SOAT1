@@ -18,8 +18,6 @@ namespace Core.UseCases.Orcamentos.GerarOrcamento
 
         public decimal Handle(GerarOrcamentoUseCase useCase)
         {
-            string metodo = nameof(Handle);
-
             try
             {
                 decimal precoServico = useCase.OrdemServico.Servico!.Valor;
@@ -30,7 +28,7 @@ namespace Core.UseCases.Orcamentos.GerarOrcamento
 
                 return valorTotal;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

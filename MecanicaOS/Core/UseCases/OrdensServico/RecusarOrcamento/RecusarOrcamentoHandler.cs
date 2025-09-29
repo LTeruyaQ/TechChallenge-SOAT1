@@ -36,7 +36,7 @@ namespace Core.UseCases.OrdensServico.RecusarOrcamento
                     ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
 
                 // Validar se está em status adequado para recusar orçamento
-                if (ordemServico.Status != StatusOrdemServico.AguardandoAprovação)
+                if (ordemServico.Status != StatusOrdemServico.AguardandoAprovacao)
                     throw new DadosInvalidosException("Ordem de serviço não está aguardando aprovação do orçamento");
 
                 ordemServico.Status = StatusOrdemServico.Cancelada;

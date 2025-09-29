@@ -20,28 +20,44 @@ namespace Adapters.Controllers
         {
             _ordemServicoUseCases = compositionRoot.CriarOrdemServicoUseCases();
             _ordemServicoPresenter = new OrdemServicoPresenter();
+            _orcamentoUseCases = compositionRoot.CriarOrcamentoUseCases();
         }
 
         public async Task<IEnumerable<OrdemServicoResponse>> ObterTodos()
         {
-            return _ordemServicoPresenter.ParaResponse(await _ordemServicoUseCases.ObterTodosUseCaseAsync());
+            // Filtra os valores nulos para garantir que o retorno seja IEnumerable<OrdemServicoResponse>
+            return _ordemServicoPresenter
+                .ParaResponse(await _ordemServicoUseCases.ObterTodosUseCaseAsync())
+                .Where(response => response != null)!;
         }
 
         public async Task<OrdemServicoResponse> ObterPorId(Guid id)
         {
-            return _ordemServicoPresenter.ParaResponse(await _ordemServicoUseCases.ObterPorIdUseCaseAsync(id));
+            var ordemServico = await _ordemServicoUseCases.ObterPorIdUseCaseAsync(id);
+            if (ordemServico == null)
+                throw new InvalidOperationException("Ordem de Serviço não encontrada.");
+            var response = _ordemServicoPresenter.ParaResponse(ordemServico);
+            if (response == null)
+                throw new InvalidOperationException("Erro ao converter Ordem de Serviço para resposta.");
+            return response;
         }
 
         public async Task<IEnumerable<OrdemServicoResponse>> ObterPorStatus(StatusOrdemServico status)
         {
-            return _ordemServicoPresenter.ParaResponse(await _ordemServicoUseCases.ObterPorStatusUseCaseAsync(status));
+            // Filtra os valores nulos para garantir que o retorno seja IEnumerable<OrdemServicoResponse>
+            return _ordemServicoPresenter
+                .ParaResponse(await _ordemServicoUseCases.ObterPorStatusUseCaseAsync(status))
+                .Where(response => response != null)!;
         }
 
         public async Task<OrdemServicoResponse> Cadastrar(CadastrarOrdemServicoRequest request)
         {
             var useCaseDto = MapearParaCadastrarOrdemServicoUseCaseDto(request);
             var resultado = await _ordemServicoUseCases.CadastrarUseCaseAsync(useCaseDto);
-            return _ordemServicoPresenter.ParaResponse(resultado);
+            var response = _ordemServicoPresenter.ParaResponse(resultado);
+            if (response == null)
+                throw new InvalidOperationException("O resultado do cadastro não pode ser nulo.");
+            return response;
         }
 
         internal CadastrarOrdemServicoUseCaseDto MapearParaCadastrarOrdemServicoUseCaseDto(CadastrarOrdemServicoRequest request)
@@ -62,7 +78,10 @@ namespace Adapters.Controllers
         {
             var useCaseDto = MapearParaAtualizarOrdemServicoUseCaseDto(request);
             var resultado = await _ordemServicoUseCases.AtualizarUseCaseAsync(id, useCaseDto);
-            return _ordemServicoPresenter.ParaResponse(resultado);
+            var response = _ordemServicoPresenter.ParaResponse(resultado);
+            if (response == null)
+                throw new InvalidOperationException("O resultado da atualização não pode ser nulo.");
+            return response;
         }
 
         internal AtualizarOrdemServicoUseCaseDto MapearParaAtualizarOrdemServicoUseCaseDto(AtualizarOrdemServicoRequest request)
@@ -94,11 +113,14 @@ namespace Adapters.Controllers
         {
             var ordemServico = await _ordemServicoUseCases.ObterPorIdUseCaseAsync(ordemServicoId);
 
+            if (ordemServico == null)
+                throw new InvalidOperationException("Ordem de Serviço não encontrada para cálculo de orçamento.");
+
             var orcamento = _orcamentoUseCases.GerarOrcamentoUseCase(ordemServico);
 
             await _ordemServicoUseCases.AtualizarUseCaseAsync(ordemServicoId, new AtualizarOrdemServicoUseCaseDto
             {
-                Status = StatusOrdemServico.AguardandoAprovação,
+                Status = StatusOrdemServico.AguardandoAprovacao,
                 Orcamento = orcamento,
                 DataEnvioOrcamento = DateTime.UtcNow
             });

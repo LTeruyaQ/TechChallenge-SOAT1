@@ -46,7 +46,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             return new OrdemServicoResponse
             {
                 Id = ordemServicoId,
-                Status = StatusOrdemServico.AguardandoAprovação,
+                Status = StatusOrdemServico.AguardandoAprovacao,
                 Cliente = new ClienteResponse
                 {
                     Id = Guid.NewGuid(),

@@ -1,5 +1,4 @@
 using Core.DTOs.Entidades.Servico;
-using Core.Entidades;
 using Core.Exceptions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
 
