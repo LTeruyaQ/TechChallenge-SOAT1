@@ -38,7 +38,7 @@ namespace Adapters.Gateways
 
         public async Task<Estoque?> ObterPorIdAsync(Guid id)
         {
-            var estoqueDto = await _repositorioEstoque.ObterPorIdAsync(id);
+            var estoqueDto = await _repositorioEstoque.ObterPorIdSemRastreamentoAsync(id);
             return estoqueDto != null ? FromDto(estoqueDto) : null;
         }
 

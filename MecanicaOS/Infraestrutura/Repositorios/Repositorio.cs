@@ -84,6 +84,13 @@ namespace Infraestrutura.Repositorios
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
 
+        public virtual async Task<T?> ObterPorIdSemRastreamentoAsync(Guid id)
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == id);
+        }
+
         public virtual async Task<IEnumerable<T>> ObterTodosAsync()
         {
             return await _dbSet
