@@ -55,16 +55,16 @@ namespace Core.UseCases.Clientes.CadastrarCliente
 
                 if (!entityCliente.Id.Equals(Guid.Empty))
                 {
-                    await CadastrarEnderecoCliente(entityCliente.Id, request);
-                    await CadastrarContatoCliente(entityCliente.Id, request);
+                    await CadastrarEnderecoCliente(entityCliente, request);
+                    await CadastrarContatoCliente(entityCliente, request);
                 }
 
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao cadastrar cliente");
 
-                LogFim(metodo, cliente);
+                LogFim(metodo, entityCliente);
 
-                return cliente;
+                return entityCliente;
             }
             catch (Exception e)
             {
@@ -73,7 +73,7 @@ namespace Core.UseCases.Clientes.CadastrarCliente
             }
         }
 
-        private async Task CadastrarEnderecoCliente(Guid clienteId, CadastrarClienteUseCaseDto enderecoCliente)
+        private async Task CadastrarEnderecoCliente(Cliente cliente, CadastrarClienteUseCaseDto enderecoCliente)
         {
             Endereco endereco = new()
             {
@@ -83,20 +83,24 @@ namespace Core.UseCases.Clientes.CadastrarCliente
                 Cidade = enderecoCliente.Cidade,
                 Complemento = enderecoCliente.Complemento,
                 Rua = enderecoCliente.Rua,
-                IdCliente = clienteId
+                IdCliente = cliente.Id
             };
+
+            cliente.Endereco = endereco;
 
             await _enderecoGateway.CadastrarAsync(endereco);
         }
 
-        private async Task CadastrarContatoCliente(Guid clienteId, CadastrarClienteUseCaseDto contatoCliente)
+        private async Task CadastrarContatoCliente(Cliente cliente, CadastrarClienteUseCaseDto contatoCliente)
         {
             Contato contato = new()
             {
-                IdCliente = clienteId,
+                IdCliente = cliente.Id,
                 Email = contatoCliente.Email,
                 Telefone = contatoCliente.Telefone
             };
+
+            cliente.Contato = contato;
 
             await _contatoGateway.CadastrarAsync(contato);
         }
