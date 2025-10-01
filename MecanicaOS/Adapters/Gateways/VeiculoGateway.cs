@@ -32,7 +32,7 @@ namespace Adapters.Gateways
 
         public async Task<Veiculo?> ObterPorIdAsync(Guid id)
         {
-            var dto = await _repositorioVeiculo.ObterPorIdAsync(id);
+            var dto = await _repositorioVeiculo.ObterPorIdSemRastreamentoAsync(id);
             return dto != null ? FromDto(dto) : null;
         }
 
