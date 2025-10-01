@@ -8,18 +8,6 @@ namespace Adapters.Presenters
 
     public class AutenticacaoPresenter : IAutenticacaoPresenter
     {
-        public AutenticacaoUseCaseDto? ParaUseCaseDto(AutenticacaoRequest request)
-        {
-            if (request is null)
-                return null;
-
-            return new AutenticacaoUseCaseDto
-            {
-                Email = request.Email,
-                Senha = request.Senha
-            };
-        }
-
         public AutenticacaoResponse? ParaResponse(AutenticacaoDto autenticacaoUseCaseDto)
         {
             if (autenticacaoUseCaseDto is null)

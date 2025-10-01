@@ -30,10 +30,8 @@ public class AutenticacaoHandlerFixture : UseCasesFixtureBase
     public IAutenticarUsuarioHandler CriarAutenticarUsuarioHandler()
     {
         return new AutenticarUsuarioHandler(
-            UsuarioUseCases,
             SegurancaGateway,
             LogAutenticacao,
-            ClienteUseCases,
             UnidadeDeTrabalho,
             UsuarioLogadoServico);
     }

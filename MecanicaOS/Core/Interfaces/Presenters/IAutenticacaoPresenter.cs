@@ -6,7 +6,6 @@ namespace Core.Interfaces.Presenters
 {
     public interface IAutenticacaoPresenter
     {
-        AutenticacaoUseCaseDto? ParaUseCaseDto(AutenticacaoRequest request);
         AutenticacaoResponse? ParaResponse(AutenticacaoDto autenticacaoUseCaseDto);
     }
 }

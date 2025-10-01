@@ -15,10 +15,12 @@ public class AutenticacaoUseCasesFixture : UseCasesFixtureBase
 
     public static AutenticacaoUseCaseDto CriarAutenticacaoUseCaseDtoValido()
     {
+        var usuario = CriarUsuarioAtivoValido();
         return new AutenticacaoUseCaseDto
         {
             Email = "admin@mecanicaos.com",
-            Senha = "senha123"
+            Senha = "senha123",
+            UsuarioExistente = usuario
         };
     }
 
@@ -27,16 +29,19 @@ public class AutenticacaoUseCasesFixture : UseCasesFixtureBase
         return new AutenticacaoUseCaseDto
         {
             Email = "email_inexistente@mecanicaos.com",
-            Senha = "senha123"
+            Senha = "senha123",
+            UsuarioExistente = null
         };
     }
 
     public static AutenticacaoUseCaseDto CriarAutenticacaoUseCaseDtoComSenhaInvalida()
     {
+        var usuario = CriarUsuarioAtivoValido();
         return new AutenticacaoUseCaseDto
         {
             Email = "admin@mecanicaos.com",
-            Senha = "senha_incorreta"
+            Senha = "senha_incorreta",
+            UsuarioExistente = usuario
         };
     }
 
