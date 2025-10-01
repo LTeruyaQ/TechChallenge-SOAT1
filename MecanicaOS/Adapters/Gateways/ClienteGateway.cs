@@ -50,9 +50,9 @@ namespace Adapters.Gateways
             return cliente;
         }
 
-        public async Task<IEnumerable<Cliente>> ObterTodosClienteComVeiculoAsync()
+        public async Task<IEnumerable<Cliente>> ObterTodosClientesAsync()
         {
-            var especificacao = new ObterTodosClienteComVeiculoEspecificacao();
+            var especificacao = new ObterTodosClienteCompletoEspecificacao();
             return await _repositorioCliente.ListarProjetadoAsync<Cliente>(especificacao);
         }
 

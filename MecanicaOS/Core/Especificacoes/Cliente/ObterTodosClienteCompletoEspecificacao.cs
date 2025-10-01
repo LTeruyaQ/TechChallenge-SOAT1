@@ -1,23 +1,14 @@
 ﻿using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
 using Core.Especificacoes.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Especificacoes.Cliente
 {
-    public class ObterClienteCompletoPorIdEspecificacao : EspecificacaoBase<ClienteEntityDto>
+    public class ObterTodosClienteCompletoEspecificacao : EspecificacaoBase<ClienteEntityDto>
     {
-        private readonly Guid _clienteId;
-
-        public ObterClienteCompletoPorIdEspecificacao(Guid clienteId)
+        public ObterTodosClienteCompletoEspecificacao()
         {
-            _clienteId = clienteId;
-
             AdicionarInclusao(c => c.Endereco);
             AdicionarInclusao(c => c.Contato);
             AdicionarInclusao(c => c.Veiculos);
@@ -65,7 +56,6 @@ namespace Core.Especificacoes.Cliente
             });
         }
 
-        public override Expression<Func<ClienteEntityDto, bool>> Expressao =>
-        i => i.Id == _clienteId;
+        public override Expression<Func<ClienteEntityDto, bool>> Expressao => c => c.Ativo;
     }
 }

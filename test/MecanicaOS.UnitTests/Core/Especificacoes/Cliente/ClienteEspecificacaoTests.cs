@@ -114,11 +114,11 @@ public class ClienteEspecificacaoTests
     }
 
     [Fact]
-    public void ObterTodosClienteComVeiculoEspecificacao_DeveRetornarTodosClientes()
+    public void ObterTodosClienteCompletoEspecificacao_DeveRetornarTodosClientes()
     {
         // Arrange
         var clientes = GetClientesDeTeste();
-        var especificacao = new ObterTodosClienteComVeiculoEspecificacao();
+        var especificacao = new ObterTodosClienteCompletoEspecificacao();
 
         // Act
         var resultado = clientes.Where(especificacao.Expressao.Compile()).ToList();
@@ -129,10 +129,10 @@ public class ClienteEspecificacaoTests
     }
 
     [Fact]
-    public void ObterTodosClienteComVeiculoEspecificacao_DeveIncluirVeiculos()
+    public void ObterTodosClienteCompletoEspecificacao_DeveIncluirVeiculos()
     {
         // Arrange
-        var especificacao = new ObterTodosClienteComVeiculoEspecificacao();
+        var especificacao = new ObterTodosClienteCompletoEspecificacao();
 
         // Assert
         especificacao.Inclusoes.Should().NotBeEmpty("deve ter inclusões definidas");
@@ -141,12 +141,12 @@ public class ClienteEspecificacaoTests
     }
 
     [Fact]
-    public void ObterTodosClienteComVeiculoEspecificacao_ComClientesInativos_DeveRetornarApenasAtivos()
+    public void ObterTodosClienteCompletoEspecificacao_ComClientesInativos_DeveRetornarApenasAtivos()
     {
         // Arrange
         var clientes = GetClientesDeTeste();
         clientes.First().Ativo = false; // Inativar um cliente
-        var especificacao = new ObterTodosClienteComVeiculoEspecificacao();
+        var especificacao = new ObterTodosClienteCompletoEspecificacao();
 
         // Act
         var resultado = clientes.Where(especificacao.Expressao.Compile()).ToList();
