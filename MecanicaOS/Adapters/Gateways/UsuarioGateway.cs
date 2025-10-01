@@ -39,7 +39,7 @@ namespace Adapters.Gateways
 
         public async Task<Usuario?> ObterPorIdAsync(Guid id)
         {
-            var dto = await _repositorioUsuario.ObterPorIdAsync(id);
+            var dto = await _repositorioUsuario.ObterPorIdSemRastreamentoAsync(id);
             return dto != null ? FromDto(dto) : null;
         }
 
