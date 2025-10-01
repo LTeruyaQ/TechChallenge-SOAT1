@@ -24,17 +24,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             clienteExistente.Id = clienteId;
 
             // Configurar o repositório para retornar o cliente existente
-            var dto = new ClienteEntityDto
-            {
-                Id = clienteExistente.Id,
-                Nome = clienteExistente.Nome,
-                Documento = clienteExistente.Documento,
-                TipoCliente = clienteExistente.TipoCliente,
-                Ativo = clienteExistente.Ativo,
-                DataCadastro = clienteExistente.DataCadastro,
-                DataAtualizacao = clienteExistente.DataAtualizacao
-            };
-            _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(dto);
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorId(clienteId, clienteExistente);
 
             // Configurar o repositório para simular a remoção
             _fixture.ConfigurarMockRepositorioClienteParaDeletar();
@@ -48,7 +38,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Should().BeTrue();
 
             // Verificar que o repositório foi chamado para obter e remover o cliente
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
             await _fixture.RepositorioCliente.Received(1).DeletarAsync(Arg.Any<ClienteEntityDto>());
 
             // Verificar que o commit foi chamado
@@ -67,6 +57,11 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Configurar o repositório para retornar null (cliente não encontrado)
             _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns((ClienteEntityDto)null);
+            
+            // Configurar também o método ObterUmProjetadoSemRastreamentoAsync que é usado pelo gateway
+            _fixture.RepositorioCliente
+                .ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns((Cliente)null);
 
             var handler = _fixture.CriarRemoverClienteHandler();
 
@@ -77,7 +72,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Cliente não encontrado");
 
             // Verificar que o repositório foi chamado para obter o cliente
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
 
             // Verificar que o repositório NÃO foi chamado para remover o cliente
             await _fixture.RepositorioCliente.DidNotReceive().DeletarAsync(Arg.Any<ClienteEntityDto>());
@@ -99,17 +94,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             clienteExistente.Id = clienteId;
 
             // Configurar o repositório para retornar o cliente existente
-            var dto = new ClienteEntityDto
-            {
-                Id = clienteExistente.Id,
-                Nome = clienteExistente.Nome,
-                Documento = clienteExistente.Documento,
-                TipoCliente = clienteExistente.TipoCliente,
-                Ativo = clienteExistente.Ativo,
-                DataCadastro = clienteExistente.DataCadastro,
-                DataAtualizacao = clienteExistente.DataAtualizacao
-            };
-            _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(dto);
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorId(clienteId, clienteExistente);
 
             // Configurar o repositório para simular a remoção
             _fixture.ConfigurarMockRepositorioClienteParaDeletar();
@@ -126,7 +111,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Erro ao remover cliente");
 
             // Verificar que o repositório foi chamado para obter e remover o cliente
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
             await _fixture.RepositorioCliente.Received(1).DeletarAsync(Arg.Any<ClienteEntityDto>());
 
             // Verificar que o commit foi chamado
@@ -145,8 +130,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var excecaoEsperada = new Exception("Erro no banco de dados");
 
             // Configurar o repositório para lançar uma exceção
-            _fixture.RepositorioCliente.ObterPorIdAsync(Arg.Any<Guid>())
-                .Returns(Task.FromException<ClienteEntityDto>(excecaoEsperada));
+            _fixture.RepositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns(Task.FromException<Cliente>(excecaoEsperada));
 
             var handler = _fixture.CriarRemoverClienteHandler();
 
@@ -157,7 +142,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Erro no banco de dados");
 
             // Verificar que o repositório foi chamado para obter o cliente
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
 
             // Verificar que o repositório NÃO foi chamado para remover o cliente
             await _fixture.RepositorioCliente.DidNotReceive().DeletarAsync(Arg.Any<ClienteEntityDto>());
@@ -205,17 +190,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             };
 
             // Configurar o repositório para retornar o cliente específico
-            var dto = new ClienteEntityDto
-            {
-                Id = clienteEspecifico.Id,
-                Nome = clienteEspecifico.Nome,
-                Documento = clienteEspecifico.Documento,
-                TipoCliente = clienteEspecifico.TipoCliente,
-                Ativo = clienteEspecifico.Ativo,
-                DataCadastro = clienteEspecifico.DataCadastro,
-                DataAtualizacao = clienteEspecifico.DataAtualizacao
-            };
-            _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(dto);
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorId(clienteId, clienteEspecifico);
 
             // Configurar o repositório para simular a remoção
             _fixture.ConfigurarMockRepositorioClienteParaDeletar();
@@ -227,7 +202,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Assert
             // Verificar que o repositório foi chamado com o ID correto
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
 
             // Verificar que o repositório foi chamado para remover o cliente específico
             await _fixture.RepositorioCliente.Received(1).DeletarAsync(Arg.Any<ClienteEntityDto>());

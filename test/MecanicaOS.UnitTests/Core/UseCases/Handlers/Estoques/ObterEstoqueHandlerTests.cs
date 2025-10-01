@@ -35,7 +35,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             resultado.Should().BeEquivalentTo(estoqueEsperado);
 
             // Verificar que o repositório foi chamado com o ID correto
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), estoqueId);
@@ -60,7 +60,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 .WithMessage("Estoque não encontrado");
 
             // Verificar que o repositório foi chamado com o ID correto
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), estoqueId);
@@ -75,7 +75,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             var excecaoEsperada = new Exception("Erro no banco de dados");
 
             // Configurar o repositório para lançar uma exceção
-            _fixture.RepositorioEstoque.ObterPorIdAsync(Arg.Any<Guid>())
+            _fixture.RepositorioEstoque.ObterPorIdSemRastreamentoAsync(Arg.Any<Guid>())
                 .Returns(Task.FromException<EstoqueEntityDto>(excecaoEsperada));
 
             var handler = _fixture.CriarObterEstoqueHandler();
@@ -87,7 +87,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 .WithMessage("Erro no banco de dados");
 
             // Verificar que o repositório foi chamado com o ID correto
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), estoqueId);
@@ -124,7 +124,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
 
             // Assert
             // Verificar que o repositório foi chamado com o ID correto
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
 
             // Verificar que o resultado contém exatamente os mesmos dados retornados pelo gateway
             resultado.Should().NotBeNull();

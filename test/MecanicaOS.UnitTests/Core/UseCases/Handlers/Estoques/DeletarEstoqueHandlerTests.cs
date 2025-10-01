@@ -23,22 +23,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             estoqueExistente.Id = estoqueId;
 
             // Configurar o repositório para retornar o estoque existente
-            var dto = new EstoqueEntityDto
-            {
-                Id = estoqueExistente.Id,
-                Insumo = estoqueExistente.Insumo,
-                Descricao = estoqueExistente.Descricao,
-                QuantidadeDisponivel = estoqueExistente.QuantidadeDisponivel,
-                QuantidadeMinima = estoqueExistente.QuantidadeMinima,
-                Preco = estoqueExistente.Preco,
-                Ativo = estoqueExistente.Ativo,
-                DataCadastro = estoqueExistente.DataCadastro,
-                DataAtualizacao = estoqueExistente.DataAtualizacao
-            };
-            _fixture.RepositorioEstoque.ObterPorIdAsync(estoqueId).Returns(dto);
+            _fixture.ConfigurarMockRepositorioEstoqueParaObterPorId(estoqueId, estoqueExistente);
 
-            // Configurar o gateway para simular a deleção com sucesso
-            _fixture.ConfigurarMockEstoqueGatewayParaDeletar(estoqueExistente, true);
+            // Configurar o repositório para simular a deleção com sucesso
+            _fixture.ConfigurarMockRepositorioEstoqueParaDeletar();
 
             var handler = _fixture.CriarDeletarEstoqueHandler();
 
@@ -49,7 +37,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             resultado.Should().BeTrue();
 
             // Verificar que o gateway foi chamado com os dados corretos
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
             await _fixture.RepositorioEstoque.Received(1).DeletarAsync(Arg.Any<EstoqueEntityDto>());
 
             // Verificar que o commit foi chamado
@@ -67,7 +55,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             var estoqueId = Guid.NewGuid();
 
             // Configurar o repositório para retornar null
-            _fixture.RepositorioEstoque.ObterPorIdAsync(estoqueId).Returns((EstoqueEntityDto)null);
+            _fixture.ConfigurarMockRepositorioEstoqueParaObterPorIdNull(estoqueId);
 
             var handler = _fixture.CriarDeletarEstoqueHandler();
 
@@ -78,7 +66,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 .WithMessage("Estoque não encontrado");
 
             // Verificar que o gateway foi chamado para obter o estoque
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
 
             // Verificar que o gateway NÃO foi chamado para deletar
             await _fixture.RepositorioEstoque.DidNotReceive().DeletarAsync(Arg.Any<EstoqueEntityDto>());
@@ -100,22 +88,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             estoqueExistente.Id = estoqueId;
 
             // Configurar o repositório para retornar o estoque existente
-            var dto = new EstoqueEntityDto
-            {
-                Id = estoqueExistente.Id,
-                Insumo = estoqueExistente.Insumo,
-                Descricao = estoqueExistente.Descricao,
-                QuantidadeDisponivel = estoqueExistente.QuantidadeDisponivel,
-                QuantidadeMinima = estoqueExistente.QuantidadeMinima,
-                Preco = estoqueExistente.Preco,
-                Ativo = estoqueExistente.Ativo,
-                DataCadastro = estoqueExistente.DataCadastro,
-                DataAtualizacao = estoqueExistente.DataAtualizacao
-            };
-            _fixture.RepositorioEstoque.ObterPorIdAsync(estoqueId).Returns(dto);
+            _fixture.ConfigurarMockRepositorioEstoqueParaObterPorId(estoqueId, estoqueExistente);
 
-            // Configurar o gateway para simular a deleção
-            _fixture.ConfigurarMockEstoqueGatewayParaDeletar(estoqueExistente, true);
+            // Configurar o repositório para simular a deleção
+            _fixture.ConfigurarMockRepositorioEstoqueParaDeletar();
 
             // Configurar o UDT para falhar no commit
             _fixture.ConfigurarMockUdtParaCommitFalha();
@@ -129,7 +105,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 .WithMessage("Erro ao deletar estoque");
 
             // Verificar que o gateway foi chamado para obter e deletar o estoque
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
             await _fixture.RepositorioEstoque.Received(1).DeletarAsync(Arg.Any<EstoqueEntityDto>());
 
             // Verificar que o commit foi chamado
@@ -164,19 +140,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             Estoque estoqueDeletado = null;
 
             // Configurar o repositório para retornar o estoque existente
-            var dto = new EstoqueEntityDto
-            {
-                Id = estoqueExistente.Id,
-                Insumo = estoqueExistente.Insumo,
-                Descricao = estoqueExistente.Descricao,
-                QuantidadeDisponivel = estoqueExistente.QuantidadeDisponivel,
-                QuantidadeMinima = estoqueExistente.QuantidadeMinima,
-                Preco = estoqueExistente.Preco,
-                Ativo = estoqueExistente.Ativo,
-                DataCadastro = estoqueExistente.DataCadastro,
-                DataAtualizacao = estoqueExistente.DataAtualizacao
-            };
-            _fixture.RepositorioEstoque.ObterPorIdAsync(estoqueId).Returns(dto);
+            _fixture.ConfigurarMockRepositorioEstoqueParaObterPorId(estoqueId, estoqueExistente);
 
             // Configurar o repositório para capturar o objeto passado
             EstoqueEntityDto dtoCaptured = null;
@@ -205,7 +169,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
 
             // Assert
             // Verificar que o gateway foi chamado
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
             await _fixture.RepositorioEstoque.Received(1).DeletarAsync(Arg.Any<EstoqueEntityDto>());
 
             // Verificar que os dados foram passados corretamente para o gateway

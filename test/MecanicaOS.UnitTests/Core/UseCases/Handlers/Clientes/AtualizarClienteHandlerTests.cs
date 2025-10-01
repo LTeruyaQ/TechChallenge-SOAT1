@@ -1,5 +1,6 @@
 using Core.DTOs.Entidades.Cliente;
 using Core.DTOs.UseCases.Cliente;
+using Core.Entidades;
 using Core.Exceptions;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
 
@@ -40,7 +41,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Should().BeEquivalentTo(clienteExistente);
 
             // Verificar que o repositório foi chamado para obter e atualizar o cliente
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
             await _fixture.RepositorioCliente.Received(1).EditarAsync(Arg.Any<ClienteEntityDto>());
 
             // Verificar que o commit foi chamado
@@ -59,7 +60,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var dto = ClienteHandlerFixture.CriarAtualizarClienteDtoValido();
 
             // Configurar o repositório para retornar null (cliente não encontrado)
-            _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(Task.FromResult<ClienteEntityDto>(null));
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorIdNull(clienteId);
 
             var handler = _fixture.CriarAtualizarClienteHandler();
 
@@ -70,7 +71,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Cliente não encontrado");
 
             // Verificar que o repositório foi chamado para obter o cliente
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
 
             // Verificar que o repositório NÃO foi chamado para atualizar o cliente
             await _fixture.RepositorioCliente.DidNotReceive().EditarAsync(Arg.Any<ClienteEntityDto>());
@@ -111,7 +112,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Erro ao atualizar cliente");
 
             // Verificar que o repositório foi chamado para obter e atualizar o cliente
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
             await _fixture.RepositorioCliente.Received(1).EditarAsync(Arg.Any<ClienteEntityDto>());
 
             // Verificar que o commit foi chamado
@@ -179,7 +180,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.DataNascimento.Should().Be("02/02/1990");
 
             // Verificar que o repositório foi chamado para obter e atualizar o cliente
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
             await _fixture.RepositorioCliente.Received(1).EditarAsync(Arg.Any<ClienteEntityDto>());
 
             // Verificar que o repositório de endereço foi chamado para atualizar o endereço

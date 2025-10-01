@@ -286,6 +286,21 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         {
             var dto = cliente != null ? ToClienteDto(cliente) : null;
             RepositorioCliente.ObterPorIdAsync(id).Returns(dto);
+            
+            // Configurar também o método ObterUmProjetadoSemRastreamentoAsync que é usado pelo gateway
+            RepositorioCliente
+                .ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns(cliente);
+        }
+        
+        public void ConfigurarMockRepositorioClienteParaObterPorIdNull(Guid id)
+        {
+            RepositorioCliente.ObterPorIdAsync(id).Returns((ClienteEntityDto)null);
+            
+            // Configurar também o método ObterUmProjetadoSemRastreamentoAsync que é usado pelo gateway
+            RepositorioCliente
+                .ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns((Cliente)null);
         }
 
         public void ConfigurarMockRepositorioClienteParaObterTodos(List<Cliente> clientes)

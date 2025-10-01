@@ -138,11 +138,17 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         {
             var dto = servico != null ? ToDto(servico) : null;
             RepositorioServico.ObterPorIdAsync(id).Returns(dto);
+            
+            // Configurar também o método ObterPorIdSemRastreamentoAsync que é usado pelo gateway
+            RepositorioServico.ObterPorIdSemRastreamentoAsync(id).Returns(dto);
         }
 
         public void ConfigurarMockRepositorioParaObterPorIdNull(Guid id)
         {
             RepositorioServico.ObterPorIdAsync(id).Returns((ServicoEntityDto)null);
+            
+            // Configurar também o método ObterPorIdSemRastreamentoAsync que é usado pelo gateway
+            RepositorioServico.ObterPorIdSemRastreamentoAsync(id).Returns((ServicoEntityDto)null);
         }
 
         public void ConfigurarMockRepositorioParaObterTodos(List<Servico> servicos)

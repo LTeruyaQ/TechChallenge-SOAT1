@@ -37,7 +37,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
             resultado.Disponivel.Should().Be(servico.Disponivel);
 
             // Verificar que o repositório foi chamado (através do gateway real)
-            await _fixture.RepositorioServico.Received(1).ObterPorIdAsync(servico.Id);
+            await _fixture.RepositorioServico.Received(1).ObterPorIdSemRastreamentoAsync(servico.Id);
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
@@ -61,7 +61,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
                 .WithMessage("Serviço não encontrado");
 
             // Verificar que o repositório foi chamado
-            await _fixture.RepositorioServico.Received(1).ObterPorIdAsync(id);
+            await _fixture.RepositorioServico.Received(1).ObterPorIdSemRastreamentoAsync(id);
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<Guid>());
@@ -75,7 +75,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
             var id = Guid.NewGuid();
 
             // Configurar o repositório para lançar uma exceção
-            _fixture.RepositorioServico.ObterPorIdAsync(id)
+            _fixture.RepositorioServico.ObterPorIdSemRastreamentoAsync(id)
                 .Returns(Task.FromException<ServicoEntityDto>(new InvalidOperationException("Erro simulado")));
 
             var handler = _fixture.CriarObterServicoHandler();

@@ -47,7 +47,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
             resultado.Should().BeTrue();
 
             // Verificar que o repositório foi chamado para obter o estoque
-            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
+            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdSemRastreamentoAsync(Arg.Any<Guid>());
 
             // Verificar que o repositório foi chamado para atualizar o estoque
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
@@ -114,7 +114,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
             resultado.Should().BeTrue();
 
             // Verificar que o repositório foi chamado para obter cada estoque
-            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
+            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdSemRastreamentoAsync(Arg.Any<Guid>());
 
             // Verificar que o repositório foi chamado para atualizar os estoques
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
@@ -151,7 +151,12 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
 
             // Configurar o repositório para retornar null (estoque não encontrado)
             _fixture.RepositorioEstoque
-                .ObterPorIdAsync(estoqueId)
+                .ObterPorIdSemRastreamentoAsync(estoqueId)
+                .Returns((EstoqueEntityDto)null);
+                
+            // Configurar também o método ObterPorIdSemRastreamentoAsync que é usado pelo gateway
+            _fixture.RepositorioEstoque
+                .ObterPorIdSemRastreamentoAsync(estoqueId)
                 .Returns((EstoqueEntityDto)null);
 
             _fixture.RepositorioEstoque
@@ -159,7 +164,6 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
                 .Returns((Estoque)null);
 
             var handler = _fixture.CriarDevolverInsumosHandler();
-
             // Act & Assert
             var act = async () => await handler.Handle(insumos);
 
@@ -167,7 +171,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
                 .WithMessage("Estoque não encontrado");
 
             // Verificar que o repositório foi chamado para obter o estoque
-            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
+            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdSemRastreamentoAsync(Arg.Any<Guid>());
 
             // Verificar que o repositório não foi chamado para atualizar o estoque
             await _fixture.RepositorioEstoque.DidNotReceiveWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());
@@ -212,7 +216,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.InsumosOS
                 .WithMessage("Erro ao atualizar estoque");
 
             // Verificar que o repositório foi chamado para obter o estoque
-            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdAsync(Arg.Any<Guid>());
+            await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().ObterPorIdSemRastreamentoAsync(Arg.Any<Guid>());
 
             // Verificar que o repositório foi chamado para atualizar o estoque
             await _fixture.RepositorioEstoque.ReceivedWithAnyArgs().EditarAsync(Arg.Any<EstoqueEntityDto>());

@@ -35,7 +35,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Should().BeEquivalentTo(clienteEsperado);
 
             // Verificar que o repositório foi chamado com o ID correto
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.ReceivedWithAnyArgs().ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), clienteId);
@@ -49,7 +49,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var clienteId = Guid.NewGuid();
 
             // Configurar o repositório para retornar null
-            _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns(Task.FromResult<ClienteEntityDto>(null));
+            _fixture.ConfigurarMockRepositorioClienteParaObterPorIdNull(clienteId);
 
             var handler = _fixture.CriarObterClienteHandler();
 
@@ -60,7 +60,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             resultado.Should().BeNull();
 
             // Verificar que o repositório foi chamado com o ID correto
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.ReceivedWithAnyArgs().ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), clienteId);
@@ -75,8 +75,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             var excecaoEsperada = new Exception("Erro no banco de dados");
 
             // Configurar o repositório para lançar uma exceção
-            _fixture.RepositorioCliente.ObterPorIdAsync(Arg.Any<Guid>())
-                .Returns<ClienteEntityDto>(x => { throw excecaoEsperada; });
+            _fixture.RepositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns<Cliente>(x => { throw excecaoEsperada; });
 
             var handler = _fixture.CriarObterClienteHandler();
 
@@ -87,7 +87,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
                 .WithMessage("Erro no banco de dados");
 
             // Verificar que o repositório foi chamado com o ID correto
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.ReceivedWithAnyArgs().ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), clienteId);
@@ -138,7 +138,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Assert
             // Verificar que o repositório foi chamado com o ID correto
-            await _fixture.RepositorioCliente.Received(1).ObterPorIdAsync(clienteId);
+            await _fixture.RepositorioCliente.ReceivedWithAnyArgs().ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
 
             // Verificar que o resultado contém exatamente os mesmos dados retornados pelo repositório
             resultado.Should().NotBeNull();

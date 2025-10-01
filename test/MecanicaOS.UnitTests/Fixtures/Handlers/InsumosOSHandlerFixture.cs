@@ -152,7 +152,6 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
 
         public void ConfigurarMockEstoqueRepositorioParaObterPorId(Guid estoqueId, Estoque estoque)
         {
-            // Criar DTO correspondente à entidade
             var estoqueDto = new EstoqueEntityDto
             {
                 Id = estoque.Id,
@@ -165,10 +164,15 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 DataCadastro = estoque.DataCadastro,
                 DataAtualizacao = estoque.DataAtualizacao
             };
-
+            
             // Configurar o repositório para retornar o DTO quando consultado por ID
             RepositorioEstoque
                 .ObterPorIdAsync(estoqueId)
+                .Returns(estoqueDto);
+                
+            // Configurar também o método ObterPorIdSemRastreamentoAsync que é usado pelo gateway
+            RepositorioEstoque
+                .ObterPorIdSemRastreamentoAsync(estoqueId)
                 .Returns(estoqueDto);
 
             // Configurar o repositório para retornar a entidade quando projetada
@@ -176,7 +180,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 .ObterUmProjetadoAsync<Estoque>(Arg.Any<IEspecificacao<EstoqueEntityDto>>())
                 .Returns(Task.FromResult(estoque));
         }
-
+        
         public List<EstoqueEntityDto> ConfigurarMockEstoqueRepositorioParaAtualizar(Guid estoqueId)
         {
             // Lista para capturar os DTOs enviados ao repositório

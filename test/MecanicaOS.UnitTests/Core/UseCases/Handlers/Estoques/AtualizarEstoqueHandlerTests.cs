@@ -37,7 +37,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 DataCadastro = estoqueExistente.DataCadastro,
                 DataAtualizacao = estoqueExistente.DataAtualizacao
             };
-            _fixture.RepositorioEstoque.ObterPorIdAsync(estoqueId).Returns(dto);
+            _fixture.RepositorioEstoque.ObterPorIdSemRastreamentoAsync(estoqueId).Returns(dto);
 
             // Configurar o gateway para simular a atualização
             _fixture.ConfigurarMockEstoqueGatewayParaAtualizar(estoqueExistente);
@@ -51,7 +51,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             resultado.Should().NotBeNull();
 
             // Verificar que o gateway foi chamado com os dados corretos
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
             await _fixture.RepositorioEstoque.Received(1).EditarAsync(Arg.Any<EstoqueEntityDto>());
 
             // Verificar que o commit foi chamado
@@ -70,7 +70,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             var request = EstoqueHandlerFixture.CriarAtualizarEstoqueUseCaseDtoValido();
 
             // Configurar o repositório para retornar null
-            _fixture.RepositorioEstoque.ObterPorIdAsync(estoqueId).Returns((EstoqueEntityDto)null);
+            _fixture.RepositorioEstoque.ObterPorIdSemRastreamentoAsync(estoqueId).Returns((EstoqueEntityDto)null);
 
             var handler = _fixture.CriarAtualizarEstoqueHandler();
 
@@ -81,7 +81,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 .WithMessage("Estoque não encontrado");
 
             // Verificar que o gateway foi chamado para obter o estoque
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
 
             // Verificar que o gateway NÃO foi chamado para editar
             await _fixture.RepositorioEstoque.DidNotReceive().EditarAsync(Arg.Any<EstoqueEntityDto>());
@@ -116,7 +116,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 DataCadastro = estoqueExistente.DataCadastro,
                 DataAtualizacao = estoqueExistente.DataAtualizacao
             };
-            _fixture.RepositorioEstoque.ObterPorIdAsync(estoqueId).Returns(dto);
+            _fixture.RepositorioEstoque.ObterPorIdSemRastreamentoAsync(estoqueId).Returns(dto);
 
             // Configurar o gateway para simular a atualização
             _fixture.ConfigurarMockEstoqueGatewayParaAtualizar(estoqueExistente);
@@ -133,7 +133,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 .WithMessage("Erro ao atualizar estoque");
 
             // Verificar que o gateway foi chamado para obter e editar o estoque
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
             await _fixture.RepositorioEstoque.Received(1).EditarAsync(Arg.Any<EstoqueEntityDto>());
 
             // Verificar que o commit foi chamado
@@ -190,7 +190,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
                 DataCadastro = estoqueExistente.DataCadastro,
                 DataAtualizacao = estoqueExistente.DataAtualizacao
             };
-            _fixture.RepositorioEstoque.ObterPorIdAsync(estoqueId).Returns(dto);
+            _fixture.RepositorioEstoque.ObterPorIdSemRastreamentoAsync(estoqueId).Returns(dto);
 
             // Configurar o repositório para capturar o objeto passado
             EstoqueEntityDto dtoCaptured = null;
@@ -219,7 +219,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
 
             // Assert
             // Verificar que o gateway foi chamado
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdAsync(estoqueId);
+            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
             await _fixture.RepositorioEstoque.Received(1).EditarAsync(Arg.Any<EstoqueEntityDto>());
 
             // Verificar que os dados foram passados corretamente para o gateway

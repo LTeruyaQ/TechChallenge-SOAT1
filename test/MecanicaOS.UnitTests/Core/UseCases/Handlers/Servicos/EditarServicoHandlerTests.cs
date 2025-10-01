@@ -40,7 +40,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
                 DataCadastro = servicoExistente.DataCadastro,
                 DataAtualizacao = servicoExistente.DataAtualizacao
             };
-            _fixture.RepositorioServico.ObterPorIdAsync(servicoExistente.Id).Returns(dtoExistente);
+            _fixture.RepositorioServico.ObterPorIdSemRastreamentoAsync(servicoExistente.Id).Returns(dtoExistente);
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
             var handler = _fixture.CriarEditarServicoHandler();
@@ -82,7 +82,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
             };
 
             // Configurar o repositório para retornar null
-            _fixture.RepositorioServico.ObterPorIdAsync(id).Returns((ServicoEntityDto)null);
+            _fixture.ConfigurarMockRepositorioParaObterPorIdNull(id);
 
             var handler = _fixture.CriarEditarServicoHandler();
 
@@ -130,7 +130,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
                 DataCadastro = servicoExistente.DataCadastro,
                 DataAtualizacao = servicoExistente.DataAtualizacao
             };
-            _fixture.RepositorioServico.ObterPorIdAsync(servicoExistente.Id).Returns(dtoExistente);
+            _fixture.RepositorioServico.ObterPorIdSemRastreamentoAsync(servicoExistente.Id).Returns(dtoExistente);
 
             // Este teste precisa ser adaptado, pois o handler atual não verifica duplicidade de nome
             // Vamos simular que o handler lançaria uma exceção neste caso
@@ -167,18 +167,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
             };
 
             // Configurar o repositório para retornar o serviço existente
-            var dtoExistente = new ServicoEntityDto
-            {
-                Id = servicoExistente.Id,
-                Nome = servicoExistente.Nome,
-                Descricao = servicoExistente.Descricao,
-                Valor = servicoExistente.Valor,
-                Disponivel = servicoExistente.Disponivel,
-                Ativo = servicoExistente.Ativo,
-                DataCadastro = servicoExistente.DataCadastro,
-                DataAtualizacao = servicoExistente.DataAtualizacao
-            };
-            _fixture.RepositorioServico.ObterPorIdAsync(servicoExistente.Id).Returns(dtoExistente);
+            _fixture.ConfigurarMockRepositorioParaObterPorId(servicoExistente.Id, servicoExistente);
             _fixture.ConfigurarMockUdtParaCommitFalha();
 
             var handler = _fixture.CriarEditarServicoHandler();
@@ -227,7 +216,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
             await act.Should().ThrowAsync<DadosInvalidosException>();
 
             // Verificar que os repositórios não foram chamados
-            await _fixture.RepositorioServico.DidNotReceive().ObterPorIdAsync(Arg.Any<Guid>());
+            await _fixture.RepositorioServico.DidNotReceive().ObterPorIdSemRastreamentoAsync(Arg.Any<Guid>());
             await _fixture.RepositorioServico.DidNotReceive().EditarAsync(Arg.Any<ServicoEntityDto>());
 
             // Verificar que o commit não foi chamado
