@@ -75,6 +75,20 @@ namespace Adapters.Presenters
                 ContatoId = cliente.Contato?.Id,
                 DataCadastro = cliente.DataCadastro.ToString("yyyy-MM-dd HH:mm:ss"),
                 DataAtualizacao = cliente.DataAtualizacao?.ToString("yyyy-MM-dd HH:mm:ss"),
+                Contato = cliente.Contato == null ? null : new ContatoResponse
+                {
+                    Email = cliente.Contato.Email,
+                    Telefone = cliente.Contato.Telefone,
+                },
+                Endereco = cliente.Endereco == null ? null : new EnderecoResponse
+                {
+                    Numero = cliente.Endereco.Numero,
+                    Complemento = cliente.Endereco.Complemento,
+                    Bairro = cliente.Endereco.Bairro,
+                    Cidade = cliente.Endereco.Cidade,
+                    CEP = cliente.Endereco.CEP,
+                    IdCliente = cliente.Id
+                },
                 Veiculos = cliente.Veiculos?.Select(v => new VeiculoResponse
                 {
                     Id = v.Id,

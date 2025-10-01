@@ -45,8 +45,9 @@ namespace Adapters.Gateways
 
         public async Task<Cliente?> ObterPorIdAsync(Guid id)
         {
-            var clienteDto = await _repositorioCliente.ObterPorIdAsync(id);
-            return clienteDto != null ? FromDto(clienteDto) : null;
+            var especificacao = new ObterClienteCompletoPorIdEspecificacao(id);
+            var cliente = await _repositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(especificacao);
+            return cliente;
         }
 
         public async Task<IEnumerable<Cliente>> ObterTodosClienteComVeiculoAsync()
