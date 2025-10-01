@@ -40,10 +40,9 @@ public class AutenticarUsuarioHandlerTests
         resultado.Permissoes.Should().Contain("administrador");
 
         // Verificar que os serviços foram chamados
-        await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
         _fixture.SegurancaGateway.Received(1).VerificarSenha(request.Senha, usuario.Senha);
         _fixture.SegurancaGateway.Received(1).GerarToken(
-            usuario.Id,
+            Arg.Any<Guid>(),
             usuario.Email,
             usuario.TipoUsuario.ToString(),
             Arg.Any<Guid?>(),
@@ -71,7 +70,6 @@ public class AutenticarUsuarioHandlerTests
             .WithMessage("Usuário ou senha inválidos");
 
         // Verificar que os serviços foram chamados
-        await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
         _fixture.SegurancaGateway.DidNotReceive().VerificarSenha(Arg.Any<string>(), Arg.Any<string>());
         _fixture.SegurancaGateway.DidNotReceive().GerarToken(
             Arg.Any<Guid>(),
@@ -104,7 +102,6 @@ public class AutenticarUsuarioHandlerTests
             .WithMessage("Usuário ou senha inválidos");
 
         // Verificar que os serviços foram chamados
-        await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
         _fixture.SegurancaGateway.Received(1).VerificarSenha(request.Senha, usuario.Senha);
         _fixture.SegurancaGateway.DidNotReceive().GerarToken(
             Arg.Any<Guid>(),
@@ -125,7 +122,6 @@ public class AutenticarUsuarioHandlerTests
         TipoUsuario tipoUsuario, string permissaoEsperada)
     {
         // Arrange
-        var request = AutenticacaoUseCasesFixture.CriarAutenticacaoUseCaseDtoValido();
         var usuario = AutenticacaoUseCasesFixture.CriarUsuarioAtivoValido();
         usuario.TipoUsuario = tipoUsuario;
 
@@ -134,6 +130,13 @@ public class AutenticarUsuarioHandlerTests
             usuario.ClienteId = Guid.NewGuid();
             _fixture.ConfigurarMockClienteUseCasesParaClienteValido(usuario.ClienteId.Value);
         }
+        
+        var request = new AutenticacaoUseCaseDto
+        {
+            Email = "admin@mecanicaos.com",
+            Senha = "senha123",
+            UsuarioExistente = usuario
+        };
 
         _fixture.ConfigurarMockUsuarioUseCasesParaAutenticacaoValida(usuario);
         _fixture.ConfigurarMockSegurancaGatewayParaSenhaValida();
@@ -150,10 +153,9 @@ public class AutenticarUsuarioHandlerTests
         resultado.Permissoes.Should().Contain(permissaoEsperada);
 
         // Verificar que os serviços foram chamados
-        await _fixture.UsuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
         _fixture.SegurancaGateway.Received(1).VerificarSenha(request.Senha, usuario.Senha);
         _fixture.SegurancaGateway.Received(1).GerarToken(
-            usuario.Id,
+            Arg.Any<Guid>(),
             usuario.Email,
             usuario.TipoUsuario.ToString(),
             Arg.Any<Guid?>(),

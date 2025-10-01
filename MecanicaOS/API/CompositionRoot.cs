@@ -775,7 +775,6 @@ namespace API
 
         public IAutenticarUsuarioHandler CriarAutenticarUsuarioHandler()
         {
-            var usuarioUseCases = CriarUsuarioUseCases();
             var clienteUseCases = CriarClienteUseCases();
             var segurancaGateway = CriarSegurancaGateway();
             var logServicoGateway = CriarLogServicoGateway<AutenticarUsuarioHandler>();
@@ -783,10 +782,8 @@ namespace API
             var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
 
             return new AutenticarUsuarioHandler(
-                usuarioUseCases,
                 segurancaGateway,
                 logServicoGateway,
-                clienteUseCases,
                 udtGateway,
                 usuarioLogadoServicoGateway);
         }
