@@ -19,6 +19,9 @@ namespace Core.Especificacoes.Base
 
             if (direita.Inclusoes != null)
                 AplicarInclusoes(direita);
+
+            if (esquerda.UsarProjecao)
+                DefinirProjecao(esquerda.ObterProjecao() as Expression<Func<T, object>>);
         }
 
         private void AplicarInclusoes(IEspecificacao<T> esquerda)

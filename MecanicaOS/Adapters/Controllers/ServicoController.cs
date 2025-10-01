@@ -42,7 +42,7 @@ namespace Adapters.Controllers
             return _servicoPresenter.ParaResponse(resultado);
         }
 
-        internal CadastrarServicoUseCaseDto MapearParaCadastrarServicoUseCaseDto(CadastrarServicoRequest request)
+        internal CadastrarServicoUseCaseDto? MapearParaCadastrarServicoUseCaseDto(CadastrarServicoRequest request)
         {
             if (request is null)
                 return null;
