@@ -6,6 +6,7 @@ namespace Core.Interfaces.Repositorios;
 public interface IRepositorio<T> where T : EntityDto
 {
     Task<T?> ObterPorIdAsync(Guid id);
+    Task<T?> ObterPorIdSemRastreamentoAsync(Guid id);
     Task<T> CadastrarAsync(T entidade);
     Task<IEnumerable<T>> CadastrarVariosAsync(IEnumerable<T> entidades);
     Task EditarAsync(T novaEntidade);

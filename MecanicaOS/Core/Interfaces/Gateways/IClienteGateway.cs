@@ -10,6 +10,6 @@ namespace Core.Interfaces.Gateways
         Task<Cliente?> ObterClienteComVeiculoPorIdAsync(Guid clienteId);
         Task<Cliente?> ObterClientePorDocumentoAsync(string documento);
         Task<Cliente?> ObterPorIdAsync(Guid id);
-        Task<IEnumerable<Cliente>> ObterTodosClienteComVeiculoAsync();
+        Task<IEnumerable<Cliente>> ObterTodosClientesAsync();
     }
 }

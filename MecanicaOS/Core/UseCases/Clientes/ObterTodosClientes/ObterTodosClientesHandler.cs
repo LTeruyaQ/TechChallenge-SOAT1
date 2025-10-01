@@ -27,11 +27,11 @@ namespace Core.UseCases.Clientes.ObterTodosClientes
             {
                 LogInicio(metodo);
 
-                var clientesComVeiculos = await _clienteGateway.ObterTodosClienteComVeiculoAsync();
+                var clientes = await _clienteGateway.ObterTodosClientesAsync();
 
-                LogFim(metodo, clientesComVeiculos);
+                LogFim(metodo, clientes);
 
-                return clientesComVeiculos;
+                return clientes;
             }
             catch (Exception e)
             {

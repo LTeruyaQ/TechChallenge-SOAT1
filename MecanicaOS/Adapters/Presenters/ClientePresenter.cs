@@ -71,10 +71,24 @@ namespace Adapters.Presenters
                 Documento = cliente.Documento,
                 DataNascimento = cliente.DataNascimento,
                 TipoCliente = cliente.TipoCliente.ToString(),
-                EnderecoId = cliente.Endereco.Id,
-                ContatoId = cliente.Contato.Id,
+                EnderecoId = cliente.Endereco?.Id,
+                ContatoId = cliente.Contato?.Id,
                 DataCadastro = cliente.DataCadastro.ToString("yyyy-MM-dd HH:mm:ss"),
                 DataAtualizacao = cliente.DataAtualizacao?.ToString("yyyy-MM-dd HH:mm:ss"),
+                Contato = cliente.Contato == null ? null : new ContatoResponse
+                {
+                    Email = cliente.Contato.Email,
+                    Telefone = cliente.Contato.Telefone,
+                },
+                Endereco = cliente.Endereco == null ? null : new EnderecoResponse
+                {
+                    Numero = cliente.Endereco.Numero,
+                    Complemento = cliente.Endereco.Complemento,
+                    Bairro = cliente.Endereco.Bairro,
+                    Cidade = cliente.Endereco.Cidade,
+                    CEP = cliente.Endereco.CEP,
+                    IdCliente = cliente.Id
+                },
                 Veiculos = cliente.Veiculos?.Select(v => new VeiculoResponse
                 {
                     Id = v.Id,
@@ -84,7 +98,7 @@ namespace Adapters.Presenters
                     Cor = v.Cor,
                     Ano = v.Ano,
                     Anotacoes = v.Anotacoes,
-                    ClienteId = v.ClienteId.Value,
+                    ClienteId = v.ClienteId.GetValueOrDefault(),
                     DataCadastro = v.DataCadastro,
                     DataAtualizacao = v.DataAtualizacao
                 })
