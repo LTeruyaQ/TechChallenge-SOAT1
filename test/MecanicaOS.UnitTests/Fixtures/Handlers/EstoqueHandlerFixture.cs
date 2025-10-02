@@ -198,15 +198,15 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         {
             var dto = estoque != null ? ToEstoqueDto(estoque) : null;
             RepositorioEstoque.ObterPorIdAsync(id).Returns(dto);
-            
+
             // Configurar também o método ObterPorIdSemRastreamentoAsync que é usado pelo gateway
             RepositorioEstoque.ObterPorIdSemRastreamentoAsync(id).Returns(dto);
         }
-        
+
         public void ConfigurarMockRepositorioEstoqueParaObterPorIdNull(Guid id)
         {
             RepositorioEstoque.ObterPorIdAsync(id).Returns((EstoqueEntityDto)null);
-            
+
             // Configurar também o método ObterPorIdSemRastreamentoAsync que é usado pelo gateway
             RepositorioEstoque.ObterPorIdSemRastreamentoAsync(id).Returns((EstoqueEntityDto)null);
         }

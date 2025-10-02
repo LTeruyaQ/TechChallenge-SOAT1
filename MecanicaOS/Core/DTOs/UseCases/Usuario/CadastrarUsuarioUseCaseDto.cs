@@ -9,4 +9,5 @@ public class CadastrarUsuarioUseCaseDto
     public TipoUsuario TipoUsuario { get; set; }
     public bool? RecebeAlertaEstoque { get; set; }
     public string? Documento { get; set; }
+    public Guid? ClienteId { get; set; } // Controller resolve o ClienteId
 }

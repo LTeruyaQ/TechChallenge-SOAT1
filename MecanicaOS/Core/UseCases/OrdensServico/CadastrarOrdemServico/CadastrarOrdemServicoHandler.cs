@@ -4,7 +4,6 @@ using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.OrdensServico;
-using Core.Interfaces.UseCases;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
@@ -12,21 +11,15 @@ namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
     public class CadastrarOrdemServicoHandler : UseCasesHandlerAbstrato<CadastrarOrdemServicoHandler>, ICadastrarOrdemServicoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
-        private readonly IClienteUseCases _clienteUseCases;
-        private readonly IServicoUseCases _servicoUseCases;
 
         public CadastrarOrdemServicoHandler(
             IOrdemServicoGateway ordemServicoGateway,
-            IClienteUseCases clienteUseCases,
-            IServicoUseCases servicoUseCases,
             ILogGateway<CadastrarOrdemServicoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
-            _clienteUseCases = clienteUseCases ?? throw new ArgumentNullException(nameof(clienteUseCases));
-            _servicoUseCases = servicoUseCases ?? throw new ArgumentNullException(nameof(servicoUseCases));
         }
 
         public async Task<OrdemServico> Handle(CadastrarOrdemServicoUseCaseDto request)
@@ -37,12 +30,7 @@ namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
             {
                 LogInicio(metodo, request);
 
-                var cliente = await _clienteUseCases.ObterPorIdUseCaseAsync(request.ClienteId)
-                    ?? throw new DadosNaoEncontradosException("Cliente não encontrado");
-
-                var servico = await _servicoUseCases.ObterServicoPorIdUseCaseAsync(request.ServicoId)
-                    ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
-
+                // Controller já validou cliente e serviço
                 var ordemServico = new OrdemServico
                 {
                     ClienteId = request.ClienteId,
@@ -51,8 +39,8 @@ namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
                     Descricao = request.Descricao,
                     Status = StatusOrdemServico.Recebida,
                     DataCadastro = DateTime.UtcNow,
-                    Cliente = cliente,
-                    Servico = servico
+                    Cliente = request.Cliente, // Controller já resolveu
+                    Servico = request.Servico  // Controller já resolveu
                 };
 
                 await _ordemServicoGateway.CadastrarAsync(ordemServico);

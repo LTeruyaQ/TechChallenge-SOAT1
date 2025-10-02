@@ -27,8 +27,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var dto = OrdemServicoHandlerFixture.CriarCadastrarOrdemServicoDto(
                 cliente.Id, veiculo.Id, servico.Id);
 
-            _fixture.ConfigurarMockClienteUseCasesParaObterPorId(cliente.Id, cliente);
-            _fixture.ConfigurarMockServicoUseCasesParaObterPorId(servico.Id, servico);
+            // Controller já resolveu cliente e serviço
+            dto.Cliente = cliente;
+            dto.Servico = servico;
             _fixture.ConfigurarMockRepositorioOrdemServicoParaCadastrar(OrdemServicoHandlerFixture.CriarOrdemServicoValida());
             _fixture.ConfigurarMockUdtParaCommitSucesso();
 
@@ -61,71 +62,6 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
         }
 
         [Fact]
-        public async Task Handle_ComClienteInexistente_DeveLancarDadosNaoEncontradosException()
-        {
-            // Arrange
-            var clienteId = Guid.NewGuid();
-            var veiculoId = Guid.NewGuid();
-            var servicoId = Guid.NewGuid();
-
-            var dto = OrdemServicoHandlerFixture.CriarCadastrarOrdemServicoDto(
-                clienteId, veiculoId, servicoId);
-
-            _fixture.ConfigurarMockClienteUseCasesParaObterPorIdNull(clienteId);
-
-            var handler = _fixture.CriarCadastrarOrdemServicoHandler();
-
-            // Act & Assert
-            var act = async () => await handler.Handle(dto);
-
-            await act.Should().ThrowAsync<DadosNaoEncontradosException>()
-                .WithMessage("Cliente não encontrado");
-
-            // Verificar que o repositório não foi chamado
-            await _fixture.RepositorioOrdemServico.DidNotReceive().CadastrarAsync(Arg.Any<OrdemServicoEntityDto>());
-
-            // Verificar que o commit não foi chamado
-            await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
-
-            // Verificar que os logs foram registrados
-            _fixture.LogServicoCadastrar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<CadastrarOrdemServicoUseCaseDto>());
-            _fixture.LogServicoCadastrar.Received(1).LogErro(Arg.Any<string>(), Arg.Any<DadosNaoEncontradosException>());
-        }
-
-        [Fact]
-        public async Task Handle_ComServicoInexistente_DeveLancarDadosNaoEncontradosException()
-        {
-            // Arrange
-            var cliente = OrdemServicoHandlerFixture.CriarClienteValido();
-            var veiculoId = Guid.NewGuid();
-            var servicoId = Guid.NewGuid();
-
-            var dto = OrdemServicoHandlerFixture.CriarCadastrarOrdemServicoDto(
-                cliente.Id, veiculoId, servicoId);
-
-            _fixture.ConfigurarMockClienteUseCasesParaObterPorId(cliente.Id, cliente);
-            _fixture.ConfigurarMockServicoUseCasesParaObterPorIdNull(servicoId);
-
-            var handler = _fixture.CriarCadastrarOrdemServicoHandler();
-
-            // Act & Assert
-            var act = async () => await handler.Handle(dto);
-
-            await act.Should().ThrowAsync<DadosNaoEncontradosException>()
-                .WithMessage("Serviço não encontrado");
-
-            // Verificar que o repositório não foi chamado
-            await _fixture.RepositorioOrdemServico.DidNotReceive().CadastrarAsync(Arg.Any<OrdemServicoEntityDto>());
-
-            // Verificar que o commit não foi chamado
-            await _fixture.UnidadeDeTrabalho.DidNotReceive().Commit();
-
-            // Verificar que os logs foram registrados
-            _fixture.LogServicoCadastrar.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<CadastrarOrdemServicoUseCaseDto>());
-            _fixture.LogServicoCadastrar.Received(1).LogErro(Arg.Any<string>(), Arg.Any<DadosNaoEncontradosException>());
-        }
-
-        [Fact]
         public async Task Handle_QuandoCommitFalha_DeveLancarPersistirDadosException()
         {
             // Arrange
@@ -136,8 +72,10 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var dto = OrdemServicoHandlerFixture.CriarCadastrarOrdemServicoDto(
                 cliente.Id, veiculo.Id, servico.Id);
 
-            _fixture.ConfigurarMockClienteUseCasesParaObterPorId(cliente.Id, cliente);
-            _fixture.ConfigurarMockServicoUseCasesParaObterPorId(servico.Id, servico);
+            // Controller já resolveu cliente e serviço
+            dto.Cliente = cliente;
+            dto.Servico = servico;
+
             _fixture.ConfigurarMockRepositorioOrdemServicoParaCadastrar(OrdemServicoHandlerFixture.CriarOrdemServicoValida());
             _fixture.ConfigurarMockUdtParaCommitFalha();
 
@@ -171,8 +109,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.OrdensServico
             var dto = OrdemServicoHandlerFixture.CriarCadastrarOrdemServicoDto(
                 cliente.Id, veiculo.Id, servico.Id);
 
-            _fixture.ConfigurarMockClienteUseCasesParaObterPorId(cliente.Id, cliente);
-            _fixture.ConfigurarMockServicoUseCasesParaObterPorId(servico.Id, servico);
+            // Controller já resolveu cliente e serviço
+            dto.Cliente = cliente;
+            dto.Servico = servico;
 
             // Configurar o repositório para lançar uma exceção
             _fixture.RepositorioOrdemServico.CadastrarAsync(Arg.Any<OrdemServicoEntityDto>())

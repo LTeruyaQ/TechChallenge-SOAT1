@@ -1,11 +1,9 @@
 using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
-using Core.Enumeradores;
 using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Usuarios;
 using Core.Interfaces.Servicos;
-using Core.Interfaces.UseCases;
 using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.Usuarios.CadastrarUsuario
@@ -13,12 +11,10 @@ namespace Core.UseCases.Usuarios.CadastrarUsuario
     public class CadastrarUsuarioHandler : UseCasesHandlerAbstrato<CadastrarUsuarioHandler>, ICadastrarUsuarioHandler
     {
         private readonly IUsuarioGateway _usuarioGateway;
-        private readonly IClienteUseCases _clienteUseCases;
         private readonly IServicoSenha _servicoSenha;
 
         public CadastrarUsuarioHandler(
             IUsuarioGateway usuarioGateway,
-            IClienteUseCases clienteUseCases,
             ILogGateway<CadastrarUsuarioHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway,
@@ -26,7 +22,6 @@ namespace Core.UseCases.Usuarios.CadastrarUsuario
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _usuarioGateway = usuarioGateway ?? throw new ArgumentNullException(nameof(usuarioGateway));
-            _clienteUseCases = clienteUseCases ?? throw new ArgumentNullException(nameof(clienteUseCases));
             _servicoSenha = servicoSenha ?? throw new ArgumentNullException(nameof(servicoSenha));
         }
 
@@ -45,12 +40,10 @@ namespace Core.UseCases.Usuarios.CadastrarUsuario
                     Email = request.Email,
                     TipoUsuario = request.TipoUsuario,
                     RecebeAlertaEstoque = request.RecebeAlertaEstoque.HasValue ? request.RecebeAlertaEstoque.Value : false,
+                    ClienteId = request.ClienteId // Controller já resolveu o ClienteId
                 };
 
                 usuario.Senha = _servicoSenha.CriptografarSenha(request.Senha);
-
-                if (request.TipoUsuario == TipoUsuario.Cliente)
-                    usuario.ClienteId = await GetClienteIdUseCaseAsync(request.Documento);
 
                 var entidade = await _usuarioGateway.CadastrarAsync(usuario);
 
@@ -70,28 +63,6 @@ namespace Core.UseCases.Usuarios.CadastrarUsuario
             }
         }
 
-        private async Task<Guid> GetClienteIdUseCaseAsync(string? documento)
-        {
-            string metodo = nameof(GetClienteIdUseCaseAsync);
-
-            LogInicio(metodo, new { documento });
-
-            try
-            {
-                _ = documento ?? throw new DadosInvalidosException("Usuários do tipo cliente devem informar o documento.");
-
-                var cliente = await _clienteUseCases.ObterPorDocumentoUseCaseAsync(documento);
-
-                LogFim(metodo);
-
-                return cliente.Id;
-            }
-            catch (Exception e)
-            {
-                LogErro(metodo, e);
-                throw;
-            }
-        }
 
         private async Task VerificarUsuarioCadastradoAsync(string email)
         {

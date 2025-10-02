@@ -1,7 +1,5 @@
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Servicos;
-using System;
-using System.Collections.Generic;
 
 namespace Adapters.Gateways
 {

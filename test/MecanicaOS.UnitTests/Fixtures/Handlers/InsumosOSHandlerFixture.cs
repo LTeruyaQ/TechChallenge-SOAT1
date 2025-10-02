@@ -1,7 +1,6 @@
 using Adapters.Gateways;
 using Core.DTOs.Entidades.Estoque;
 using Core.DTOs.Entidades.OrdemServicos;
-using Core.DTOs.UseCases.Estoque;
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Entidades;
 using Core.Enumeradores;
@@ -12,11 +11,9 @@ using Core.Interfaces.Handlers.Estoques;
 using Core.Interfaces.Handlers.InsumosOS;
 using Core.Interfaces.Handlers.OrdensServico;
 using Core.Interfaces.Repositorios;
-using Core.Interfaces.UseCases;
 using Core.UseCases.Estoques.AtualizarEstoque;
 using Core.UseCases.Estoques.ObterEstoque;
 using Core.UseCases.InsumosOS.CadastrarInsumos;
-using Core.UseCases.InsumosOS.DevolverInsumos;
 using Core.UseCases.OrdensServico.ObterOrdemServico;
 
 namespace MecanicaOS.UnitTests.Fixtures.Handlers
@@ -31,7 +28,6 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         // Serviços
         public IVerificarEstoqueJobGateway VerificarEstoqueJobGateway { get; }
         public ILogGateway<CadastrarInsumosHandler> LogServicoCadastrar { get; }
-        public ILogGateway<DevolverInsumosHandler> LogServicoDevolverInsumos { get; }
         public IUnidadeDeTrabalhoGateway UnidadeDeTrabalho { get; }
         public IUsuarioLogadoServicoGateway UsuarioLogadoServico { get; }
 
@@ -50,7 +46,6 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
             // Inicializar serviços mockados
             VerificarEstoqueJobGateway = Substitute.For<IVerificarEstoqueJobGateway>();
             LogServicoCadastrar = Substitute.For<ILogGateway<CadastrarInsumosHandler>>();
-            LogServicoDevolverInsumos = Substitute.For<ILogGateway<DevolverInsumosHandler>>();
             UnidadeDeTrabalho = Substitute.For<IUnidadeDeTrabalhoGateway>();
             UsuarioLogadoServico = Substitute.For<IUsuarioLogadoServicoGateway>();
 
@@ -94,38 +89,13 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
 
         public ICadastrarInsumosHandler CriarCadastrarInsumosHandler()
         {
-            // Criar mocks para as interfaces IOrdemServicoUseCases e IEstoqueUseCases
-            var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
-            var estoqueUseCases = Substitute.For<IEstoqueUseCases>();
-
-            // Configurar os mocks para usar os handlers reais
-            ordemServicoUseCases.ObterPorIdUseCaseAsync(Arg.Any<Guid>())
-                .Returns(callInfo => ObterOrdemServicoHandler.Handle(callInfo.Arg<Guid>()).Result);
-
-            estoqueUseCases.ObterPorIdUseCaseAsync(Arg.Any<Guid>())
-                .Returns(callInfo => ObterEstoqueHandler.Handle(callInfo.Arg<Guid>()).Result);
-
-            estoqueUseCases.AtualizarUseCaseAsync(Arg.Any<Guid>(), Arg.Any<AtualizarEstoqueUseCaseDto>())
-                .Returns(callInfo => AtualizarEstoqueHandler.Handle(callInfo.Arg<Guid>(), callInfo.Arg<AtualizarEstoqueUseCaseDto>()).Result);
-
             return new CadastrarInsumosHandler(
-                ordemServicoUseCases,
-                estoqueUseCases,
                 LogServicoCadastrar,
                 UnidadeDeTrabalho,
                 UsuarioLogadoServico,
                 VerificarEstoqueJobGateway);
         }
 
-        public IDevolverInsumosHandler CriarDevolverInsumosHandler()
-        {
-            return new DevolverInsumosHandler(
-                ObterEstoqueHandler,
-                AtualizarEstoqueHandler,
-                LogServicoDevolverInsumos,
-                UnidadeDeTrabalho,
-                UsuarioLogadoServico);
-        }
 
         public void ConfigurarMockOrdemServicoRepositorioParaObterPorId(Guid ordemServicoId, OrdemServico ordemServico)
         {
@@ -164,12 +134,12 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 DataCadastro = estoque.DataCadastro,
                 DataAtualizacao = estoque.DataAtualizacao
             };
-            
+
             // Configurar o repositório para retornar o DTO quando consultado por ID
             RepositorioEstoque
                 .ObterPorIdAsync(estoqueId)
                 .Returns(estoqueDto);
-                
+
             // Configurar também o método ObterPorIdSemRastreamentoAsync que é usado pelo gateway
             RepositorioEstoque
                 .ObterPorIdSemRastreamentoAsync(estoqueId)
@@ -180,7 +150,7 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 .ObterUmProjetadoAsync<Estoque>(Arg.Any<IEspecificacao<EstoqueEntityDto>>())
                 .Returns(Task.FromResult(estoque));
         }
-        
+
         public List<EstoqueEntityDto> ConfigurarMockEstoqueRepositorioParaAtualizar(Guid estoqueId)
         {
             // Lista para capturar os DTOs enviados ao repositório

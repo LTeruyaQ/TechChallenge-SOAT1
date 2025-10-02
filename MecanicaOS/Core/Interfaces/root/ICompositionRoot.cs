@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Config;
+using Core.DTOs.Config;
 using Core.DTOs.Entidades.Autenticacao;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.Eventos;
@@ -40,7 +40,6 @@ namespace Core.Interfaces.root
         ICadastrarUsuarioHandler CriarCadastrarUsuarioHandler();
         ICadastrarVeiculoHandler CriarCadastrarVeiculoHandler();
         IClienteController CriarClienteController();
-        IClienteGateway CriarClienteGateway();
         IClientePresenter CriarClientePresenter();
         IClienteUseCases CriarClienteUseCases();
         ConfiguracaoJwt CriarConfiguracaoJwt();
@@ -49,7 +48,6 @@ namespace Core.Interfaces.root
         IDeletarServicoHandler CriarDeletarServicoHandler();
         IDeletarUsuarioHandler CriarDeletarUsuarioHandler();
         IDeletarVeiculoHandler CriarDeletarVeiculoHandler();
-        IDevolverInsumosHandler CriarDevolverInsumosHandler();
         IEditarServicoHandler CriarEditarServicoHandler();
         IEnderecoGateway CriarEnderecoGateway();
         IEstoqueController CriarEstoqueController();

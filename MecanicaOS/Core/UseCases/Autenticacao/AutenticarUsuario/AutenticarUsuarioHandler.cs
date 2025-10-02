@@ -9,7 +9,7 @@ using Core.UseCases.Abstrato;
 namespace Core.UseCases.Autenticacao.AutenticarUsuario
 {
     public class AutenticarUsuarioHandler : UseCasesHandlerAbstrato<AutenticarUsuarioHandler>, IAutenticarUsuarioHandler
-    {        
+    {
         private readonly ISegurancaGateway _segurancaGateway;
 
         public AutenticarUsuarioHandler(
@@ -32,7 +32,7 @@ namespace Core.UseCases.Autenticacao.AutenticarUsuario
 
                 if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Senha))
                     throw new DadosInvalidosException("Email e senha são obrigatórios");
-                
+
                 if (request.UsuarioExistente == null)
                     throw new DadosInvalidosException("Usuário ou senha inválidos");
 

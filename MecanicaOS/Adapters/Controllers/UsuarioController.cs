@@ -2,6 +2,8 @@ using Adapters.Presenters;
 using Core.DTOs.Requests.Usuario;
 using Core.DTOs.Responses.Usuario;
 using Core.DTOs.UseCases.Usuario;
+using Core.Enumeradores;
+using Core.Exceptions;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.Presenters;
 using Core.Interfaces.root;
@@ -12,11 +14,13 @@ namespace Adapters.Controllers
     public class UsuarioController : IUsuarioController
     {
         private readonly IUsuarioUseCases _usuarioUseCases;
+        private readonly IClienteUseCases _clienteUseCases;
         private readonly IUsuarioPresenter _usuarioPresenter;
 
         public UsuarioController(ICompositionRoot compositionRoot)
         {
             _usuarioUseCases = compositionRoot.CriarUsuarioUseCases();
+            _clienteUseCases = compositionRoot.CriarClienteUseCases();
             _usuarioPresenter = new UsuarioPresenter();
         }
 
@@ -38,6 +42,14 @@ namespace Adapters.Controllers
         public async Task<UsuarioResponse> CadastrarAsync(CadastrarUsuarioRequest request)
         {
             var useCaseDto = MapearParaCadastrarUsuarioUseCaseDto(request);
+
+            if (request.TipoUsuario == TipoUsuario.Cliente)
+            {
+                _ = request.Documento ?? throw new DadosInvalidosException("Usuários do tipo cliente devem informar o documento.");
+                var cliente = await _clienteUseCases.ObterPorDocumentoUseCaseAsync(request.Documento);
+                useCaseDto.ClienteId = cliente.Id;
+            }
+
             var resultado = await _usuarioUseCases.CadastrarUseCaseAsync(useCaseDto);
             return _usuarioPresenter.ParaResponse(resultado);
         }

@@ -81,8 +81,6 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
         {
             return new CadastrarOrdemServicoHandler(
                 OrdemServicoGateway,
-                ClienteUseCases,
-                ServicoUseCases,
                 LogServicoCadastrar,
                 UnidadeDeTrabalho,
                 UsuarioLogadoServico);

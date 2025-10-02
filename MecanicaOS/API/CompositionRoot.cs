@@ -47,7 +47,6 @@ using Core.UseCases.Estoques.ObterEstoqueCritico;
 using Core.UseCases.Estoques.ObterTodosEstoques;
 using Core.UseCases.InsumosOS;
 using Core.UseCases.InsumosOS.CadastrarInsumos;
-using Core.UseCases.InsumosOS.DevolverInsumos;
 using Core.UseCases.Orcamentos;
 using Core.UseCases.Orcamentos.GerarOrcamento;
 using Core.UseCases.OrdensServico;
@@ -469,21 +468,18 @@ namespace API
         public ICadastrarUsuarioHandler CriarCadastrarUsuarioHandler()
         {
             var usuarioGateway = CriarUsuarioGateway();
-            var clienteUseCases = CriarClienteUseCases();
-            var logServicoGateway = CriarLogServicoGateway<CadastrarUsuarioHandler>();
+            var logGateway = CriarLogServicoGateway<CadastrarUsuarioHandler>();
             var udtGateway = CriarUnidadeDeTrabalhoGateway();
             var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
             var servicoSenha = new ServicoSenha();
 
             return new CadastrarUsuarioHandler(
                 usuarioGateway,
-                clienteUseCases,
-                logServicoGateway,
+                logGateway,
                 udtGateway,
                 usuarioLogadoServicoGateway,
                 servicoSenha);
         }
-
         public IAtualizarUsuarioHandler CriarAtualizarUsuarioHandler()
         {
             var usuarioGateway = CriarUsuarioGateway();
@@ -791,42 +787,19 @@ namespace API
         #endregion
 
         #region Criação de Handlers Individuais - InsumoOS
-
         public ICadastrarInsumosHandler CriarCadastrarInsumosHandler()
         {
-            var ordemServicoUseCases = CriarOrdemServicoUseCases();
-            var estoqueUseCases = CriarEstoqueUseCases();
             var verificarEstoqueJobGateway = CriarVerificarEstoqueJobGateway();
             var logServicoGateway = CriarLogServicoGateway<CadastrarInsumosHandler>();
             var udtGateway = CriarUnidadeDeTrabalhoGateway();
             var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
 
             return new CadastrarInsumosHandler(
-                ordemServicoUseCases,
-                estoqueUseCases,
                 logServicoGateway,
                 udtGateway,
                 usuarioLogadoServicoGateway,
                 verificarEstoqueJobGateway);
         }
-
-        public IDevolverInsumosHandler CriarDevolverInsumosHandler()
-        {
-            var obterEstoqueHandler = CriarObterEstoqueHandler();
-            var atualizarEstoqueHandler = CriarAtualizarEstoqueHandler();
-
-            var logServicoGateway = CriarLogServicoGateway<DevolverInsumosHandler>();
-            var udtGateway = CriarUnidadeDeTrabalhoGateway();
-            var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
-
-            return new DevolverInsumosHandler(
-                obterEstoqueHandler,
-                atualizarEstoqueHandler,
-                logServicoGateway,
-                udtGateway,
-                usuarioLogadoServicoGateway);
-        }
-
         #endregion
 
         #region Criação de Handlers Individuais - OrdemServico
@@ -834,16 +807,12 @@ namespace API
         public ICadastrarOrdemServicoHandler CriarCadastrarOrdemServicoHandler()
         {
             var ordemServicoGateway = CriarOrdemServicoGateway();
-            var clienteUseCases = CriarClienteUseCases();
-            var servicoUseCases = CriarServicoUseCases();
             var logServicoGateway = CriarLogServicoGateway<CadastrarOrdemServicoHandler>();
             var udtGateway = CriarUnidadeDeTrabalhoGateway();
             var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
 
             return new CadastrarOrdemServicoHandler(
                 ordemServicoGateway,
-                clienteUseCases,
-                servicoUseCases,
                 logServicoGateway,
                 udtGateway,
                 usuarioLogadoServicoGateway);
@@ -1019,11 +988,9 @@ namespace API
         public IInsumoOSUseCases CriarInsumoOSUseCases()
         {
             var cadastrarInsumosHandler = CriarCadastrarInsumosHandler();
-            var devolverInsumosHandler = CriarDevolverInsumosHandler();
 
             return new InsumoOSUseCasesFacade(
-                cadastrarInsumosHandler,
-                devolverInsumosHandler);
+                cadastrarInsumosHandler);
         }
 
         public IUsuarioUseCases CriarUsuarioUseCases()

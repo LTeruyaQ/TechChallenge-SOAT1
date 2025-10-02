@@ -1,4 +1,3 @@
-using Core.DTOs.Requests.Autenticacao;
 using Core.DTOs.Responses.Autenticacao;
 using Core.DTOs.UseCases.Autenticacao;
 using Core.Interfaces.Presenters;

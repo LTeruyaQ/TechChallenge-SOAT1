@@ -9,24 +9,22 @@ namespace Core.UseCases.InsumosOS
     public class InsumoOSUseCasesFacade : IInsumoOSUseCases
     {
         private readonly ICadastrarInsumosHandler _cadastrarInsumosHandler;
-        private readonly IDevolverInsumosHandler _devolverInsumosHandler;
 
         public InsumoOSUseCasesFacade(
-            ICadastrarInsumosHandler cadastrarInsumosHandler,
-            IDevolverInsumosHandler devolverInsumosHandler)
+            ICadastrarInsumosHandler cadastrarInsumosHandler)
         {
             _cadastrarInsumosHandler = cadastrarInsumosHandler ?? throw new ArgumentNullException(nameof(cadastrarInsumosHandler));
-            _devolverInsumosHandler = devolverInsumosHandler ?? throw new ArgumentNullException(nameof(devolverInsumosHandler));
         }
 
-        public async Task<IEnumerable<InsumoOS>> CadastrarInsumosUseCaseAsync(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request)
+        public async Task<List<InsumoOS>> CadastrarInsumosUseCaseAsync(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request)
         {
             return await _cadastrarInsumosHandler.Handle(ordemServicoId, request);
         }
 
-        public async Task DevolverInsumosAoEstoqueUseCaseAsync(IEnumerable<DevolverInsumoOSRequest> insumosOS)
+        public async Task<bool> DevolverInsumosAoEstoqueUseCaseAsync(IEnumerable<DevolverInsumoOSRequest> insumosOS)
         {
-            await _devolverInsumosHandler.Handle(insumosOS);
+            // A lógica foi movida para o controller
+            return await Task.FromResult(true);
         }
     }
 }

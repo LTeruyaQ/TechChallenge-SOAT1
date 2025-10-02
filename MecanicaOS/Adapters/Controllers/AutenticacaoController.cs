@@ -25,10 +25,10 @@ namespace Adapters.Controllers
         public async Task<AutenticacaoResponse> AutenticarAsync(AutenticacaoRequest autenticacaoRequest)
         {
             var usuario = await _usuarioUseCases.ObterPorEmailUseCaseAsync(autenticacaoRequest.Email) ?? throw new DadosInvalidosException("Usuário ou senha inválidos");
-            
+
             var useCaseDto = MapearParaAutenticacaoUseCaseDto(autenticacaoRequest, usuario);
             var autenticacaoDto = await _autenticacaoUseCases.AutenticarUseCaseAsync(useCaseDto);
-            
+
             return _autenticacaoPresenter.ParaResponse(autenticacaoDto);
         }
 

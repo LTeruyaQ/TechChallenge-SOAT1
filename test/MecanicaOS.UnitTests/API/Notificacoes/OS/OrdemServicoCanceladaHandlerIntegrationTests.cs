@@ -185,7 +185,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                     // Simular a chamada para o use case
                     _insumoOSUseCases.DevolverInsumosAoEstoqueUseCaseAsync(requests);
 
-                    return Task.CompletedTask;
+                    return Task.FromResult(true);
                 });
 
             // Configurar o comportamento do use case para simular a devolução real
@@ -205,13 +205,11 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                         }
                     }
 
-                    return Task.CompletedTask;
+                    return Task.FromResult(true);
                 });
 
             // Configurar evento de cancelamento
             var evento = new OrdemServicoCanceladaEvent(ordemServicoId);
-
-            // Act
             await _handler.Handle(evento, CancellationToken.None);
 
             // Assert
@@ -282,7 +280,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                         }
                     }
 
-                    return Task.CompletedTask;
+                    return Task.FromResult(true);
                 });
 
             // Configurar evento de cancelamento

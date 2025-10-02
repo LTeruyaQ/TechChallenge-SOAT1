@@ -32,7 +32,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             var presenterField = typeof(AutenticacaoController).GetField("_autenticacaoPresenter",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             presenterField?.SetValue(_autenticacaoController, _autenticacaoPresenter);
-            
+
             // Injetar usuarioUseCases mockado
             var usuarioUseCasesField = typeof(AutenticacaoController).GetField("_usuarioUseCases",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
@@ -55,7 +55,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                 Email = "teste@email.com",
                 Senha = "senha_hash"
             };
-            
+
             // Act
             var result = _autenticacaoController.MapearParaAutenticacaoUseCaseDto(request, usuario);
 
@@ -76,7 +76,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                 Email = "teste@email.com",
                 Senha = "senha_hash"
             };
-            
+
             // Act
             var result = _autenticacaoController.MapearParaAutenticacaoUseCaseDto(null, usuario);
 

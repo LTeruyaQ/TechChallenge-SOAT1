@@ -130,7 +130,7 @@ public class AutenticarUsuarioHandlerTests
             usuario.ClienteId = Guid.NewGuid();
             _fixture.ConfigurarMockClienteUseCasesParaClienteValido(usuario.ClienteId.Value);
         }
-        
+
         var request = new AutenticacaoUseCaseDto
         {
             Email = "admin@mecanicaos.com",

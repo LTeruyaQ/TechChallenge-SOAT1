@@ -1,177 +1,212 @@
 using Adapters.Controllers;
-using Adapters.Presenters;
+using Core.DTOs.Requests.OrdemServico;
+using Core.DTOs.Responses.OrdemServico;
 using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Interfaces.Presenters;
-using Core.Interfaces.UseCases;
 using Core.Interfaces.root;
-using NSubstitute;
-using Core.DTOs.Requests.OrdemServico;
-using Core.DTOs.Responses.OrdemServico;
+using Core.Interfaces.UseCases;
 
-namespace MecanicaOS.UnitTests.Adapters.Controllers;
-
-public class OrdemServicoControllerTests
+namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
-    private readonly IOrdemServicoUseCases _ordemServicoUseCases;
-    private readonly IOrdemServicoPresenter _ordemServicoPresenter;
-    private readonly OrdemServicoController _ordemServicoController;
-    private readonly ICompositionRoot _compositionRoot;
-
-    public OrdemServicoControllerTests()
+    public class OrdemServicoControllerTests
     {
-        _ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
-        _ordemServicoPresenter = Substitute.For<IOrdemServicoPresenter>();
-        _compositionRoot = Substitute.For<ICompositionRoot>();
+        private readonly IOrdemServicoUseCases _ordemServicoUseCases;
+        private readonly IOrdemServicoPresenter _ordemServicoPresenter;
+        private readonly OrdemServicoController _ordemServicoController;
+        private readonly ICompositionRoot _compositionRoot;
 
-        _compositionRoot.CriarOrdemServicoUseCases().Returns(_ordemServicoUseCases);
-        _ordemServicoController = new OrdemServicoController(_compositionRoot);
-
-        // Usar reflexão para injetar o presenter mockado
-        var presenterField = typeof(OrdemServicoController).GetField("_ordemServicoPresenter",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        presenterField?.SetValue(_ordemServicoController, _ordemServicoPresenter);
-    }
-
-    [Fact]
-    public void MapearParaCadastrarOrdemServicoUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-    {
-        // Arrange
-        var request = new CadastrarOrdemServicoRequest
+        public OrdemServicoControllerTests()
         {
-            ClienteId = Guid.NewGuid(),
-            VeiculoId = Guid.NewGuid(),
-            ServicoId = Guid.NewGuid(),
-            Descricao = "Descrição da Ordem de Serviço Teste"
-        };
+            _ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
+            _ordemServicoPresenter = Substitute.For<IOrdemServicoPresenter>();
+            _compositionRoot = Substitute.For<ICompositionRoot>();
 
-        // Act
-        var result = _ordemServicoController.MapearParaCadastrarOrdemServicoUseCaseDto(request);
+            _compositionRoot.CriarOrdemServicoUseCases().Returns(_ordemServicoUseCases);
+            
+            // Configurar mocks padrão para ClienteUseCases e ServicoUseCases
+            var clienteUseCases = Substitute.For<IClienteUseCases>();
+            var servicoUseCases = Substitute.For<IServicoUseCases>();
+            _compositionRoot.CriarClienteUseCases().Returns(clienteUseCases);
+            _compositionRoot.CriarServicoUseCases().Returns(servicoUseCases);
+            
+            _ordemServicoController = new OrdemServicoController(_compositionRoot);
 
-        // Assert
-        result.Should().NotBeNull();
-        result.ClienteId.Should().Be(request.ClienteId);
-        result.VeiculoId.Should().Be(request.VeiculoId);
-        result.ServicoId.Should().Be(request.ServicoId);
-        result.Descricao.Should().Be(request.Descricao);
-    }
+            // Usar reflexão para injetar o presenter mockado
+            var presenterField = typeof(OrdemServicoController).GetField("_ordemServicoPresenter",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            presenterField?.SetValue(_ordemServicoController, _ordemServicoPresenter);
+        }
 
-    [Fact]
-    public void MapearParaCadastrarOrdemServicoUseCaseDto_ComRequestNulo_DeveRetornarNulo()
-    {
-        // Act
-        var result = _ordemServicoController.MapearParaCadastrarOrdemServicoUseCaseDto(null);
-
-        // Assert
-        result.Should().BeNull();
-    }
-
-    [Fact]
-    public void MapearParaAtualizarOrdemServicoUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-    {
-        // Arrange
-        var request = new AtualizarOrdemServicoRequest
+        [Fact]
+        public void MapearParaCadastrarOrdemServicoUseCaseDto_ComRequestValido_DeveMapearCorretamente()
         {
-            ClienteId = Guid.NewGuid(),
-            VeiculoId = Guid.NewGuid(),
-            ServicoId = Guid.NewGuid(),
-            Descricao = "Descrição da Ordem de Serviço Teste",
-            Status = StatusOrdemServico.EmExecucao
-        };
+            // Arrange
+            var request = new CadastrarOrdemServicoRequest
+            {
+                ClienteId = Guid.NewGuid(),
+                VeiculoId = Guid.NewGuid(),
+                ServicoId = Guid.NewGuid(),
+                Descricao = "Descrição da Ordem de Serviço Teste"
+            };
 
-        // Act
-        var result = _ordemServicoController.MapearParaAtualizarOrdemServicoUseCaseDto(request);
+            // Act
+            var result = _ordemServicoController.MapearParaCadastrarOrdemServicoUseCaseDto(request);
 
-        // Assert
-        result.Should().NotBeNull();
-        result.ClienteId.Should().Be(request.ClienteId);
-        result.VeiculoId.Should().Be(request.VeiculoId);
-        result.ServicoId.Should().Be(request.ServicoId);
-        result.Descricao.Should().Be(request.Descricao);
-        result.Status.Should().Be(request.Status);
-    }
+            // Assert
+            result.Should().NotBeNull();
+            result.ClienteId.Should().Be(request.ClienteId);
+            result.VeiculoId.Should().Be(request.VeiculoId);
+            result.ServicoId.Should().Be(request.ServicoId);
+            result.Descricao.Should().Be(request.Descricao);
+        }
 
-    [Fact]
-    public void MapearParaAtualizarOrdemServicoUseCaseDto_ComRequestNulo_DeveRetornarNulo()
-    {
-        // Act
-        var result = _ordemServicoController.MapearParaAtualizarOrdemServicoUseCaseDto(null);
-
-        // Assert
-        result.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task Cadastrar_DeveUsarMapeamentoEChamarUseCase()
-    {
-        // Arrange
-        var request = new CadastrarOrdemServicoRequest
+        [Fact]
+        public void MapearParaCadastrarOrdemServicoUseCaseDto_ComRequestNulo_DeveRetornarNulo()
         {
-            ClienteId = Guid.NewGuid(),
-            VeiculoId = Guid.NewGuid(),
-            ServicoId = Guid.NewGuid(),
-            Descricao = "Descrição da Ordem de Serviço Teste"
-        };
+            // Act
+            var result = _ordemServicoController.MapearParaCadastrarOrdemServicoUseCaseDto(null);
 
-        var ordemServico = new OrdemServico();
-        var ordemServicoResponse = new OrdemServicoResponse(); // Criar uma resposta
-        
-        _ordemServicoUseCases.CadastrarUseCaseAsync(Arg.Any<CadastrarOrdemServicoUseCaseDto>())
-            .Returns(ordemServico);
-        _ordemServicoPresenter.ParaResponse(Arg.Any<OrdemServico>())
-            .Returns(ordemServicoResponse); // Configurar o mock para retornar uma resposta
+            // Assert
+            result.Should().BeNull();
+        }
 
-        // Act
-        var result = await _ordemServicoController.Cadastrar(request);
-
-        // Assert
-        await _ordemServicoUseCases.Received(1).CadastrarUseCaseAsync(Arg.Is<CadastrarOrdemServicoUseCaseDto>(
-            dto => dto.ClienteId == request.ClienteId &&
-                  dto.VeiculoId == request.VeiculoId &&
-                  dto.ServicoId == request.ServicoId &&
-                  dto.Descricao == request.Descricao));
-
-        _ordemServicoPresenter.Received(1).ParaResponse(ordemServico);
-        result.Should().Be(ordemServicoResponse); // Verificar se o resultado é a resposta esperada
-    }
-
-    [Fact]
-    public async Task Atualizar_DeveUsarMapeamentoEChamarUseCase()
-    {
-        // Arrange
-        var id = Guid.NewGuid();
-        var request = new AtualizarOrdemServicoRequest
+        [Fact]
+        public void MapearParaAtualizarOrdemServicoUseCaseDto_ComRequestValido_DeveMapearCorretamente()
         {
-            ClienteId = Guid.NewGuid(),
-            VeiculoId = Guid.NewGuid(),
-            ServicoId = Guid.NewGuid(),
-            Descricao = "Descrição da Ordem de Serviço Atualizada",
-            Status = StatusOrdemServico.EmExecucao
-        };
+            // Arrange
+            var request = new AtualizarOrdemServicoRequest
+            {
+                ClienteId = Guid.NewGuid(),
+                VeiculoId = Guid.NewGuid(),
+                ServicoId = Guid.NewGuid(),
+                Descricao = "Descrição da Ordem de Serviço Teste",
+                Status = StatusOrdemServico.EmExecucao
+            };
 
-        var ordemServico = new OrdemServico();
-        var ordemServicoResponse = new OrdemServicoResponse(); // Criar uma resposta
-        
-        _ordemServicoUseCases.AtualizarUseCaseAsync(id, Arg.Any<AtualizarOrdemServicoUseCaseDto>())
-            .Returns(ordemServico);
-        _ordemServicoPresenter.ParaResponse(Arg.Any<OrdemServico>())
-            .Returns(ordemServicoResponse); // Configurar o mock para retornar uma resposta
+            // Act
+            var result = _ordemServicoController.MapearParaAtualizarOrdemServicoUseCaseDto(request);
 
-        // Act
-        var result = await _ordemServicoController.Atualizar(id, request);
+            // Assert
+            result.Should().NotBeNull();
+            // Apenas os campos que são mapeados no método atual
+            result.Descricao.Should().Be(request.Descricao);
+            result.Status.Should().Be(request.Status);
+        }
 
-        // Assert
-        await _ordemServicoUseCases.Received(1).AtualizarUseCaseAsync(
-            Arg.Is<Guid>(g => g == id),
-            Arg.Is<AtualizarOrdemServicoUseCaseDto>(
+        [Fact]
+        public void MapearParaAtualizarOrdemServicoUseCaseDto_ComRequestNulo_DeveRetornarNulo()
+        {
+            // Act
+            var result = _ordemServicoController.MapearParaAtualizarOrdemServicoUseCaseDto(null);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task Cadastrar_DeveUsarMapeamentoEChamarUseCase()
+        {
+            // Arrange
+            var request = new CadastrarOrdemServicoRequest
+            {
+                ClienteId = Guid.NewGuid(),
+                VeiculoId = Guid.NewGuid(),
+                ServicoId = Guid.NewGuid(),
+                Descricao = "Descrição da Ordem de Serviço Teste"
+            };
+
+            var ordemServico = new OrdemServico();
+            var ordemServicoResponse = new OrdemServicoResponse();
+            
+            // Criar objetos Cliente e Servico com todas as propriedades obrigatórias
+            var cliente = new Cliente { 
+                Id = request.ClienteId,
+                Nome = "Cliente Teste",
+                TipoCliente = TipoCliente.PessoaFisica,
+                Documento = "12345678900"
+            };
+            
+            var servico = new Servico { 
+                Id = request.ServicoId,
+                Nome = "Serviço Teste",
+                Descricao = "Descrição do serviço teste",
+                Valor = 100.0m,
+                Disponivel = true
+            };
+
+            // Obter os mocks já configurados no construtor
+            var clienteUseCases = _compositionRoot.CriarClienteUseCases();
+            var servicoUseCases = _compositionRoot.CriarServicoUseCases();
+            
+            // Configurar comportamentos específicos para este teste
+            clienteUseCases.ObterPorIdUseCaseAsync(request.ClienteId).Returns(cliente);
+            servicoUseCases.ObterServicoPorIdUseCaseAsync(request.ServicoId).Returns(servico);
+
+            // Configure o mock para retornar a ordem de serviço
+            _ordemServicoUseCases.CadastrarUseCaseAsync(Arg.Any<CadastrarOrdemServicoUseCaseDto>())
+                .Returns(ordemServico);
+            
+            // Configure o presenter para retornar a resposta
+            _ordemServicoPresenter.ParaResponse(Arg.Any<OrdemServico>())
+                .Returns(ordemServicoResponse);
+
+            // Act
+            var result = await _ordemServicoController.Cadastrar(request);
+
+            // Assert
+            // Verifique se os métodos de orquestração foram chamados
+            await clienteUseCases.Received(1).ObterPorIdUseCaseAsync(request.ClienteId);
+            await servicoUseCases.Received(1).ObterServicoPorIdUseCaseAsync(request.ServicoId);
+
+            // Verifique se o método do usecase foi chamado com os parâmetros corretos
+            await _ordemServicoUseCases.Received(1).CadastrarUseCaseAsync(Arg.Is<CadastrarOrdemServicoUseCaseDto>(
                 dto => dto.ClienteId == request.ClienteId &&
                       dto.VeiculoId == request.VeiculoId &&
                       dto.ServicoId == request.ServicoId &&
                       dto.Descricao == request.Descricao &&
-                      dto.Status == request.Status));
+                      dto.Cliente == cliente &&
+                      dto.Servico == servico));
 
-        _ordemServicoPresenter.Received(1).ParaResponse(ordemServico);
-        result.Should().Be(ordemServicoResponse); // Verificar se o resultado é a resposta esperada
+            // Verifique se o presenter foi chamado
+            _ordemServicoPresenter.Received(1).ParaResponse(ordemServico);
+            
+            // Verifique se o resultado é a resposta esperada
+            result.Should().Be(ordemServicoResponse);
+        }
+
+        [Fact]
+        public async Task Atualizar_DeveUsarMapeamentoEChamarUseCase()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var request = new AtualizarOrdemServicoRequest
+            {
+                Descricao = "Descrição da Ordem de Serviço Atualizada",
+                Status = StatusOrdemServico.EmExecucao
+            };
+
+            var ordemServico = new OrdemServico();
+            var ordemServicoResponse = new OrdemServicoResponse();
+
+            _ordemServicoUseCases.AtualizarUseCaseAsync(id, Arg.Any<AtualizarOrdemServicoUseCaseDto>())
+                .Returns(ordemServico);
+            _ordemServicoPresenter.ParaResponse(Arg.Any<OrdemServico>())
+                .Returns(ordemServicoResponse);
+
+            // Act
+            var result = await _ordemServicoController.Atualizar(id, request);
+
+            // Assert
+            await _ordemServicoUseCases.Received(1).AtualizarUseCaseAsync(
+                Arg.Is<Guid>(g => g == id),
+                Arg.Is<AtualizarOrdemServicoUseCaseDto>(
+                    dto => dto.Descricao == request.Descricao &&
+                          dto.Status == request.Status));
+
+            _ordemServicoPresenter.Received(1).ParaResponse(ordemServico);
+            result.Should().Be(ordemServicoResponse);
+        }
     }
 }

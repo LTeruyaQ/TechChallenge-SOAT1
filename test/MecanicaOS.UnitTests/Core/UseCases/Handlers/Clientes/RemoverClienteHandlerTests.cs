@@ -57,7 +57,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
 
             // Configurar o repositório para retornar null (cliente não encontrado)
             _fixture.RepositorioCliente.ObterPorIdAsync(clienteId).Returns((ClienteEntityDto)null);
-            
+
             // Configurar também o método ObterUmProjetadoSemRastreamentoAsync que é usado pelo gateway
             _fixture.RepositorioCliente
                 .ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())

@@ -1,12 +1,7 @@
 ﻿using Core.DTOs.Entidades.Cliente;
 using Core.Entidades;
 using Core.Especificacoes.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Especificacoes.Cliente
 {
