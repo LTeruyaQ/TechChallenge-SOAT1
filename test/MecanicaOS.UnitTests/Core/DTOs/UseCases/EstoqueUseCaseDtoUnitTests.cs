@@ -32,7 +32,7 @@ public class EstoqueUseCaseDtoUnitTests
         dto.Insumo.Should().Be("Filtro de Ar", "deve manter insumo obrigatório");
         dto.Preco.Should().Be(25.00m, "deve manter preço válido");
         dto.QuantidadeDisponivel.Should().BeGreaterThan(0, "deve ter quantidade disponível");
-        dto.QuantidadeMinima.Should().BeGreaterOrEqualTo(0, "deve ter quantidade mínima válida");
+        dto.QuantidadeMinima.Should().BeGreaterThanOrEqualTo(0, "deve ter quantidade mínima válida");
     }
 
     [Fact]
