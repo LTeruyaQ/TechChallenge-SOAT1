@@ -93,7 +93,8 @@ namespace MecanicaOS.UnitTests.Fixtures.Handlers
                 LogServicoCadastrar,
                 UnidadeDeTrabalho,
                 UsuarioLogadoServico,
-                VerificarEstoqueJobGateway);
+                VerificarEstoqueJobGateway,
+                InsumosGateway);
         }
 
 
