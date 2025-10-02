@@ -1,4 +1,5 @@
 using Core.Entidades;
+using Core.Enumeradores;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.OrdensServico;
 using Core.UseCases.Abstrato;
@@ -29,15 +30,52 @@ namespace Core.UseCases.OrdensServico.ObterTodosOrdensServico
 
                 var ordensServico = await _ordemServicoGateway.ObterTodosAsync();
 
-                LogFim(metodo, ordensServico);
+                var statusParaExcluir = ObterStatusParaExcluir();
 
-                return ordensServico;
+                var ordensServicoOrdenadas = ordensServico
+                    .Where(os => !statusParaExcluir.Contains(os.Status))
+                    .OrderBy(os => ObterPrioridadeStatus(os.Status))
+                    .ThenBy(os => os.DataCadastro)
+                    .ToList();
+
+                LogFim(metodo, ordensServicoOrdenadas);
+
+                return ordensServicoOrdenadas;
             }
             catch (Exception e)
             {
                 LogErro(metodo, e);
                 throw;
             }
+        }
+
+        private static List<StatusOrdemServico> ObterStatusParaExcluir()
+        {
+            return
+            [
+                StatusOrdemServico.Finalizada,
+                StatusOrdemServico.Entregue,
+                StatusOrdemServico.Cancelada,
+                StatusOrdemServico.OrcamentoExpirado
+            ];
+        }
+
+        private static int ObterPrioridadeStatus(StatusOrdemServico status)
+        {
+            return status switch
+            {
+                StatusOrdemServico.EmExecucao => 1,
+                StatusOrdemServico.AguardandoAprovacao => 2,
+                StatusOrdemServico.EmDiagnostico => 3,
+                StatusOrdemServico.Recebida => 4,
+
+                StatusOrdemServico.Finalizada => 99,
+                StatusOrdemServico.Entregue => 99,
+                StatusOrdemServico.Cancelada => 99,
+                StatusOrdemServico.OrcamentoExpirado => 99,
+
+                _ => int.MaxValue
+            };
         }
     }
 }
