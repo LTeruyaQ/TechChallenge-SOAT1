@@ -10,15 +10,18 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
     public class CadastrarInsumosHandler : UseCasesHandlerAbstrato<CadastrarInsumosHandler>, ICadastrarInsumosHandler
     {
         private readonly IVerificarEstoqueJobGateway _verificarEstoqueJobGateway;
+        private readonly IInsumosGateway _insumosGateway;
 
         public CadastrarInsumosHandler(
             ILogGateway<CadastrarInsumosHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway,
-            IVerificarEstoqueJobGateway verificarEstoqueJobGateway)
+            IVerificarEstoqueJobGateway verificarEstoqueJobGateway,
+            IInsumosGateway insumosGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _verificarEstoqueJobGateway = verificarEstoqueJobGateway ?? throw new ArgumentNullException(nameof(verificarEstoqueJobGateway));
+            _insumosGateway = insumosGateway;
         }
 
         public async Task<List<InsumoOS>> Handle(Guid ordemServicoId, List<CadastrarInsumoOSUseCaseDto> request)
@@ -37,8 +40,7 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
                     {
                         OrdemServicoId = ordemServicoId,
                         EstoqueId = insumoDto.EstoqueId,
-                        Quantidade = insumoDto.Quantidade,
-                        Estoque = insumoDto.Estoque
+                        Quantidade = insumoDto.Quantidade
                     };
 
                     insumosOS.Add(insumoOS);
@@ -50,12 +52,14 @@ namespace Core.UseCases.InsumosOS.CadastrarInsumos
                     }
                 }
 
+                await _insumosGateway.CadastrarVariosAsync(insumosOS);
+
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao cadastrar insumos na ordem de serviço");
 
                 LogFim(metodo, insumosOS);
 
-                return insumosOS.ToList();
+                return [.. insumosOS];
             }
             catch (Exception e)
             {
