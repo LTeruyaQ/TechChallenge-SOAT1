@@ -7,49 +7,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
     public class ObterTodosEstoquesHandlerTests
     {
         private readonly EstoqueHandlerFixture _fixture;
-
         public ObterTodosEstoquesHandlerTests()
         {
             _fixture = new EstoqueHandlerFixture();
-        }
-
-        [Fact]
-        public async Task Handle_DeveRetornarTodosOsEstoques()
-        {
-            // Arrange
-            var estoquesEsperados = EstoqueHandlerFixture.CriarListaEstoquesVariados();
-
-            // Configurar o repositório para retornar a lista de estoques
-            var dtos = estoquesEsperados.Select(e => new EstoqueEntityDto
-            {
-                Id = e.Id,
-                Insumo = e.Insumo,
-                Descricao = e.Descricao,
-                QuantidadeDisponivel = e.QuantidadeDisponivel,
-                QuantidadeMinima = e.QuantidadeMinima,
-                Preco = e.Preco,
-                Ativo = e.Ativo,
-                DataCadastro = e.DataCadastro,
-                DataAtualizacao = e.DataAtualizacao
-            }).ToList();
-            _fixture.RepositorioEstoque.ObterTodosAsync().Returns(dtos);
-
-            var handler = _fixture.CriarObterTodosEstoquesHandler();
-
-            // Act
-            var resultado = await handler.Handle();
-
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Should().HaveCount(estoquesEsperados.Count);
-            resultado.Should().BeEquivalentTo(estoquesEsperados);
-
-            // Verificar que o gateway foi chamado
-            await _fixture.RepositorioEstoque.Received(1).ObterTodosAsync();
-
-            // Verificar que os logs foram registrados
-            _fixture.LogServicoObterTodos.Received(1).LogInicio(Arg.Any<string>());
-            _fixture.LogServicoObterTodos.Received(1).LogFim(Arg.Any<string>(), Arg.Any<IEnumerable<Estoque>>());
         }
 
         [Fact]

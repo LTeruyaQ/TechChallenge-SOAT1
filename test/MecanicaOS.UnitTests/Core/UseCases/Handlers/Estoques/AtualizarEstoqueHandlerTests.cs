@@ -16,31 +16,58 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
         }
 
         [Fact]
-        public async Task Handle_ComDadosValidos_DeveAtualizarEstoqueCorretamente()
+        public async Task Handle_DeveAtualizarCamposEPreservarCamposTecnicos()
         {
             // Arrange
             var estoqueId = Guid.NewGuid();
-            var request = EstoqueHandlerFixture.CriarAtualizarEstoqueUseCaseDtoValido();
-            var estoqueExistente = EstoqueHandlerFixture.CriarEstoqueValido();
-            estoqueExistente.Id = estoqueId;
+            var dataCadastroOriginal = DateTime.UtcNow.AddDays(-30);
+            var dataAtualizacaoOriginal = DateTime.UtcNow.AddDays(-5);
+            
+            // Criar um estoque existente com campos técnicos definidos
+            var estoqueExistente = new EstoqueEntityDto
+            {
+                Id = estoqueId,
+                Insumo = "Produto Original",
+                Descricao = "Descrição Original",
+                QuantidadeDisponivel = 10,
+                QuantidadeMinima = 5,
+                Preco = 50.0m,
+                Ativo = true,
+                DataCadastro = dataCadastroOriginal,
+                DataAtualizacao = dataAtualizacaoOriginal
+            };
+            
+            // Criar um DTO de atualização com apenas alguns campos
+            var request = new AtualizarEstoqueUseCaseDto
+            {
+                Insumo = "Produto Atualizado",
+                Preco = 75.0m,
+                // Não atualizar outros campos
+            };
+
+            // Capturar o DTO que será passado para o repositório
+            EstoqueEntityDto dtoAtualizado = null;
+            var dataAtualizacaoNova = DateTime.UtcNow;
 
             // Configurar o repositório para retornar o estoque existente
-            var dto = new EstoqueEntityDto
-            {
-                Id = estoqueExistente.Id,
-                Insumo = estoqueExistente.Insumo,
-                Descricao = estoqueExistente.Descricao,
-                QuantidadeDisponivel = estoqueExistente.QuantidadeDisponivel,
-                QuantidadeMinima = estoqueExistente.QuantidadeMinima,
-                Preco = estoqueExistente.Preco,
-                Ativo = estoqueExistente.Ativo,
-                DataCadastro = estoqueExistente.DataCadastro,
-                DataAtualizacao = estoqueExistente.DataAtualizacao
-            };
-            _fixture.RepositorioEstoque.ObterPorIdSemRastreamentoAsync(estoqueId).Returns(dto);
-
-            // Configurar o gateway para simular a atualização
-            _fixture.ConfigurarMockEstoqueGatewayParaAtualizar(estoqueExistente);
+            _fixture.RepositorioEstoque.ObterPorIdSemRastreamentoAsync(estoqueId).Returns(estoqueExistente);
+            
+            // Configurar o repositório para capturar o objeto passado
+            _fixture.RepositorioEstoque.When(x => x.EditarAsync(Arg.Any<EstoqueEntityDto>()))
+                .Do(callInfo =>
+                {
+                    dtoAtualizado = callInfo.Arg<EstoqueEntityDto>();
+                    
+                    // Verificar campos técnicos
+                    if (dtoAtualizado.DataCadastro != dataCadastroOriginal)
+                        throw new Exception("DataCadastro foi alterado indevidamente");
+                    
+                    if (dtoAtualizado.DataAtualizacao == dataAtualizacaoOriginal)
+                        throw new Exception("DataAtualizacao não foi atualizado");
+                    
+                    if (dtoAtualizado.Ativo != true)
+                        throw new Exception("Ativo foi alterado indevidamente");
+                });
 
             var handler = _fixture.CriarAtualizarEstoqueHandler();
 
@@ -48,11 +75,24 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             var resultado = await handler.Handle(estoqueId, request);
 
             // Assert
-            resultado.Should().NotBeNull();
-
-            // Verificar que o gateway foi chamado com os dados corretos
             await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
             await _fixture.RepositorioEstoque.Received(1).EditarAsync(Arg.Any<EstoqueEntityDto>());
+
+            // Verificar campos atualizados
+            dtoAtualizado.Should().NotBeNull();
+            dtoAtualizado.Insumo.Should().Be("Produto Atualizado");
+            dtoAtualizado.Preco.Should().Be(75.0m);
+            
+            // Verificar campos não alterados
+            dtoAtualizado.Descricao.Should().Be("Descrição Original");
+            dtoAtualizado.QuantidadeDisponivel.Should().Be(10);
+            dtoAtualizado.QuantidadeMinima.Should().Be(5);
+            
+            // Verificar campos técnicos
+            dtoAtualizado.Id.Should().Be(estoqueId);
+            dtoAtualizado.Ativo.Should().BeTrue();
+            dtoAtualizado.DataCadastro.Should().Be(dataCadastroOriginal, "a data de cadastro não deve ser alterada");
+            dtoAtualizado.DataAtualizacao.Should().NotBe(dataAtualizacaoOriginal, "a data de atualização deve ser alterada");
 
             // Verificar que o commit foi chamado
             await _fixture.UnidadeDeTrabalho.Received(1).Commit();
@@ -237,7 +277,6 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
             estoqueAtualizado.DataAtualizacao.Should().NotBe(new DateTime(2023, 6, 30)); // Atualizado
 
             // Verificar que o resultado contém os mesmos dados
-            resultado.Should().NotBeNull();
             resultado.Should().NotBeNull();
             resultado.Should().BeEquivalentTo(estoqueAtualizado, options =>
                 options.Excluding(e => e.DataAtualizacao));

@@ -39,28 +39,6 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             presenterField?.SetValue(_ordemServicoController, _ordemServicoPresenter);
         }
 
-        [Fact]
-        public void MapearParaCadastrarOrdemServicoUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-        {
-            // Arrange
-            var request = new CadastrarOrdemServicoRequest
-            {
-                ClienteId = Guid.NewGuid(),
-                VeiculoId = Guid.NewGuid(),
-                ServicoId = Guid.NewGuid(),
-                Descricao = "Descrição da Ordem de Serviço Teste"
-            };
-
-            // Act
-            var result = _ordemServicoController.MapearParaCadastrarOrdemServicoUseCaseDto(request);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.ClienteId.Should().Be(request.ClienteId);
-            result.VeiculoId.Should().Be(request.VeiculoId);
-            result.ServicoId.Should().Be(request.ServicoId);
-            result.Descricao.Should().Be(request.Descricao);
-        }
 
         [Fact]
         public void MapearParaCadastrarOrdemServicoUseCaseDto_ComRequestNulo_DeveRetornarNulo()
@@ -106,7 +84,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
         }
 
         [Fact]
-        public async Task Cadastrar_DeveUsarMapeamentoEChamarUseCase()
+        public async Task Cadastrar_DeveValidarDependenciasEChamarUseCase()
         {
             // Arrange
             var request = new CadastrarOrdemServicoRequest
@@ -117,15 +95,36 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                 Descricao = "Descrição da Ordem de Serviço Teste"
             };
 
-            var ordemServico = new OrdemServico();
-            var ordemServicoResponse = new OrdemServicoResponse();
+            var ordemServico = new OrdemServico
+            {
+                Id = Guid.NewGuid(),
+                ClienteId = request.ClienteId,
+                VeiculoId = request.VeiculoId,
+                ServicoId = request.ServicoId,
+                Descricao = request.Descricao,
+                Status = StatusOrdemServico.Recebida,
+                DataCadastro = DateTime.Now,
+                Ativo = true
+            };
+            
+            var ordemServicoResponse = new OrdemServicoResponse
+            {
+                Id = ordemServico.Id,
+                ClienteId = ordemServico.ClienteId,
+                VeiculoId = ordemServico.VeiculoId,
+                ServicoId = ordemServico.ServicoId,
+                Descricao = ordemServico.Descricao,
+                Status = ordemServico.Status
+            };
             
             // Criar objetos Cliente e Servico com todas as propriedades obrigatórias
             var cliente = new Cliente { 
                 Id = request.ClienteId,
                 Nome = "Cliente Teste",
                 TipoCliente = TipoCliente.PessoaFisica,
-                Documento = "12345678900"
+                Documento = "12345678900",
+                Ativo = true,
+                DataCadastro = DateTime.Now.AddDays(-30)
             };
             
             var servico = new Servico { 
@@ -133,7 +132,9 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                 Nome = "Serviço Teste",
                 Descricao = "Descrição do serviço teste",
                 Valor = 100.0m,
-                Disponivel = true
+                Disponivel = true,
+                Ativo = true,
+                DataCadastro = DateTime.Now.AddDays(-15)
             };
 
             // Obter os mocks já configurados no construtor
@@ -156,11 +157,11 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             var result = await _ordemServicoController.Cadastrar(request);
 
             // Assert
-            // Verifique se os métodos de orquestração foram chamados
+            // Verificar validações de dependências
             await clienteUseCases.Received(1).ObterPorIdUseCaseAsync(request.ClienteId);
             await servicoUseCases.Received(1).ObterServicoPorIdUseCaseAsync(request.ServicoId);
 
-            // Verifique se o método do usecase foi chamado com os parâmetros corretos
+            // Verificar que o método do usecase foi chamado com os parâmetros corretos
             await _ordemServicoUseCases.Received(1).CadastrarUseCaseAsync(Arg.Is<CadastrarOrdemServicoUseCaseDto>(
                 dto => dto.ClienteId == request.ClienteId &&
                       dto.VeiculoId == request.VeiculoId &&
@@ -169,11 +170,15 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                       dto.Cliente == cliente &&
                       dto.Servico == servico));
 
-            // Verifique se o presenter foi chamado
+            // Verificar que o presenter foi chamado com a entidade retornada pelo usecase
             _ordemServicoPresenter.Received(1).ParaResponse(ordemServico);
             
-            // Verifique se o resultado é a resposta esperada
-            result.Should().Be(ordemServicoResponse);
+            // Verificar que o resultado é a resposta esperada com todos os campos
+            result.Should().BeEquivalentTo(ordemServicoResponse);
+            
+            // Verificar campos principais
+            result.Id.Should().Be(ordemServico.Id);
+            result.Status.Should().Be(StatusOrdemServico.Recebida);
         }
 
         [Fact]

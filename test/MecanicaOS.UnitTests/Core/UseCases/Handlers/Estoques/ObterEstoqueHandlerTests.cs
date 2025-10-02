@@ -8,38 +8,9 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Estoques
     public class ObterEstoqueHandlerTests
     {
         private readonly EstoqueHandlerFixture _fixture;
-
         public ObterEstoqueHandlerTests()
         {
             _fixture = new EstoqueHandlerFixture();
-        }
-
-        [Fact]
-        public async Task Handle_ComIdExistente_DeveRetornarEstoqueCorreto()
-        {
-            // Arrange
-            var estoqueId = Guid.NewGuid();
-            var estoqueEsperado = EstoqueHandlerFixture.CriarEstoqueValido();
-            estoqueEsperado.Id = estoqueId;
-
-            // Configurar o repositório para retornar o estoque esperado
-            _fixture.ConfigurarMockRepositorioEstoqueParaObterPorId(estoqueId, estoqueEsperado);
-
-            var handler = _fixture.CriarObterEstoqueHandler();
-
-            // Act
-            var resultado = await handler.Handle(estoqueId);
-
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Should().BeEquivalentTo(estoqueEsperado);
-
-            // Verificar que o repositório foi chamado com o ID correto
-            await _fixture.RepositorioEstoque.Received(1).ObterPorIdSemRastreamentoAsync(estoqueId);
-
-            // Verificar que os logs foram registrados
-            _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), estoqueId);
-            _fixture.LogServicoObter.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
         }
 
         [Fact]

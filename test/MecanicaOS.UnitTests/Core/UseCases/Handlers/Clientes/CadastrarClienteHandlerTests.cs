@@ -17,6 +17,121 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
         }
 
         [Fact]
+        public async Task Handle_DevePreservarCamposTecnicosERelacionamentosAoCadastrar()
+        {
+            // Arrange
+            var request = new CadastrarClienteUseCaseDto
+            {
+                Nome = "Cliente Específico para Teste",
+                Documento = "12345678900",
+                TipoCliente = TipoCliente.PessoaFisica,
+                DataNascimento = "01/01/1990",
+                Sexo = "M",
+                Email = "teste@exemplo.com",
+                Telefone = "(11) 98765-4321",
+                Rua = "Rua de Teste",
+                Numero = "123",
+                Complemento = "Apto 45",
+                Bairro = "Bairro Teste",
+                Cidade = "Cidade Teste",
+                CEP = "01234-567"
+            };
+
+            // Capturar o DTO que será passado para o repositório
+            ClienteEntityDto dtoCadastrado = null;
+            var dataCadastro = DateTime.UtcNow;
+
+            // Configurar o repositório para retornar null ao verificar se o cliente já existe
+            _fixture.RepositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
+                .Returns((Cliente)null);
+            
+            _fixture.RepositorioCliente.CadastrarAsync(Arg.Any<ClienteEntityDto>())
+                .Returns(callInfo =>
+                {
+                    dtoCadastrado = callInfo.Arg<ClienteEntityDto>();
+                    
+                    // Verificar campos técnicos
+                    if (dtoCadastrado.DataCadastro == default)
+                        throw new Exception("DataCadastro não foi preenchido");
+                    // DataAtualizacao não é preenchido durante o cadastro, apenas em atualizações
+                    if (dtoCadastrado.Ativo != true)
+                        throw new Exception("Ativo não foi definido como true");
+                        
+                    dtoCadastrado.Id = Guid.NewGuid();
+                    return dtoCadastrado;
+                });
+
+            EnderecoEntityDto enderecoDtoPassado = null;
+            _fixture.RepositorioEndereco.CadastrarAsync(Arg.Any<EnderecoEntityDto>())
+                .Returns(callInfo =>
+                {
+                    enderecoDtoPassado = callInfo.Arg<EnderecoEntityDto>();
+                    enderecoDtoPassado.Id = Guid.NewGuid();
+                    return enderecoDtoPassado;
+                });
+
+            ContatoEntityDto contatoDtoPassado = null;
+            _fixture.RepositorioContato.CadastrarAsync(Arg.Any<ContatoEntityDto>())
+                .Returns(callInfo =>
+                {
+                    contatoDtoPassado = callInfo.Arg<ContatoEntityDto>();
+                    contatoDtoPassado.Id = Guid.NewGuid();
+                    return contatoDtoPassado;
+                });
+
+            var handler = _fixture.CriarCadastrarClienteHandler();
+
+            // Act
+            var resultado = await handler.Handle(request);
+
+            // Assert
+            await _fixture.RepositorioCliente.Received(1).CadastrarAsync(Arg.Any<ClienteEntityDto>());
+
+            // Verificar dados básicos
+            dtoCadastrado.Should().NotBeNull();
+            dtoCadastrado.Nome.Should().Be("Cliente Específico para Teste");
+            dtoCadastrado.Documento.Should().Be("12345678900");
+            dtoCadastrado.TipoCliente.Should().Be(TipoCliente.PessoaFisica);
+            dtoCadastrado.DataNascimento.Should().Be("01/01/1990");
+            dtoCadastrado.Sexo.Should().Be("M");
+            
+            // Verificar campos técnicos
+            dtoCadastrado.Id.Should().NotBeEmpty();
+            dtoCadastrado.Ativo.Should().BeTrue();
+            dtoCadastrado.DataCadastro.Should().BeCloseTo(dataCadastro, TimeSpan.FromSeconds(5));
+            // DataAtualizacao não é preenchido durante o cadastro, apenas em atualizações
+
+            // Verificar relacionamentos
+            enderecoDtoPassado.Should().NotBeNull();
+            enderecoDtoPassado.Rua.Should().Be("Rua de Teste");
+            enderecoDtoPassado.Numero.Should().Be("123");
+            enderecoDtoPassado.Complemento.Should().Be("Apto 45");
+            enderecoDtoPassado.Bairro.Should().Be("Bairro Teste");
+            enderecoDtoPassado.Cidade.Should().Be("Cidade Teste");
+            enderecoDtoPassado.CEP.Should().Be("01234-567");
+            enderecoDtoPassado.IdCliente.Should().Be(dtoCadastrado.Id);
+            
+            contatoDtoPassado.Should().NotBeNull();
+            contatoDtoPassado.Email.Should().Be("teste@exemplo.com");
+            contatoDtoPassado.Telefone.Should().Be("(11) 98765-4321");
+            contatoDtoPassado.IdCliente.Should().Be(dtoCadastrado.Id);
+
+            // Verificar resultado
+            resultado.Should().NotBeNull();
+            resultado.Id.Should().Be(dtoCadastrado.Id);
+            resultado.Nome.Should().Be("Cliente Específico para Teste");
+            resultado.Ativo.Should().BeTrue();
+            resultado.DataCadastro.Should().BeCloseTo(dataCadastro, TimeSpan.FromSeconds(5));
+            
+            // Verificar que o commit foi chamado
+            await _fixture.UnidadeDeTrabalho.Received(1).Commit();
+            
+            // Verificar que os logs foram registrados
+            _fixture.LogServicoCadastrar.Received(1).LogInicio(Arg.Any<string>(), request);
+            _fixture.LogServicoCadastrar.Received(1).LogFim(Arg.Any<string>(), Arg.Any<Cliente>());
+        }
+
+        [Fact]
         public async Task Handle_ComDadosValidos_DeveCadastrarCliente()
         {
             // Arrange
@@ -203,105 +318,6 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
             // Verificar que os logs foram registrados
             _fixture.LogServicoCadastrar.Received(1).LogInicio(Arg.Any<string>(), dto);
             _fixture.LogServicoCadastrar.Received(1).LogErro(Arg.Any<string>(), excecaoEsperada);
-        }
-
-        [Fact]
-        public async Task Handle_DevePassarDadosCorretamenteEntreHandlerERepositorio()
-        {
-            // Arrange
-            var dto = new CadastrarClienteUseCaseDto
-            {
-                Nome = "Cliente Específico de Teste",
-                Documento = "111.222.333-44",
-                DataNascimento = "01/01/1990",
-                Sexo = "M",
-                TipoCliente = TipoCliente.PessoaFisica,
-                Email = "teste.especifico@example.com",
-                Telefone = "(11) 91234-5678",
-                Rua = "Rua de Teste",
-                Numero = "123",
-                Complemento = "Apto 42",
-                Bairro = "Bairro Teste",
-                Cidade = "Cidade Teste",
-                CEP = "12345-678"
-            };
-
-            var clienteId = Guid.NewGuid();
-
-            // Configurar o repositório para retornar null ao verificar se o cliente já existe
-            _fixture.RepositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>())
-                .Returns((Cliente)null);
-
-            // Capturar os DTOs que estão sendo passados para os repositórios
-            ClienteEntityDto clienteDtoPassado = null;
-            _fixture.RepositorioCliente.CadastrarAsync(Arg.Any<ClienteEntityDto>())
-                .Returns(callInfo =>
-                {
-                    clienteDtoPassado = callInfo.Arg<ClienteEntityDto>();
-                    clienteDtoPassado.Id = clienteId;
-                    return clienteDtoPassado;
-                });
-
-            EnderecoEntityDto enderecoDtoPassado = null;
-            _fixture.RepositorioEndereco.CadastrarAsync(Arg.Any<EnderecoEntityDto>())
-                .Returns(callInfo =>
-                {
-                    enderecoDtoPassado = callInfo.Arg<EnderecoEntityDto>();
-                    enderecoDtoPassado.Id = Guid.NewGuid();
-                    return enderecoDtoPassado;
-                });
-
-            ContatoEntityDto contatoDtoPassado = null;
-            _fixture.RepositorioContato.CadastrarAsync(Arg.Any<ContatoEntityDto>())
-                .Returns(callInfo =>
-                {
-                    contatoDtoPassado = callInfo.Arg<ContatoEntityDto>();
-                    contatoDtoPassado.Id = Guid.NewGuid();
-                    return contatoDtoPassado;
-                });
-
-            var handler = _fixture.CriarCadastrarClienteHandler();
-
-            // Act
-            var resultado = await handler.Handle(dto);
-
-            // Assert
-            // Verificar que o DTO do cliente foi passado com os dados corretos (testando o trânsito de dados)
-            clienteDtoPassado.Should().NotBeNull();
-            clienteDtoPassado.Nome.Should().Be(dto.Nome);
-            clienteDtoPassado.Documento.Should().Be(dto.Documento);
-            clienteDtoPassado.DataNascimento.Should().Be(dto.DataNascimento);
-            clienteDtoPassado.Sexo.Should().Be(dto.Sexo);
-            clienteDtoPassado.TipoCliente.Should().Be(dto.TipoCliente);
-
-            // Verificar que o DTO do endereço foi cadastrado com os dados corretos
-            enderecoDtoPassado.Should().NotBeNull();
-            enderecoDtoPassado.Rua.Should().Be(dto.Rua);
-            enderecoDtoPassado.Numero.Should().Be(dto.Numero);
-            enderecoDtoPassado.Complemento.Should().Be(dto.Complemento);
-            enderecoDtoPassado.Bairro.Should().Be(dto.Bairro);
-            enderecoDtoPassado.Cidade.Should().Be(dto.Cidade);
-            enderecoDtoPassado.CEP.Should().Be(dto.CEP);
-            enderecoDtoPassado.IdCliente.Should().Be(clienteId);
-
-            // Verificar que o DTO do contato foi cadastrado com os dados corretos
-            contatoDtoPassado.Should().NotBeNull();
-            contatoDtoPassado.Email.Should().Be(dto.Email);
-            contatoDtoPassado.Telefone.Should().Be(dto.Telefone);
-            contatoDtoPassado.IdCliente.Should().Be(clienteId);
-
-            // Verificar que os repositórios foram chamados corretamente
-            await _fixture.RepositorioCliente.Received(1).ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
-            await _fixture.RepositorioCliente.Received(1).CadastrarAsync(Arg.Any<ClienteEntityDto>());
-            await _fixture.RepositorioEndereco.Received(1).CadastrarAsync(Arg.Any<EnderecoEntityDto>());
-            await _fixture.RepositorioContato.Received(1).CadastrarAsync(Arg.Any<ContatoEntityDto>());
-
-            // Verificar que o commit foi chamado
-            await _fixture.UnidadeDeTrabalho.Received(1).Commit();
-
-            // Verificar o resultado
-            resultado.Should().NotBeNull();
-            resultado.Id.Should().NotBeEmpty();
         }
 
         [Theory]

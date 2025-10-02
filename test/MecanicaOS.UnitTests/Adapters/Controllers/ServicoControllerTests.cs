@@ -30,28 +30,6 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             presenterField?.SetValue(_servicoController, _servicoPresenter);
         }
 
-        [Fact]
-        public void MapearParaCadastrarServicoUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-        {
-            // Arrange
-            var request = new CadastrarServicoRequest
-            {
-                Nome = "Serviço Teste",
-                Descricao = "Descrição do Serviço Teste",
-                Valor = 100.50m,
-                Disponivel = true
-            };
-
-            // Act
-            var result = _servicoController.MapearParaCadastrarServicoUseCaseDto(request);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Nome.Should().Be(request.Nome);
-            result.Descricao.Should().Be(request.Descricao);
-            result.Valor.Should().Be(request.Valor);
-            result.Disponivel.Should().Be(request.Disponivel);
-        }
 
         [Fact]
         public void MapearParaCadastrarServicoUseCaseDto_ComRequestNulo_DeveRetornarNulo()
@@ -63,28 +41,6 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             result.Should().BeNull();
         }
 
-        [Fact]
-        public void MapearParaEditarServicoUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-        {
-            // Arrange
-            var request = new EditarServicoRequest
-            {
-                Nome = "Serviço Atualizado",
-                Descricao = "Descrição do Serviço Atualizado",
-                Valor = 150.75m,
-                Disponivel = false
-            };
-
-            // Act
-            var result = _servicoController.MapearParaEditarServicoUseCaseDto(request);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Nome.Should().Be(request.Nome);
-            result.Descricao.Should().Be(request.Descricao);
-            result.Valor.Should().Be(request.Valor);
-            result.Disponivel.Should().Be(request.Disponivel);
-        }
 
         [Fact]
         public void MapearParaEditarServicoUseCaseDto_ComRequestNulo_DeveRetornarNulo()

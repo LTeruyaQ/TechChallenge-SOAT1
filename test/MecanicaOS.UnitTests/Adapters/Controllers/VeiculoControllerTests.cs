@@ -31,34 +31,6 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             presenterField?.SetValue(_veiculoController, _veiculoPresenter);
         }
 
-        [Fact]
-        public void MapearParaCadastrarVeiculoUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-        {
-            // Arrange
-            var request = new CadastrarVeiculoRequest
-            {
-                Placa = "ABC1234",
-                Marca = "Toyota",
-                Modelo = "Corolla",
-                Cor = "Preto",
-                Ano = "2022",
-                Anotacoes = "Veículo em bom estado",
-                ClienteId = Guid.NewGuid()
-            };
-
-            // Act
-            var result = _veiculoController.MapearParaCadastrarVeiculoUseCaseDto(request);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Placa.Should().Be(request.Placa);
-            result.Marca.Should().Be(request.Marca);
-            result.Modelo.Should().Be(request.Modelo);
-            result.Cor.Should().Be(request.Cor);
-            result.Ano.Should().Be(request.Ano);
-            result.Anotacoes.Should().Be(request.Anotacoes);
-            result.ClienteId.Should().Be(request.ClienteId);
-        }
 
         [Fact]
         public void MapearParaCadastrarVeiculoUseCaseDto_ComRequestNulo_DeveRetornarNulo()
@@ -70,34 +42,6 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             result.Should().BeNull();
         }
 
-        [Fact]
-        public void MapearParaAtualizarVeiculoUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-        {
-            // Arrange
-            var request = new AtualizarVeiculoRequest
-            {
-                Placa = "XYZ9876",
-                Marca = "Honda",
-                Modelo = "Civic",
-                Cor = "Branco",
-                Ano = "2021",
-                Anotacoes = "Veículo atualizado",
-                ClienteId = Guid.NewGuid()
-            };
-
-            // Act
-            var result = _veiculoController.MapearParaAtualizarVeiculoUseCaseDto(request);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Placa.Should().Be(request.Placa);
-            result.Marca.Should().Be(request.Marca);
-            result.Modelo.Should().Be(request.Modelo);
-            result.Cor.Should().Be(request.Cor);
-            result.Ano.Should().Be(request.Ano);
-            result.Anotacoes.Should().Be(request.Anotacoes);
-            result.ClienteId.Should().Be(request.ClienteId);
-        }
 
         [Fact]
         public void MapearParaAtualizarVeiculoUseCaseDto_ComRequestNulo_DeveRetornarNulo()

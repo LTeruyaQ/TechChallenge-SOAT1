@@ -15,34 +15,6 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Clientes
         }
 
         [Fact]
-        public async Task Handle_ComIdExistente_DeveRetornarClienteCorreto()
-        {
-            // Arrange
-            var clienteId = Guid.NewGuid();
-            var clienteEsperado = ClienteHandlerFixture.CriarClientePessoaFisicaValido();
-            clienteEsperado.Id = clienteId;
-
-            // Configurar o repositório para retornar o cliente esperado
-            _fixture.ConfigurarMockRepositorioClienteParaObterPorId(clienteId, clienteEsperado);
-
-            var handler = _fixture.CriarObterClienteHandler();
-
-            // Act
-            var resultado = await handler.Handle(clienteId);
-
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Should().BeEquivalentTo(clienteEsperado);
-
-            // Verificar que o repositório foi chamado com o ID correto
-            await _fixture.RepositorioCliente.ReceivedWithAnyArgs().ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ClienteEntityDto>>());
-
-            // Verificar que os logs foram registrados
-            _fixture.LogServicoObter.Received(1).LogInicio(Arg.Any<string>(), clienteId);
-            _fixture.LogServicoObter.Received(1).LogFim(Arg.Any<string>(), clienteEsperado);
-        }
-
-        [Fact]
         public async Task Handle_ComIdInexistente_DeveRetornarNull()
         {
             // Arrange

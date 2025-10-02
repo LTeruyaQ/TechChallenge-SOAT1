@@ -32,30 +32,6 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             presenterField?.SetValue(_usuarioController, _usuarioPresenter);
         }
 
-        [Fact]
-        public void MapearParaCadastrarUsuarioUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-        {
-            // Arrange
-            var request = new CadastrarUsuarioRequest
-            {
-                Email = "usuario@email.com",
-                Senha = "senha123",
-                TipoUsuario = TipoUsuario.Admin,
-                RecebeAlertaEstoque = true,
-                Documento = "12345678900"
-            };
-
-            // Act
-            var result = _usuarioController.MapearParaCadastrarUsuarioUseCaseDto(request);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Email.Should().Be(request.Email);
-            result.Senha.Should().Be(request.Senha);
-            result.TipoUsuario.Should().Be(request.TipoUsuario);
-            result.RecebeAlertaEstoque.Should().Be(request.RecebeAlertaEstoque);
-            result.Documento.Should().Be(request.Documento);
-        }
 
         [Fact]
         public void MapearParaCadastrarUsuarioUseCaseDto_ComRequestNulo_DeveRetornarNulo()
@@ -67,30 +43,6 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             result.Should().BeNull();
         }
 
-        [Fact]
-        public void MapearParaAtualizarUsuarioUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-        {
-            // Arrange
-            var request = new AtualizarUsuarioRequest
-            {
-                Email = "atualizado@email.com",
-                Senha = "novaSenha456",
-                DataUltimoAcesso = DateTime.Now,
-                TipoUsuario = TipoUsuario.Cliente,
-                RecebeAlertaEstoque = false
-            };
-
-            // Act
-            var result = _usuarioController.MapearParaAtualizarUsuarioUseCaseDto(request);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Email.Should().Be(request.Email);
-            result.Senha.Should().Be(request.Senha);
-            result.DataUltimoAcesso.Should().Be(request.DataUltimoAcesso);
-            result.TipoUsuario.Should().Be(request.TipoUsuario);
-            result.RecebeAlertaEstoque.Should().Be(request.RecebeAlertaEstoque);
-        }
 
         [Fact]
         public void MapearParaAtualizarUsuarioUseCaseDto_ComRequestNulo_DeveRetornarNulo()

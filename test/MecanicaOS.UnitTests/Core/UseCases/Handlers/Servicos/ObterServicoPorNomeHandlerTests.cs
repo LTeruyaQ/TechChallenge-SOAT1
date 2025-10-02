@@ -1,5 +1,6 @@
 using Core.DTOs.Entidades.Servico;
 using Core.Entidades;
+using Core.Especificacoes.Base.Interfaces;
 using MecanicaOS.UnitTests.Fixtures.Handlers;
 
 namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
@@ -14,16 +15,29 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
         }
 
         [Fact]
-        public async Task Handle_ComNomeExistente_DeveRetornarServico()
+        public async Task Handle_ComNomeEspecifico_DeveRetornarServicoCorreto()
         {
             // Arrange
-            var nome = "Troca de Óleo";
-            var servico = ServicoHandlerFixture.CriarServicoValido(nome: nome);
+            var nome = "Serviço Específico de Teste";
+            var servicoId = Guid.NewGuid();
+            
+            // Criar um serviço com valores específicos para identificar no teste
+            var servicoEsperado = new Servico
+            {
+                Id = servicoId,
+                Nome = nome,
+                Descricao = "Descrição específica para teste",
+                Valor = 123.45m,
+                Disponivel = true,
+                Ativo = true,
+                DataCadastro = new DateTime(2023, 5, 15),
+                DataAtualizacao = new DateTime(2023, 6, 20)
+            };
 
-            // Configurar o repositório para retornar o serviço quando chamado com a especificação correta
+            // Configurar o repositório para retornar o serviço específico
             _fixture.RepositorioServico
-                .ObterUmProjetadoSemRastreamentoAsync<Servico>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ServicoEntityDto>>())
-                .Returns(servico);
+                .ObterUmProjetadoSemRastreamentoAsync<Servico>(Arg.Any<IEspecificacao<ServicoEntityDto>>())
+                .Returns(servicoEsperado);
 
             var handler = _fixture.CriarObterServicoPorNomeHandler();
 
@@ -31,19 +45,29 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
             var resultado = await handler.Handle(nome);
 
             // Assert
-            resultado.Should().NotBeNull();
-            resultado.Nome.Should().Be(nome);
-            resultado.Id.Should().Be(servico.Id);
-            resultado.Descricao.Should().Be(servico.Descricao);
-            resultado.Valor.Should().Be(servico.Valor);
-            resultado.Disponivel.Should().Be(servico.Disponivel);
+            // Verificar que o repositório foi chamado com alguma especificação
+            await _fixture.RepositorioServico.Received(1).ObterUmProjetadoSemRastreamentoAsync<Servico>(
+                Arg.Any<IEspecificacao<ServicoEntityDto>>());
 
-            // Verificar que o repositório foi chamado com a especificação correta
-            await _fixture.RepositorioServico.Received(1).ObterUmProjetadoSemRastreamentoAsync<Servico>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ServicoEntityDto>>());
+            // Verificar que o resultado contém exatamente os mesmos dados do serviço esperado
+            resultado.Should().NotBeNull();
+            resultado.Should().BeEquivalentTo(servicoEsperado);
+
+            // Verificar cada propriedade individualmente para garantir que não houve alteração
+            resultado.Id.Should().Be(servicoId);
+            resultado.Nome.Should().Be(nome);
+            resultado.Descricao.Should().Be("Descrição específica para teste");
+            resultado.Valor.Should().Be(123.45m);
+            resultado.Disponivel.Should().BeTrue();
+            
+            // Verificar que os campos técnicos foram preservados
+            resultado.Ativo.Should().BeTrue();
+            resultado.DataCadastro.Should().Be(new DateTime(2023, 5, 15));
+            resultado.DataAtualizacao.Should().Be(new DateTime(2023, 6, 20));
 
             // Verificar que os logs foram registrados
-            _fixture.LogServicoObterPorNome.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<string>());
-            _fixture.LogServicoObterPorNome.Received(1).LogFim(Arg.Any<string>(), Arg.Any<Servico>());
+            _fixture.LogServicoObterPorNome.Received(1).LogInicio(Arg.Any<string>(), nome);
+            _fixture.LogServicoObterPorNome.Received(1).LogFim(Arg.Any<string>(), resultado);
         }
 
         [Fact]
@@ -54,7 +78,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 
             // Configurar o repositório para retornar null quando chamado com a especificação correta
             _fixture.RepositorioServico
-                .ObterUmProjetadoSemRastreamentoAsync<Servico>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ServicoEntityDto>>())
+                .ObterUmProjetadoSemRastreamentoAsync<Servico>(Arg.Any<IEspecificacao<ServicoEntityDto>>())
                 .Returns((Servico)null);
 
             var handler = _fixture.CriarObterServicoPorNomeHandler();
@@ -66,7 +90,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
             resultado.Should().BeNull();
 
             // Verificar que o repositório foi chamado com a especificação correta
-            await _fixture.RepositorioServico.Received(1).ObterUmProjetadoSemRastreamentoAsync<Servico>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ServicoEntityDto>>());
+            await _fixture.RepositorioServico.Received(1).ObterUmProjetadoSemRastreamentoAsync<Servico>(Arg.Any<IEspecificacao<ServicoEntityDto>>());
 
             // Verificar que os logs foram registrados
             _fixture.LogServicoObterPorNome.Received(1).LogInicio(Arg.Any<string>(), Arg.Any<string>());
@@ -103,7 +127,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Handlers.Servicos
 
             // Configurar o repositório para lançar uma exceção quando chamado com a especificação correta
             _fixture.RepositorioServico
-                .ObterUmProjetadoSemRastreamentoAsync<Servico>(Arg.Any<global::Core.Especificacoes.Base.Interfaces.IEspecificacao<ServicoEntityDto>>())
+                .ObterUmProjetadoSemRastreamentoAsync<Servico>(Arg.Any<IEspecificacao<ServicoEntityDto>>())
                 .Returns(Task.FromException<Servico>(new InvalidOperationException("Erro simulado")));
 
             var handler = _fixture.CriarObterServicoPorNomeHandler();

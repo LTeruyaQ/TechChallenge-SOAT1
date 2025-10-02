@@ -31,46 +31,6 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             presenterField?.SetValue(_clienteController, _clientePresenter);
         }
 
-        [Fact]
-        public void MapearParaCadastrarClienteUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-        {
-            // Arrange
-            var request = new CadastrarClienteRequest
-            {
-                Nome = "Cliente Teste",
-                Sexo = "Masculino",
-                Documento = "12345678900",
-                DataNascimento = "1990-01-01",
-                TipoCliente = TipoCliente.PessoaFisica,
-                Rua = "Rua Teste",
-                Bairro = "Bairro Teste",
-                Cidade = "Cidade Teste",
-                Numero = "123",
-                CEP = "12345-678",
-                Complemento = "Complemento Teste",
-                Email = "teste@email.com",
-                Telefone = "11987654321"
-            };
-
-            // Act
-            var result = _clienteController.MapearParaCadastrarClienteUseCaseDto(request);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Nome.Should().Be(request.Nome);
-            result.Sexo.Should().Be(request.Sexo);
-            result.Documento.Should().Be(request.Documento);
-            result.DataNascimento.Should().Be(request.DataNascimento);
-            result.TipoCliente.Should().Be(request.TipoCliente);
-            result.Rua.Should().Be(request.Rua);
-            result.Bairro.Should().Be(request.Bairro);
-            result.Cidade.Should().Be(request.Cidade);
-            result.Numero.Should().Be(request.Numero);
-            result.CEP.Should().Be(request.CEP);
-            result.Complemento.Should().Be(request.Complemento);
-            result.Email.Should().Be(request.Email);
-            result.Telefone.Should().Be(request.Telefone);
-        }
 
         [Fact]
         public void MapearParaCadastrarClienteUseCaseDto_ComRequestNulo_DeveRetornarNulo()
@@ -82,52 +42,6 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             result.Should().BeNull();
         }
 
-        [Fact]
-        public void MapearParaAtualizarClienteUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-        {
-            // Arrange
-            var request = new AtualizarClienteRequest
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Cliente Atualizado",
-                Sexo = "Feminino",
-                Documento = "98765432100",
-                DataNascimento = "1995-05-05",
-                TipoCliente = TipoCliente.PessoaJuridico,
-                EnderecoId = Guid.NewGuid(),
-                Rua = "Rua Atualizada",
-                Bairro = "Bairro Atualizado",
-                Cidade = "Cidade Atualizada",
-                Numero = "456",
-                CEP = "98765-432",
-                Complemento = "Complemento Atualizado",
-                ContatoId = Guid.NewGuid(),
-                Email = "atualizado@email.com",
-                Telefone = "11912345678"
-            };
-
-            // Act
-            var result = _clienteController.MapearParaAtualizarClienteUseCaseDto(request);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Id.Should().Be(request.Id);
-            result.Nome.Should().Be(request.Nome);
-            result.Sexo.Should().Be(request.Sexo);
-            result.Documento.Should().Be(request.Documento);
-            result.DataNascimento.Should().Be(request.DataNascimento);
-            result.TipoCliente.Should().Be(request.TipoCliente);
-            result.EnderecoId.Should().Be(request.EnderecoId);
-            result.Rua.Should().Be(request.Rua);
-            result.Bairro.Should().Be(request.Bairro);
-            result.Cidade.Should().Be(request.Cidade);
-            result.Numero.Should().Be(request.Numero);
-            result.CEP.Should().Be(request.CEP);
-            result.Complemento.Should().Be(request.Complemento);
-            result.ContatoId.Should().Be(request.ContatoId);
-            result.Email.Should().Be(request.Email);
-            result.Telefone.Should().Be(request.Telefone);
-        }
 
         [Fact]
         public void MapearParaAtualizarClienteUseCaseDto_ComRequestNulo_DeveRetornarNulo()

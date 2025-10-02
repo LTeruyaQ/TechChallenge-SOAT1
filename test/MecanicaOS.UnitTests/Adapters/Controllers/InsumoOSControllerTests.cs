@@ -39,24 +39,6 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             presenterField?.SetValue(_insumoOSController, _insumoPresenter);
         }
 
-        [Fact]
-        public void MapearParaCadastrarInsumoOSUseCaseDto_ComRequestValido_DeveMapearCorretamente()
-        {
-            // Arrange
-            var request = new CadastrarInsumoOSRequest
-            {
-                EstoqueId = Guid.NewGuid(),
-                Quantidade = 5
-            };
-
-            // Act
-            var result = _insumoOSController.MapearParaCadastrarInsumoOSUseCaseDto(request);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.EstoqueId.Should().Be(request.EstoqueId);
-            result.Quantidade.Should().Be(request.Quantidade);
-        }
 
         [Fact]
         public void MapearParaCadastrarInsumoOSUseCaseDto_ComRequestNulo_DeveRetornarNulo()

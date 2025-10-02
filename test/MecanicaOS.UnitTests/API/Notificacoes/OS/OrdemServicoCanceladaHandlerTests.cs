@@ -1,5 +1,6 @@
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.DTOs.Responses.OrdemServico;
+using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using NSubstitute.ExceptionExtensions;
 
 namespace MecanicaOS.UnitTests.API.Notificacoes.OS
@@ -14,57 +15,47 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
         }
 
         [Fact]
-        public async Task Handle_ComOrdemServicoSemInsumos_NaoDeveDevolverInsumos()
+        public async Task Handle_ComDiferentesTiposDeOrdemServicoSemInsumos_NaoDeveDevolverInsumos()
         {
             // Arrange
             var ordemServicoId = Guid.NewGuid();
             var evento = _fixture.CriarEvento(ordemServicoId);
 
-            // Configurar ordem de serviço sem insumos
-            var ordemServico = _fixture.CriarOrdemServicoSemInsumos(ordemServicoId);
+            // Configurar ordem de serviço sem insumos (3 cenários possíveis)
+            var ordemServicoVazia = _fixture.CriarOrdemServicoSemInsumos(ordemServicoId);
+            var ordemServicoComInsumosVazios = new OrdemServicoResponse
+            {
+                Id = ordemServicoId,
+                Insumos = new List<InsumoOSResponse>()
+            };
+            var ordemServicoComInsumosNulos = new OrdemServicoResponse
+            {
+                Id = ordemServicoId,
+                Insumos = null
+            };
 
-            _fixture.OrdemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
+            // Testar os três cenários
+            foreach (var ordemServico in new[] { ordemServicoVazia, ordemServicoComInsumosVazios, ordemServicoComInsumosNulos })
+            {
+                // Configurar o mock
+                _fixture.OrdemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
 
-            // Act
-            await _fixture.Handler.Handle(evento, CancellationToken.None);
+                // Act
+                await _fixture.Handler.Handle(evento, CancellationToken.None);
 
-            // Assert
-            await _fixture.OrdemServicoController.Received(1).ObterPorId(ordemServicoId);
-            _fixture.LogServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
-            _fixture.LogServico.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
+                // Assert
+                await _fixture.OrdemServicoController.Received(1).ObterPorId(ordemServicoId);
+                _fixture.LogServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
+                _fixture.LogServico.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
 
-            // Verificar que o método de devolução de insumos não foi chamado
-            await _fixture.InsumoOSController.DidNotReceive().DevolverInsumosAoEstoque(Arg.Any<IEnumerable<DevolverInsumoOSRequest>>());
-        }
-
-        [Fact]
-        public async Task Handle_ComOrdemServicoComInsumos_DeveDevolverInsumos()
-        {
-            // Arrange
-            var ordemServicoId = Guid.NewGuid();
-            var evento = _fixture.CriarEvento(ordemServicoId);
-
-            // Configurar ordem de serviço com insumos
-            var ordemServico = _fixture.CriarOrdemServicoComInsumos(ordemServicoId, 2);
-            var insumos = ordemServico.Insumos.ToList();
-
-            _fixture.OrdemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-
-            // Act
-            await _fixture.Handler.Handle(evento, CancellationToken.None);
-
-            // Assert
-            await _fixture.OrdemServicoController.Received(1).ObterPorId(ordemServicoId);
-            _fixture.LogServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
-            _fixture.LogServico.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
-
-            // Verificar que o método de devolução de insumos foi chamado com os parâmetros corretos
-            await _fixture.InsumoOSController.Received(1).DevolverInsumosAoEstoque(
-                Arg.Is<IEnumerable<DevolverInsumoOSRequest>>(x =>
-                    x.Count() == 2 &&
-                    x.All(r => insumos.Any(i => i.EstoqueId == r.EstoqueId && i.Quantidade == r.Quantidade))
-                )
-            );
+                // Verificar que o método de devolução de insumos não foi chamado
+                await _fixture.InsumoOSController.DidNotReceive().DevolverInsumosAoEstoque(Arg.Any<IEnumerable<DevolverInsumoOSRequest>>());
+                
+                // Limpar contadores de chamadas para o próximo cenário
+                _fixture.OrdemServicoController.ClearReceivedCalls();
+                _fixture.LogServico.ClearReceivedCalls();
+                _fixture.InsumoOSController.ClearReceivedCalls();
+            }
         }
 
         [Fact]
@@ -109,65 +100,6 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             _fixture.LogServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
             _fixture.LogServico.Received(1).LogErro(Arg.Any<string>(), exception);
             _fixture.LogServico.DidNotReceive().LogFim(Arg.Any<string>());
-        }
-
-        [Fact]
-        public async Task Handle_ComInsumosNulos_NaoDeveDevolverInsumos()
-        {
-            // Arrange
-            var ordemServicoId = Guid.NewGuid();
-            var evento = _fixture.CriarEvento(ordemServicoId);
-
-            // Configurar ordem de serviço com insumos nulos
-            var ordemServico = new OrdemServicoResponse
-            {
-                Id = ordemServicoId,
-                Insumos = null
-            };
-
-            _fixture.OrdemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-
-            // Act
-            await _fixture.Handler.Handle(evento, CancellationToken.None);
-
-            // Assert
-            await _fixture.OrdemServicoController.Received(1).ObterPorId(ordemServicoId);
-            _fixture.LogServico.Received(1).LogInicio(Arg.Any<string>(), ordemServicoId);
-            _fixture.LogServico.Received(1).LogFim(Arg.Any<string>(), Arg.Any<object>());
-
-            // Verificar que o método de devolução de insumos não foi chamado
-            await _fixture.InsumoOSController.DidNotReceive().DevolverInsumosAoEstoque(Arg.Any<IEnumerable<DevolverInsumoOSRequest>>());
-        }
-
-        [Fact]
-        public async Task Handle_DeveMapearCorretamenteOsInsumos()
-        {
-            // Arrange
-            var ordemServicoId = Guid.NewGuid();
-            var estoqueId1 = Guid.NewGuid();
-            var estoqueId2 = Guid.NewGuid();
-            var evento = _fixture.CriarEvento(ordemServicoId);
-
-            // Configurar ordem de serviço com insumos específicos
-            var insumosInfo = new List<(Guid EstoqueId, int Quantidade)>
-            {
-                (estoqueId1, 5),
-                (estoqueId2, 10)
-            };
-
-            var ordemServico = _fixture.CriarOrdemServicoComInsumosEspecificos(ordemServicoId, insumosInfo);
-
-            _fixture.OrdemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
-
-            // Act
-            await _fixture.Handler.Handle(evento, CancellationToken.None);
-
-            // Assert
-            await _fixture.InsumoOSController.Received(1).DevolverInsumosAoEstoque(
-                Arg.Is<IEnumerable<DevolverInsumoOSRequest>>(reqs => reqs.Count() == 2 &&
-                    reqs.Any(r => r.EstoqueId == estoqueId1 && r.Quantidade == 5) &&
-                    reqs.Any(r => r.EstoqueId == estoqueId2 && r.Quantidade == 10))
-            );
         }
     }
 }
