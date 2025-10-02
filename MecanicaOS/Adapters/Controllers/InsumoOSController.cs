@@ -28,7 +28,7 @@ namespace Adapters.Controllers
 
         public async Task<IEnumerable<InsumoOSResponse>> CadastrarInsumos(Guid ordemServicoId, IEnumerable<CadastrarInsumoOSRequest> requests)
         {
-            var ordemServico = await _ordemServicoUseCases.ObterPorIdUseCaseAsync(ordemServicoId)
+            _ = await _ordemServicoUseCases.ObterPorIdUseCaseAsync(ordemServicoId)
                 ?? throw new DadosNaoEncontradosException("Ordem de serviço não encontrada");
 
             var useCaseDtos = new List<CadastrarInsumoOSUseCaseDto>();

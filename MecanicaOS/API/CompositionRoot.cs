@@ -793,12 +793,14 @@ namespace API
             var logServicoGateway = CriarLogServicoGateway<CadastrarInsumosHandler>();
             var udtGateway = CriarUnidadeDeTrabalhoGateway();
             var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
+            var insumosGateway = CriarInsumosGateway();
 
             return new CadastrarInsumosHandler(
                 logServicoGateway,
                 udtGateway,
                 usuarioLogadoServicoGateway,
-                verificarEstoqueJobGateway);
+                verificarEstoqueJobGateway,
+                insumosGateway);
         }
         #endregion
 
