@@ -198,6 +198,19 @@ namespace MecanicaOS.UnitTests.Core.UseCases.OrdensServico
             resultado.Should().BeNull();
         }
 
+        [Fact]
+        public async Task ObterOrdemServico_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var logGatewayObter = Substitute.For<ILogGateway<ObterOrdemServicoHandler>>();
+            var handler = new ObterOrdemServicoHandler(_ordemServicoGateway, logGatewayObter, _udtGateway, _usuarioLogadoGateway);
+            var ordemId = Guid.NewGuid();
+            _ordemServicoGateway.ObterPorIdAsync(ordemId).Returns(Task.FromException<OrdemServico?>(new InvalidOperationException("Erro no banco")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle(ordemId));
+        }
+
         #endregion
 
         #region ObterTodosOrdensServicoHandler
@@ -326,6 +339,19 @@ namespace MecanicaOS.UnitTests.Core.UseCases.OrdensServico
             await _udtGateway.Received(1).Commit();
         }
 
+        [Fact]
+        public async Task AceitarOrcamento_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var logGatewayAceitar = Substitute.For<ILogGateway<AceitarOrcamentoHandler>>();
+            var handler = new AceitarOrcamentoHandler(_ordemServicoGateway, logGatewayAceitar, _udtGateway, _usuarioLogadoGateway);
+            var ordemId = Guid.NewGuid();
+            _ordemServicoGateway.ObterPorIdAsync(ordemId).Returns(Task.FromException<OrdemServico?>(new InvalidOperationException("Erro no banco")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle(ordemId));
+        }
+
         #endregion
 
         #region RecusarOrcamentoHandler
@@ -361,6 +387,20 @@ namespace MecanicaOS.UnitTests.Core.UseCases.OrdensServico
             // Assert
             await _ordemServicoGateway.Received(1).EditarAsync(Arg.Is<OrdemServico>(o => o.Status == StatusOrdemServico.Cancelada));
             await _udtGateway.Received(1).Commit();
+        }
+
+        [Fact]
+        public async Task RecusarOrcamento_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var logGatewayRecusar = Substitute.For<ILogGateway<RecusarOrcamentoHandler>>();
+            var eventosGateway = Substitute.For<IEventosGateway>();
+            var handler = new RecusarOrcamentoHandler(_ordemServicoGateway, eventosGateway, logGatewayRecusar, _udtGateway, _usuarioLogadoGateway);
+            var ordemId = Guid.NewGuid();
+            _ordemServicoGateway.ObterPorIdAsync(ordemId).Returns(Task.FromException<OrdemServico?>(new InvalidOperationException("Erro no banco")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle(ordemId));
         }
 
         #endregion
