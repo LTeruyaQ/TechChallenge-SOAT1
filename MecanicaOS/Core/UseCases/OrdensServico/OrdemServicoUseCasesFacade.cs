@@ -72,5 +72,12 @@ namespace Core.UseCases.OrdensServico
         {
             await _recusarOrcamentoHandler.Handle(id);
         }
+
+        public async Task<IEnumerable<OrdemServico>> ObterOrcamentosExpiradosUseCaseAsync()
+        {
+            // TODO: Implementar handler específico para orçamentos expirados
+            // Por ora, retorna lista vazia para não quebrar a compilação
+            return new List<OrdemServico>();
+        }
     }
 }

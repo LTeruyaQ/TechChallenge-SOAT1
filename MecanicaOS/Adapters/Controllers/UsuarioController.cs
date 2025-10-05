@@ -95,5 +95,12 @@ namespace Adapters.Controllers
         {
             return await _usuarioUseCases.DeletarUseCaseAsync(id);
         }
+
+        public async Task<IEnumerable<UsuarioResponse>> ObterUsuariosParaAlertaEstoque()
+        {
+            var usuarios = await _usuarioUseCases.ObterUsuariosParaAlertaEstoqueUseCaseAsync();
+            return _usuarioPresenter.ParaResponse(usuarios)
+                .Where(response => response != null)!;
+        }
     }
 }

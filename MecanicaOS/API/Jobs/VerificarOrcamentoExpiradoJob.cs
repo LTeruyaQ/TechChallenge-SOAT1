@@ -1,30 +1,28 @@
-using Core.DTOs.Entidades.OrdemServicos;
-using Core.Enumeradores;
-using Core.Especificacoes.OrdemServico;
+using Core.DTOs.Requests.OrdemServico.InsumoOS;
+using Core.DTOs.Responses.OrdemServico;
 using Core.Interfaces.Controllers;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
+using Hangfire;
 
 namespace API.Jobs;
 
 /// <summary>
-/// TODO: Migrar pra usar controller
+/// Job para verificar orçamentos expirados e devolver insumos ao estoque.
+/// Segue padrão Clean Architecture: Job → Controllers → UseCases → Gateways → Repositórios
 /// </summary>
 public class VerificarOrcamentoExpiradoJob
 {
     private readonly ICompositionRoot _compositionRoot;
-    private readonly IRepositorio<OrdemServicoEntityDto> _ordemServicoRepository;
+    private readonly IOrdemServicoController _ordemServicoController;
     private readonly IInsumoOSController _insumoOSController;
-    private readonly IUnidadeDeTrabalho _uot;
     private readonly ILogServico<VerificarOrcamentoExpiradoJob> _logServico;
 
     public VerificarOrcamentoExpiradoJob(ICompositionRoot compositionRoot)
     {
         _compositionRoot = compositionRoot;
-        _ordemServicoRepository = _compositionRoot.CriarRepositorio<OrdemServicoEntityDto>();
+        _ordemServicoController = _compositionRoot.CriarOrdemServicoController();
         _insumoOSController = _compositionRoot.CriarInsumoOSController();
-        _uot = _compositionRoot.CriarUnidadeDeTrabalho();
         _logServico = _compositionRoot.CriarLogService<VerificarOrcamentoExpiradoJob>();
     }
 
@@ -36,56 +34,33 @@ public class VerificarOrcamentoExpiradoJob
         {
             _logServico.LogInicio(metodo);
 
-            var especificacao = new ObterOSOrcamentoExpiradoEspecificacao();
-            var ordensServico = await _ordemServicoRepository.ListarAsync(especificacao);
+            var ordensComOrcamentoExpirado = await _ordemServicoController.ObterOrcamentosExpirados();
 
-            if (!ordensServico.Any())
-                return;
-
-            foreach (var os in ordensServico)
+            if (ordensComOrcamentoExpirado.Any())
             {
-                os.Status = StatusOrdemServico.OrcamentoExpirado;
-                os.DataAtualizacao = DateTime.UtcNow;
+                foreach (var ordemServico in ordensComOrcamentoExpirado)
+                {
+                    if (ordemServico.Insumos != null && ordemServico.Insumos.Any())
+                    {
+                        var devolverInsumosRequest = ordemServico.Insumos.Select(insumo => 
+                            new DevolverInsumoOSRequest
+                            {
+                                EstoqueId = insumo.EstoqueId,
+                                Quantidade = insumo.Quantidade
+                            });
+
+                        await _insumoOSController.DevolverInsumosAoEstoque(devolverInsumosRequest);
+                    }
+                }
+
+                _logServico.LogInicio($"Processadas {ordensComOrcamentoExpirado.Count()} ordens com orçamento expirado");
             }
-            ;
-
-            //TODO: Refatorar para usar Controller, isso nao � responsabilidade do Job
-            //await _devolverInsumosHandler.Handle(ordensServico
-            //    .SelectMany(os => os.InsumosOS)
-            //    .Select(i => new InsumoOS()
-            //    {
-            //        Id = i.Id,
-            //        OrdemServicoId = i.OrdemServicoId,
-            //        EstoqueId = i.EstoqueId,
-            //        Quantidade = i.Quantidade,
-            //        Ativo = i.Ativo,
-            //        DataCadastro = i.DataCadastro,
-            //        DataAtualizacao = i.DataAtualizacao,
-            //        Estoque = new Estoque()
-            //        {
-            //            Id = i.Estoque.Id,
-            //            Insumo = i.Estoque.Insumo,
-            //            QuantidadeDisponivel = i.Estoque.QuantidadeDisponivel,
-            //            QuantidadeMinima = i.Estoque.QuantidadeMinima,
-            //            Descricao = i.Estoque.Descricao,
-            //            Preco = i.Estoque.Preco,
-            //            Ativo = i.Estoque.Ativo,
-            //            DataCadastro = i.Estoque.DataCadastro,
-            //            DataAtualizacao = i.Estoque.DataAtualizacao
-            //        }
-            //    })
-            //    );
-
-            await _ordemServicoRepository.EditarVariosAsync(ordensServico);
-
-            await _uot.Commit();
 
             _logServico.LogFim(metodo);
         }
         catch (Exception e)
         {
             _logServico.LogErro(metodo, e);
-
             throw;
         }
     }

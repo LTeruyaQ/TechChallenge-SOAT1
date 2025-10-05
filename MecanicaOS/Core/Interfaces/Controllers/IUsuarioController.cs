@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Requests.Usuario;
+using Core.DTOs.Requests.Usuario;
 using Core.DTOs.Responses.Usuario;
 
 namespace Core.Interfaces.Controllers
@@ -11,5 +11,6 @@ namespace Core.Interfaces.Controllers
         Task<UsuarioResponse> ObterPorEmailAsync(string email);
         Task<UsuarioResponse> ObterPorIdAsync(Guid id);
         Task<IEnumerable<UsuarioResponse>> ObterTodosAsync();
+        Task<IEnumerable<UsuarioResponse>> ObterUsuariosParaAlertaEstoque();
     }
 }

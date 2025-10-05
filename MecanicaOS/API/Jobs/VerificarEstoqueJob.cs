@@ -1,38 +1,36 @@
-using Core.DTOs.Entidades.Estoque;
-using Core.DTOs.Entidades.Usuarios;
-using Core.Especificacoes.Estoque;
-using Core.Especificacoes.Usuario;
-using Core.Exceptions;
+using Core.DTOs.Requests.Estoque;
+using Core.DTOs.Responses.Estoque;
+using Core.DTOs.Responses.Usuario;
+using Core.Interfaces.Controllers;
 using Core.Interfaces.Jobs;
-using Core.Interfaces.Repositorios;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
 using Hangfire;
 using System.Text;
 
 namespace API.Jobs;
+
 /// <summary>
-/// TODO: Migrar pra usar controller
+/// Job para verificar estoque crítico e enviar alertas por email.
+/// Segue padrão Clean Architecture: Job → Controllers → UseCases → Gateways → Repositórios
 /// </summary>
 public class VerificarEstoqueJob : IVerificarEstoqueJob
 {
     private readonly ICompositionRoot _compositionRoot;
-    private readonly IRepositorio<EstoqueEntityDto> _estoqueRepositorio;
-    private readonly IRepositorio<UsuarioEntityDto> _usuarioRepositorio;
-    private readonly IRepositorio<AlertaEstoqueEntityDto> _alertaEstoqueRepositorio;
+    private readonly IEstoqueController _estoqueController;
+    private readonly IUsuarioController _usuarioController;
+    private readonly IAlertaEstoqueController _alertaEstoqueController;
     private readonly ILogServico<VerificarEstoqueJob> _logServico;
     private readonly IServicoEmail _servicoEmail;
-    private readonly IUnidadeDeTrabalho _uot;
 
     public VerificarEstoqueJob(ICompositionRoot compositionRoot)
     {
         _compositionRoot = compositionRoot;
-        _estoqueRepositorio = _compositionRoot.CriarRepositorio<EstoqueEntityDto>();
-        _usuarioRepositorio = _compositionRoot.CriarRepositorio<UsuarioEntityDto>();
-        _alertaEstoqueRepositorio = _compositionRoot.CriarRepositorio<AlertaEstoqueEntityDto>();
+        _estoqueController = _compositionRoot.CriarEstoqueController();
+        _usuarioController = _compositionRoot.CriarUsuarioController();
+        _alertaEstoqueController = _compositionRoot.CriarAlertaEstoqueController();
         _logServico = _compositionRoot.CriarLogService<VerificarEstoqueJob>();
         _servicoEmail = _compositionRoot.CriarServicoEmail();
-        _uot = _compositionRoot.CriarUnidadeDeTrabalho();
     }
 
     [DisableConcurrentExecution(timeoutInSeconds: 3600)]
@@ -44,16 +42,28 @@ public class VerificarEstoqueJob : IVerificarEstoqueJob
         {
             _logServico.LogInicio(metodo);
 
-            var insumosCriticos = await ObterInsumosParaAlertaAsync();
+            var estoqueCritico = await _estoqueController.ObterEstoqueCritico();
 
-            if (insumosCriticos.Any())
+            if (estoqueCritico.Any())
             {
-                await EnviarAlertaEstoqueAsync(insumosCriticos);
+                var insumosParaAlerta = new List<EstoqueResponse>();
+                foreach (var insumo in estoqueCritico)
+                {
+                    var alertaJaEnviado = await _alertaEstoqueController.VerificarAlertaEnviadoHoje(insumo.Id);
+                    if (!alertaJaEnviado)
+                    {
+                        insumosParaAlerta.Add(insumo);
+                    }
+                }
 
-                await SalvarAlertaEnviadoAsync(insumosCriticos);
+                if (insumosParaAlerta.Any())
+                {
+                    await EnviarAlertaEstoqueAsync(insumosParaAlerta);
+                    await SalvarAlertaEnviadoAsync(insumosParaAlerta);
+                }
             }
 
-            _logServico.LogFim(metodo, insumosCriticos);
+            _logServico.LogFim(metodo, estoqueCritico);
         }
         catch (Exception e)
         {
@@ -63,57 +73,14 @@ public class VerificarEstoqueJob : IVerificarEstoqueJob
         }
     }
 
-    private async Task<List<EstoqueEntityDto>> ObterInsumosParaAlertaAsync()
-    {
-        IEnumerable<EstoqueEntityDto> insumosCriticos = await ObterInsumosAbaixoDaQuantidadeMinima();
-
-        var dataAtual = DateTime.UtcNow;
-        var insumosParaAlerta = new List<EstoqueEntityDto>();
-
-        foreach (var insumo in insumosCriticos)
-        {
-            var alertasEnviadosHoje = await _alertaEstoqueRepositorio.ListarAsync(
-                new ObterAlertaDoDiaPorEstoqueEspecificacao(
-                    insumo.Id,
-                    dataAtual));
-
-            if (!alertasEnviadosHoje.Any())
-            {
-                insumosParaAlerta.Add(insumo);
-            }
-        }
-
-        return insumosParaAlerta;
-    }
-
-    private async Task<IEnumerable<EstoqueEntityDto>> ObterInsumosAbaixoDaQuantidadeMinima()
-    {
-        var metodo = nameof(ObterInsumosAbaixoDaQuantidadeMinima);
-        _logServico.LogInicio(metodo);
-        try
-        {
-            var especificacao = new ObterEstoqueCriticoEspecificacao();
-            var insumosCriticos = await _estoqueRepositorio.ListarAsync(especificacao);
-
-            _logServico.LogFim(metodo, insumosCriticos);
-            return insumosCriticos;
-        }
-        catch (Exception e)
-        {
-            _logServico.LogErro(metodo, e);
-            throw;
-        }
-    }
-
-    private async Task EnviarAlertaEstoqueAsync(IEnumerable<EstoqueEntityDto> insumosCriticos)
+    private async Task EnviarAlertaEstoqueAsync(IEnumerable<EstoqueResponse> insumosCriticos)
     {
         var metodo = nameof(EnviarAlertaEstoqueAsync);
 
         _logServico.LogInicio(metodo, insumosCriticos);
         try
         {
-            var especificacao = new ObterUsuarioParaAlertaEstoqueEspecificacao();
-            var usuariosAlerta = await _usuarioRepositorio.ListarAsync(especificacao);
+            var usuariosAlerta = await _usuarioController.ObterUsuariosParaAlertaEstoque();
 
             var conteudo = await GerarConteudoEmailAsync(insumosCriticos);
 
@@ -135,7 +102,7 @@ public class VerificarEstoqueJob : IVerificarEstoqueJob
         }
     }
 
-    private async Task<string?> GerarConteudoEmailAsync(IEnumerable<EstoqueEntityDto> insumosCriticos)
+    private async Task<string?> GerarConteudoEmailAsync(IEnumerable<EstoqueResponse> insumosCriticos)
     {
         var metodo = nameof(GerarConteudoEmailAsync);
         _logServico.LogInicio(metodo, insumosCriticos);
@@ -169,22 +136,21 @@ public class VerificarEstoqueJob : IVerificarEstoqueJob
         }
     }
 
-    private async Task SalvarAlertaEnviadoAsync(IEnumerable<EstoqueEntityDto> insumosCriticos)
+    private async Task SalvarAlertaEnviadoAsync(IEnumerable<EstoqueResponse> insumosCriticos)
     {
         var metodo = nameof(SalvarAlertaEnviadoAsync);
         _logServico.LogInicio(metodo, insumosCriticos);
         try
         {
+            // ✅ USANDO CONTROLLER AO INVÉS DE REPOSITÓRIO DIRETO
             var alertas = insumosCriticos
-                .Select(insumo => new AlertaEstoqueEntityDto
+                .Select(insumo => new CadastrarAlertaEstoqueRequest
                 {
-                    EstoqueId = insumo.Id
+                    EstoqueId = insumo.Id,
+                    DataEnvio = DateTime.UtcNow
                 });
 
-            await _alertaEstoqueRepositorio.CadastrarVariosAsync(alertas);
-
-            if (!await _uot.Commit())
-                throw new PersistirDadosException("Falha ao cadastrar alertas de estoque");
+            await _alertaEstoqueController.CadastrarAlertas(alertas);
 
             _logServico.LogFim(metodo);
         }

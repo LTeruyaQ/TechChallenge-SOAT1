@@ -1156,6 +1156,11 @@ namespace API
             return new AutenticacaoController(this);
         }
 
+        public IAlertaEstoqueController CriarAlertaEstoqueController()
+        {
+            return new AlertaEstoqueController(this);
+        }
+
         #endregion
     }
 }

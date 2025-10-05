@@ -124,5 +124,12 @@ namespace Adapters.Controllers
         {
             await _ordemServicoUseCases.RecusarOrcamentoUseCaseAsync(id);
         }
+
+        public async Task<IEnumerable<OrdemServicoResponse>> ObterOrcamentosExpirados()
+        {
+            var ordens = await _ordemServicoUseCases.ObterOrcamentosExpiradosUseCaseAsync();
+            return _ordemServicoPresenter.ParaResponse(ordens)
+                .Where(response => response != null)!;
+        }
     }
 }

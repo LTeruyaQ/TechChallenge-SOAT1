@@ -78,5 +78,12 @@ namespace Adapters.Controllers
         {
             return await _estoqueUseCases.DeletarUseCaseAsync(id);
         }
+
+        public async Task<IEnumerable<EstoqueResponse>> ObterEstoqueCritico()
+        {
+            var estoques = await _estoqueUseCases.ObterEstoqueCriticoUseCaseAsync();
+            return _estoquePresenter.ParaResponse(estoques)
+                .Where(response => response != null)!;
+        }
     }
 }

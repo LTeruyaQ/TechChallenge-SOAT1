@@ -106,5 +106,8 @@ namespace Core.Interfaces.root
         IVeiculoPresenter CriarVeiculoPresenter();
         IVeiculoUseCases CriarVeiculoUseCases();
         IVerificarEstoqueJobGateway CriarVerificarEstoqueJobGateway();
+        
+        // Controllers para Jobs
+        IAlertaEstoqueController CriarAlertaEstoqueController();
     }
 }

@@ -1,4 +1,4 @@
-﻿using Core.DTOs.UseCases.Usuario;
+using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 
 namespace Core.Interfaces.UseCases
@@ -11,5 +11,6 @@ namespace Core.Interfaces.UseCases
         Task<Usuario?> ObterPorEmailUseCaseAsync(string email);
         Task<Usuario?> ObterPorIdUseCaseAsync(Guid id);
         Task<IEnumerable<Usuario>> ObterTodosUseCaseAsync();
+        Task<IEnumerable<Usuario>> ObterUsuariosParaAlertaEstoqueUseCaseAsync();
     }
 }

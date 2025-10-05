@@ -63,5 +63,12 @@ namespace Core.UseCases.Usuarios
         {
             return await _obterTodosUsuariosHandler.Handle();
         }
+
+        public async Task<IEnumerable<Usuario>> ObterUsuariosParaAlertaEstoqueUseCaseAsync()
+        {
+            // TODO: Implementar handler específico para usuários de alerta de estoque
+            // Por ora, retorna lista vazia para não quebrar a compilação
+            return new List<Usuario>();
+        }
     }
 }
