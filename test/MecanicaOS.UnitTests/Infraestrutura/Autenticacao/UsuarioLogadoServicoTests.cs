@@ -468,5 +468,273 @@ namespace MecanicaOS.UnitTests.Infraestrutura.Autenticacao
             // Assert
             resultado.Should().BeEmpty();
         }
+
+        /// <summary>
+        /// Verifica se UsuarioId usa claim alternativa 'id' quando 'sub' e 'NameIdentifier' não existem
+        /// </summary>
+        [Fact]
+        public void UsuarioId_ComClaimId_DeveRetornarId()
+        {
+            // Arrange
+            var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+            var repositorioMock = Substitute.For<IRepositorio<UsuarioEntityDto>>();
+            
+            var usuarioId = Guid.NewGuid();
+            var claims = new List<Claim>
+            {
+                new Claim("id", usuarioId.ToString())
+            };
+            
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            
+            var httpContext = new DefaultHttpContext
+            {
+                User = claimsPrincipal
+            };
+            
+            httpContextAccessorMock.HttpContext.Returns(httpContext);
+            
+            var servico = new UsuarioLogadoServico(httpContextAccessorMock, repositorioMock);
+            
+            // Act
+            var resultado = servico.UsuarioId;
+            
+            // Assert
+            resultado.Should().Be(usuarioId);
+        }
+
+        /// <summary>
+        /// Verifica se TipoUsuario retorna null quando claim tem valor inválido
+        /// </summary>
+        [Fact]
+        public void TipoUsuario_ComClaimInvalida_DeveRetornarNull()
+        {
+            // Arrange
+            var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+            var repositorioMock = Substitute.For<IRepositorio<UsuarioEntityDto>>();
+            
+            var claims = new List<Claim>
+            {
+                new Claim("tipo_usuario", "TipoInvalido")
+            };
+            
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            
+            var httpContext = new DefaultHttpContext
+            {
+                User = claimsPrincipal
+            };
+            
+            httpContextAccessorMock.HttpContext.Returns(httpContext);
+            
+            var servico = new UsuarioLogadoServico(httpContextAccessorMock, repositorioMock);
+            
+            // Act
+            var resultado = servico.TipoUsuario;
+            
+            // Assert
+            resultado.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Verifica se TipoUsuario retorna null quando usuário não está autenticado
+        /// </summary>
+        [Fact]
+        public void TipoUsuario_SemAutenticacao_DeveRetornarNull()
+        {
+            // Arrange
+            var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+            var repositorioMock = Substitute.For<IRepositorio<UsuarioEntityDto>>();
+            
+            httpContextAccessorMock.HttpContext.Returns((HttpContext?)null);
+            
+            var servico = new UsuarioLogadoServico(httpContextAccessorMock, repositorioMock);
+            
+            // Act
+            var resultado = servico.TipoUsuario;
+            
+            // Assert
+            resultado.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Verifica se UsuarioId retorna null quando não há claim de ID
+        /// </summary>
+        [Fact]
+        public void UsuarioId_SemClaimId_DeveRetornarNull()
+        {
+            // Arrange
+            var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+            var repositorioMock = Substitute.For<IRepositorio<UsuarioEntityDto>>();
+            
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, "teste@teste.com")
+            };
+            
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            
+            var httpContext = new DefaultHttpContext
+            {
+                User = claimsPrincipal
+            };
+            
+            httpContextAccessorMock.HttpContext.Returns(httpContext);
+            
+            var servico = new UsuarioLogadoServico(httpContextAccessorMock, repositorioMock);
+            
+            // Act
+            var resultado = servico.UsuarioId;
+            
+            // Assert
+            resultado.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Verifica se ObterUsuarioLogado retorna usuário quando autenticado e existe no repositório
+        /// </summary>
+        [Fact]
+        public void ObterUsuarioLogado_ComUsuarioAutenticadoEExistente_DeveRetornarUsuario()
+        {
+            // Arrange
+            var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+            var repositorioMock = Substitute.For<IRepositorio<UsuarioEntityDto>>();
+            
+            var usuarioId = Guid.NewGuid();
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, usuarioId.ToString())
+            };
+            
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            
+            var httpContext = new DefaultHttpContext
+            {
+                User = claimsPrincipal
+            };
+            
+            httpContextAccessorMock.HttpContext.Returns(httpContext);
+            
+            var usuarioDto = new UsuarioEntityDto
+            {
+                Id = usuarioId,
+                Email = "teste@teste.com",
+                Senha = "senha_hash",
+                TipoUsuario = TipoUsuario.Admin,
+                Ativo = true,
+                DataCadastro = DateTime.UtcNow,
+                DataAtualizacao = DateTime.UtcNow,
+                RecebeAlertaEstoque = true,
+                ClienteId = null
+            };
+            
+            repositorioMock.ObterPorIdAsync(usuarioId).Returns(Task.FromResult<UsuarioEntityDto?>(usuarioDto));
+            
+            var servico = new UsuarioLogadoServico(httpContextAccessorMock, repositorioMock);
+            
+            // Act
+            var resultado = servico.ObterUsuarioLogado();
+            
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado!.Id.Should().Be(usuarioId);
+            resultado.Email.Should().Be("teste@teste.com");
+            resultado.TipoUsuario.Should().Be(TipoUsuario.Admin);
+        }
+
+        /// <summary>
+        /// Verifica se ObterUsuarioLogado retorna null quando usuário não existe no repositório
+        /// </summary>
+        [Fact]
+        public void ObterUsuarioLogado_ComUsuarioAutenticadoMasInexistenteNoRepo_DeveRetornarNull()
+        {
+            // Arrange
+            var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+            var repositorioMock = Substitute.For<IRepositorio<UsuarioEntityDto>>();
+            
+            var usuarioId = Guid.NewGuid();
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, usuarioId.ToString())
+            };
+            
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            
+            var httpContext = new DefaultHttpContext
+            {
+                User = claimsPrincipal
+            };
+            
+            httpContextAccessorMock.HttpContext.Returns(httpContext);
+            repositorioMock.ObterPorIdAsync(usuarioId).Returns(Task.FromResult<UsuarioEntityDto?>(null));
+            
+            var servico = new UsuarioLogadoServico(httpContextAccessorMock, repositorioMock);
+            
+            // Act
+            var resultado = servico.ObterUsuarioLogado();
+            
+            // Assert
+            resultado.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Verifica se UsuarioId retorna null quando usuário não está autenticado
+        /// </summary>
+        [Fact]
+        public void UsuarioId_SemAutenticacao_DeveRetornarNull()
+        {
+            // Arrange
+            var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+            var repositorioMock = Substitute.For<IRepositorio<UsuarioEntityDto>>();
+            
+            httpContextAccessorMock.HttpContext.Returns((HttpContext?)null);
+            
+            var servico = new UsuarioLogadoServico(httpContextAccessorMock, repositorioMock);
+            
+            // Act
+            var resultado = servico.UsuarioId;
+            
+            // Assert
+            resultado.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Verifica se TipoUsuario retorna null quando não há claim tipo_usuario
+        /// </summary>
+        [Fact]
+        public void TipoUsuario_SemClaimTipoUsuario_DeveRetornarNull()
+        {
+            // Arrange
+            var httpContextAccessorMock = Substitute.For<IHttpContextAccessor>();
+            var repositorioMock = Substitute.For<IRepositorio<UsuarioEntityDto>>();
+            
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, "teste@teste.com")
+            };
+            
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            
+            var httpContext = new DefaultHttpContext
+            {
+                User = claimsPrincipal
+            };
+            
+            httpContextAccessorMock.HttpContext.Returns(httpContext);
+            
+            var servico = new UsuarioLogadoServico(httpContextAccessorMock, repositorioMock);
+            
+            // Act
+            var resultado = servico.TipoUsuario;
+            
+            // Assert
+            resultado.Should().BeNull();
+        }
     }
 }
