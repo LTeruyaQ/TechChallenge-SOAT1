@@ -362,5 +362,36 @@ namespace MecanicaOS.UnitTests.API.Controllers
             
             await clienteControllerMock.Received(1).Remover(clienteId);
         }
+
+        [Fact]
+        public async Task ObterPorDocumento_ComDocumentoValido_DeveRetornarCliente()
+        {
+            // Arrange
+            var documento = "12345678901";
+            var clienteResponse = new ClienteResponse
+            {
+                Id = Guid.NewGuid(),
+                Nome = "João Silva",
+                Documento = documento
+            };
+
+            var compositionRootMock = Substitute.For<ICompositionRoot>();
+            var clienteControllerMock = Substitute.For<IClienteController>();
+            
+            compositionRootMock.CriarClienteController().Returns(clienteControllerMock);
+            clienteControllerMock.ObterPorDocumento(documento).Returns(clienteResponse);
+
+            var controller = new ClienteController(compositionRootMock);
+
+            // Act
+            var resultado = await controller.ObterPorDocumento(documento);
+
+            // Assert
+            resultado.Should().BeOfType<OkObjectResult>();
+            var okResult = resultado as OkObjectResult;
+            okResult!.Value.Should().Be(clienteResponse);
+
+            await clienteControllerMock.Received(1).ObterPorDocumento(documento);
+        }
     }
 }

@@ -2,6 +2,7 @@ using API.Controllers;
 using Core.DTOs.Requests.OrdemServico;
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.DTOs.Responses.OrdemServico;
+using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Core.Enumeradores;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
@@ -289,9 +290,36 @@ namespace MecanicaOS.UnitTests.API.Controllers
             await _ordemServicoController.DidNotReceive().Atualizar(Arg.Any<Guid>(), Arg.Any<AtualizarOrdemServicoRequest>());
         }
 
-        // TODO: Corrigir namespace - temporariamente comentado
-        // [Fact]
-        // public async Task AdicionarInsumosOS_ComDadosValidos_DeveRetornarOkComInsumos() { }
+        // TODO: Implementar teste quando interface estiver correta
+
+        [Fact]
+        public async Task AdicionarInsumosOS_ComDadosValidos_DeveRetornarOkComInsumos()
+        {
+            // Arrange
+            var ordemServicoId = Guid.NewGuid();
+            var requests = new List<CadastrarInsumoOSRequest>
+            {
+                new CadastrarInsumoOSRequest { EstoqueId = Guid.NewGuid(), Quantidade = 2 }
+            };
+
+            var expectedInsumos = new List<InsumoOSResponse>
+            {
+                new InsumoOSResponse { OrdemServicoId = ordemServicoId, EstoqueId = requests[0].EstoqueId, Quantidade = 2 }
+            };
+
+            _insumoOSController.CadastrarInsumos(ordemServicoId, requests).Returns(expectedInsumos);
+            var controller = CriarController();
+
+            // Act
+            var resultado = await controller.AdicionarInsumosOS(ordemServicoId, requests);
+
+            // Assert
+            resultado.Should().BeOfType<OkObjectResult>();
+            var okResult = resultado as OkObjectResult;
+            okResult!.Value.Should().BeEquivalentTo(expectedInsumos);
+
+            await _insumoOSController.Received(1).CadastrarInsumos(ordemServicoId, requests);
+        }
 
         [Fact]
         public async Task AdicionarInsumosOS_ComModelStateInvalido_DeveRetornarBadRequest()
