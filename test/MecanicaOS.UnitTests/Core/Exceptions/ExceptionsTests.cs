@@ -63,5 +63,41 @@ namespace MecanicaOS.UnitTests.Core.Exceptions
             var exception = new OrcamentoExpiradoException(mensagem);
             exception.Message.Should().Be(mensagem);
         }
+
+        // Testes para construtores sem parâmetros
+        [Fact]
+        public void DadosJaCadastradosException_SemParametros_DeveCriarCorretamente()
+        {
+            var exception = new DadosJaCadastradosException();
+            exception.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void CredenciaisInvalidasException_SemParametros_DeveCriarCorretamente()
+        {
+            var exception = new CredenciaisInvalidasException();
+            exception.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void UsuarioInativoException_SemParametros_DeveCriarCorretamente()
+        {
+            var exception = new UsuarioInativoException();
+            exception.Should().NotBeNull();
+        }
+
+        // Testes para construtores com InnerException
+        [Fact]
+        public void DadosJaCadastradosException_ComInnerException_DeveCriarCorretamente()
+        {
+            var mensagem = "Dados já cadastrados";
+            var innerException = new InvalidOperationException("Erro interno");
+            var exception = new DadosJaCadastradosException(mensagem, innerException);
+            
+            exception.Message.Should().Be(mensagem);
+            exception.InnerException.Should().Be(innerException);
+        }
+
+        // CredenciaisInvalidasException e UsuarioInativoException não possuem construtor com InnerException
     }
 }

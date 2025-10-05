@@ -148,5 +148,89 @@ namespace MecanicaOS.UnitTests.Core.Entidades
             // Act & Assert
             servico1.Equals(servico2).Should().BeFalse("serviços com nomes diferentes devem ser considerados diferentes");
         }
+
+        /// <summary>
+        /// Verifica se o método Atualizar atualiza todas as propriedades quando fornecidas
+        /// </summary>
+        [Fact]
+        public void Servico_Atualizar_ComTodosParametros_DeveAtualizarTodasPropriedades()
+        {
+            // Arrange
+            var servico = ServicoFixture.CriarServicoValido();
+            var novoNome = "Alinhamento";
+            var novaDescricao = "Alinhamento e balanceamento";
+            var novoValor = 200.00m;
+            var novaDisponibilidade = false;
+
+            // Act
+            servico.Atualizar(novoNome, novaDescricao, novoValor, novaDisponibilidade);
+
+            // Assert
+            servico.Nome.Should().Be(novoNome, "o nome deve ser atualizado");
+            servico.Descricao.Should().Be(novaDescricao, "a descrição deve ser atualizada");
+            servico.Valor.Should().Be(novoValor, "o valor deve ser atualizado");
+            servico.Disponivel.Should().Be(novaDisponibilidade, "a disponibilidade deve ser atualizada");
+        }
+
+        /// <summary>
+        /// Verifica se o método Atualizar não altera propriedades quando parâmetros são nulos ou vazios
+        /// </summary>
+        [Fact]
+        public void Servico_Atualizar_ComParametrosNulos_NaoDeveAlterarPropriedades()
+        {
+            // Arrange
+            var servico = ServicoFixture.CriarServicoValido();
+            var nomeOriginal = servico.Nome;
+            var descricaoOriginal = servico.Descricao;
+            var valorOriginal = servico.Valor;
+            var disponibilidadeOriginal = servico.Disponivel;
+
+            // Act
+            servico.Atualizar(null, null, null, null);
+
+            // Assert
+            servico.Nome.Should().Be(nomeOriginal, "o nome não deve ser alterado");
+            servico.Descricao.Should().Be(descricaoOriginal, "a descrição não deve ser alterada");
+            servico.Valor.Should().Be(valorOriginal, "o valor não deve ser alterado");
+            servico.Disponivel.Should().Be(disponibilidadeOriginal, "a disponibilidade não deve ser alterada");
+        }
+
+        /// <summary>
+        /// Verifica se o método Atualizar atualiza apenas o nome quando fornecido
+        /// </summary>
+        [Fact]
+        public void Servico_Atualizar_ApenasNome_DeveAtualizarApenasNome()
+        {
+            // Arrange
+            var servico = ServicoFixture.CriarServicoValido();
+            var novoNome = "Novo Nome";
+            var descricaoOriginal = servico.Descricao;
+            var valorOriginal = servico.Valor;
+
+            // Act
+            servico.Atualizar(novoNome, null, null, null);
+
+            // Assert
+            servico.Nome.Should().Be(novoNome, "o nome deve ser atualizado");
+            servico.Descricao.Should().Be(descricaoOriginal, "a descrição não deve ser alterada");
+            servico.Valor.Should().Be(valorOriginal, "o valor não deve ser alterado");
+        }
+
+        /// <summary>
+        /// Verifica se o método Atualizar não altera o nome quando string vazia é fornecida
+        /// </summary>
+        [Fact]
+        public void Servico_Atualizar_ComNomeVazio_NaoDeveAlterarNome()
+        {
+            // Arrange
+            var servico = ServicoFixture.CriarServicoValido();
+            var nomeOriginal = servico.Nome;
+
+            // Act
+            servico.Atualizar(string.Empty, null, null, null);
+
+            // Assert
+            servico.Nome.Should().Be(nomeOriginal, "o nome não deve ser alterado quando string vazia é fornecida");
+        }
     }
 }

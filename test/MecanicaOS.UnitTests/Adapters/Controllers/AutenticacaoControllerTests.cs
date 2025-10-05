@@ -85,5 +85,71 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             await usuarioUseCases.Received(1).ObterPorEmailUseCaseAsync(request.Email);
             await autenticacaoUseCases.Received(1).AutenticarUseCaseAsync(Arg.Any<AutenticacaoUseCaseDto>());
         }
+
+        [Fact]
+        public void MapearParaAutenticacaoUseCaseDto_ComDadosValidos_DeveMapearCorretamente()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var autenticacaoUseCases = Substitute.For<IAutenticacaoUseCases>();
+            var usuarioUseCases = Substitute.For<IUsuarioUseCases>();
+            var presenter = Substitute.For<IAutenticacaoPresenter>();
+
+            compositionRoot.CriarAutenticacaoUseCases().Returns(autenticacaoUseCases);
+            compositionRoot.CriarUsuarioUseCases().Returns(usuarioUseCases);
+            compositionRoot.CriarAutenticacaoPresenter().Returns(presenter);
+
+            var controller = new AutenticacaoController(compositionRoot);
+            var request = new AutenticacaoRequest 
+            { 
+                Email = "usuario@teste.com", 
+                Senha = "senha123" 
+            };
+            var usuario = new Usuario 
+            { 
+                Id = Guid.NewGuid(), 
+                Email = request.Email, 
+                Senha = "hash", 
+                TipoUsuario = TipoUsuario.Admin 
+            };
+
+            // Act
+            var resultado = controller.MapearParaAutenticacaoUseCaseDto(request, usuario);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Email.Should().Be(request.Email);
+            resultado.Senha.Should().Be(request.Senha);
+            resultado.UsuarioExistente.Should().Be(usuario);
+        }
+
+        [Fact]
+        public void MapearParaAutenticacaoUseCaseDto_ComRequestNulo_DeveRetornarNull()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var autenticacaoUseCases = Substitute.For<IAutenticacaoUseCases>();
+            var usuarioUseCases = Substitute.For<IUsuarioUseCases>();
+            var presenter = Substitute.For<IAutenticacaoPresenter>();
+
+            compositionRoot.CriarAutenticacaoUseCases().Returns(autenticacaoUseCases);
+            compositionRoot.CriarUsuarioUseCases().Returns(usuarioUseCases);
+            compositionRoot.CriarAutenticacaoPresenter().Returns(presenter);
+
+            var controller = new AutenticacaoController(compositionRoot);
+            var usuario = new Usuario 
+            { 
+                Id = Guid.NewGuid(), 
+                Email = "teste@email.com", 
+                Senha = "hash", 
+                TipoUsuario = TipoUsuario.Admin 
+            };
+
+            // Act
+            var resultado = controller.MapearParaAutenticacaoUseCaseDto(null!, usuario);
+
+            // Assert
+            resultado.Should().BeNull();
+        }
     }
 }

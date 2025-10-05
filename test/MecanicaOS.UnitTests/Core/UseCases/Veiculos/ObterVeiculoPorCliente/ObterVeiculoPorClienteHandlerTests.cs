@@ -42,5 +42,27 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Veiculos.ObterVeiculoPorCliente
             // Assert
             resultado.Should().HaveCount(2);
         }
+
+        [Fact]
+        public async Task Handle_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var veiculoGatewayMock = VeiculoHandlerFixture.CriarVeiculoGatewayMock();
+            var unidadeDeTrabalhoMock = VeiculoHandlerFixture.CriarUnidadeDeTrabalhMock();
+            var logGatewayMock = Substitute.For<ILogGateway<ObterVeiculoPorClienteHandler>>();
+            var usuarioLogadoServicoGatewayMock = Substitute.For<IUsuarioLogadoServicoGateway>();
+
+            var clienteId = Guid.NewGuid();
+            veiculoGatewayMock.ObterVeiculoPorClienteAsync(clienteId).Returns(Task.FromException<IEnumerable<Veiculo>>(new InvalidOperationException("Erro no banco")));
+
+            var handler = new ObterVeiculoPorClienteHandler(
+                veiculoGatewayMock,
+                logGatewayMock,
+                unidadeDeTrabalhoMock,
+                usuarioLogadoServicoGatewayMock);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle(clienteId));
+        }
     }
 }

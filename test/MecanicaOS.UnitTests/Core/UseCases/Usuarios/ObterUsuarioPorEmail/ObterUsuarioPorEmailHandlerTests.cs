@@ -77,5 +77,30 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Usuarios.ObterUsuarioPorEmail
             
             await usuarioGatewayMock.Received(1).ObterPorEmailAsync(email);
         }
+
+        /// <summary>
+        /// Verifica se o handler propaga exceção quando gateway falha
+        /// </summary>
+        [Fact]
+        public async Task Handle_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var usuarioGatewayMock = UsuarioHandlerFixture.CriarUsuarioGatewayMock();
+            var unidadeDeTrabalhoMock = UsuarioHandlerFixture.CriarUnidadeDeTrabalhMock();
+            var logGatewayMock = Substitute.For<ILogGateway<ObterUsuarioPorEmailHandler>>();
+            var usuarioLogadoServicoGatewayMock = Substitute.For<IUsuarioLogadoServicoGateway>();
+
+            var email = "teste@teste.com";
+            usuarioGatewayMock.ObterPorEmailAsync(email).Returns(Task.FromException<Usuario?>(new InvalidOperationException("Erro no banco")));
+
+            var handler = new ObterUsuarioPorEmailHandler(
+                usuarioGatewayMock,
+                logGatewayMock,
+                unidadeDeTrabalhoMock,
+                usuarioLogadoServicoGatewayMock);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle(email));
+        }
     }
 }

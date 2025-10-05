@@ -63,5 +63,27 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Veiculos.ObterVeiculoPorPlaca
             // Assert
             resultado.Should().BeNull();
         }
+
+        [Fact]
+        public async Task Handle_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var veiculoGatewayMock = VeiculoHandlerFixture.CriarVeiculoGatewayMock();
+            var unidadeDeTrabalhoMock = VeiculoHandlerFixture.CriarUnidadeDeTrabalhMock();
+            var logGatewayMock = Substitute.For<ILogGateway<ObterVeiculoPorPlacaHandler>>();
+            var usuarioLogadoServicoGatewayMock = Substitute.For<IUsuarioLogadoServicoGateway>();
+
+            var placa = "ABC1234";
+            veiculoGatewayMock.ObterVeiculoPorPlacaAsync(placa).Returns(Task.FromException<IEnumerable<Veiculo>>(new InvalidOperationException("Erro no banco")));
+
+            var handler = new ObterVeiculoPorPlacaHandler(
+                veiculoGatewayMock,
+                logGatewayMock,
+                unidadeDeTrabalhoMock,
+                usuarioLogadoServicoGatewayMock);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle(placa));
+        }
     }
 }

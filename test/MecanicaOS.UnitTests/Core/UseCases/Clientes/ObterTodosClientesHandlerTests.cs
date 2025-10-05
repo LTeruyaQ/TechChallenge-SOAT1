@@ -99,5 +99,21 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Clientes
             resultado.Count(c => c.TipoCliente == TipoCliente.PessoaFisica).Should().Be(1);
             resultado.Count(c => c.TipoCliente == TipoCliente.PessoaJuridico).Should().Be(1);
         }
+
+        /// <summary>
+        /// Verifica se ObterTodosClientes propaga exceção quando gateway falha
+        /// Importância: ALTA - Valida tratamento de erros
+        /// Contribuição: Garante que exceções sejam propagadas corretamente
+        /// </summary>
+        [Fact]
+        public async Task ObterTodosClientes_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var handler = new ObterTodosClientesHandler(_clienteGateway, _logGateway, _udtGateway, _usuarioLogadoGateway);
+            _clienteGateway.ObterTodosClientesAsync().Returns(Task.FromException<IEnumerable<Cliente>>(new InvalidOperationException("Erro no banco")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle());
+        }
     }
 }

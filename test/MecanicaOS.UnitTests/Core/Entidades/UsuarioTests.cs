@@ -188,5 +188,95 @@ namespace MecanicaOS.UnitTests.Core.Entidades
             // Assert
             usuario.Ativo.Should().BeFalse("o status ativo deve ser atualizado");
         }
+
+        [Fact]
+        public void Usuario_Atualizar_ComTodosParametros_DeveAtualizarTodasPropriedades()
+        {
+            // Arrange
+            var usuario = UsuarioFixture.CriarUsuarioAdministrador();
+            var novoEmail = "novo@teste.com";
+            var novaSenha = "novaSenha123";
+            var novaData = DateTime.UtcNow.AddDays(-1);
+            var novoTipo = TipoUsuario.Cliente;
+            var novoRecebeAlerta = false;
+            var novoAtivo = false;
+
+            // Act
+            usuario.Atualizar(novoEmail, novaSenha, novaData, novoTipo, novoRecebeAlerta, novoAtivo);
+
+            // Assert
+            usuario.Email.Should().Be(novoEmail);
+            usuario.Senha.Should().Be(novaSenha);
+            usuario.DataUltimoAcesso.Should().Be(novaData);
+            usuario.TipoUsuario.Should().Be(novoTipo);
+            usuario.RecebeAlertaEstoque.Should().Be(novoRecebeAlerta);
+            usuario.Ativo.Should().Be(novoAtivo);
+        }
+
+        [Fact]
+        public void Usuario_Atualizar_ComParametrosNulos_NaoDeveAlterarPropriedades()
+        {
+            // Arrange
+            var usuario = UsuarioFixture.CriarUsuarioAdministrador();
+            var emailOriginal = usuario.Email;
+            var senhaOriginal = usuario.Senha;
+            var tipoOriginal = usuario.TipoUsuario;
+
+            // Act
+            usuario.Atualizar();
+
+            // Assert
+            usuario.Email.Should().Be(emailOriginal);
+            usuario.Senha.Should().Be(senhaOriginal);
+            usuario.TipoUsuario.Should().Be(tipoOriginal);
+        }
+
+        [Fact]
+        public void Usuario_AtualizarUltimoAcesso_SemParametro_DeveDefinirDataAtual()
+        {
+            // Arrange
+            var usuario = UsuarioFixture.CriarUsuarioAdministrador();
+            var antes = DateTime.UtcNow;
+
+            // Act
+            usuario.AtualizarUltimoAcesso();
+
+            // Assert
+            usuario.DataUltimoAcesso.Should().NotBeNull();
+            usuario.DataUltimoAcesso.Value.Should().BeCloseTo(antes, TimeSpan.FromSeconds(1));
+        }
+
+        [Fact]
+        public void Usuario_AtualizarUltimoAcesso_ComParametro_DeveDefinirDataEspecifica()
+        {
+            // Arrange
+            var usuario = UsuarioFixture.CriarUsuarioAdministrador();
+            var dataEspecifica = new DateTime(2024, 1, 15, 10, 30, 0);
+
+            // Act
+            usuario.AtualizarUltimoAcesso(dataEspecifica);
+
+            // Assert
+            usuario.DataUltimoAcesso.Should().Be(dataEspecifica);
+        }
+
+        [Fact]
+        public void Usuario_ConstrutorComParametros_DeveCriarUsuarioCorretamente()
+        {
+            // Arrange
+            var email = "teste@teste.com";
+            var senha = "senha123";
+            var tipo = TipoUsuario.Cliente;
+            var clienteId = Guid.NewGuid();
+
+            // Act
+            var usuario = new Usuario(email, senha, tipo, clienteId);
+
+            // Assert
+            usuario.Email.Should().Be(email);
+            usuario.Senha.Should().Be(senha);
+            usuario.TipoUsuario.Should().Be(tipo);
+            usuario.ClienteId.Should().Be(clienteId);
+        }
     }
 }

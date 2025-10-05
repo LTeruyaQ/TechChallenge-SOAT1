@@ -282,6 +282,17 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Servicos
             resultado.Should().HaveCount(2);
         }
 
+        [Fact]
+        public async Task ObterTodosServicos_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var handler = new ObterTodosServicosHandler(_servicoGateway, _logGatewayTodos, _udtGateway, _usuarioLogadoGateway);
+            _servicoGateway.ObterTodosAsync().Returns(Task.FromException<IEnumerable<Servico>>(new InvalidOperationException("Erro no banco")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle());
+        }
+
         #endregion
 
         #region ObterServicoPorNomeHandler
@@ -320,6 +331,17 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Servicos
             resultado.Should().BeNull();
         }
 
+        [Fact]
+        public async Task ObterServicoPorNome_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var handler = new ObterServicoPorNomeHandler(_servicoGateway, _logGatewayPorNome, _udtGateway, _usuarioLogadoGateway);
+            _servicoGateway.ObterServicosDisponiveisPorNomeAsync("Teste").Returns(Task.FromException<Servico?>(new InvalidOperationException("Erro no banco")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle("Teste"));
+        }
+
         #endregion
 
         #region ObterServicosDisponiveisHandler
@@ -342,6 +364,17 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Servicos
             // Assert
             resultado.Should().HaveCount(1);
             resultado.Should().AllSatisfy(s => s.Disponivel.Should().BeTrue());
+        }
+
+        [Fact]
+        public async Task ObterServicosDisponiveis_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var handler = new ObterServicosDisponiveisHandler(_servicoGateway, _logGatewayDisponiveis, _udtGateway, _usuarioLogadoGateway);
+            _servicoGateway.ObterServicoDisponivelAsync().Returns(Task.FromException<IEnumerable<Servico>>(new InvalidOperationException("Erro no banco")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle());
         }
 
         #endregion

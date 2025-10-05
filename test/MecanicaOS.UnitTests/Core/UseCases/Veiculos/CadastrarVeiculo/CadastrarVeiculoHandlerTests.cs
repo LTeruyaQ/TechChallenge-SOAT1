@@ -126,5 +126,24 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Veiculos.CadastrarVeiculo
             resultado.Should().NotBeNull("o resultado não deve ser nulo");
             await veiculoGatewayMock.Received(1).CadastrarAsync(Arg.Any<Veiculo>());
         }
+
+        [Fact]
+        public void Construtor_ComVeiculoGatewayNulo_DeveLancarArgumentNullException()
+        {
+            // Arrange
+            var logGatewayMock = Substitute.For<ILogGateway<CadastrarVeiculoHandler>>();
+            var unidadeDeTrabalhoMock = VeiculoHandlerFixture.CriarUnidadeDeTrabalhMock();
+            var usuarioLogadoServicoGatewayMock = Substitute.For<IUsuarioLogadoServicoGateway>();
+
+            // Act & Assert
+            var exception = Assert.Throws<ArgumentNullException>(() =>
+                new CadastrarVeiculoHandler(
+                    null!,
+                    logGatewayMock,
+                    unidadeDeTrabalhoMock,
+                    usuarioLogadoServicoGatewayMock));
+
+            exception.ParamName.Should().Be("veiculoGateway");
+        }
     }
 }

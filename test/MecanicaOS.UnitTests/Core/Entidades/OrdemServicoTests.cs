@@ -142,5 +142,79 @@ namespace MecanicaOS.UnitTests.Core.Entidades
             ordem.Descricao.Should().Be("Nova descrição", "a descrição deve ser atualizada");
         }
 
+        [Fact]
+        public void OrdemServico_Atualizar_ComTodosParametros_DeveAtualizarTodasPropriedades()
+        {
+            // Arrange
+            var ordem = OrdemServicoFixture.CriarOrdemServicoValida();
+            var novoClienteId = Guid.NewGuid();
+            var novoVeiculoId = Guid.NewGuid();
+            var novoServicoId = Guid.NewGuid();
+            var novaDescricao = "Nova descrição completa";
+            var novoStatus = StatusOrdemServico.EmExecucao;
+
+            // Act
+            ordem.Atualizar(novoClienteId, novoVeiculoId, novoServicoId, novaDescricao, novoStatus);
+
+            // Assert
+            ordem.ClienteId.Should().Be(novoClienteId);
+            ordem.VeiculoId.Should().Be(novoVeiculoId);
+            ordem.ServicoId.Should().Be(novoServicoId);
+            ordem.Descricao.Should().Be(novaDescricao);
+            ordem.Status.Should().Be(novoStatus);
+        }
+
+        [Fact]
+        public void OrdemServico_Atualizar_ComParametrosNulos_NaoDeveAlterarPropriedades()
+        {
+            // Arrange
+            var ordem = OrdemServicoFixture.CriarOrdemServicoValida();
+            var clienteIdOriginal = ordem.ClienteId;
+            var veiculoIdOriginal = ordem.VeiculoId;
+            var servicoIdOriginal = ordem.ServicoId;
+            var descricaoOriginal = ordem.Descricao;
+            var statusOriginal = ordem.Status;
+
+            // Act
+            ordem.Atualizar(null, null, null, null, null);
+
+            // Assert
+            ordem.ClienteId.Should().Be(clienteIdOriginal);
+            ordem.VeiculoId.Should().Be(veiculoIdOriginal);
+            ordem.ServicoId.Should().Be(servicoIdOriginal);
+            ordem.Descricao.Should().Be(descricaoOriginal);
+            ordem.Status.Should().Be(statusOriginal);
+        }
+
+        [Fact]
+        public void OrdemServico_Atualizar_ApenasStatus_DeveAtualizarApenasStatus()
+        {
+            // Arrange
+            var ordem = OrdemServicoFixture.CriarOrdemServicoValida();
+            var novoStatus = StatusOrdemServico.Finalizada;
+            var clienteIdOriginal = ordem.ClienteId;
+
+            // Act
+            ordem.Atualizar(null, null, null, null, novoStatus);
+
+            // Assert
+            ordem.Status.Should().Be(novoStatus);
+            ordem.ClienteId.Should().Be(clienteIdOriginal);
+        }
+
+        [Fact]
+        public void OrdemServico_Atualizar_ComDescricaoVazia_NaoDeveAlterarDescricao()
+        {
+            // Arrange
+            var ordem = OrdemServicoFixture.CriarOrdemServicoValida();
+            var descricaoOriginal = ordem.Descricao;
+
+            // Act
+            ordem.Atualizar(null, null, null, string.Empty, null);
+
+            // Assert
+            ordem.Descricao.Should().Be(descricaoOriginal);
+        }
+
     }
 }

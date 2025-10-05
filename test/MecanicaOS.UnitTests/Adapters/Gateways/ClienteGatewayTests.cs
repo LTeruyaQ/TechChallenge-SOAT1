@@ -175,5 +175,67 @@ namespace MecanicaOS.UnitTests.Adapters.Gateways
             
             await repositorioMock.Received(1).ListarProjetadoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>());
         }
+
+        [Fact]
+        public async Task ObterClienteComVeiculoPorIdAsync_ComIdValido_DeveRetornarClienteComVeiculo()
+        {
+            // Arrange
+            var repositorioMock = Substitute.For<IRepositorio<ClienteEntityDto>>();
+            var clienteId = Guid.NewGuid();
+            var cliente = new Cliente
+            {
+                Id = clienteId,
+                Nome = "Cliente Teste",
+                Documento = "12345678900",
+                TipoCliente = TipoCliente.PessoaFisica,
+                DataNascimento = "1990-01-01",
+                DataCadastro = DateTime.Now,
+                Veiculos = new List<Veiculo>
+                {
+                    new Veiculo
+                    {
+                        Id = Guid.NewGuid(),
+                        Placa = "ABC1234",
+                        Modelo = "Modelo Teste",
+                        Marca = "Marca Teste",
+                        Ano = "2020",
+                        ClienteId = clienteId
+                    }
+                }
+            };
+
+            repositorioMock.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>())
+                .Returns(Task.FromResult<Cliente?>(cliente));
+
+            var gateway = new ClienteGateway(repositorioMock);
+
+            // Act
+            var resultado = await gateway.ObterClienteComVeiculoPorIdAsync(clienteId);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado!.Id.Should().Be(clienteId);
+            resultado.Veiculos.Should().NotBeNull();
+            resultado.Veiculos.Should().HaveCount(1);
+        }
+
+        [Fact]
+        public async Task ObterClienteComVeiculoPorIdAsync_ComIdInexistente_DeveRetornarNull()
+        {
+            // Arrange
+            var repositorioMock = Substitute.For<IRepositorio<ClienteEntityDto>>();
+            var clienteId = Guid.NewGuid();
+
+            repositorioMock.ObterUmProjetadoSemRastreamentoAsync<Cliente>(Arg.Any<IEspecificacao<ClienteEntityDto>>())
+                .Returns(Task.FromResult<Cliente?>(null));
+
+            var gateway = new ClienteGateway(repositorioMock);
+
+            // Act
+            var resultado = await gateway.ObterClienteComVeiculoPorIdAsync(clienteId);
+
+            // Assert
+            resultado.Should().BeNull();
+        }
     }
 }

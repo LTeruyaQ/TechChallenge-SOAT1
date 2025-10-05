@@ -1,7 +1,9 @@
 using Adapters.Controllers;
 using Core.DTOs.Requests.Usuario;
+using Core.DTOs.UseCases.Usuario;
 using Core.Entidades;
 using Core.Enumeradores;
+using Core.Exceptions;
 using Core.Interfaces.UseCases;
 using Core.Interfaces.root;
 
@@ -175,6 +177,166 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             resultado.Should().NotBeNull();
             resultado.Email.Should().Be("atualizado@teste.com");
             resultado.RecebeAlertaEstoque.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task CadastrarAsync_ComUsuarioCliente_SemDocumento_DeveLancarDadosInvalidosException()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var usuarioUseCases = Substitute.For<IUsuarioUseCases>();
+            var clienteUseCases = Substitute.For<IClienteUseCases>();
+
+            compositionRoot.CriarUsuarioUseCases().Returns(usuarioUseCases);
+            compositionRoot.CriarClienteUseCases().Returns(clienteUseCases);
+
+            var controller = new UsuarioController(compositionRoot);
+            var request = new CadastrarUsuarioRequest
+            {
+                Email = "cliente@teste.com",
+                Senha = "senha123",
+                TipoUsuario = TipoUsuario.Cliente,
+                Documento = null, // Cliente sem documento
+                RecebeAlertaEstoque = false
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DadosInvalidosException>(async () =>
+                await controller.CadastrarAsync(request));
+        }
+
+        [Fact]
+        public async Task CadastrarAsync_ComUsuarioCliente_ComDocumento_DeveChamarUseCases()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var usuarioUseCases = Substitute.For<IUsuarioUseCases>();
+            var clienteUseCases = Substitute.For<IClienteUseCases>();
+
+            compositionRoot.CriarUsuarioUseCases().Returns(usuarioUseCases);
+            compositionRoot.CriarClienteUseCases().Returns(clienteUseCases);
+
+            var cliente = new Cliente
+            {
+                Id = Guid.NewGuid(),
+                Nome = "Cliente Teste",
+                Documento = "12345678900",
+                TipoCliente = TipoCliente.PessoaFisica,
+                DataNascimento = "1990-01-01",
+                DataCadastro = DateTime.Now
+            };
+
+            var usuarioCriado = new Usuario
+            {
+                Id = Guid.NewGuid(),
+                Email = "cliente@teste.com",
+                TipoUsuario = TipoUsuario.Cliente,
+                ClienteId = cliente.Id,
+                Ativo = true,
+                DataCadastro = DateTime.Now
+            };
+
+            clienteUseCases.ObterPorDocumentoUseCaseAsync("12345678900").Returns(Task.FromResult(cliente));
+            usuarioUseCases.CadastrarUseCaseAsync(Arg.Any<CadastrarUsuarioUseCaseDto>())
+                .Returns(Task.FromResult(usuarioCriado));
+
+            var controller = new UsuarioController(compositionRoot);
+            var request = new CadastrarUsuarioRequest
+            {
+                Email = "cliente@teste.com",
+                Senha = "senha123",
+                TipoUsuario = TipoUsuario.Cliente,
+                Documento = "12345678900",
+                RecebeAlertaEstoque = false
+            };
+
+            // Act
+            var resultado = await controller.CadastrarAsync(request);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            await clienteUseCases.Received(1).ObterPorDocumentoUseCaseAsync("12345678900");
+            await usuarioUseCases.Received(1).CadastrarUseCaseAsync(Arg.Any<CadastrarUsuarioUseCaseDto>());
+        }
+
+        [Fact]
+        public async Task CadastrarAsync_ComUsuarioAdmin_DeveChamarUseCases()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var usuarioUseCases = Substitute.For<IUsuarioUseCases>();
+            var clienteUseCases = Substitute.For<IClienteUseCases>();
+
+            compositionRoot.CriarUsuarioUseCases().Returns(usuarioUseCases);
+            compositionRoot.CriarClienteUseCases().Returns(clienteUseCases);
+
+            var usuarioCriado = new Usuario
+            {
+                Id = Guid.NewGuid(),
+                Email = "admin@teste.com",
+                TipoUsuario = TipoUsuario.Admin,
+                Ativo = true,
+                DataCadastro = DateTime.Now
+            };
+
+            usuarioUseCases.CadastrarUseCaseAsync(Arg.Any<CadastrarUsuarioUseCaseDto>())
+                .Returns(Task.FromResult(usuarioCriado));
+
+            var controller = new UsuarioController(compositionRoot);
+            var request = new CadastrarUsuarioRequest
+            {
+                Email = "admin@teste.com",
+                Senha = "senha123",
+                TipoUsuario = TipoUsuario.Admin,
+                RecebeAlertaEstoque = true
+            };
+
+            // Act
+            var resultado = await controller.CadastrarAsync(request);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            await usuarioUseCases.Received(1).CadastrarUseCaseAsync(Arg.Any<CadastrarUsuarioUseCaseDto>());
+        }
+
+        [Fact]
+        public async Task AtualizarAsync_ComDadosValidos_DeveChamarUseCases()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var usuarioUseCases = Substitute.For<IUsuarioUseCases>();
+            var clienteUseCases = Substitute.For<IClienteUseCases>();
+
+            compositionRoot.CriarUsuarioUseCases().Returns(usuarioUseCases);
+            compositionRoot.CriarClienteUseCases().Returns(clienteUseCases);
+
+            var id = Guid.NewGuid();
+            var usuarioAtualizado = new Usuario
+            {
+                Id = id,
+                Email = "atualizado@teste.com",
+                TipoUsuario = TipoUsuario.Admin,
+                Ativo = true,
+                DataCadastro = DateTime.Now
+            };
+
+            usuarioUseCases.AtualizarUseCaseAsync(id, Arg.Any<AtualizarUsuarioUseCaseDto>())
+                .Returns(Task.FromResult(usuarioAtualizado));
+
+            var controller = new UsuarioController(compositionRoot);
+            var request = new AtualizarUsuarioRequest
+            {
+                Email = "atualizado@teste.com",
+                Senha = "novaSenha123",
+                RecebeAlertaEstoque = false
+            };
+
+            // Act
+            var resultado = await controller.AtualizarAsync(id, request);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            await usuarioUseCases.Received(1).AtualizarUseCaseAsync(id, Arg.Any<AtualizarUsuarioUseCaseDto>());
         }
     }
 }

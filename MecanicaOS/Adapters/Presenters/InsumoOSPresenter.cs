@@ -24,7 +24,7 @@ namespace Adapters.Presenters
                     QuantidadeMinima = insumo.Estoque.QuantidadeMinima,
                     Preco = (double)insumo.Estoque.Preco
                 } : null
-            }).ToList();
+            });
         }
     }
 }

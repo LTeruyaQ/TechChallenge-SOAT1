@@ -77,5 +77,29 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Usuarios.ObterTodosUsuarios
             resultado.Should().NotBeNull("o resultado não deve ser nulo");
             resultado.Should().BeEmpty("a lista deve estar vazia");
         }
+
+        /// <summary>
+        /// Verifica se o handler propaga exceção quando gateway falha
+        /// </summary>
+        [Fact]
+        public async Task Handle_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var usuarioGatewayMock = UsuarioHandlerFixture.CriarUsuarioGatewayMock();
+            var unidadeDeTrabalhoMock = UsuarioHandlerFixture.CriarUnidadeDeTrabalhMock();
+            var logGatewayMock = Substitute.For<ILogGateway<ObterTodosUsuariosHandler>>();
+            var usuarioLogadoServicoGatewayMock = Substitute.For<IUsuarioLogadoServicoGateway>();
+
+            usuarioGatewayMock.ObterTodosAsync().Returns(Task.FromException<IEnumerable<Usuario>>(new InvalidOperationException("Erro no banco")));
+
+            var handler = new ObterTodosUsuariosHandler(
+                usuarioGatewayMock,
+                logGatewayMock,
+                unidadeDeTrabalhoMock,
+                usuarioLogadoServicoGatewayMock);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle());
+        }
     }
 }

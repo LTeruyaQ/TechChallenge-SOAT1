@@ -137,6 +137,20 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Estoques
             resultado.Should().BeEmpty();
         }
 
+        /// <summary>
+        /// Verifica se propaga exceção quando gateway falha
+        /// </summary>
+        [Fact]
+        public async Task ObterTodosEstoques_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var handler = new ObterTodosEstoquesHandler(_estoqueGateway, _logGatewayTodos, _udtGateway, _usuarioLogadoGateway);
+            _estoqueGateway.ObterTodosAsync().Returns(Task.FromException<IEnumerable<Estoque>>(new InvalidOperationException("Erro no banco")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle());
+        }
+
         #endregion
 
         #region ObterEstoqueCriticoHandler
@@ -240,6 +254,20 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Estoques
             resultado.Should().HaveCount(2);
             resultado.Should().Contain(e => e.Insumo == "Muito Crítico");
             resultado.Should().Contain(e => e.Insumo == "Pouco Crítico");
+        }
+
+        /// <summary>
+        /// Verifica se propaga exceção quando gateway falha
+        /// </summary>
+        [Fact]
+        public async Task ObterEstoqueCritico_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var handler = new ObterEstoqueCriticoHandler(_estoqueGateway, _logGatewayCritico, _udtGateway, _usuarioLogadoGateway);
+            _estoqueGateway.ObterEstoqueCriticoAsync().Returns(Task.FromException<IEnumerable<Estoque>>(new InvalidOperationException("Erro no banco")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle());
         }
 
         #endregion

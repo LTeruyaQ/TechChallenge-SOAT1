@@ -1,6 +1,7 @@
 using Adapters.Controllers;
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.Entidades;
+using Core.Exceptions;
 using Core.Interfaces.UseCases;
 using Core.Interfaces.root;
 
@@ -123,6 +124,190 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
 
             // Assert
             await estoqueUseCases.Received(1).ObterPorIdUseCaseAsync(estoqueId);
+        }
+
+        [Fact]
+        public async Task CadastrarInsumos_ComOrdemServicoInexistente_DeveLancarDadosNaoEncontradosException()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var insumoOSUseCases = Substitute.For<IInsumoOSUseCases>();
+            var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
+            var estoqueUseCases = Substitute.For<IEstoqueUseCases>();
+
+            compositionRoot.CriarInsumoOSUseCases().Returns(insumoOSUseCases);
+            compositionRoot.CriarOrdemServicoUseCases().Returns(ordemServicoUseCases);
+            compositionRoot.CriarEstoqueUseCases().Returns(estoqueUseCases);
+
+            ordemServicoUseCases.ObterPorIdUseCaseAsync(Arg.Any<Guid>()).Returns(Task.FromResult<OrdemServico?>(null));
+
+            var controller = new InsumoOSController(compositionRoot);
+            var requests = new List<CadastrarInsumoOSRequest>
+            {
+                new CadastrarInsumoOSRequest { EstoqueId = Guid.NewGuid(), Quantidade = 5 }
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DadosNaoEncontradosException>(async () =>
+                await controller.CadastrarInsumos(Guid.NewGuid(), requests));
+        }
+
+        [Fact]
+        public async Task CadastrarInsumos_ComEstoqueInexistente_DeveLancarDadosNaoEncontradosException()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var insumoOSUseCases = Substitute.For<IInsumoOSUseCases>();
+            var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
+            var estoqueUseCases = Substitute.For<IEstoqueUseCases>();
+
+            var ordemServicoId = Guid.NewGuid();
+            var ordemServico = new OrdemServico 
+            { 
+                Id = ordemServicoId, 
+                ClienteId = Guid.NewGuid(), 
+                ServicoId = Guid.NewGuid() 
+            };
+
+            compositionRoot.CriarInsumoOSUseCases().Returns(insumoOSUseCases);
+            compositionRoot.CriarOrdemServicoUseCases().Returns(ordemServicoUseCases);
+            compositionRoot.CriarEstoqueUseCases().Returns(estoqueUseCases);
+
+            ordemServicoUseCases.ObterPorIdUseCaseAsync(ordemServicoId).Returns(Task.FromResult<OrdemServico?>(ordemServico));
+            estoqueUseCases.ObterPorIdUseCaseAsync(Arg.Any<Guid>()).Returns(Task.FromResult<Estoque?>(null));
+
+            var controller = new InsumoOSController(compositionRoot);
+            var requests = new List<CadastrarInsumoOSRequest>
+            {
+                new CadastrarInsumoOSRequest { EstoqueId = Guid.NewGuid(), Quantidade = 5 }
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DadosNaoEncontradosException>(async () =>
+                await controller.CadastrarInsumos(ordemServicoId, requests));
+        }
+
+        [Fact]
+        public async Task CadastrarInsumos_ComEstoqueInsuficiente_DeveLancarDadosInvalidosException()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var insumoOSUseCases = Substitute.For<IInsumoOSUseCases>();
+            var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
+            var estoqueUseCases = Substitute.For<IEstoqueUseCases>();
+
+            var ordemServicoId = Guid.NewGuid();
+            var estoqueId = Guid.NewGuid();
+
+            var ordemServico = new OrdemServico 
+            { 
+                Id = ordemServicoId, 
+                ClienteId = Guid.NewGuid(), 
+                ServicoId = Guid.NewGuid() 
+            };
+
+            var estoque = new Estoque 
+            { 
+                Id = estoqueId, 
+                Insumo = "Óleo", 
+                QuantidadeDisponivel = 5, // Quantidade insuficiente
+                QuantidadeMinima = 10, 
+                Preco = 50m 
+            };
+
+            compositionRoot.CriarInsumoOSUseCases().Returns(insumoOSUseCases);
+            compositionRoot.CriarOrdemServicoUseCases().Returns(ordemServicoUseCases);
+            compositionRoot.CriarEstoqueUseCases().Returns(estoqueUseCases);
+
+            ordemServicoUseCases.ObterPorIdUseCaseAsync(ordemServicoId).Returns(Task.FromResult<OrdemServico?>(ordemServico));
+            estoqueUseCases.ObterPorIdUseCaseAsync(estoqueId).Returns(Task.FromResult<Estoque?>(estoque));
+
+            var controller = new InsumoOSController(compositionRoot);
+            var requests = new List<CadastrarInsumoOSRequest>
+            {
+                new CadastrarInsumoOSRequest { EstoqueId = estoqueId, Quantidade = 10 } // Solicita mais que disponível
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DadosInvalidosException>(async () =>
+                await controller.CadastrarInsumos(ordemServicoId, requests));
+        }
+
+        [Fact]
+        public async Task DevolverInsumosAoEstoque_ComEstoqueInexistente_DeveLancarDadosNaoEncontradosException()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var insumoOSUseCases = Substitute.For<IInsumoOSUseCases>();
+            var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
+            var estoqueUseCases = Substitute.For<IEstoqueUseCases>();
+
+            compositionRoot.CriarInsumoOSUseCases().Returns(insumoOSUseCases);
+            compositionRoot.CriarOrdemServicoUseCases().Returns(ordemServicoUseCases);
+            compositionRoot.CriarEstoqueUseCases().Returns(estoqueUseCases);
+
+            estoqueUseCases.ObterPorIdUseCaseAsync(Arg.Any<Guid>()).Returns(Task.FromResult<Estoque?>(null));
+
+            var controller = new InsumoOSController(compositionRoot);
+            var requests = new List<DevolverInsumoOSRequest>
+            {
+                new DevolverInsumoOSRequest { EstoqueId = Guid.NewGuid(), Quantidade = 5 }
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DadosNaoEncontradosException>(async () =>
+                await controller.DevolverInsumosAoEstoque(requests));
+        }
+
+        [Fact]
+        public void MapearParaCadastrarInsumoOSUseCaseDto_ComRequestValido_DeveMapearCorretamente()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var insumoOSUseCases = Substitute.For<IInsumoOSUseCases>();
+            var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
+            var estoqueUseCases = Substitute.For<IEstoqueUseCases>();
+
+            compositionRoot.CriarInsumoOSUseCases().Returns(insumoOSUseCases);
+            compositionRoot.CriarOrdemServicoUseCases().Returns(ordemServicoUseCases);
+            compositionRoot.CriarEstoqueUseCases().Returns(estoqueUseCases);
+
+            var controller = new InsumoOSController(compositionRoot);
+            var request = new CadastrarInsumoOSRequest
+            {
+                EstoqueId = Guid.NewGuid(),
+                Quantidade = 10
+            };
+
+            // Act
+            var resultado = controller.MapearParaCadastrarInsumoOSUseCaseDto(request);
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.EstoqueId.Should().Be(request.EstoqueId);
+            resultado.Quantidade.Should().Be(request.Quantidade);
+        }
+
+        [Fact]
+        public void MapearParaCadastrarInsumoOSUseCaseDto_ComRequestNulo_DeveRetornarNull()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var insumoOSUseCases = Substitute.For<IInsumoOSUseCases>();
+            var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
+            var estoqueUseCases = Substitute.For<IEstoqueUseCases>();
+
+            compositionRoot.CriarInsumoOSUseCases().Returns(insumoOSUseCases);
+            compositionRoot.CriarOrdemServicoUseCases().Returns(ordemServicoUseCases);
+            compositionRoot.CriarEstoqueUseCases().Returns(estoqueUseCases);
+
+            var controller = new InsumoOSController(compositionRoot);
+
+            // Act
+            var resultado = controller.MapearParaCadastrarInsumoOSUseCaseDto(null!);
+
+            // Assert
+            resultado.Should().BeNull();
         }
     }
 }

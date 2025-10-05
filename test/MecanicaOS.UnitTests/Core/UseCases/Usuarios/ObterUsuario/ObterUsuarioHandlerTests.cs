@@ -107,5 +107,30 @@ namespace MecanicaOS.UnitTests.Core.UseCases.Usuarios.ObterUsuario
             // Assert
             resultado!.Senha.Should().BeEmpty("a senha deve ser removida por segurança");
         }
+
+        /// <summary>
+        /// Verifica se o handler propaga exceção quando gateway falha
+        /// </summary>
+        [Fact]
+        public async Task Handle_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var usuarioGatewayMock = UsuarioHandlerFixture.CriarUsuarioGatewayMock();
+            var unidadeDeTrabalhoMock = UsuarioHandlerFixture.CriarUnidadeDeTrabalhMock();
+            var logGatewayMock = Substitute.For<ILogGateway<ObterUsuarioHandler>>();
+            var usuarioLogadoServicoGatewayMock = Substitute.For<IUsuarioLogadoServicoGateway>();
+
+            var usuarioId = Guid.NewGuid();
+            usuarioGatewayMock.ObterPorIdAsync(usuarioId).Returns(Task.FromException<Usuario?>(new InvalidOperationException("Erro no banco")));
+
+            var handler = new ObterUsuarioHandler(
+                usuarioGatewayMock,
+                logGatewayMock,
+                unidadeDeTrabalhoMock,
+                usuarioLogadoServicoGatewayMock);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle(usuarioId));
+        }
     }
 }

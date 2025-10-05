@@ -230,6 +230,18 @@ namespace MecanicaOS.UnitTests.Core.UseCases.OrdensServico
             resultado.Should().NotBeEmpty();
         }
 
+        [Fact]
+        public async Task ObterTodosOrdensServico_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var logGatewayObterTodos = Substitute.For<ILogGateway<ObterTodosOrdensServicoHandler>>();
+            var handler = new ObterTodosOrdensServicoHandler(_ordemServicoGateway, logGatewayObterTodos, _udtGateway, _usuarioLogadoGateway);
+            _ordemServicoGateway.ObterTodosAsync().Returns(Task.FromException<IEnumerable<OrdemServico>>(new InvalidOperationException("Erro no banco")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle());
+        }
+
         #endregion
 
         #region ObterOrdemServicoPorStatusHandler
@@ -263,6 +275,19 @@ namespace MecanicaOS.UnitTests.Core.UseCases.OrdensServico
             // Assert
             resultado.Should().HaveCount(2);
             resultado.Should().AllSatisfy(o => o.Status.Should().Be(status));
+        }
+
+        [Fact]
+        public async Task ObterOrdemServicoPorStatus_QuandoGatewayLancaExcecao_DevePropagar()
+        {
+            // Arrange
+            var logGatewayObterPorStatus = Substitute.For<ILogGateway<ObterOrdemServicoPorStatusHandler>>();
+            var handler = new ObterOrdemServicoPorStatusHandler(_ordemServicoGateway, logGatewayObterPorStatus, _udtGateway, _usuarioLogadoGateway);
+            _ordemServicoGateway.ObterOrdemServicoPorStatusAsync(StatusOrdemServico.Recebida)
+                .Returns(Task.FromException<IEnumerable<OrdemServico>>(new InvalidOperationException("Erro no banco")));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle(StatusOrdemServico.Recebida));
         }
 
         #endregion
