@@ -82,6 +82,7 @@ namespace Adapters.Presenters
                 },
                 Endereco = cliente.Endereco == null ? null : new EnderecoResponse
                 {
+                    Rua = cliente.Endereco.Rua,
                     Numero = cliente.Endereco.Numero,
                     Complemento = cliente.Endereco.Complemento,
                     Bairro = cliente.Endereco.Bairro,

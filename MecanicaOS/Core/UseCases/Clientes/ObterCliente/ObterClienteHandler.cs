@@ -1,4 +1,5 @@
 using Core.Entidades;
+using Core.Exceptions;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.Clientes;
 using Core.UseCases.Abstrato;
@@ -26,6 +27,11 @@ namespace Core.UseCases.Clientes.ObterCliente
             try
             {
                 LogInicio(metodo, id);
+
+                if (id == Guid.Empty)
+                {
+                    throw new DadosInvalidosException("ID do cliente inválido");
+                }
 
                 var clienteComVeiculo = await _clienteGateway.ObterPorIdAsync(id);
 

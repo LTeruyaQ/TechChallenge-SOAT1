@@ -1,0 +1,46 @@
+using Core.Entidades;
+using Core.Interfaces.Gateways;
+using Core.UseCases.Veiculos.ObterVeiculoPorCliente;
+using MecanicaOS.UnitTests.Fixtures;
+
+namespace MecanicaOS.UnitTests.Core.UseCases.Veiculos.ObterVeiculoPorCliente
+{
+    /// <summary>
+    /// Testes para ObterVeiculoPorClienteHandler
+    /// Importância: Valida filtro de veículos por cliente, essencial para relacionamento Cliente-Veículo
+    /// </summary>
+    public class ObterVeiculoPorClienteHandlerTests
+    {
+        [Fact]
+        public async Task Handle_ComClienteExistente_DeveRetornarVeiculosDoCliente()
+        {
+            // Arrange
+            var veiculoGatewayMock = VeiculoHandlerFixture.CriarVeiculoGatewayMock();
+            var unidadeDeTrabalhoMock = VeiculoHandlerFixture.CriarUnidadeDeTrabalhMock();
+            
+            var clienteId = Guid.NewGuid();
+            var veiculos = new List<Veiculo>
+            {
+                VeiculoHandlerFixture.CriarVeiculo(),
+                VeiculoHandlerFixture.CriarVeiculo()
+            };
+            
+            veiculoGatewayMock.ObterVeiculoPorClienteAsync(clienteId).Returns(veiculos);
+            
+            var logGatewayMock = Substitute.For<ILogGateway<ObterVeiculoPorClienteHandler>>();
+            var usuarioLogadoServicoGatewayMock = Substitute.For<IUsuarioLogadoServicoGateway>();
+            
+            var handler = new ObterVeiculoPorClienteHandler(
+                veiculoGatewayMock,
+                logGatewayMock,
+                unidadeDeTrabalhoMock,
+                usuarioLogadoServicoGatewayMock);
+            
+            // Act
+            var resultado = await handler.Handle(clienteId);
+            
+            // Assert
+            resultado.Should().HaveCount(2);
+        }
+    }
+}

@@ -59,8 +59,15 @@ namespace Core.UseCases.Clientes.CadastrarCliente
                     await CadastrarContatoCliente(entityCliente, request);
                 }
 
-                if (!await Commit())
-                    throw new PersistirDadosException("Erro ao cadastrar cliente");
+                try
+                {
+                    if (!await Commit())
+                        throw new PersistirDadosException("Erro ao cadastrar cliente");
+                }
+                catch (Exception ex)
+                {
+                    throw new PersistirDadosException("Erro ao cadastrar cliente", ex);
+                }
 
                 LogFim(metodo, entityCliente);
 

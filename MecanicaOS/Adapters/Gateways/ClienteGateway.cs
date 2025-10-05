@@ -96,8 +96,10 @@ namespace Adapters.Gateways
             };
         }
 
-        public static Cliente FromDto(ClienteEntityDto dto)
+        public static Cliente? FromDto(ClienteEntityDto? dto)
         {
+            if (dto == null) return null;
+            
             return new Cliente
             {
                 Id = dto.Id,
