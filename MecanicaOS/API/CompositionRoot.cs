@@ -36,6 +36,7 @@ using Core.UseCases.Clientes.AtualizarCliente;
 using Core.UseCases.Clientes.CadastrarCliente;
 using Core.UseCases.Clientes.ObterCliente;
 using Core.UseCases.Clientes.ObterClientePorDocumento;
+using Core.UseCases.Clientes.ObterClientePorNome;
 using Core.UseCases.Clientes.ObterTodosClientes;
 using Core.UseCases.Clientes.RemoverCliente;
 using Core.UseCases.Estoques;
@@ -353,6 +354,20 @@ namespace API
             var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
 
             return new ObterClientePorDocumentoHandler(
+                clienteGateway,
+                logServicoGateway,
+                udtGateway,
+                usuarioLogadoServicoGateway);
+        }
+
+        public IObterClientePorNomeHandler CriarObterClientePorNomeHandler()
+        {
+            var clienteGateway = CriarClienteGateway();
+            var logServicoGateway = CriarLogServicoGateway<ObterClientePorNomeHandler>();
+            var udtGateway = CriarUnidadeDeTrabalhoGateway();
+            var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
+
+            return new ObterClientePorNomeHandler(
                 clienteGateway,
                 logServicoGateway,
                 udtGateway,
@@ -919,6 +934,7 @@ namespace API
             var obterTodosClientesHandler = CriarObterTodosClientesHandler();
             var removerClienteHandler = CriarRemoverClienteHandler();
             var obterClientePorDocumentoHandler = CriarObterClientePorDocumentoHandler();
+            var obterClientePorNomeHandler = CriarObterClientePorNomeHandler();
 
             return new ClienteUseCasesFacade(
                 cadastrarClienteHandler,
@@ -926,7 +942,8 @@ namespace API
                 obterClienteHandler,
                 obterTodosClientesHandler,
                 removerClienteHandler,
-                obterClientePorDocumentoHandler);
+                obterClientePorDocumentoHandler,
+                obterClientePorNomeHandler);
         }
 
         public IServicoUseCases CriarServicoUseCases()

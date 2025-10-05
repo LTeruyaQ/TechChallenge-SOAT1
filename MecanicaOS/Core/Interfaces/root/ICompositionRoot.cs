@@ -54,7 +54,6 @@ namespace Core.Interfaces.root
         IEstoqueGateway CriarEstoqueGateway();
         IEstoquePresenter CriarEstoquePresenter();
         IEstoqueUseCases CriarEstoqueUseCases();
-        IEventosGateway CriarEventosGateway();
         IEventosPublisher CriarEventosPublisher();
         IGerarOrcamentoHandler CriarGerarOrcamentoHandler();
         IInsumoOSController CriarInsumoOSController();
@@ -63,12 +62,12 @@ namespace Core.Interfaces.root
         ILogServico<T> CriarLogService<T>() where T : class;
         IObterClienteHandler CriarObterClienteHandler();
         IObterClientePorDocumentoHandler CriarObterClientePorDocumentoHandler();
+        IObterClientePorNomeHandler CriarObterClientePorNomeHandler();
         IObterEstoqueCriticoHandler CriarObterEstoqueCriticoHandler();
         IObterEstoqueHandler CriarObterEstoqueHandler();
         IObterOrdemServicoHandler CriarObterOrdemServicoHandler();
         IObterOrdemServicoPorStatusHandler CriarObterOrdemServicoPorStatusHandler();
         IObterServicoHandler CriarObterServicoHandler();
-        IObterServicoPorNomeHandler CriarObterServicoPorNomeHandler();
         IObterServicosDisponiveisHandler CriarObterServicosDisponiveisHandler();
         IObterTodosClientesHandler CriarObterTodosClientesHandler();
         IObterTodosEstoquesHandler CriarObterTodosEstoquesHandler();

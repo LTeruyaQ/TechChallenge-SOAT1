@@ -17,6 +17,7 @@ namespace Core.UseCases.Clientes
         private readonly IObterTodosClientesHandler _obterTodosClientesHandler;
         private readonly IRemoverClienteHandler _removerClienteHandler;
         private readonly IObterClientePorDocumentoHandler _obterClientePorDocumentoHandler;
+        private readonly IObterClientePorNomeHandler _obterClientePorNomeHandler;
 
         public ClienteUseCasesFacade(
             ICadastrarClienteHandler cadastrarClienteHandler,
@@ -24,7 +25,8 @@ namespace Core.UseCases.Clientes
             IObterClienteHandler obterClienteHandler,
             IObterTodosClientesHandler obterTodosClientesHandler,
             IRemoverClienteHandler removerClienteHandler,
-            IObterClientePorDocumentoHandler obterClientePorDocumentoHandler)
+            IObterClientePorDocumentoHandler obterClientePorDocumentoHandler,
+            IObterClientePorNomeHandler obterClientePorNomeHandler)
         {
             _cadastrarClienteHandler = cadastrarClienteHandler ?? throw new ArgumentNullException(nameof(cadastrarClienteHandler));
             _atualizarClienteHandler = atualizarClienteHandler ?? throw new ArgumentNullException(nameof(atualizarClienteHandler));
@@ -32,6 +34,7 @@ namespace Core.UseCases.Clientes
             _obterTodosClientesHandler = obterTodosClientesHandler ?? throw new ArgumentNullException(nameof(obterTodosClientesHandler));
             _removerClienteHandler = removerClienteHandler ?? throw new ArgumentNullException(nameof(removerClienteHandler));
             _obterClientePorDocumentoHandler = obterClientePorDocumentoHandler ?? throw new ArgumentNullException(nameof(obterClientePorDocumentoHandler));
+            _obterClientePorNomeHandler = obterClientePorNomeHandler ?? throw new ArgumentNullException(nameof(obterClientePorNomeHandler));
         }
 
         public async Task<Cliente> AtualizarUseCaseAsync(Guid id, AtualizarClienteUseCaseDto request)
@@ -49,11 +52,16 @@ namespace Core.UseCases.Clientes
             return await _obterClientePorDocumentoHandler.Handle(documento);
         }
 
+        public async Task<IEnumerable<Cliente>> ObterPorNomeUseCaseAsync(string nome)
+        {
+            return await _obterClientePorNomeHandler.Handle(nome);
+        }
+
         public async Task<Cliente> ObterPorIdUseCaseAsync(Guid id)
         {
             var cliente = await _obterClienteHandler.Handle(id);
             if (cliente is null)
-                throw new InvalidOperationException($"Cliente com ID '{id}' não encontrado.");
+                throw new InvalidOperationException($"Cliente com ID '{id}' nao encontrado.");
             return cliente;
         }
 

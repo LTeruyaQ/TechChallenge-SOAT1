@@ -35,6 +35,11 @@ namespace Adapters.Controllers
             return _clientePresenter.ParaResponse(await _clienteUseCases.ObterPorDocumentoUseCaseAsync(documento));
         }
 
+        public async Task<IEnumerable<ClienteResponse>> ObterPorNome(string nome)
+        {
+            return _clientePresenter.ParaResponse(await _clienteUseCases.ObterPorNomeUseCaseAsync(nome));
+        }
+
         public async Task<ClienteResponse> Cadastrar(CadastrarClienteRequest request)
         {
             var useCaseDto = MapearParaCadastrarClienteUseCaseDto(request);

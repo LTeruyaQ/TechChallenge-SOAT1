@@ -28,7 +28,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterClienteHandler>(),
                 Substitute.For<IObterTodosClientesHandler>(),
                 Substitute.For<IRemoverClienteHandler>(),
-                Substitute.For<IObterClientePorDocumentoHandler>());
+                Substitute.For<IObterClientePorDocumentoHandler>(),
+                Substitute.For<IObterClientePorNomeHandler>());
             
             // Act
             var resultado = await facade.CadastrarUseCaseAsync(dto);
@@ -55,7 +56,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterClienteHandler>(),
                 Substitute.For<IObterTodosClientesHandler>(),
                 Substitute.For<IRemoverClienteHandler>(),
-                Substitute.For<IObterClientePorDocumentoHandler>());
+                Substitute.For<IObterClientePorDocumentoHandler>(),
+                Substitute.For<IObterClientePorNomeHandler>());
             
             // Act
             var resultado = await facade.AtualizarUseCaseAsync(id, dto);
@@ -80,7 +82,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 handlerMock,
                 Substitute.For<IObterTodosClientesHandler>(),
                 Substitute.For<IRemoverClienteHandler>(),
-                Substitute.For<IObterClientePorDocumentoHandler>());
+                Substitute.For<IObterClientePorDocumentoHandler>(),
+                Substitute.For<IObterClientePorNomeHandler>());
             
             // Act
             var resultado = await facade.ObterPorIdUseCaseAsync(cliente.Id);
@@ -105,7 +108,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterClienteHandler>(),
                 handlerMock,
                 Substitute.For<IRemoverClienteHandler>(),
-                Substitute.For<IObterClientePorDocumentoHandler>());
+                Substitute.For<IObterClientePorDocumentoHandler>(),
+                Substitute.For<IObterClientePorNomeHandler>());
             
             // Act
             var resultado = await facade.ObterTodosUseCaseAsync();
@@ -130,7 +134,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterClienteHandler>(),
                 Substitute.For<IObterTodosClientesHandler>(),
                 handlerMock,
-                Substitute.For<IObterClientePorDocumentoHandler>());
+                Substitute.For<IObterClientePorDocumentoHandler>(),
+                Substitute.For<IObterClientePorNomeHandler>());
             
             // Act
             await facade.RemoverUseCaseAsync(id);
@@ -154,7 +159,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterClienteHandler>(),
                 Substitute.For<IObterTodosClientesHandler>(),
                 Substitute.For<IRemoverClienteHandler>(),
-                handlerMock);
+                handlerMock,
+                Substitute.For<IObterClientePorNomeHandler>());
             
             // Act
             var resultado = await facade.ObterPorDocumentoUseCaseAsync(cliente.Documento);

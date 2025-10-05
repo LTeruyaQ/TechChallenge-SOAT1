@@ -45,6 +45,15 @@ namespace API.Controllers
             return Ok(await _clienteController.ObterPorDocumento(documento));
         }
 
+        [HttpGet("nome/{nome}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(IEnumerable<ClienteResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ObterPorNome(string nome)
+        {
+            return Ok(await _clienteController.ObterPorNome(nome));
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]

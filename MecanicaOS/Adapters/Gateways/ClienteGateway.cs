@@ -43,6 +43,12 @@ namespace Adapters.Gateways
             return await _repositorioCliente.ObterUmProjetadoSemRastreamentoAsync<Cliente>(especificacao);
         }
 
+        public async Task<IEnumerable<Cliente>> ObterClientePorNomeAsync(string nome)
+        {
+            var especificacao = new ObterClientePorNomeEspecificacao(nome);
+            return await _repositorioCliente.ListarProjetadoAsync<Cliente>(especificacao);
+        }
+
         public async Task<Cliente?> ObterPorIdAsync(Guid id)
         {
             var especificacao = new ObterClienteCompletoPorIdEspecificacao(id);
