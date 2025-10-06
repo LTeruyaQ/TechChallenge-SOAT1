@@ -62,6 +62,7 @@ bld/
 # Code Coverage Reports
 TestResults/
 CoverageReport/
+CodeCoverage*
 
 # Local History for Visual Studio
 .localhistory/
