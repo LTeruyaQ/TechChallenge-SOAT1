@@ -1,4 +1,5 @@
-﻿using Core.DTOs.UseCases.Eventos;
+﻿using Core.Entidades;
+using Core.Enumeradores;
 using Core.Interfaces.Eventos;
 using Core.Interfaces.Gateways;
 
@@ -6,26 +7,18 @@ namespace Adapters.Gateways
 {
     public class EventosGateway : IEventosGateway
     {
-        private readonly IEventosPublisher _eventosPublisher;
+        private readonly Dictionary<StatusOrdemServico, IEventosPublisher> _handlers;
 
-        public EventosGateway(IEventosPublisher eventosPublisher)
+        public EventosGateway(IEnumerable<IEventosPublisher> handlers)
         {
-            _eventosPublisher = eventosPublisher;
+            _handlers = handlers.ToDictionary(h => h.Status);
+
         }
 
-        public async Task Publicar(OrdemServicoFinalizadaEventDTO eventoDTO)
+        public async Task Publicar(OrdemServico ordemServico)
         {
-            await _eventosPublisher.Publicar(eventoDTO);
-        }
-
-        public async Task Publicar(OrdemServicoEmOrcamentoEventDTO eventoDTO)
-        {
-            await _eventosPublisher.Publicar(eventoDTO);
-        }
-
-        public async Task Publicar(OrdemServicoCanceladaEventDTO eventoDTO)
-        {
-            await _eventosPublisher.Publicar(eventoDTO);
+            if (_handlers.TryGetValue(ordemServico.Status, out var handler))
+                await handler.PublicarAsync(ordemServico);
         }
     }
 }

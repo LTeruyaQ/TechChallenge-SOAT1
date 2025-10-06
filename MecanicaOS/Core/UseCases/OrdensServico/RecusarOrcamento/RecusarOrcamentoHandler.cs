@@ -45,7 +45,7 @@ namespace Core.UseCases.OrdensServico.RecusarOrcamento
                 await _ordemServicoGateway.EditarAsync(ordemServico);
 
                 // Publicar evento de ordem de serviço cancelada
-                await _eventosGateway.Publicar(new OrdemServicoCanceladaEventDTO(ordemServico.Id));
+                await _eventosGateway.Publicar(ordemServico);
 
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao recusar orçamento");

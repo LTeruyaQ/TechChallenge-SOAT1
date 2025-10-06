@@ -242,11 +242,22 @@ namespace API
         {
             return new EventoPublisher(_mediator);
         }
+        
+        public IEventosPublisher CriarOSCanceladaEventosPublisher()
+        {
+            return new OrdemServicoCanceladaEventoPublisher(_mediator);
+        }
+        
+        public IEventosPublisher CriarOSEmOrcamentoEventosPublisher()
+        {
+            return new OrdemServicoEmOrcamentoEventoPublisher(_mediator);
+        }
 
         public IEventosGateway CriarEventosGateway()
         {
-            var eventosPublisher = CriarEventosPublisher();
-            return new EventosGateway(eventosPublisher);
+            var osCanceladaEventoPublisher = CriarOSCanceladaEventosPublisher();
+            var osEmOrcamentoEventoPublisher = CriarOSEmOrcamentoEventosPublisher();
+            return new EventosGateway([osCanceladaEventoPublisher, osEmOrcamentoEventoPublisher]);
         }
 
         public ILogGateway<T> CriarLogServicoGateway<T>() where T : class
@@ -845,6 +856,7 @@ namespace API
 
             return new AtualizarOrdemServicoHandler(
                 ordemServicoGateway,
+                eventosGateway,
                 logServicoGateway,
                 udtGateway,
                 usuarioLogadoServicoGateway);

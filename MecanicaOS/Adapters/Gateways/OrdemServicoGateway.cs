@@ -55,7 +55,7 @@ namespace Adapters.Gateways
         public async Task<OrdemServico?> ObterPorIdAsync(Guid id)
         {
             var especificacao = new ObterOrdemServicoPorIdComIncludeEspecificacao(id);
-            return await _repositorioOrdemServico.ObterUmProjetadoAsync<OrdemServico>(especificacao);
+            return await _repositorioOrdemServico.ObterUmProjetadoSemRastreamentoAsync<OrdemServico>(especificacao);
         }
 
         public async Task<IEnumerable<OrdemServico>> ObterTodosAsync()

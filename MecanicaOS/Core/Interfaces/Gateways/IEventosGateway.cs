@@ -1,11 +1,10 @@
 ﻿using Core.DTOs.UseCases.Eventos;
+using Core.Entidades;
 
 namespace Core.Interfaces.Gateways
 {
     public interface IEventosGateway
     {
-        public Task Publicar(OrdemServicoFinalizadaEventDTO eventoDTO);
-        public Task Publicar(OrdemServicoEmOrcamentoEventDTO eventoDTO);
-        public Task Publicar(OrdemServicoCanceladaEventDTO eventoDTO);
+        Task Publicar(OrdemServico ordemServico);
     }
 }

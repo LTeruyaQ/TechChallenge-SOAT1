@@ -1,5 +1,7 @@
 using API.Notificacoes.OS;
 using Core.DTOs.UseCases.Eventos;
+using Core.Entidades;
+using Core.Enumeradores;
 using Core.Interfaces.Eventos;
 using MediatR;
 
@@ -14,22 +16,11 @@ namespace API.Notificacoes
             _mediator = mediator;
         }
 
-        public async Task Publicar(OrdemServicoFinalizadaEventDTO eventoDTO)
-        {
-            OrdemServicoFinalizadaEvent evento = new(eventoDTO.OrdemServicoId);
-            await _mediator.Publish(evento);
-        }
+        public StatusOrdemServico Status => throw new NotImplementedException();
 
-        public async Task Publicar(OrdemServicoEmOrcamentoEventDTO eventoDTO)
+        public Task PublicarAsync(OrdemServico ordemServico)
         {
-            OrdemServicoEmOrcamentoEvent evnto = new(eventoDTO.OrdemServicoId);
-            await _mediator.Publish(evnto);
-        }
-
-        public async Task Publicar(OrdemServicoCanceladaEventDTO eventoDTO)
-        {
-            OrdemServicoCanceladaEvent evento = new(eventoDTO.OrdemServicoId);
-            await _mediator.Publish(evento);
+            throw new NotImplementedException();
         }
     }
 }
