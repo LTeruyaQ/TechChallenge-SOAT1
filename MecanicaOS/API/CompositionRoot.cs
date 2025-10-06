@@ -14,6 +14,7 @@ using Core.DTOs.Entidades.Veiculo;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.Eventos;
 using Core.Interfaces.Gateways;
+using Core.Interfaces.Handlers.AlertasEstoque;
 using Core.Interfaces.Handlers.Autenticacao;
 using Core.Interfaces.Handlers.Clientes;
 using Core.Interfaces.Handlers.Estoques;
@@ -29,6 +30,9 @@ using Core.Interfaces.Repositorios;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
 using Core.Interfaces.UseCases;
+using Core.UseCases.AlertasEstoque;
+using Core.UseCases.AlertasEstoque.CadastrarVariosAlertas;
+using Core.UseCases.AlertasEstoque.VerificarAlertaEnviadoHoje;
 using Core.UseCases.Autenticacao;
 using Core.UseCases.Autenticacao.AutenticarUsuario;
 using Core.UseCases.Clientes;
@@ -1176,6 +1180,23 @@ namespace API
         public IAlertaEstoqueController CriarAlertaEstoqueController()
         {
             return new AlertaEstoqueController(this);
+        }
+
+        public IAlertaEstoqueUseCases CriarAlertaEstoqueUseCases()
+        {
+            return new AlertaEstoqueUseCasesFacade(
+                CriarCadastrarVariosAlertasHandler(),
+                CriarVerificarAlertaEnviadoHojeHandler());
+        }
+
+        public ICadastrarVariosAlertasHandler CriarCadastrarVariosAlertasHandler()
+        {
+            return new CadastrarVariosAlertasHandler(CriarAlertaEstoqueGateway());
+        }
+
+        public IVerificarAlertaEnviadoHojeHandler CriarVerificarAlertaEnviadoHojeHandler()
+        {
+            return new VerificarAlertaEnviadoHojeHandler(CriarAlertaEstoqueGateway());
         }
 
         #endregion

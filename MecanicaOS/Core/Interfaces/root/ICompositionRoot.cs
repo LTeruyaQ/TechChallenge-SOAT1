@@ -108,5 +108,6 @@ namespace Core.Interfaces.root
         
         // Controllers para Jobs
         IAlertaEstoqueController CriarAlertaEstoqueController();
+        IAlertaEstoqueUseCases CriarAlertaEstoqueUseCases();
     }
 }

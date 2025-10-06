@@ -119,7 +119,6 @@ builder.Services.AddHangfireServer();
 // Registrar Jobs
 builder.Services.AddScoped<ICompositionRoot, CompositionRoot>();
 
-//TODO: migrar jobs para clean arch
 builder.Services.AddTransient<VerificarEstoqueJob>();
 builder.Services.AddTransient<VerificarOrcamentoExpiradoJob>();
 builder.Services.AddTransient<RecurringJobs>();

@@ -1,30 +1,37 @@
 using Core.DTOs.Requests.Estoque;
+using Core.DTOs.UseCases.AlertaEstoque;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
+using Core.Interfaces.UseCases;
 
 namespace Adapters.Controllers
 {
     public class AlertaEstoqueController : IAlertaEstoqueController
     {
-        private readonly ICompositionRoot _compositionRoot;
+        private readonly IAlertaEstoqueUseCases _alertaEstoqueUseCases;
 
         public AlertaEstoqueController(ICompositionRoot compositionRoot)
         {
-            _compositionRoot = compositionRoot;
+            _alertaEstoqueUseCases = compositionRoot.CriarAlertaEstoqueUseCases();
         }
 
         public async Task CadastrarAlertas(IEnumerable<CadastrarAlertaEstoqueRequest> request)
         {
-            // TODO: Implementar lógica para cadastrar alertas de estoque
-            // Por ora, método vazio para não quebrar a compilação
-            await Task.CompletedTask;
+            if (request == null || !request.Any())
+                return;
+
+            var useCaseDtos = request.Select(r => new CadastrarAlertaEstoqueUseCaseDto
+            {
+                EstoqueId = r.EstoqueId,
+                DataEnvio = r.DataEnvio
+            });
+
+            await _alertaEstoqueUseCases.CadastrarVariosAsync(useCaseDtos);
         }
 
         public async Task<bool> VerificarAlertaEnviadoHoje(Guid estoqueId)
         {
-            // TODO: Implementar lógica para verificar se alerta foi enviado hoje
-            // Por ora, sempre retorna false para permitir envio
-            return await Task.FromResult(false);
+            return await _alertaEstoqueUseCases.VerificarAlertaEnviadoHojeAsync(estoqueId);
         }
     }
 }
