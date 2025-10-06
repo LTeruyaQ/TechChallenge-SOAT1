@@ -184,3 +184,112 @@ dotnet test
 ```
 
 Isso irá executar todos os testes nos projetos de teste da solução e exibir os resultados no console.
+
+---
+
+## Fase 2: Orquestração e Entrega Contínua
+
+Nesta fase, o projeto evolui para uma arquitetura nativa da nuvem, com foco na automação, orquestração de contêineres e entrega contínua (CI/CD). O objetivo é garantir que a aplicação **MecanicaOS** seja implantada de forma confiável, escalável e segura em um ambiente de produção.
+
+### Arquitetura Proposta
+
+A arquitetura da solução foi desenhada para ser escalável, resiliente e automatizada, utilizando as melhores práticas de DevOps e Cloud Native.
+
+#### Componentes da Aplicação
+
+*   **API (MecanicaOS):** A aplicação principal, responsável pela lógica de negócio, agora está containerizada com Docker para garantir a portabilidade e consistência entre os ambientes.
+*   **Banco de Dados (PostgreSQL):** O banco de dados relacional que armazena todos os dados da aplicação. Para o ambiente de produção no Kubernetes, recomenda-se o uso de um serviço de banco de dados gerenciado como o Amazon RDS para maior confiabilidade e performance.
+*   **pgAdmin:** Ferramenta de administração para o PostgreSQL, útil para desenvolvimento e depuração.
+
+#### Infraestrutura Provisionada (Terraform)
+
+A infraestrutura como código (IaC) é gerenciada pelo Terraform, permitindo o provisionamento e a gestão de todos os recursos de forma declarativa e versionada. O arquivo `terraform/main.tf` demonstra um exemplo básico de provisionamento de uma instância na AWS, que pode ser expandido para criar uma infraestrutura completa, incluindo:
+
+*   **VPC (Virtual Private Cloud):** Uma rede virtual isolada na AWS para garantir a segurança dos recursos.
+*   **EKS (Elastic Kubernetes Service):** Um cluster Kubernetes gerenciado pela AWS, que orquestra a execução dos contêineres da aplicação.
+*   **ECR (Elastic Container Registry):** Um registro de contêineres privado e seguro para armazenar as imagens Docker da aplicação.
+
+#### Fluxo de Deploy (CI/CD)
+
+O fluxo de deploy é automatizado através de um pipeline de CI/CD, que pode ser implementado com ferramentas como GitHub Actions, Jenkins ou GitLab CI. O processo típico é:
+
+1.  **Commit & Push:** O desenvolvedor envia o código para o repositório Git.
+2.  **Build & Test:** O pipeline de CI é acionado, compilando o código, executando os testes automatizados e construindo a imagem Docker da aplicação.
+3.  **Push to ECR:** A imagem Docker é tagueada e enviada para o registro de contêineres (Amazon ECR).
+4.  **Deploy to EKS:** O pipeline de CD atualiza os manifestos do Kubernetes (como o `k8s-deployment-api.yaml`) com a nova versão da imagem e aplica as mudanças no cluster EKS, realizando o deploy sem downtime (rolling update).
+
+![Arquitetura da Solução](https://user-images.githubusercontent.com/1234567/89012345-abcde-1234-5678-90ab-cdef12345678.png)
+**Atenção:** Substitua o link acima pela URL da imagem da sua arquitetura. Você pode usar ferramentas como o [draw.io](https://draw.io) ou o [Lucidchart](https://lucidchart.com) para criar o seu diagrama.
+
+---
+
+## Instruções de Deploy e Provisionamento
+
+### Provisionamento da Infraestrutura com Terraform
+
+Os arquivos do Terraform (`.tf`) no diretório `terraform/` descrevem a infraestrutura necessária na AWS.
+
+1.  **Pré-requisitos:**
+    *   [Terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli) instalado.
+    *   [AWS CLI](https://aws.amazon.com/cli/) instalado e configurado com credenciais de acesso à sua conta AWS (`aws configure`).
+
+2.  **Inicialização:** Navegue até o diretório `terraform` e inicialize o Terraform para baixar os providers necessários.
+    ```bash
+    cd terraform
+    terraform init
+    ```
+
+3.  **Planejamento:** Gere um plano de execução para visualizar os recursos que serão criados.
+    ```bash
+    terraform plan
+    ```
+
+4.  **Aplicação:** Provisione a infraestrutura na AWS.
+    ```bash
+    terraform apply
+    ```
+    O Terraform solicitará uma confirmação. Digite `yes` para continuar.
+
+### Deploy em Kubernetes
+
+Os arquivos de manifesto (`.yaml`) na raiz do projeto definem os recursos do Kubernetes para a aplicação.
+
+1.  **Pré-requisitos:**
+    *   [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) instalado.
+    *   Um cluster Kubernetes ativo e o `kubectl` configurado para se conectar a ele (ex: `aws eks update-kubeconfig ...`).
+
+2.  **Aplicação dos Manifestos:** Na raiz do projeto, aplique os manifestos para criar os serviços e deployments.
+    ```bash
+    # Cria o Service e o Deployment para o Banco de Dados
+    kubectl apply -f k8s-service-db.yaml
+    kubectl apply -f k8s-deployment-db.yaml
+
+    # Cria o Service e o Deployment para a API
+    kubectl apply -f k8s-service-api.yaml
+    kubectl apply -f k8s-deployment-api.yaml
+    ```
+
+3.  **Verificação:** Verifique se os pods estão em execução.
+    ```bash
+    kubectl get pods
+    ```
+    Para obter o endereço de acesso da API, verifique o `LoadBalancer` criado pelo serviço:
+    ```bash
+    kubectl get services
+    ```
+
+---
+
+## Links Adicionais
+
+### Documentação da API (Collection)
+
+Para facilitar a interação e os testes com a API, disponibilizamos uma collection que pode ser importada em ferramentas como Postman ou Insomnia.
+
+*   **Link da Collection:** [**Atenção:** Insira aqui o link público para o seu arquivo de collection (ex: Postman, Swagger JSON)]
+
+### Vídeo Demonstrativo
+
+Um vídeo de até 15 minutos foi gravado para demonstrar a solução completa, incluindo a arquitetura, o pipeline de CI/CD, o provisionamento da infraestrutura e a aplicação em funcionamento.
+
+*   **Link do Vídeo:** [**Atenção:** Insira aqui o link público ou não listado para o seu vídeo no YouTube ou Vimeo]
