@@ -20,6 +20,7 @@ namespace Core.UseCases.OrdensServico
         private readonly IAceitarOrcamentoHandler _aceitarOrcamentoHandler;
         private readonly IRecusarOrcamentoHandler _recusarOrcamentoHandler;
         private readonly IListarOrdensServicoAtivasHandler _listarOrdensServicoAtivasHandler;
+        private readonly IObterOrcamentosExpiradosHandler _obterOrcamentosExpiradosHandler;
 
         public OrdemServicoUseCasesFacade(
             ICadastrarOrdemServicoHandler cadastrarOrdemServicoHandler,
@@ -29,7 +30,8 @@ namespace Core.UseCases.OrdensServico
             IObterOrdemServicoPorStatusHandler obterOrdemServicoPorStatusHandler,
             IAceitarOrcamentoHandler aceitarOrcamentoHandler,
             IRecusarOrcamentoHandler recusarOrcamentoHandler,
-            IListarOrdensServicoAtivasHandler listarOrdensServicoAtivasHandler)
+            IListarOrdensServicoAtivasHandler listarOrdensServicoAtivasHandler,
+            IObterOrcamentosExpiradosHandler obterOrcamentosExpiradosHandler)
         {
             _cadastrarOrdemServicoHandler = cadastrarOrdemServicoHandler ?? throw new ArgumentNullException(nameof(cadastrarOrdemServicoHandler));
             _atualizarOrdemServicoHandler = atualizarOrdemServicoHandler ?? throw new ArgumentNullException(nameof(atualizarOrdemServicoHandler));
@@ -39,6 +41,7 @@ namespace Core.UseCases.OrdensServico
             _aceitarOrcamentoHandler = aceitarOrcamentoHandler ?? throw new ArgumentNullException(nameof(aceitarOrcamentoHandler));
             _recusarOrcamentoHandler = recusarOrcamentoHandler ?? throw new ArgumentNullException(nameof(recusarOrcamentoHandler));
             _listarOrdensServicoAtivasHandler = listarOrdensServicoAtivasHandler ?? throw new ArgumentNullException(nameof(listarOrdensServicoAtivasHandler));
+            _obterOrcamentosExpiradosHandler = obterOrcamentosExpiradosHandler ?? throw new ArgumentNullException(nameof(obterOrcamentosExpiradosHandler));
         }
 
         public async Task<OrdemServico> CadastrarUseCaseAsync(CadastrarOrdemServicoUseCaseDto request)
@@ -78,9 +81,7 @@ namespace Core.UseCases.OrdensServico
 
         public async Task<IEnumerable<OrdemServico>> ObterOrcamentosExpiradosUseCaseAsync()
         {
-            // TODO: Implementar handler específico para orçamentos expirados
-            // Por ora, retorna lista vazia para não quebrar a compilação
-            return new List<OrdemServico>();
+            return await _obterOrcamentosExpiradosHandler.Handle();
         }
 
         public async Task<IEnumerable<OrdemServico>> ListarOrdensServicoAtivasUseCaseAsync()

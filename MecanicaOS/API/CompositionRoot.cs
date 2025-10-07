@@ -61,6 +61,7 @@ using Core.UseCases.OrdensServico.CadastrarOrdemServico;
 using Core.UseCases.OrdensServico.ListarOrdensServicoAtivas;
 using Core.UseCases.OrdensServico.ObterOrdemServico;
 using Core.UseCases.OrdensServico.ObterOrdemServicoPorStatus;
+using Core.UseCases.OrdensServico.ObterOrcamentosExpirados;
 using Core.UseCases.OrdensServico.ObterTodosOrdensServico;
 using Core.UseCases.OrdensServico.RecusarOrcamento;
 using Core.UseCases.Servicos;
@@ -954,6 +955,20 @@ namespace API
                 usuarioLogadoServicoGateway);
         }
 
+        public IObterOrcamentosExpiradosHandler CriarObterOrcamentosExpiradosHandler()
+        {
+            var ordemServicoGateway = CriarOrdemServicoGateway();
+            var logServicoGateway = CriarLogServicoGateway<ObterOrcamentosExpiradosHandler>();
+            var udtGateway = CriarUnidadeDeTrabalhoGateway();
+            var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
+
+            return new ObterOrcamentosExpiradosHandler(
+                ordemServicoGateway,
+                logServicoGateway,
+                udtGateway,
+                usuarioLogadoServicoGateway);
+        }
+
         #endregion
 
         #region Criação de Use Cases
@@ -1026,6 +1041,7 @@ namespace API
             var aceitarOrcamentoHandler = CriarAceitarOrcamentoHandler();
             var recusarOrcamentoHandler = CriarRecusarOrcamentoHandler();
             var listarOrdensServicoAtivasHandler = CriarListarOrdensServicoAtivasHandler();
+            var obterOrcamentosExpiradosHandler = CriarObterOrcamentosExpiradosHandler();
 
             return new OrdemServicoUseCasesFacade(
                 cadastrarOrdemServicoHandler,
@@ -1035,7 +1051,8 @@ namespace API
                 obterOrdemServicoPorStatusHandler,
                 aceitarOrcamentoHandler,
                 recusarOrcamentoHandler,
-                listarOrdensServicoAtivasHandler);
+                listarOrdensServicoAtivasHandler,
+                obterOrcamentosExpiradosHandler);
         }
 
         public IInsumoOSUseCases CriarInsumoOSUseCases()

@@ -86,6 +86,7 @@ namespace Core.Interfaces.root
         IOrdemServicoUseCases CriarOrdemServicoUseCases();
         IRecusarOrcamentoHandler CriarRecusarOrcamentoHandler();
         IListarOrdensServicoAtivasHandler CriarListarOrdensServicoAtivasHandler();
+        IObterOrcamentosExpiradosHandler CriarObterOrcamentosExpiradosHandler();
         IRemoverClienteHandler CriarRemoverClienteHandler();
         IRepositorio<T> CriarRepositorio<T>() where T : EntityDto;
         IServicoController CriarServicoController();

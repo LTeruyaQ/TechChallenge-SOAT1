@@ -30,7 +30,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterOrdemServicoPorStatusHandler>(),
                 Substitute.For<IAceitarOrcamentoHandler>(),
                 Substitute.For<IRecusarOrcamentoHandler>(),
-                Substitute.For<IListarOrdensServicoAtivasHandler>());
+                Substitute.For<IListarOrdensServicoAtivasHandler>(),
+                Substitute.For<IObterOrcamentosExpiradosHandler>());
             
             // Act
             var resultado = await facade.CadastrarUseCaseAsync(dto);
@@ -58,7 +59,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterOrdemServicoPorStatusHandler>(),
                 Substitute.For<IAceitarOrcamentoHandler>(),
                 Substitute.For<IRecusarOrcamentoHandler>(),
-                Substitute.For<IListarOrdensServicoAtivasHandler>());
+                Substitute.For<IListarOrdensServicoAtivasHandler>(),
+                Substitute.For<IObterOrcamentosExpiradosHandler>());
             
             // Act
             var resultado = await facade.AtualizarUseCaseAsync(os.Id, dto);
@@ -85,7 +87,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterOrdemServicoPorStatusHandler>(),
                 Substitute.For<IAceitarOrcamentoHandler>(),
                 Substitute.For<IRecusarOrcamentoHandler>(),
-                Substitute.For<IListarOrdensServicoAtivasHandler>());
+                Substitute.For<IListarOrdensServicoAtivasHandler>(),
+                Substitute.For<IObterOrcamentosExpiradosHandler>());
             
             // Act
             var resultado = await facade.ObterPorIdUseCaseAsync(os.Id);
@@ -112,7 +115,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterOrdemServicoPorStatusHandler>(),
                 Substitute.For<IAceitarOrcamentoHandler>(),
                 Substitute.For<IRecusarOrcamentoHandler>(),
-                Substitute.For<IListarOrdensServicoAtivasHandler>());
+                Substitute.For<IListarOrdensServicoAtivasHandler>(),
+                Substitute.For<IObterOrcamentosExpiradosHandler>());
             
             // Act
             var resultado = await facade.ObterTodosUseCaseAsync();
@@ -140,7 +144,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 handlerMock,
                 Substitute.For<IAceitarOrcamentoHandler>(),
                 Substitute.For<IRecusarOrcamentoHandler>(),
-                Substitute.For<IListarOrdensServicoAtivasHandler>());
+                Substitute.For<IListarOrdensServicoAtivasHandler>(),
+                Substitute.For<IObterOrcamentosExpiradosHandler>());
             
             // Act
             var resultado = await facade.ObterPorStatusUseCaseAsync(status);
@@ -167,7 +172,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterOrdemServicoPorStatusHandler>(),
                 handlerMock,
                 Substitute.For<IRecusarOrcamentoHandler>(),
-                Substitute.For<IListarOrdensServicoAtivasHandler>());
+                Substitute.For<IListarOrdensServicoAtivasHandler>(),
+                Substitute.For<IObterOrcamentosExpiradosHandler>());
             
             // Act
             await facade.AceitarOrcamentoUseCaseAsync(id);
@@ -193,7 +199,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterOrdemServicoPorStatusHandler>(),
                 Substitute.For<IAceitarOrcamentoHandler>(),
                 handlerMock,
-                Substitute.For<IListarOrdensServicoAtivasHandler>());
+                Substitute.For<IListarOrdensServicoAtivasHandler>(),
+                Substitute.For<IObterOrcamentosExpiradosHandler>());
             
             // Act
             await facade.RecusarOrcamentoUseCaseAsync(id);
