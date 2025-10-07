@@ -69,13 +69,13 @@ namespace Core.Interfaces.root
         IObterOrdemServicoPorStatusHandler CriarObterOrdemServicoPorStatusHandler();
         IObterServicoHandler CriarObterServicoHandler();
         IObterServicosDisponiveisHandler CriarObterServicosDisponiveisHandler();
-        IObterTodosClientesHandler CriarObterTodosClientesHandler();
         IObterTodosEstoquesHandler CriarObterTodosEstoquesHandler();
         IObterTodosOrdensServicoHandler CriarObterTodosOrdensServicoHandler();
         IObterTodosServicosHandler CriarObterTodosServicosHandler();
         IObterTodosUsuariosHandler CriarObterTodosUsuariosHandler();
         IObterTodosVeiculosHandler CriarObterTodosVeiculosHandler();
-        IObterUsuarioHandler CriarObterUsuarioHandler();
+        IObterUsuarioPorEmailHandler CriarObterUsuarioPorEmailHandler();
+        IObterUsuariosParaAlertaEstoqueHandler CriarObterUsuariosParaAlertaEstoqueHandler();
         IObterVeiculoHandler CriarObterVeiculoHandler();
         IObterVeiculoPorClienteHandler CriarObterVeiculoPorClienteHandler();
         IObterVeiculoPorPlacaHandler CriarObterVeiculoPorPlacaHandler();

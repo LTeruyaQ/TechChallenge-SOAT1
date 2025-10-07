@@ -27,7 +27,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterUsuarioHandler>(),
                 Substitute.For<IObterTodosUsuariosHandler>(),
                 Substitute.For<IDeletarUsuarioHandler>(),
-                Substitute.For<IObterUsuarioPorEmailHandler>());
+                Substitute.For<IObterUsuarioPorEmailHandler>(),
+                Substitute.For<IObterUsuariosParaAlertaEstoqueHandler>());
             
             // Act
             var resultado = await facade.CadastrarUseCaseAsync(dto);
@@ -53,7 +54,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterUsuarioHandler>(),
                 Substitute.For<IObterTodosUsuariosHandler>(),
                 Substitute.For<IDeletarUsuarioHandler>(),
-                Substitute.For<IObterUsuarioPorEmailHandler>());
+                Substitute.For<IObterUsuarioPorEmailHandler>(),
+                Substitute.For<IObterUsuariosParaAlertaEstoqueHandler>());
             
             // Act
             var resultado = await facade.AtualizarUseCaseAsync(usuario.Id, dto);
@@ -78,7 +80,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 handlerMock,
                 Substitute.For<IObterTodosUsuariosHandler>(),
                 Substitute.For<IDeletarUsuarioHandler>(),
-                Substitute.For<IObterUsuarioPorEmailHandler>());
+                Substitute.For<IObterUsuarioPorEmailHandler>(),
+                Substitute.For<IObterUsuariosParaAlertaEstoqueHandler>());
             
             // Act
             var resultado = await facade.ObterPorIdUseCaseAsync(usuario.Id);
@@ -103,7 +106,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterUsuarioHandler>(),
                 handlerMock,
                 Substitute.For<IDeletarUsuarioHandler>(),
-                Substitute.For<IObterUsuarioPorEmailHandler>());
+                Substitute.For<IObterUsuarioPorEmailHandler>(),
+                Substitute.For<IObterUsuariosParaAlertaEstoqueHandler>());
             
             // Act
             var resultado = await facade.ObterTodosUseCaseAsync();
@@ -128,7 +132,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterUsuarioHandler>(),
                 Substitute.For<IObterTodosUsuariosHandler>(),
                 handlerMock,
-                Substitute.For<IObterUsuarioPorEmailHandler>());
+                Substitute.For<IObterUsuarioPorEmailHandler>(),
+                Substitute.For<IObterUsuariosParaAlertaEstoqueHandler>());
             
             // Act
             var resultado = await facade.DeletarUseCaseAsync(id);
@@ -153,7 +158,8 @@ namespace MecanicaOS.UnitTests.Core.UseCases
                 Substitute.For<IObterUsuarioHandler>(),
                 Substitute.For<IObterTodosUsuariosHandler>(),
                 Substitute.For<IDeletarUsuarioHandler>(),
-                handlerMock);
+                handlerMock,
+                Substitute.For<IObterUsuariosParaAlertaEstoqueHandler>());
             
             // Act
             var resultado = await facade.ObterPorEmailUseCaseAsync(usuario.Email);

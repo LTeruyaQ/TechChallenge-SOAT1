@@ -17,6 +17,7 @@ namespace Core.UseCases.Usuarios
         private readonly IObterTodosUsuariosHandler _obterTodosUsuariosHandler;
         private readonly IDeletarUsuarioHandler _deletarUsuarioHandler;
         private readonly IObterUsuarioPorEmailHandler _obterUsuarioPorEmailHandler;
+        private readonly IObterUsuariosParaAlertaEstoqueHandler _obterUsuariosParaAlertaEstoqueHandler;
 
         public UsuarioUseCasesFacade(
             ICadastrarUsuarioHandler cadastrarUsuarioHandler,
@@ -24,7 +25,8 @@ namespace Core.UseCases.Usuarios
             IObterUsuarioHandler obterUsuarioHandler,
             IObterTodosUsuariosHandler obterTodosUsuariosHandler,
             IDeletarUsuarioHandler deletarUsuarioHandler,
-            IObterUsuarioPorEmailHandler obterUsuarioPorEmailHandler)
+            IObterUsuarioPorEmailHandler obterUsuarioPorEmailHandler,
+            IObterUsuariosParaAlertaEstoqueHandler obterUsuariosParaAlertaEstoqueHandler)
         {
             _cadastrarUsuarioHandler = cadastrarUsuarioHandler ?? throw new ArgumentNullException(nameof(cadastrarUsuarioHandler));
             _atualizarUsuarioHandler = atualizarUsuarioHandler ?? throw new ArgumentNullException(nameof(atualizarUsuarioHandler));
@@ -32,6 +34,7 @@ namespace Core.UseCases.Usuarios
             _obterTodosUsuariosHandler = obterTodosUsuariosHandler ?? throw new ArgumentNullException(nameof(obterTodosUsuariosHandler));
             _deletarUsuarioHandler = deletarUsuarioHandler ?? throw new ArgumentNullException(nameof(deletarUsuarioHandler));
             _obterUsuarioPorEmailHandler = obterUsuarioPorEmailHandler ?? throw new ArgumentNullException(nameof(obterUsuarioPorEmailHandler));
+            _obterUsuariosParaAlertaEstoqueHandler = obterUsuariosParaAlertaEstoqueHandler ?? throw new ArgumentNullException(nameof(obterUsuariosParaAlertaEstoqueHandler));
         }
 
         public async Task<Usuario> AtualizarUseCaseAsync(Guid id, AtualizarUsuarioUseCaseDto request)
@@ -66,9 +69,7 @@ namespace Core.UseCases.Usuarios
 
         public async Task<IEnumerable<Usuario>> ObterUsuariosParaAlertaEstoqueUseCaseAsync()
         {
-            // TODO: Implementar handler específico para usuários de alerta de estoque
-            // Por ora, retorna lista vazia para não quebrar a compilação
-            return new List<Usuario>();
+            return await _obterUsuariosParaAlertaEstoqueHandler.Handle();
         }
     }
 }

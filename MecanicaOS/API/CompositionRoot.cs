@@ -79,6 +79,7 @@ using Core.UseCases.Usuarios.DeletarUsuario;
 using Core.UseCases.Usuarios.ObterTodosUsuarios;
 using Core.UseCases.Usuarios.ObterUsuario;
 using Core.UseCases.Usuarios.ObterUsuarioPorEmail;
+using Core.UseCases.Usuarios.ObterUsuariosParaAlertaEstoque;
 using Core.UseCases.Veiculos;
 using Core.UseCases.Veiculos.AtualizarVeiculo;
 using Core.UseCases.Veiculos.CadastrarVeiculo;
@@ -585,6 +586,20 @@ namespace API
                 usuarioLogadoServicoGateway);
         }
 
+        public IObterUsuariosParaAlertaEstoqueHandler CriarObterUsuariosParaAlertaEstoqueHandler()
+        {
+            var usuarioGateway = CriarUsuarioGateway();
+            var logServicoGateway = CriarLogServicoGateway<ObterUsuariosParaAlertaEstoqueHandler>();
+            var udtGateway = CriarUnidadeDeTrabalhoGateway();
+            var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
+
+            return new ObterUsuariosParaAlertaEstoqueHandler(
+                usuarioGateway,
+                logServicoGateway,
+                udtGateway,
+                usuarioLogadoServicoGateway);
+        }
+
         #endregion
 
         #region Criação de Handlers Individuais - Serviço
@@ -1071,6 +1086,7 @@ namespace API
             var obterTodosUsuariosHandler = CriarObterTodosUsuariosHandler();
             var deletarUsuarioHandler = CriarDeletarUsuarioHandler();
             var obterUsuarioPorEmailHandler = CriarObterUsuarioPorEmailHandler();
+            var obterUsuariosParaAlertaEstoqueHandler = CriarObterUsuariosParaAlertaEstoqueHandler();
 
             return new UsuarioUseCasesFacade(
                 cadastrarUsuarioHandler,
@@ -1078,7 +1094,8 @@ namespace API
                 obterUsuarioHandler,
                 obterTodosUsuariosHandler,
                 deletarUsuarioHandler,
-                obterUsuarioPorEmailHandler);
+                obterUsuarioPorEmailHandler,
+                obterUsuariosParaAlertaEstoqueHandler);
         }
 
         public IVeiculoUseCases CriarVeiculoUseCases()
