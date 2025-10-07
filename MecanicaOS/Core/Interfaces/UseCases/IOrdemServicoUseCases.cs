@@ -14,5 +14,6 @@ namespace Core.Interfaces.UseCases
         Task<IEnumerable<OrdemServico>> ObterTodosUseCaseAsync();
         Task RecusarOrcamentoUseCaseAsync(Guid id);
         Task<IEnumerable<OrdemServico>> ObterOrcamentosExpiradosUseCaseAsync();
+        Task<IEnumerable<OrdemServico>> ListarOrdensServicoAtivasUseCaseAsync();
     }
 }

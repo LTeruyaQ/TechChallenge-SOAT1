@@ -139,5 +139,12 @@ namespace Adapters.Controllers
             return _ordemServicoPresenter.ParaResponse(ordens)
                 .Where(response => response != null)!;
         }
+
+        public async Task<IEnumerable<OrdemServicoResponse>> ListarOrdensServicoAtivas()
+        {
+            var ordensServico = await _ordemServicoUseCases.ListarOrdensServicoAtivasUseCaseAsync();
+            return _ordemServicoPresenter.ParaResponse(ordensServico)
+                .Where(response => response != null)!;
+        }
     }
 }

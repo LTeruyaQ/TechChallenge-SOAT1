@@ -15,5 +15,6 @@ namespace Core.Interfaces.Controllers
         Task<OrdemServicoResponse> ObterPorId(Guid id);
         Task<IEnumerable<OrdemServicoResponse>> ObterPorStatus(StatusOrdemServico status);
         Task<IEnumerable<OrdemServicoResponse>> ObterTodos();
+        Task<IEnumerable<OrdemServicoResponse>> ListarOrdensServicoAtivas();
     }
 }

@@ -76,7 +76,6 @@ namespace Core.Interfaces.root
         IObterTodosUsuariosHandler CriarObterTodosUsuariosHandler();
         IObterTodosVeiculosHandler CriarObterTodosVeiculosHandler();
         IObterUsuarioHandler CriarObterUsuarioHandler();
-        IObterUsuarioPorEmailHandler CriarObterUsuarioPorEmailHandler();
         IObterVeiculoHandler CriarObterVeiculoHandler();
         IObterVeiculoPorClienteHandler CriarObterVeiculoPorClienteHandler();
         IObterVeiculoPorPlacaHandler CriarObterVeiculoPorPlacaHandler();
@@ -86,12 +85,12 @@ namespace Core.Interfaces.root
         IOrdemServicoPresenter CriarOrdemServicoPresenter();
         IOrdemServicoUseCases CriarOrdemServicoUseCases();
         IRecusarOrcamentoHandler CriarRecusarOrcamentoHandler();
+        IListarOrdensServicoAtivasHandler CriarListarOrdensServicoAtivasHandler();
         IRemoverClienteHandler CriarRemoverClienteHandler();
         IRepositorio<T> CriarRepositorio<T>() where T : EntityDto;
         IServicoController CriarServicoController();
         IServicoEmail CriarServicoEmail();
         IServicoGateway CriarServicoGateway();
-        IServicoJwt CriarServicoJwt();
         IServicoPresenter CriarServicoPresenter();
         IServicoUseCases CriarServicoUseCases();
         IUnidadeDeTrabalho CriarUnidadeDeTrabalho();

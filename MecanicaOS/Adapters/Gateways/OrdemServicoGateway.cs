@@ -64,6 +64,12 @@ namespace Adapters.Gateways
             return dtos.Select(FromDto);
         }
 
+        public async Task<IEnumerable<OrdemServico>> ObterOrdensServicoAtivasAsync()
+        {
+            var especificacao = new ObterOrdensServicoAtivasComIncludeEspecificacao();
+            return await _repositorioOrdemServico.ListarProjetadoAsync<OrdemServico>(especificacao);
+        }
+
         public static OrdemServicoEntityDto ToDto(OrdemServico ordemServico)
         {
             return new OrdemServicoEntityDto

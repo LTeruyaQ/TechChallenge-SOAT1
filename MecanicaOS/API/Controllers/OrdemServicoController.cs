@@ -121,5 +121,14 @@ namespace API.Controllers
             await _ordemServicoController.RecusarOrcamento(id);
             return NoContent();
         }
+
+        [HttpGet("ativas")]
+        [ProducesResponseType(typeof(IEnumerable<OrdemServicoResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ListarOrdensServicoAtivas()
+        {
+            var ordensServico = await _ordemServicoController.ListarOrdensServicoAtivas();
+            return Ok(ordensServico);
+        }
     }
 }

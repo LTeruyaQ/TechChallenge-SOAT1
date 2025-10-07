@@ -1,4 +1,4 @@
-﻿using Core.Entidades;
+using Core.Entidades;
 using Core.Enumeradores;
 
 namespace Core.Interfaces.Gateways
@@ -13,5 +13,6 @@ namespace Core.Interfaces.Gateways
         Task<IEnumerable<OrdemServico>> ObterOrdemServicoPorStatusAsync(StatusOrdemServico status);
         Task<OrdemServico?> ObterPorIdAsync(Guid id);
         Task<IEnumerable<OrdemServico>> ObterTodosAsync();
+        Task<IEnumerable<OrdemServico>> ObterOrdensServicoAtivasAsync();
     }
 }
