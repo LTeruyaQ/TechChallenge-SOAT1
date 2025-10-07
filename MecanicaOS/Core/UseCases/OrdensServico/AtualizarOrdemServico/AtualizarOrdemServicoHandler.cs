@@ -11,15 +11,18 @@ namespace Core.UseCases.OrdensServico.AtualizarOrdemServico
     public class AtualizarOrdemServicoHandler : UseCasesHandlerAbstrato<AtualizarOrdemServicoHandler>, IAtualizarOrdemServicoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
+        private readonly IEventoGateway _eventosGateway;
 
         public AtualizarOrdemServicoHandler(
             IOrdemServicoGateway ordemServicoGateway,
+            IEventoGateway eventosGateway,
             ILogGateway<AtualizarOrdemServicoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
             : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
         {
             _ordemServicoGateway = ordemServicoGateway ?? throw new ArgumentNullException(nameof(ordemServicoGateway));
+            _eventosGateway = eventosGateway;
         }
 
         public async Task<OrdemServico> Handle(Guid id, AtualizarOrdemServicoUseCaseDto request)
@@ -60,15 +63,13 @@ namespace Core.UseCases.OrdensServico.AtualizarOrdemServico
 
                 await _ordemServicoGateway.EditarAsync(ordemServico);
 
-                // Publicar evento se mudou para diagnóstico (simplificado)
-                if (statusAnterior != StatusOrdemServico.EmDiagnostico &&
-                    ordemServico.Status == StatusOrdemServico.EmDiagnostico)
-                {
-                    // Evento seria publicado aqui
-                }
-
                 if (!await Commit())
                     throw new PersistirDadosException("Erro ao atualizar ordem de serviço");
+
+                if (statusAnterior != ordemServico.Status)
+                {
+                    await _eventosGateway.Publicar(ordemServico);
+                }
 
                 LogFim(metodo, ordemServico);
 

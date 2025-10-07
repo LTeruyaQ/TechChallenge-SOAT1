@@ -21,6 +21,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.OrdensServico
     public class OrdensServicoHandlersTests
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
+        private readonly IEventoGateway _eventoGateway;
         private readonly ILogGateway<CadastrarOrdemServicoHandler> _logGateway;
         private readonly IUnidadeDeTrabalhoGateway _udtGateway;
         private readonly IUsuarioLogadoServicoGateway _usuarioLogadoGateway;
@@ -28,6 +29,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.OrdensServico
         public OrdensServicoHandlersTests()
         {
             _ordemServicoGateway = Substitute.For<IOrdemServicoGateway>();
+            _eventoGateway = Substitute.For<IEventoGateway>();
             _logGateway = Substitute.For<ILogGateway<CadastrarOrdemServicoHandler>>();
             _udtGateway = Substitute.For<IUnidadeDeTrabalhoGateway>();
             _usuarioLogadoGateway = Substitute.For<IUsuarioLogadoServicoGateway>();
@@ -88,7 +90,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.OrdensServico
         {
             // Arrange
             var logGatewayAtualizar = Substitute.For<ILogGateway<AtualizarOrdemServicoHandler>>();
-            var handler = new AtualizarOrdemServicoHandler(_ordemServicoGateway, logGatewayAtualizar, _udtGateway, _usuarioLogadoGateway);
+            var handler = new AtualizarOrdemServicoHandler(_ordemServicoGateway, _eventoGateway, logGatewayAtualizar, _udtGateway, _usuarioLogadoGateway);
             var ordemId = Guid.NewGuid();
             var ordemExistente = new OrdemServico
             {
@@ -127,7 +129,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.OrdensServico
         {
             // Arrange
             var logGatewayAtualizar = Substitute.For<ILogGateway<AtualizarOrdemServicoHandler>>();
-            var handler = new AtualizarOrdemServicoHandler(_ordemServicoGateway, logGatewayAtualizar, _udtGateway, _usuarioLogadoGateway);
+            var handler = new AtualizarOrdemServicoHandler(_ordemServicoGateway, _eventoGateway,logGatewayAtualizar, _udtGateway, _usuarioLogadoGateway);
             var ordemId = Guid.NewGuid();
             var request = new AtualizarOrdemServicoUseCaseDto { Status = StatusOrdemServico.EmExecucao };
 
@@ -366,7 +368,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.OrdensServico
         {
             // Arrange
             var logGatewayRecusar = Substitute.For<ILogGateway<RecusarOrcamentoHandler>>();
-            var eventosGateway = Substitute.For<IEventosGateway>();
+            var eventosGateway = Substitute.For<IEventoGateway>();
             var handler = new RecusarOrcamentoHandler(_ordemServicoGateway, eventosGateway, logGatewayRecusar, _udtGateway, _usuarioLogadoGateway);
             var ordemId = Guid.NewGuid();
             var ordem = new OrdemServico
@@ -394,7 +396,7 @@ namespace MecanicaOS.UnitTests.Core.UseCases.OrdensServico
         {
             // Arrange
             var logGatewayRecusar = Substitute.For<ILogGateway<RecusarOrcamentoHandler>>();
-            var eventosGateway = Substitute.For<IEventosGateway>();
+            var eventosGateway = Substitute.For<IEventoGateway>();
             var handler = new RecusarOrcamentoHandler(_ordemServicoGateway, eventosGateway, logGatewayRecusar, _udtGateway, _usuarioLogadoGateway);
             var ordemId = Guid.NewGuid();
             _ordemServicoGateway.ObterPorIdAsync(ordemId).Returns(Task.FromException<OrdemServico?>(new InvalidOperationException("Erro no banco")));

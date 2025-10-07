@@ -2,6 +2,7 @@ using Adapters.Presenters;
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
 using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
 using Core.DTOs.UseCases.Estoque;
+using Core.DTOs.UseCases.OrdemServico;
 using Core.DTOs.UseCases.OrdemServico.InsumoOS;
 using Core.Exceptions;
 using Core.Interfaces.Controllers;
@@ -55,6 +56,11 @@ namespace Adapters.Controllers
                 });
             }
 
+            await _ordemServicoUseCases.AtualizarUseCaseAsync(ordemServicoId, new AtualizarOrdemServicoUseCaseDto
+            {
+                Status = Core.Enumeradores.StatusOrdemServico.EmDiagnostico
+            });
+
             return _insumoPresenter.ToResponse(await _insumoOSUseCases.CadastrarInsumosUseCaseAsync(ordemServicoId, useCaseDtos));
         }
 
@@ -78,7 +84,7 @@ namespace Adapters.Controllers
                     ?? throw new DadosNaoEncontradosException($"Estoque com ID {insumoOS.EstoqueId} não encontrado");
 
                 estoque.QuantidadeDisponivel += insumoOS.Quantidade;
-                
+
                 await _estoqueUseCases.AtualizarUseCaseAsync(estoque.Id, new AtualizarEstoqueUseCaseDto
                 {
                     Insumo = estoque.Insumo,

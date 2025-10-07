@@ -17,6 +17,7 @@ namespace Adapters.Controllers
         private readonly IOrcamentoUseCases _orcamentoUseCases;
         private readonly IClienteUseCases _clienteUseCases;
         private readonly IServicoUseCases _servicoUseCases;
+        private readonly IVeiculoUseCases _veiculoUseCases;
         private readonly IOrdemServicoPresenter _ordemServicoPresenter;
 
         public OrdemServicoController(ICompositionRoot compositionRoot)
@@ -26,6 +27,7 @@ namespace Adapters.Controllers
             _orcamentoUseCases = compositionRoot.CriarOrcamentoUseCases();
             _clienteUseCases = compositionRoot.CriarClienteUseCases();
             _servicoUseCases = compositionRoot.CriarServicoUseCases();
+            _veiculoUseCases = compositionRoot.CriarVeiculoUseCases();
         }
 
         public async Task<IEnumerable<OrdemServicoResponse>> ObterTodos()
@@ -37,10 +39,10 @@ namespace Adapters.Controllers
         public async Task<OrdemServicoResponse> ObterPorId(Guid id)
         {
             var ordemServico = await _ordemServicoUseCases.ObterPorIdUseCaseAsync(id);
-            
-            var response = _ordemServicoPresenter.ParaResponse(ordemServico) ?? 
+
+            var response = _ordemServicoPresenter.ParaResponse(ordemServico) ??
                 throw new InvalidOperationException("A ordem de serviço não pode ser nula.");
-            
+
             return response;
         }
 
@@ -53,9 +55,11 @@ namespace Adapters.Controllers
         public async Task CalcularOrcamentoAsync(Guid id)
         {
             var ordemServico = await _ordemServicoUseCases.ObterPorIdUseCaseAsync(id);
+
             if (ordemServico != null)
             {
-                _orcamentoUseCases.GerarOrcamentoUseCase(ordemServico);
+                var orcamento = _orcamentoUseCases.GerarOrcamentoUseCase(ordemServico);
+                await _ordemServicoUseCases.AtualizarUseCaseAsync(id, new() { Orcamento = orcamento });
             }
         }
 
@@ -63,19 +67,23 @@ namespace Adapters.Controllers
         {
             var useCaseDto = MapearParaCadastrarOrdemServicoUseCaseDto(request);
 
+            var veiculo = await _veiculoUseCases.ObterPorIdUseCaseAsync(request.VeiculoId)
+                ?? throw new DadosNaoEncontradosException("Veículo não encontrado");
+
             var cliente = await _clienteUseCases.ObterPorIdUseCaseAsync(request.ClienteId)
                 ?? throw new DadosNaoEncontradosException("Cliente não encontrado");
 
             var servico = await _servicoUseCases.ObterServicoPorIdUseCaseAsync(request.ServicoId)
                 ?? throw new DadosNaoEncontradosException("Serviço não encontrado");
 
+            useCaseDto.Veiculo = veiculo;
             useCaseDto.Cliente = cliente;
             useCaseDto.Servico = servico;
 
             var resultado = await _ordemServicoUseCases.CadastrarUseCaseAsync(useCaseDto);
             var response = _ordemServicoPresenter.ParaResponse(resultado) ??
                 throw new InvalidOperationException("O resultado do cadastro não pode ser nulo.");
-            
+
             return response;
         }
 

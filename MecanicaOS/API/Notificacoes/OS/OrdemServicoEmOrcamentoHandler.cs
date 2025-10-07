@@ -1,5 +1,7 @@
+using Core.DTOs.Requests.OrdemServico;
 using Core.DTOs.Responses.OrdemServico;
 using Core.DTOs.Responses.OrdemServico.InsumoOrdemServico;
+using Core.Enumeradores;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
@@ -35,6 +37,11 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
 
             await EnviarOrcamentoAsync(os);
 
+            await _ordemServicoController.Atualizar(os.Id, new AtualizarOrdemServicoRequest
+            {
+                Status = StatusOrdemServico.AguardandoAprovacao
+            });
+
             _logServico.LogFim(metodo);
         }
         catch (Exception e)
@@ -50,7 +57,7 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
         string conteudo = await GerarConteudoEmailAsync(os);
 
         await _emailServico.EnviarAsync(
-            [os.Cliente.Contato.Email],
+            [os.Cliente!.Contato!.Email],
             "Orçamento de Serviço",
             conteudo);
     }
@@ -68,7 +75,7 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
             .Replace("{{VALOR_SERVICO}}", os.Servico.Valor.ToString("N2"))
             .Replace("{{VALOR_TOTAL}}", os.Orcamento!.Value.ToString("N2"));
 
-        string insumosHtml = GerarHtmlInsumos(os.InsumosOS);
+        string insumosHtml = GerarHtmlInsumos(os.Insumos);
         template = Regex.Replace(template, @"{{#each INSUMOS}}(.*?){{/each}}", insumosHtml, RegexOptions.Singleline);
 
         return template;
@@ -78,7 +85,7 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
     {
         return string.Join(Environment.NewLine, insumosOS.Select(i =>
         {
-            var descricao = i.Estoque.Insumo;
+            var descricao = i.Estoque!.Insumo;
             var quantidade = i.Quantidade;
             var precoTotal = quantidade * i.Estoque.Preco;
             return $"""

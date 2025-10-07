@@ -195,7 +195,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
             var cancellationToken = CancellationToken.None;
 
             var ordemServico = CriarOrdemServicoResponse(ordemServicoId);
-            ordemServico.InsumosOS = new List<InsumoOSResponse>(); // Sem insumos
+            ordemServico.Insumos = new List<InsumoOSResponse>(); // Sem insumos
             _ordemServicoController.ObterPorId(ordemServicoId).Returns(ordemServico);
 
             // Act
@@ -230,7 +230,7 @@ namespace MecanicaOS.UnitTests.API.Notificacoes.OS
                     Valor = 50.00m
                 },
                 Orcamento = 150.00,
-                InsumosOS = new List<InsumoOSResponse>
+                Insumos = new List<InsumoOSResponse>
                 {
                     new InsumoOSResponse
                     {

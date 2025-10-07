@@ -242,15 +242,27 @@ namespace API
             return new VeiculoGateway(_repositorioVeiculo);
         }
 
-        public IEventosPublisher CriarEventosPublisher()
+        public IEventoPublisher CriarOSFinalizadaEventosPublisher()
         {
-            return new EventoPublisher(_mediator);
+            return new OrdemServicoFinalizadaEventoPublisher(_mediator);
+        }
+        
+        public IEventoPublisher CriarOSCanceladaEventosPublisher()
+        {
+            return new OrdemServicoCanceladaEventoPublisher(_mediator);
+        }
+        
+        public IEventoPublisher CriarOSEmOrcamentoEventosPublisher()
+        {
+            return new OrdemServicoEmOrcamentoEventoPublisher(_mediator);
         }
 
-        public IEventosGateway CriarEventosGateway()
+        public IEventoGateway CriarEventosGateway()
         {
-            var eventosPublisher = CriarEventosPublisher();
-            return new EventosGateway(eventosPublisher);
+            var osCanceladaEventoPublisher = CriarOSCanceladaEventosPublisher();
+            var osEmOrcamentoEventoPublisher = CriarOSEmOrcamentoEventosPublisher();
+            var osFinalizadaEventoPublisher = CriarOSFinalizadaEventosPublisher();
+            return new EventosGateway([osCanceladaEventoPublisher, osEmOrcamentoEventoPublisher, osFinalizadaEventoPublisher]);
         }
 
         public ILogGateway<T> CriarLogServicoGateway<T>() where T : class
@@ -849,6 +861,7 @@ namespace API
 
             return new AtualizarOrdemServicoHandler(
                 ordemServicoGateway,
+                eventosGateway,
                 logServicoGateway,
                 udtGateway,
                 usuarioLogadoServicoGateway);
