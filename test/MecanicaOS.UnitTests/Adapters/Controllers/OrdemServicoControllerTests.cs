@@ -491,5 +491,134 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             // Assert
             await ordemServicoUseCases.Received(1).ObterPorIdUseCaseAsync(id);
         }
+
+        [Fact]
+        public async Task ListarOrdensServicoAtivas_DeveChamarUseCases()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
+            var clienteUseCases = Substitute.For<IClienteUseCases>();
+            var servicoUseCases = Substitute.For<IServicoUseCases>();
+            var ordensAtivas = new List<OrdemServico> 
+            { 
+                new OrdemServico 
+                { 
+                    Id = Guid.NewGuid(), 
+                    ClienteId = Guid.NewGuid(), 
+                    ServicoId = Guid.NewGuid(), 
+                    Status = StatusOrdemServico.EmExecucao,
+                    DataCadastro = DateTime.Now.AddDays(-5)
+                },
+                new OrdemServico 
+                { 
+                    Id = Guid.NewGuid(), 
+                    ClienteId = Guid.NewGuid(), 
+                    ServicoId = Guid.NewGuid(), 
+                    Status = StatusOrdemServico.AguardandoAprovacao,
+                    DataCadastro = DateTime.Now.AddDays(-3)
+                }
+            };
+
+            compositionRoot.CriarOrdemServicoUseCases().Returns(ordemServicoUseCases);
+            compositionRoot.CriarClienteUseCases().Returns(clienteUseCases);
+            compositionRoot.CriarServicoUseCases().Returns(servicoUseCases);
+            ordemServicoUseCases.ListarOrdensServicoAtivasUseCaseAsync()
+                .Returns(Task.FromResult<IEnumerable<OrdemServico>>(ordensAtivas));
+
+            var controller = new OrdemServicoController(compositionRoot);
+
+            // Act
+            var resultado = await controller.ListarOrdensServicoAtivas();
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Should().HaveCount(2);
+            await ordemServicoUseCases.Received(1).ListarOrdensServicoAtivasUseCaseAsync();
+        }
+
+        [Fact]
+        public async Task ListarOrdensServicoAtivas_ComListaVazia_DeveRetornarListaVazia()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
+            var clienteUseCases = Substitute.For<IClienteUseCases>();
+            var servicoUseCases = Substitute.For<IServicoUseCases>();
+
+            compositionRoot.CriarOrdemServicoUseCases().Returns(ordemServicoUseCases);
+            compositionRoot.CriarClienteUseCases().Returns(clienteUseCases);
+            compositionRoot.CriarServicoUseCases().Returns(servicoUseCases);
+            ordemServicoUseCases.ListarOrdensServicoAtivasUseCaseAsync()
+                .Returns(Task.FromResult<IEnumerable<OrdemServico>>(new List<OrdemServico>()));
+
+            var controller = new OrdemServicoController(compositionRoot);
+
+            // Act
+            var resultado = await controller.ListarOrdensServicoAtivas();
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Should().BeEmpty();
+            await ordemServicoUseCases.Received(1).ListarOrdensServicoAtivasUseCaseAsync();
+        }
+
+        [Fact]
+        public async Task ListarOrdensServicoAtivas_DeveRetornarApenasStatusAtivos()
+        {
+            // Arrange
+            var compositionRoot = Substitute.For<ICompositionRoot>();
+            var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
+            var clienteUseCases = Substitute.For<IClienteUseCases>();
+            var servicoUseCases = Substitute.For<IServicoUseCases>();
+            var ordensAtivas = new List<OrdemServico> 
+            { 
+                new OrdemServico 
+                { 
+                    Id = Guid.NewGuid(), 
+                    Status = StatusOrdemServico.EmExecucao,
+                    DataCadastro = DateTime.Now
+                },
+                new OrdemServico 
+                { 
+                    Id = Guid.NewGuid(), 
+                    Status = StatusOrdemServico.AguardandoAprovacao,
+                    DataCadastro = DateTime.Now
+                },
+                new OrdemServico 
+                { 
+                    Id = Guid.NewGuid(), 
+                    Status = StatusOrdemServico.EmDiagnostico,
+                    DataCadastro = DateTime.Now
+                },
+                new OrdemServico 
+                { 
+                    Id = Guid.NewGuid(), 
+                    Status = StatusOrdemServico.Recebida,
+                    DataCadastro = DateTime.Now
+                }
+            };
+
+            compositionRoot.CriarOrdemServicoUseCases().Returns(ordemServicoUseCases);
+            compositionRoot.CriarClienteUseCases().Returns(clienteUseCases);
+            compositionRoot.CriarServicoUseCases().Returns(servicoUseCases);
+            ordemServicoUseCases.ListarOrdensServicoAtivasUseCaseAsync()
+                .Returns(Task.FromResult<IEnumerable<OrdemServico>>(ordensAtivas));
+
+            var controller = new OrdemServicoController(compositionRoot);
+
+            // Act
+            var resultado = await controller.ListarOrdensServicoAtivas();
+
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Should().HaveCount(4);
+            resultado.Should().OnlyContain(r => 
+                r.Status == StatusOrdemServico.EmExecucao ||
+                r.Status == StatusOrdemServico.AguardandoAprovacao ||
+                r.Status == StatusOrdemServico.EmDiagnostico ||
+                r.Status == StatusOrdemServico.Recebida);
+            await ordemServicoUseCases.Received(1).ListarOrdensServicoAtivasUseCaseAsync();
+        }
     }
 }
