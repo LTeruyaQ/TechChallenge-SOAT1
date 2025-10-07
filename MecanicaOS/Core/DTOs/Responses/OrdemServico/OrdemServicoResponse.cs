@@ -19,6 +19,5 @@ public class OrdemServicoResponse
     public IEnumerable<InsumoOSResponse>? Insumos { get; set; }
     public ClienteResponse? Cliente { get; set; }
     public ServicoResponse? Servico { get; set; }
-    public IEnumerable<InsumoOSResponse>? InsumosOS { get; set; }
     public VeiculoResponse? Veiculo { get; set; }
 }

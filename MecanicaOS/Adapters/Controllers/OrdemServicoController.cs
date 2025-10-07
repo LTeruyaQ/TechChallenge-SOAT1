@@ -50,13 +50,16 @@ namespace Adapters.Controllers
                 .Where(response => response != null)!;
         }
 
-        public async Task CalcularOrcamentoAsync(Guid id)
+        public async Task<decimal> CalcularOrcamentoAsync(Guid id)
         {
             var ordemServico = await _ordemServicoUseCases.ObterPorIdUseCaseAsync(id);
+
             if (ordemServico != null)
             {
-                _orcamentoUseCases.GerarOrcamentoUseCase(ordemServico);
+                 return _orcamentoUseCases.GerarOrcamentoUseCase(ordemServico);
             }
+
+            return 0;
         }
 
         public async Task<OrdemServicoResponse> Cadastrar(CadastrarOrdemServicoRequest request)

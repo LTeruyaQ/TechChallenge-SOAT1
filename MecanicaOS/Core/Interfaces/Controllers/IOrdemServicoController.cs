@@ -11,7 +11,7 @@ namespace Core.Interfaces.Controllers
         Task<IEnumerable<OrdemServicoResponse>> ObterOrcamentosExpirados();
         Task<OrdemServicoResponse> Atualizar(Guid id, AtualizarOrdemServicoRequest request);
         Task<OrdemServicoResponse> Cadastrar(CadastrarOrdemServicoRequest request);
-        Task CalcularOrcamentoAsync(Guid ordemServicoId);
+        Task<decimal> CalcularOrcamentoAsync(Guid ordemServicoId);
         Task<OrdemServicoResponse> ObterPorId(Guid id);
         Task<IEnumerable<OrdemServicoResponse>> ObterPorStatus(StatusOrdemServico status);
         Task<IEnumerable<OrdemServicoResponse>> ObterTodos();
