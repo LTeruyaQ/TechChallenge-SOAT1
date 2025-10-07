@@ -6,7 +6,7 @@ using MediatR;
 
 namespace API.Notificacoes
 {
-    public class OrdemServicoEmOrcamentoEventoPublisher : IEventosPublisher
+    public class OrdemServicoEmOrcamentoEventoPublisher : IEventoPublisher
     {
         private readonly IMediator _mediator;
 

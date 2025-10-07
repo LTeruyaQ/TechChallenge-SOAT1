@@ -4,8 +4,9 @@ using Core.DTOs.UseCases.OrdemServico;
 using Core.Entidades;
 using Core.Enumeradores;
 using Core.Exceptions;
-using Core.Interfaces.UseCases;
 using Core.Interfaces.root;
+using Core.Interfaces.UseCases;
+using NSubstitute;
 
 namespace MecanicaOS.UnitTests.Adapters.Controllers
 {
@@ -318,10 +319,12 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             var ordemServicoUseCases = Substitute.For<IOrdemServicoUseCases>();
             var clienteUseCases = Substitute.For<IClienteUseCases>();
             var servicoUseCases = Substitute.For<IServicoUseCases>();
+            var veiculoUseCases = Substitute.For<IVeiculoUseCases>();
 
             compositionRoot.CriarOrdemServicoUseCases().Returns(ordemServicoUseCases);
             compositionRoot.CriarClienteUseCases().Returns(clienteUseCases);
             compositionRoot.CriarServicoUseCases().Returns(servicoUseCases);
+            compositionRoot.CriarVeiculoUseCases().Returns(veiculoUseCases);
 
             var cliente = new Cliente
             {
@@ -342,6 +345,16 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
                 Disponivel = true,
                 DataCadastro = DateTime.Now
             };
+            
+            var veiculo = new Veiculo
+            {
+                Placa = "ABC-1234",
+                Marca = "Toyota",
+                Modelo = "Corolla",
+                Cor = "Prata",
+                Ano = "2022",
+                Anotacoes = "Revisado recentemente"
+            };
 
             var ordemServicoCriada = new OrdemServico
             {
@@ -355,6 +368,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
 
             clienteUseCases.ObterPorIdUseCaseAsync(cliente.Id).Returns(Task.FromResult<Cliente?>(cliente));
             servicoUseCases.ObterServicoPorIdUseCaseAsync(servico.Id).Returns(Task.FromResult<Servico?>(servico));
+            veiculoUseCases.ObterPorIdUseCaseAsync(veiculo.Id).Returns(Task.FromResult<Veiculo?>(veiculo));
             ordemServicoUseCases.CadastrarUseCaseAsync(Arg.Any<CadastrarOrdemServicoUseCaseDto>())
                 .Returns(Task.FromResult(ordemServicoCriada));
 
@@ -363,7 +377,7 @@ namespace MecanicaOS.UnitTests.Adapters.Controllers
             {
                 ClienteId = cliente.Id,
                 ServicoId = servico.Id,
-                VeiculoId = Guid.NewGuid(),
+                VeiculoId = veiculo.Id,
                 Descricao = "Teste"
             };
 

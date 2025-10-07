@@ -31,11 +31,9 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
         {
             _logServico.LogInicio(metodo, notification.OrdemServicoId);
 
-            var orcamento = await _ordemServicoController.CalcularOrcamentoAsync(notification.OrdemServicoId);
+            await _ordemServicoController.CalcularOrcamentoAsync(notification.OrdemServicoId);
 
             var os = await _ordemServicoController.ObterPorId(notification.OrdemServicoId);
-
-            os.Orcamento = Convert.ToDouble(orcamento);
 
             await EnviarOrcamentoAsync(os);
 

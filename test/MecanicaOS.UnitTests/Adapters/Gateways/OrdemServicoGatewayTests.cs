@@ -252,24 +252,27 @@ namespace MecanicaOS.UnitTests.Adapters.Gateways
         {
             // Arrange
             var repositorioMock = Substitute.For<IRepositorio<OrdemServicoEntityDto>>();
-            
+
             var id = Guid.NewGuid();
             var ordemServico = new OrdemServico { Id = id };
-            
-            repositorioMock.ObterUmProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>())
-                .Returns(ordemServico);
-            
+
+            repositorioMock
+                .ObterUmProjetadoSemRastreamentoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>())
+                .Returns(Task.FromResult((OrdemServico?)ordemServico));
+
             var gateway = new OrdemServicoGateway(repositorioMock);
-            
+
             // Act
             var resultado = await gateway.ObterPorIdAsync(id);
-            
+
             // Assert
             resultado.Should().NotBeNull();
             resultado!.Id.Should().Be(id);
-            
-            await repositorioMock.Received(1).ObterUmProjetadoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>());
+
+            await repositorioMock.Received(1)
+                .ObterUmProjetadoSemRastreamentoAsync<OrdemServico>(Arg.Any<IEspecificacao<OrdemServicoEntityDto>>());
         }
+
 
         /// <summary>
         /// Verifica se o gateway obtém todas as ordens

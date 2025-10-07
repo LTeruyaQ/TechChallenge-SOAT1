@@ -238,26 +238,27 @@ namespace API
             return new VeiculoGateway(_repositorioVeiculo);
         }
 
-        public IEventosPublisher CriarEventosPublisher()
+        public IEventoPublisher CriarOSFinalizadaEventosPublisher()
         {
-            return new EventoPublisher(_mediator);
+            return new OrdemServicoFinalizadaEventoPublisher(_mediator);
         }
         
-        public IEventosPublisher CriarOSCanceladaEventosPublisher()
+        public IEventoPublisher CriarOSCanceladaEventosPublisher()
         {
             return new OrdemServicoCanceladaEventoPublisher(_mediator);
         }
         
-        public IEventosPublisher CriarOSEmOrcamentoEventosPublisher()
+        public IEventoPublisher CriarOSEmOrcamentoEventosPublisher()
         {
             return new OrdemServicoEmOrcamentoEventoPublisher(_mediator);
         }
 
-        public IEventosGateway CriarEventosGateway()
+        public IEventoGateway CriarEventosGateway()
         {
             var osCanceladaEventoPublisher = CriarOSCanceladaEventosPublisher();
             var osEmOrcamentoEventoPublisher = CriarOSEmOrcamentoEventosPublisher();
-            return new EventosGateway([osCanceladaEventoPublisher, osEmOrcamentoEventoPublisher]);
+            var osFinalizadaEventoPublisher = CriarOSFinalizadaEventosPublisher();
+            return new EventosGateway([osCanceladaEventoPublisher, osEmOrcamentoEventoPublisher, osFinalizadaEventoPublisher]);
         }
 
         public ILogGateway<T> CriarLogServicoGateway<T>() where T : class

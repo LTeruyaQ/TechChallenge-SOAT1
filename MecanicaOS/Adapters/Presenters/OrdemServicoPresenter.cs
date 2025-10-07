@@ -72,7 +72,7 @@ namespace Adapters.Presenters
                 Descricao = ordemServico.Descricao,
                 Status = ordemServico.Status,
                 DataEnvioOrcamento = ordemServico.DataEnvioOrcamento,
-                Cliente = new ClienteResponse
+                Cliente = ordemServico.Cliente == null ? null : new ClienteResponse
                 {
                     Id = ordemServico.ClienteId,
                     Nome = ordemServico.Cliente.Nome,
@@ -90,7 +90,7 @@ namespace Adapters.Presenters
                         Telefone = ordemServico.Cliente.Contato.Telefone
                     }
                 },
-                Servico = new ServicoResponse
+                Servico = ordemServico.Servico == null ? null : new ServicoResponse
                 {
                     Id = ordemServico.ServicoId,
                     Nome = ordemServico.Servico.Nome,
@@ -100,7 +100,7 @@ namespace Adapters.Presenters
                     DataAtualizacao = ordemServico.Servico.DataAtualizacao,
                     DataCadastro = ordemServico.Servico.DataCadastro
                 },
-                Veiculo = new VeiculoResponse
+                Veiculo = ordemServico.Veiculo == null ? null : new VeiculoResponse
                 {
                     Id = ordemServico.VeiculoId,
                     Placa = ordemServico.Veiculo.Placa,
@@ -116,7 +116,7 @@ namespace Adapters.Presenters
                 {
                     OrdemServicoId = i.OrdemServicoId,
                     EstoqueId = i.EstoqueId,
-                    Estoque = new EstoqueResponse
+                    Estoque = i.Estoque == null ? null : new EstoqueResponse
                     {
                         Id = i.EstoqueId,
                         Insumo = i.Estoque.Insumo,

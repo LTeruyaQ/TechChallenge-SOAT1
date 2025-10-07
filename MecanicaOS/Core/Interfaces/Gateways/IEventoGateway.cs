@@ -3,7 +3,7 @@ using Core.Entidades;
 
 namespace Core.Interfaces.Gateways
 {
-    public interface IEventosGateway
+    public interface IEventoGateway
     {
         Task Publicar(OrdemServico ordemServico);
     }

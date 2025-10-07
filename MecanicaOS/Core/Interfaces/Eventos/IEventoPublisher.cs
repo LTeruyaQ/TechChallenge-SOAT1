@@ -4,7 +4,7 @@ using Core.Enumeradores;
 
 namespace Core.Interfaces.Eventos
 {
-    public interface IEventosPublisher
+    public interface IEventoPublisher
     {
         StatusOrdemServico Status { get; }
         Task PublicarAsync(OrdemServico ordemServico);

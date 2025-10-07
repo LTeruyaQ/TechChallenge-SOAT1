@@ -5,11 +5,11 @@ using Core.Interfaces.Gateways;
 
 namespace Adapters.Gateways
 {
-    public class EventosGateway : IEventosGateway
+    public class EventosGateway : IEventoGateway
     {
-        private readonly Dictionary<StatusOrdemServico, IEventosPublisher> _handlers;
+        private readonly Dictionary<StatusOrdemServico, IEventoPublisher> _handlers;
 
-        public EventosGateway(IEnumerable<IEventosPublisher> handlers)
+        public EventosGateway(IEnumerable<IEventoPublisher> handlers)
         {
             _handlers = handlers.ToDictionary(h => h.Status);
 

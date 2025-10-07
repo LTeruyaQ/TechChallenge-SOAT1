@@ -54,7 +54,7 @@ namespace Core.Interfaces.root
         IEstoqueGateway CriarEstoqueGateway();
         IEstoquePresenter CriarEstoquePresenter();
         IEstoqueUseCases CriarEstoqueUseCases();
-        IEventosPublisher CriarEventosPublisher();
+        IEventoPublisher CriarOSFinalizadaEventosPublisher();
         IGerarOrcamentoHandler CriarGerarOrcamentoHandler();
         IInsumoOSController CriarInsumoOSController();
         IInsumoOSUseCases CriarInsumoOSUseCases();

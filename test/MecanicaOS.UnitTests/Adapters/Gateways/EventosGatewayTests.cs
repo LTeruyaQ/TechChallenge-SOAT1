@@ -1,6 +1,9 @@
 using Adapters.Gateways;
 using Core.DTOs.UseCases.Eventos;
+using Core.Entidades;
+using Core.Enumeradores;
 using Core.Interfaces.Eventos;
+using Core.Interfaces.Gateways;
 
 namespace MecanicaOS.UnitTests.Adapters.Gateways
 {
@@ -16,22 +19,30 @@ namespace MecanicaOS.UnitTests.Adapters.Gateways
         /// Importância: Valida publicação de eventos de conclusão
         /// </summary>
         [Fact]
-        public async Task Publicar_OrdemServicoFinalizada_DevePublicarEvento()
+        public async Task Publicar_OrdemServicoFinalizada_DeveDelegarParaPublisherCorreto()
         {
-            // Arrange
-            var publisherMock = Substitute.For<IEventosPublisher>();
-            var eventoDto = new OrdemServicoFinalizadaEventDTO(Guid.NewGuid());
-            
-            publisherMock.Publicar(eventoDto).Returns(Task.CompletedTask);
-            
-            var gateway = new EventosGateway(publisherMock);
-            
+            //Arrange
+            var publisherFinalizadaMock = Substitute.For<IEventoPublisher>();
+
+            publisherFinalizadaMock.Status.Returns(StatusOrdemServico.Finalizada);
+
+            var colecaoDeHandlers = new List<IEventoPublisher>
+            {
+                publisherFinalizadaMock,
+            };
+
+            var gateway = new EventosGateway(colecaoDeHandlers);
+
+            var ordemServico = new OrdemServico { Id = Guid.NewGuid(), Status = StatusOrdemServico.Finalizada };
+
             // Act
-            await gateway.Publicar(eventoDto);
-            
+            await gateway.Publicar(ordemServico);
+
             // Assert
-            await publisherMock.Received(1).Publicar(eventoDto);
+            await publisherFinalizadaMock.Received(1).PublicarAsync(
+                Arg.Is<OrdemServico>(os => os.Id == ordemServico.Id));
         }
+
 
         /// <summary>
         /// Verifica se o gateway publica evento de ordem em orçamento
@@ -40,19 +51,26 @@ namespace MecanicaOS.UnitTests.Adapters.Gateways
         [Fact]
         public async Task Publicar_OrdemServicoEmOrcamento_DevePublicarEvento()
         {
-            // Arrange
-            var publisherMock = Substitute.For<IEventosPublisher>();
-            var eventoDto = new OrdemServicoEmOrcamentoEventDTO(Guid.NewGuid());
-            
-            publisherMock.Publicar(eventoDto).Returns(Task.CompletedTask);
-            
-            var gateway = new EventosGateway(publisherMock);
-            
+            //Arrange
+            var publisherEmOrcamentoMock = Substitute.For<IEventoPublisher>();
+
+            publisherEmOrcamentoMock.Status.Returns(StatusOrdemServico.EmDiagnostico);
+
+            var colecaoDeHandlers = new List<IEventoPublisher>
+            {
+                publisherEmOrcamentoMock,
+            };
+
+            var gateway = new EventosGateway(colecaoDeHandlers);
+
+            var ordemServico = new OrdemServico { Id = Guid.NewGuid(), Status = StatusOrdemServico.EmDiagnostico };
+
             // Act
-            await gateway.Publicar(eventoDto);
-            
+            await gateway.Publicar(ordemServico);
+
             // Assert
-            await publisherMock.Received(1).Publicar(eventoDto);
+            await publisherEmOrcamentoMock.Received(1).PublicarAsync(
+                Arg.Is<OrdemServico>(os => os.Id == ordemServico.Id));
         }
 
         /// <summary>
@@ -62,19 +80,26 @@ namespace MecanicaOS.UnitTests.Adapters.Gateways
         [Fact]
         public async Task Publicar_OrdemServicoCancelada_DevePublicarEvento()
         {
-            // Arrange
-            var publisherMock = Substitute.For<IEventosPublisher>();
-            var eventoDto = new OrdemServicoCanceladaEventDTO(Guid.NewGuid());
-            
-            publisherMock.Publicar(eventoDto).Returns(Task.CompletedTask);
-            
-            var gateway = new EventosGateway(publisherMock);
-            
+            //Arrange
+            var publisherCanceladaMock = Substitute.For<IEventoPublisher>();
+
+            publisherCanceladaMock.Status.Returns(StatusOrdemServico.Cancelada);
+
+            var colecaoDeHandlers = new List<IEventoPublisher>
+            {
+                publisherCanceladaMock,
+            };
+
+            var gateway = new EventosGateway(colecaoDeHandlers);
+
+            var ordemServico = new OrdemServico { Id = Guid.NewGuid(), Status = StatusOrdemServico.Cancelada };
+
             // Act
-            await gateway.Publicar(eventoDto);
-            
+            await gateway.Publicar(ordemServico);
+
             // Assert
-            await publisherMock.Received(1).Publicar(eventoDto);
+            await publisherCanceladaMock.Received(1).PublicarAsync(
+                Arg.Is<OrdemServico>(os => os.Id == ordemServico.Id));
         }
     }
 }

@@ -39,8 +39,9 @@ namespace Core.UseCases.OrdensServico.CadastrarOrdemServico
                     Descricao = request.Descricao,
                     Status = StatusOrdemServico.Recebida,
                     DataCadastro = DateTime.UtcNow,
-                    Cliente = request.Cliente, // Controller já resolveu
-                    Servico = request.Servico  // Controller já resolveu
+                    Cliente = request.Cliente!, // Controller já resolveu
+                    Servico = request.Servico!,
+                    Veiculo = request.Veiculo!// Controller já resolveu
                 };
 
                 await _ordemServicoGateway.CadastrarAsync(ordemServico);

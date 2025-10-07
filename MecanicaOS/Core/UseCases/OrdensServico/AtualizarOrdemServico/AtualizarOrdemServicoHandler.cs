@@ -11,11 +11,11 @@ namespace Core.UseCases.OrdensServico.AtualizarOrdemServico
     public class AtualizarOrdemServicoHandler : UseCasesHandlerAbstrato<AtualizarOrdemServicoHandler>, IAtualizarOrdemServicoHandler
     {
         private readonly IOrdemServicoGateway _ordemServicoGateway;
-        private readonly IEventosGateway _eventosGateway;
+        private readonly IEventoGateway _eventosGateway;
 
         public AtualizarOrdemServicoHandler(
             IOrdemServicoGateway ordemServicoGateway,
-            IEventosGateway eventosGateway,
+            IEventoGateway eventosGateway,
             ILogGateway<AtualizarOrdemServicoHandler> logServicoGateway,
             IUnidadeDeTrabalhoGateway udtGateway,
             IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
