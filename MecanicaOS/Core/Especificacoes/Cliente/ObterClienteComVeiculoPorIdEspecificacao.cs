@@ -35,6 +35,7 @@ public class ObterClienteComVeiculoPorIdEspecificacao : EspecificacaoBase<Client
             Endereco = new Endereco
             {
                 Id = c.Endereco.Id,
+                Rua = c.Endereco.Rua,
                 Numero = c.Endereco.Numero,
                 Complemento = c.Endereco.Complemento,
                 Bairro = c.Endereco.Bairro,
