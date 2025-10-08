@@ -1,33 +1,72 @@
 name: CD
 
 on:
-  pull_request:
+  push:
     branches: [ "main" ]
 
 jobs:
-  deploy:
+  build-and-push:
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.get_sha.outputs.sha }}
     steps:
-      - name: Checkout
+      - name: Checkout do código
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+      - name: Login no Docker Hub
+        uses: docker/login-action@v2
         with:
-          terraform_version: 1.2.5
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Obter o SHA do commit
+        id: get_sha
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Construir e enviar a imagem Docker
+        uses: docker/build-push-action@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 # ou a região que você desejar
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/mecanicaos-api:${{ steps.get_sha.outputs.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/mecanicaos-api:latest
 
-      - name: Terraform Init
-        run: terraform -chdir=terraform init
+  deploy-to-k8s:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
 
-      - name: Terraform Plan
-        run: terraform -chdir=terraform plan
+      - name: Configurar o kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
 
-      - name: Terraform Apply
-        run: terraform -chdir=terraform apply -auto-approve
+      - name: Atualizar a tag da imagem no manifesto de deploy
+        run: |
+          echo "A nova tag da imagem é: ${{ needs.build-and-push.outputs.image_tag }}"
+          sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/mecanicaos-api:${{ needs.build-and-push.outputs.image_tag }}|g" k8s/api-deployment.yaml
+          echo "Manifesto de deploy da API atualizado:"
+          cat k8s/api-deployment.yaml
+
+      - name: Aplicar todos os manifestos K8s
+        run: |
+          echo "Aplicando todos os manifestos da pasta k8s..."
+          kubectl apply -f k8s/
+
+      - name: Verificar o status do deploy
+        run: |
+          echo "Aguardando o deploy da API ser finalizado..."
+          kubectl rollout status deployment/mecanicaos-api
+          echo "Verificando os recursos criados..."
+          kubectl get pvc
+          kubectl get deployments
+          kubectl get services
+          kubectl get pods
+          kubectl get configmap
+          kubectl get secrets
+          kubectl get hpa

@@ -1,160 +1,34 @@
-# Diretórios de build
-**/bin
-**/obj
-**/node_modules
+**/[Bb]in/
+**/[Oo]bj/
 
-# Arquivos de configuração de desenvolvimento
-**/.vscode
-**/.vs
-**/.idea
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
 
-# Arquivos de usuário
-**/.user
-**/*.user
-**/*.suo
-**/*.userosscache
-**/*.sln.docstates
+# Visual Studio Code
+.vscode/
 
-# Arquivos de log
-**/*.log
-**/logs
+# Rider
+.idea/
+*.sln.iml
 
-# Arquivos do Docker
+# Test Results
+**/TestResults/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
 Dockerfile*
-docker-compose*
 .dockerignore
 
-# Arquivos de ambiente local
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# User secrets
+secrets.json
 
-# Arquivos de publicação
-**/publish
-
-# Arquivos de teste
-**/TestResults
-**/coverage
-
-# Arquivos do Git
-.git
-.gitignore
-
-# Arquivos temporários
-**/temp
-**/tmp
-
-# Arquivos de sistema
-.DS_Store
-Thumbs.db
-
-# Arquivos do Visual Studio
-*.userprefs
-*.userosscache
-*.sln.docstates
-
-# Arquivos de backup
-*.bak
-*.tmp
-*.temp
-
-# Arquivos de cache
-*.cache
-
-# Arquivos de banco de dados local
-*.mdf
-*.ldf
-*.ndf
-
-# Arquivos de publicação local
-publish/
-
-# Arquivos de configuração local
-appsettings.Development.json
-
-# Arquivos de migração (serão executados em tempo de execução)
-**/Migrations/**/*.cs
-!**/Migrations/*.cs
-
-# Arquivos de design-time do EF Core
-**/Migrations/Design/
-**/Migrations/Design/**/*
-
-# Arquivos de recursos
-**/wwwroot/lib/
-**/wwwroot/css/site.css
-**/wwwroot/js/site.js
-
-# Arquivos de documentação
-**/docs/
-**/documentation/
-
-# Arquivos de exemplo
-**/examples/
-**/samples/
-
-# Arquivos de ferramentas
-**/tools/
-**/scripts/
-
-# Arquivos de configuração de IDE
-.idea/
-.vscode/
-*.sln.iml
-
-# Arquivos de cache do npm
-**/npm-debug.log*
-**/yarn-debug.log*
-**/yarn-error.log*
-
-# Arquivos de cache do NuGet
-**/packages/
-**/nuget.exe
-
-# Arquivos de cache do Docker
-.docker/
-
-# Arquivos de cache do Visual Studio
-.vs/
-
-# Arquivos de cache do dotnet
-**/.dotnet/
-**/.dotnet/**/*
-
-# Arquivos de cache do Visual Studio Code
-.vscode/
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-# Arquivos de cache do Rider
-.idea/
-*.sln.iml
-
-# Arquivos de cache do Visual Studio para Mac
-*.userprefs
-*.usertasks
-*.sln.ide
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-
-# Arquivos de cache do Visual Studio Code para Mac
-.vscode/
-
-# Arquivos de cache do Visual Studio para Linux
-.vs/
-
-# Arquivos de cache do Visual Studio Code para Linux
-.vscode/
-
-# Arquivos de cache do Visual Studio para Windows
-.vs/
-
-# Arquivos de cache do Visual Studio Code para Windows
-.vscode/
+# Build artifacts
+**/publish/
