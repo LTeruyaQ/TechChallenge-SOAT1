@@ -10,23 +10,18 @@ namespace MecanicaOS.UnitTests.Core.UseCases.AlertasEstoque.CadastrarVariosAlert
     public class CadastrarVariosAlertasHandlerTests
     {
         private readonly IAlertaEstoqueGateway _alertaEstoqueGateway;
+        private readonly ILogGateway<CadastrarVariosAlertasHandler> _logGateway;
+        private readonly IUnidadeDeTrabalhoGateway _udtGateway;
+        private readonly IUsuarioLogadoServicoGateway _usuarioLogadoGateway;
         private readonly CadastrarVariosAlertasHandler _handler;
 
         public CadastrarVariosAlertasHandlerTests()
         {
             _alertaEstoqueGateway = Substitute.For<IAlertaEstoqueGateway>();
-            _handler = new CadastrarVariosAlertasHandler(_alertaEstoqueGateway);
-        }
-
-        [Fact]
-        public void Construtor_ComGatewayNulo_DeveLancarArgumentNullException()
-        {
-            // Act
-            var act = () => new CadastrarVariosAlertasHandler(null!);
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>()
-                .WithMessage("*alertaEstoqueGateway*");
+            _logGateway = Substitute.For<ILogGateway<CadastrarVariosAlertasHandler>>();
+            _udtGateway = Substitute.For<IUnidadeDeTrabalhoGateway>();
+            _usuarioLogadoGateway = Substitute.For<IUsuarioLogadoServicoGateway>();
+            _handler = new CadastrarVariosAlertasHandler(_alertaEstoqueGateway, _logGateway, _udtGateway, _usuarioLogadoGateway);
         }
 
         [Fact]

@@ -1,5 +1,5 @@
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
-using Core.DTOs.Responses.OrdemServico;
+using Core.Enumeradores;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
@@ -42,7 +42,7 @@ public class VerificarOrcamentoExpiradoJob
                 {
                     if (ordemServico.Insumos != null && ordemServico.Insumos.Any())
                     {
-                        var devolverInsumosRequest = ordemServico.Insumos.Select(insumo => 
+                        var devolverInsumosRequest = ordemServico.Insumos.Select(insumo =>
                             new DevolverInsumoOSRequest
                             {
                                 EstoqueId = insumo.EstoqueId,
@@ -51,6 +51,13 @@ public class VerificarOrcamentoExpiradoJob
 
                         await _insumoOSController.DevolverInsumosAoEstoque(devolverInsumosRequest);
                     }
+
+                    await _ordemServicoController.Atualizar(
+                        ordemServico.Id,
+                        new()
+                        {
+                            Status = StatusOrdemServico.OrcamentoExpirado
+                        });
                 }
 
                 _logServico.LogInicio($"Processadas {ordensComOrcamentoExpirado.Count()} ordens com orçamento expirado");

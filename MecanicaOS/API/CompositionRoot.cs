@@ -1255,7 +1255,15 @@ namespace API
 
         public ICadastrarVariosAlertasHandler CriarCadastrarVariosAlertasHandler()
         {
-            return new CadastrarVariosAlertasHandler(CriarAlertaEstoqueGateway());
+            var logServicoGateway = CriarLogServicoGateway<CadastrarVariosAlertasHandler>();
+            var udtGateway = CriarUnidadeDeTrabalhoGateway();
+            var usuarioLogadoServicoGateway = CriarUsuarioLogadoServicoGateway();
+
+            return new CadastrarVariosAlertasHandler(
+                CriarAlertaEstoqueGateway(),
+                logServicoGateway,
+                udtGateway,
+                usuarioLogadoServicoGateway);
         }
 
         public IVerificarAlertaEnviadoHojeHandler CriarVerificarAlertaEnviadoHojeHandler()
