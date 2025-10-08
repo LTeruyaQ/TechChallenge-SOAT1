@@ -37,10 +37,12 @@ public class OrdemServicoEmOrcamentoHandler : INotificationHandler<OrdemServicoE
 
             await EnviarOrcamentoAsync(os);
 
-            await _ordemServicoController.Atualizar(os.Id, new AtualizarOrdemServicoRequest
-            {
-                Status = StatusOrdemServico.AguardandoAprovacao
-            });
+            await _ordemServicoController.Atualizar(os.Id,
+                new AtualizarOrdemServicoRequest
+                {
+                    Status = StatusOrdemServico.AguardandoAprovacao,
+                    DataEnvioOrcamento = DateTime.Now
+                });
 
             _logServico.LogFim(metodo);
         }
