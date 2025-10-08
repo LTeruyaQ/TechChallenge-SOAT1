@@ -78,3 +78,7 @@ dotnet/
 *.tar.gz
 coverage-report/
 coverage/
+
+# Terraform files
+.terraform/
+.terraform.lock.hcl
