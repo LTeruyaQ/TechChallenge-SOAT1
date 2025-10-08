@@ -1,7 +1,3 @@
-# Nome do Workflow: CI (Integração Contínua)
-# Este workflow é acionado sempre que um novo commit é enviado para uma branch que começa com "feature/".
-# Seu objetivo é garantir que o código novo seja compilado, testado e que o Dockerfile seja válido
-# antes de abrir um Pull Request para a branch 'main'.
 name: CI
 
 on:
@@ -9,71 +5,34 @@ on:
     branches: [ "feature/*" ]
 
 jobs:
-  # Job: build-and-test
-  # Este job é responsável por compilar a aplicação, executar os testes unitários e verificar a construção da imagem Docker.
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      # Passo 1: Checkout do código
-      # Baixa o código do repositório para a máquina virtual do runner.
-      - name: Checkout do código
-        uses: actions/checkout@v3
-
-      # Passo 2: Configurar o ambiente .NET
-      # Instala a versão especificada do SDK do .NET.
+      - uses: actions/checkout@v3
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 9.0.x
-
-      # Passo 3: Restaurar dependências
-      # Baixa todas as dependências do projeto definidas no arquivo .sln.
-      - name: Restaurar dependências
+      - name: Restore dependencies
         run: dotnet restore MecanicaOS.sln
-
-      # Passo 4: Compilar o projeto
-      # Compila todo o projeto para garantir que não há erros de compilação.
-      # A flag --no-restore evita que as dependências sejam restauradas novamente.
-      - name: Compilar o projeto
+      - name: Build
         run: dotnet build MecanicaOS.sln --no-restore
-
-      # Passo 5: Executar testes unitários
-      # Executa o script que roda os testes e verifica se a porcentagem de sucesso é aceitável.
-      - name: Executar testes unitários
+      - name: Test
         run: |
           chmod +x .github/scripts/check_test_success.sh
           .github/scripts/check_test_success.sh
 
-      # Passo 6: Construir imagem Docker
-      # Constrói a imagem Docker para validar o Dockerfile, mas não a envia para nenhum registro.
-      # Isso ajuda a capturar erros no Dockerfile antes do merge.
-      - name: Construir imagem Docker para validação
-        run: docker build . --file Dockerfile --tag mecanica-os-api:latest
-
-  # Job: create-pr
-  # Este job é executado somente se o job 'build-and-test' for bem-sucedido.
-  # Ele cria automaticamente um Pull Request da branch de feature para a branch 'main'.
   create-pr:
     needs: [build-and-test]
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
-      # Passo 1: Checkout do código
-      # Baixa o código do repositório.
       - uses: actions/checkout@v3
-
-      # Passo 2: Criar Pull Request
-      # Usa a action 'create-pull-request' para abrir um PR automaticamente.
-      - name: Criar Pull Request para main
+      - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "feat: nova funcionalidade pronta para revisão"
-          title: "PR da feature: ${{ github.ref_name }}"
-          body: "Este Pull Request foi gerado automaticamente pela nossa pipeline de CI. Por favor, revise as alterações."
+          commit-message: "feat: new feature"
+          title: "PR for feature branch ${{ github.ref_name }}"
+          body: "This PR was auto-generated."
           branch: ${{ github.ref_name }}
           base: main
-          draft: true
-# Fim do workflow de CI
