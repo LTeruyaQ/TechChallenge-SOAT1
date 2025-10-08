@@ -1,15 +1,41 @@
-# Arquivo Terraform de exemplo
-# Adicione aqui a configuração da sua infraestrutura.
+terraform {
+  required_version = ">= 1.5.0"
 
-provider "aws" {
-  region = "us-east-1" # Defina a região da sua AWS
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.29"
+    }
+  }
 }
 
-resource "aws_instance" "example" {
-  ami           = "ami-0c55b159cbfafe1f0" # Exemplo de AMI para Ubuntu
-  instance_type = "t2.micro"
+provider "aws" {
+  region = var.aws_region
+}
 
-  tags = {
-    Name = "Exemplo-Instancia-Terraform"
-  }
+# Cluster EKS
+module "eks" {
+  source       = "./eks"
+  cluster_name = var.cluster_name
+  node_count   = 1
+  supabase_url = var.supabase_url
+  supabase_key = var.supabase_key
+  docker_image = var.docker_image
+}
+
+# Provedor Kubernetes (depois do cluster pronto)
+provider "kubernetes" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  token                  = module.eks.cluster_token
+}
+
+# API Gateway para expor a API
+module "api_gateway" {
+  source = "./api_gateway"
+  eks_service_url = module.eks.service_hostname
 }
