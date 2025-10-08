@@ -13,10 +13,12 @@ namespace Adapters.Controllers
     {
         private readonly IVeiculoUseCases _veiculoUseCases;
         private readonly IVeiculoPresenter _veiculoPresenter;
+        private readonly IClienteUseCases _clienteUseCases;
 
         public VeiculoController(ICompositionRoot compositionRoot)
         {
             _veiculoUseCases = compositionRoot.CriarVeiculoUseCases();
+            _clienteUseCases = compositionRoot.CriarClienteUseCases();
             _veiculoPresenter = new VeiculoPresenter();
         }
 
@@ -42,6 +44,7 @@ namespace Adapters.Controllers
 
         public async Task<VeiculoResponse> Cadastrar(CadastrarVeiculoRequest request)
         {
+            _ = await _clienteUseCases.ObterPorIdUseCaseAsync(request.ClienteId);
             var useCaseDto = MapearParaCadastrarVeiculoUseCaseDto(request);
             var resultado = await _veiculoUseCases.CadastrarUseCaseAsync(useCaseDto);
             return _veiculoPresenter.ParaResponse(resultado);
