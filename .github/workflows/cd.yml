@@ -1,0 +1,100 @@
+# Nome do Workflow: CD (Entrega Contínua)
+# Este workflow é acionado sempre que um novo commit é enviado para a branch 'main'.
+# Seu objetivo é automatizar o processo de deploy da aplicação no ambiente de produção.
+name: CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  # Job: build-and-push
+  # Este job é responsável por construir a imagem Docker da aplicação e enviá-la para um registro.
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.get_sha.outputs.sha }}
+    steps:
+      # Passo 1: Checkout do código
+      # Baixa o código do repositório.
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      # Passo 2: Login no Docker Hub
+      # Autentica no Docker Hub usando as credenciais armazenadas nos segredos do GitHub.
+      - name: Login no Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Passo 3: Obter o SHA do commit
+      # Pega o SHA curto do commit para usar como tag da imagem.
+      - name: Obter o SHA do commit
+        id: get_sha
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      # Passo 4: Construir e enviar a imagem Docker
+      # Constrói a imagem e a envia para o Docker Hub com duas tags: o SHA do commit e 'latest'.
+      - name: Construir e enviar a imagem Docker
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/mecanicaos-api:${{ steps.get_sha.outputs.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/mecanicaos-api:latest
+
+  # Job: deploy-to-k8s
+  # Este job faz o deploy da aplicação no cluster Kubernetes.
+  deploy-to-k8s:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      # Passo 1: Checkout do código
+      # Baixa o código do repositório.
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      # Passo 2: Configurar o kubectl
+      # Configura o ambiente para se conectar ao cluster Kubernetes usando o kubeconfig dos segredos.
+      - name: Configurar o kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+
+      # Passo 3: Atualizar a tag da imagem no manifesto de deploy
+      # Substitui a tag da imagem no arquivo de deploy da API pela nova tag (SHA do commit).
+      - name: Atualizar a tag da imagem no manifesto de deploy
+        run: |
+          echo "A nova tag da imagem é: ${{ needs.build-and-push.outputs.image_tag }}"
+          sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/mecanicaos-api:${{ needs.build-and-push.outputs.image_tag }}|g" k8s-deployment-api.yaml
+          echo "Manifesto de deploy da API atualizado:"
+          cat k8s-deployment-api.yaml
+
+      # Passo 4: Aplicar os manifestos do banco de dados
+      # Aplica as configurações de serviço e deploy do banco de dados no cluster.
+      - name: Aplicar os manifestos do banco de dados
+        run: |
+          echo "Aplicando manifesto do serviço do banco de dados..."
+          kubectl apply -f k8s-service-db.yaml
+          echo "Aplicando manifesto do deploy do banco de dados..."
+          kubectl apply -f k8s-deployment-db.yaml
+
+      # Passo 5: Aplicar os manifestos da API
+      # Aplica as configurações de serviço e deploy da API no cluster.
+      - name: Aplicar os manifestos da API
+        run: |
+          echo "Aplicando manifesto do serviço da API..."
+          kubectl apply -f k8s-service-api.yaml
+          echo "Aplicando manifesto do deploy da API..."
+          kubectl apply -f k8s-deployment-api.yaml
+
+      # Passo 6: Verificar o status do deploy
+      # Aguarda o deploy da API ser concluído com sucesso.
+      - name: Verificar o status do deploy
+        run: |
+          echo "Aguardando o deploy da API ser finalizado..."
+          kubectl rollout status deployment/mecanicaos-api
