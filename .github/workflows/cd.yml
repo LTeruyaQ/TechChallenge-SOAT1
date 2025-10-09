@@ -48,11 +48,9 @@ jobs:
 
       - name: Configurar o kubectl
         uses: azure/k8s-set-context@v3
-        env:
-          KUBECONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
           method: kubeconfig
-          kubeconfig: ${{ env.KUBECONFIG_DATA }}
+          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
 
       - name: Atualizar a tag da imagem no manifesto de deploy
         run: |
