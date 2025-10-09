@@ -14,7 +14,7 @@ public class ObterAlertaDoDiaPorEstoqueEspecificacao : EspecificacaoBase<AlertaE
     {
         _estoqueId = estoqueId;
         _data = (data ?? DateTime.UtcNow).Date;
-    }
+
 
 
         DefinirProjecao(a => new AlertaEstoque()
@@ -34,7 +34,8 @@ public class ObterAlertaDoDiaPorEstoqueEspecificacao : EspecificacaoBase<AlertaE
                 Descricao = a.Estoque.Descricao,
             }
         });
-
+    }
+    
     public override Expression<Func<AlertaEstoqueEntityDto, bool>> Expressao =>
        a => a.EstoqueId == _estoqueId && a.DataCadastro.Date == _data.Date;
 }
