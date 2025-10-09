@@ -61,7 +61,13 @@ jobs:
           echo "Manifesto de deploy da API atualizado:"
           cat k8s/api-deployment.yaml
 
-      - name: Validar manifestos K8s com dry-run
+      - name: Debug e Validação dos manifestos K8s
         run: |
+          echo "--- INFORMAÇÕES DE DEBUG ---"
+          echo "Versão do kubectl:"
+          kubectl version --client
+          echo "Comando a ser executado:"
+          echo "kubectl apply --dry-run=client -o yaml -f k8s/ > /dev/null"
+          echo "--- FIM DO DEBUG ---"
           echo "Validando todos os manifestos da pasta k8s..."
           kubectl apply --dry-run=client -o yaml -f k8s/ > /dev/null
