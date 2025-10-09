@@ -45,7 +45,7 @@ jobs:
 
       - name: Criar Pull Request (se não existir)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           gh pr view ${{ github.ref_name }} --json url --jq .url || \
           gh pr create \
