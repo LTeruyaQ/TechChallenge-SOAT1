@@ -5,7 +5,28 @@ on:
     branches: [ "Main" ]
 
 jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore MecanicaOS.sln
+
+      - name: Build
+        run: dotnet build MecanicaOS.sln --no-restore
+
+      - name: Test
+        run: dotnet test MecanicaOS.sln --no-build --verbosity normal
+
   build-and-push:
+    needs: build-and-test
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.get_sha.outputs.sha }}
@@ -46,6 +67,18 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
+      - name: 'Como configurar o KUBE_CONFIG_DATA'
+        run: |
+          echo "################################################################################################"
+          echo "ATENÇÃO: Para este passo funcionar, você precisa configurar o segredo 'KUBE_CONFIG_DATA' no seu repositório."
+          echo "1. No seu ambiente local, onde o 'kubectl' está funcionando, execute o comando:"
+          echo "   cat ~/.kube/config"
+          echo "2. Copie TODO o conteúdo do arquivo."
+          echo "3. No seu repositório GitHub, vá para 'Settings' > 'Secrets and variables' > 'Actions'."
+          echo "4. Clique em 'New repository secret'."
+          echo "5. Dê o nome 'KUBE_CONFIG_DATA' e cole o conteúdo do seu arquivo de configuração no campo 'Secret'."
+          echo "################################################################################################"
+
       - name: Configurar o kubectl
         uses: azure/k8s-set-context@v3
         with:
@@ -69,10 +102,4 @@ jobs:
           echo "Aguardando o deploy da API ser finalizado..."
           kubectl rollout status deployment/mecanicaos-api
           echo "Verificando os recursos criados..."
-          kubectl get pvc
-          kubectl get deployments
-          kubectl get services
-          kubectl get pods
-          kubectl get configmap
-          kubectl get secrets
-          kubectl get hpa
+          kubectl get all
