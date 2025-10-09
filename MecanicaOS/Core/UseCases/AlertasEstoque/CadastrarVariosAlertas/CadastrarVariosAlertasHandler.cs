@@ -18,7 +18,6 @@ namespace Core.UseCases.AlertasEstoque.CadastrarVariosAlertas
         {
             _alertaEstoqueGateway = alertaEstoqueGateway ?? throw new ArgumentNullException(nameof(alertaEstoqueGateway));
         }
-        
             // Handler (Core) cria as entidades a partir dos DTOs
             var entidades = alertas.Select(dto => new AlertaEstoque
             {
@@ -27,7 +26,6 @@ namespace Core.UseCases.AlertasEstoque.CadastrarVariosAlertas
             });
 
             await _alertaEstoqueGateway.CadastrarVariosAsync(entidades);
-            
             await Commit();
         }
     }
