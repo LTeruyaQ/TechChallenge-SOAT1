@@ -43,11 +43,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configurar o GitHub CLI
+      - name: Instalar dependências do CLI
         run: |
           sudo apt-get update
-          sudo apt-get install -y jq
-          gh --version
+          sudo apt-get install -y jq gh
 
       - name: Criar ou usar branch de release
         env:
@@ -62,6 +61,8 @@ jobs:
           if [ -z "$LATEST_RELEASE_BRANCH" ]; then
             echo "⚠️ Nenhuma branch de release encontrada. Criando a primeira release (release/1.0.0)..."
             LATEST_RELEASE_BRANCH="release/1.0.0"
+            git checkout main || git checkout Main
+            git pull
             git checkout -b "$LATEST_RELEASE_BRANCH"
             git push origin "$LATEST_RELEASE_BRANCH"
           else
@@ -70,6 +71,16 @@ jobs:
 
           echo "A branch de release em uso será: $LATEST_RELEASE_BRANCH"
 
+          echo "🔄 Garantindo que a branch de feature esteja atualizada no remoto..."
+          git checkout ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }} || true
+
+          echo "🔍 Verificando se há diferenças entre as branches..."
+          if git diff --quiet origin/$LATEST_RELEASE_BRANCH origin/${{ github.ref_name }}; then
+            echo "⚠️ Nenhuma diferença encontrada entre a feature e a release. Nenhum PR será criado."
+            exit 0
+          fi
+
           echo "🔍 Verificando PRs abertos..."
           OPEN_PR_COUNT=$(gh pr list --state open --head ${{ github.ref_name }} --base $LATEST_RELEASE_BRANCH --json number | jq 'length')
 
@@ -77,8 +88,9 @@ jobs:
             echo "✨ Nenhum PR aberto encontrado. Criando novo Pull Request..."
             gh pr create \
               --base "$LATEST_RELEASE_BRANCH" \
+              --head "${{ github.ref_name }}" \
               --title "PR da feature: ${{ github.ref_name }}" \
-              --body "Este Pull Request foi gerado automaticamente pela nossa pipeline de CI. Por favor, revise as alterações."
+              --body "Este Pull Request foi gerado automaticamente pela pipeline de CI. Por favor, revise as alterações."
           else
             echo "ℹ️ Já existe um PR aberto para a branch $LATEST_RELEASE_BRANCH. Nenhuma ação será tomada."
           fi
