@@ -43,28 +43,42 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Criar Pull Request para a release mais recente
+      - name: Configurar o GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          gh --version
+
+      - name: Criar ou usar branch de release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          # Busca a branch de release mais recente (ex: release/1.0, release/1.1)
-          LATEST_RELEASE_BRANCH=$(git branch -r | grep 'origin/release/' | sed 's|origin/||' | sort -V | tail -n 1)
+          set -e
+          git fetch --all
+
+          echo "🔍 Buscando branches de release existentes..."
+          LATEST_RELEASE_BRANCH=$(git branch -r | grep 'origin/release/' | sed 's|origin/||' | sort -V | tail -n 1 || true)
 
           if [ -z "$LATEST_RELEASE_BRANCH" ]; then
-            echo "::error::Nenhuma branch 'release/*' encontrada. Por favor, crie uma branch de release (ex: release/1.0) para continuar."
-            exit 1
+            echo "⚠️ Nenhuma branch de release encontrada. Criando a primeira release (release/1.0.0)..."
+            LATEST_RELEASE_BRANCH="release/1.0.0"
+            git checkout -b "$LATEST_RELEASE_BRANCH"
+            git push origin "$LATEST_RELEASE_BRANCH"
+          else
+            echo "✅ Branch de release mais recente encontrada: $LATEST_RELEASE_BRANCH"
           fi
 
-          echo "A branch de release mais recente encontrada é: $LATEST_RELEASE_BRANCH"
+          echo "A branch de release em uso será: $LATEST_RELEASE_BRANCH"
 
-          # Verifica se já existe um PR aberto para a branch de release mais recente
+          echo "🔍 Verificando PRs abertos..."
           OPEN_PR_COUNT=$(gh pr list --state open --head ${{ github.ref_name }} --base $LATEST_RELEASE_BRANCH --json number | jq 'length')
+
           if [ "$OPEN_PR_COUNT" -eq "0" ]; then
-            echo "Nenhum Pull Request aberto encontrado para a branch $LATEST_RELEASE_BRANCH. Criando um novo."
+            echo "✨ Nenhum PR aberto encontrado. Criando novo Pull Request..."
             gh pr create \
-              --base $LATEST_RELEASE_BRANCH \
+              --base "$LATEST_RELEASE_BRANCH" \
               --title "PR da feature: ${{ github.ref_name }}" \
               --body "Este Pull Request foi gerado automaticamente pela nossa pipeline de CI. Por favor, revise as alterações."
           else
-            echo "Um Pull Request aberto já existe para a branch $LATEST_RELEASE_BRANCH. Nenhuma ação será tomada."
+            echo "ℹ️ Já existe um PR aberto para a branch $LATEST_RELEASE_BRANCH. Nenhuma ação será tomada."
           fi
