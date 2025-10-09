@@ -43,12 +43,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Criar Pull Request (se não existir)
+      - name: Criar Pull Request (se não existir um aberto)
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          gh pr view ${{ github.ref_name }} --json url --jq .url || \
-          gh pr create \
-            --base Main \
-            --title "PR da feature: ${{ github.ref_name }}" \
-            --body "Este Pull Request foi gerado automaticamente pela nossa pipeline de CI. Por favor, revise as alterações."
+          OPEN_PR_COUNT=$(gh pr list --state open --head ${{ github.ref_name }} --json number | jq 'length')
+          if [ "$OPEN_PR_COUNT" -eq "0" ]; then
+            echo "Nenhum Pull Request aberto encontrado para esta branch. Criando um novo."
+            gh pr create \
+              --base Main \
+              --title "PR da feature: ${{ github.ref_name }}" \
+              --body "Este Pull Request foi gerado automaticamente pela nossa pipeline de CI. Por favor, revise as alterações."
+          else
+            echo "Um Pull Request aberto já existe para esta branch. Nenhuma ação será tomada."
+          fi
