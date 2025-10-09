@@ -13,7 +13,7 @@ public class AtualizarOrdemServicoRequest
 
     [MaxLength(1000, ErrorMessage = "O campo deve ter no máximo 1000 caracteres.")]
     public string? Descricao { get; set; }
-    public DateTime? DataEnvioOrcamento { get; set; }
     
+    public DateTime? DataEnvioOrcamento { get; set; }
     public StatusOrdemServico? Status { get; set; }
 }
