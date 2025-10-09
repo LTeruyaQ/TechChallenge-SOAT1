@@ -6,6 +6,7 @@ namespace Core.Especificacoes.Usuario;
 
 public class ObterUsuarioParaAlertaEstoqueEspecificacao : EspecificacaoBase<UsuarioEntityDto>
 {
+
     public ObterUsuarioParaAlertaEstoqueEspecificacao()
     {
         DefinirProjecao(u => new Entidades.Usuario

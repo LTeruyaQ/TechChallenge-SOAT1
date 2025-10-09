@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -37,16 +39,16 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Criar Pull Request para main
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "feat: nova funcionalidade pronta para revisão"
-          title: "PR da feature: ${{ github.ref_name }}"
-          body: "Este Pull Request foi gerado automaticamente pela nossa pipeline de CI. Por favor, revise as alterações."
-          branch: ${{ github.ref_name }}
-          base: main
+      - name: Criar Pull Request (se não existir)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh pr view ${{ github.ref_name }} --json url --jq .url || \
+          gh pr create \
+            --base Main \
+            --title "PR da feature: ${{ github.ref_name }}" \
+            --body "Este Pull Request foi gerado automaticamente pela nossa pipeline de CI. Por favor, revise as alterações."
