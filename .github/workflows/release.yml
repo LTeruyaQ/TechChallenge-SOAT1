@@ -1,0 +1,33 @@
+name: Create Release Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The release version (e.g., 1.0, 1.1.2)'
+        required: true
+        type: string
+
+jobs:
+  create-release-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Main branch
+        uses: actions/checkout@v4
+        with:
+          ref: 'Main'
+
+      - name: Create and push release branch
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          BRANCH_NAME="release/$VERSION"
+
+          echo "Creating branch $BRANCH_NAME from Main..."
+          git checkout -b $BRANCH_NAME
+
+          echo "Pushing branch $BRANCH_NAME to the remote repository..."
+          git push origin $BRANCH_NAME
+
+          echo "✅ Successfully created branch $BRANCH_NAME"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
