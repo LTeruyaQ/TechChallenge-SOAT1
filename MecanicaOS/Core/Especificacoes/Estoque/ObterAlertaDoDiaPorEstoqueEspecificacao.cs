@@ -1,4 +1,5 @@
 using Core.DTOs.Entidades.Estoque;
+using Core.Entidades;
 using Core.Especificacoes.Base;
 using System.Linq.Expressions;
 
