@@ -90,8 +90,8 @@ jobs:
             echo "✅ A branch de release '$RELEASE_BRANCH' já existe no remoto. Usando-a como alvo."
           else
             echo "✨ A branch de release '$RELEASE_BRANCH' não existe. Criando a partir da Main..."
-            git checkout main || git checkout Main
-            git pull origin main || git pull origin Main
+            git checkout Main
+            git pull origin Main
             git checkout -b "$RELEASE_BRANCH"
             git push origin "$RELEASE_BRANCH"
             echo "✅ Branch '$RELEASE_BRANCH' criada e enviada para o remoto."
