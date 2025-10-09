@@ -3,6 +3,8 @@ name: CD
 on:
   push:
     branches: [ "Main" ]
+  pull_request:
+    branches: [ "Main" ]
 
 jobs:
   build-and-push:
@@ -39,18 +41,18 @@ jobs:
             ghcr.io/${{ steps.convert_owner.outputs.name }}/mecanicaos-api:${{ steps.get_sha.outputs.sha }}
             ghcr.io/${{ steps.convert_owner.outputs.name }}/mecanicaos-api:latest
 
-  deploy-to-k8s:
+  validate-k8s-manifests:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Configurar o kubectl
-        uses: azure/k8s-set-context@v3
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+      - name: Instalar o kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
 
       - name: Atualizar a tag da imagem no manifesto de deploy
         run: |
@@ -59,20 +61,7 @@ jobs:
           echo "Manifesto de deploy da API atualizado:"
           cat k8s/api-deployment.yaml
 
-      - name: Aplicar todos os manifestos K8s
+      - name: Validar manifestos K8s com dry-run
         run: |
-          echo "Aplicando todos os manifestos da pasta k8s..."
-          kubectl apply -f k8s/
-
-      - name: Verificar o status do deploy
-        run: |
-          echo "Aguardando o deploy da API ser finalizado..."
-          kubectl rollout status deployment/mecanicaos-api
-          echo "Verificando os recursos criados..."
-          kubectl get pvc
-          kubectl get deployments
-          kubectl get services
-          kubectl get pods
-          kubectl get configmap
-          kubectl get secrets
-          kubectl get hpa
+          echo "Validando todos os manifestos da pasta k8s..."
+          kubectl apply --dry-run=client -o yaml -f k8s/ > /dev/null
