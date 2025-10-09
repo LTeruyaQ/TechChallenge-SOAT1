@@ -2,20 +2,14 @@ using Core.DTOs.UseCases.AlertaEstoque;
 using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.AlertasEstoque;
-using Core.UseCases.Abstrato;
 
 namespace Core.UseCases.AlertasEstoque.CadastrarVariosAlertas
 {
-    public class CadastrarVariosAlertasHandler : UseCasesHandlerAbstrato<CadastrarVariosAlertasHandler>, ICadastrarVariosAlertasHandler
+    public class CadastrarVariosAlertasHandler : ICadastrarVariosAlertasHandler
     {
         private readonly IAlertaEstoqueGateway _alertaEstoqueGateway;
 
-        public CadastrarVariosAlertasHandler(
-            IAlertaEstoqueGateway alertaEstoqueGateway,
-            ILogGateway<CadastrarVariosAlertasHandler> logServicoGateway,
-            IUnidadeDeTrabalhoGateway udtGateway,
-            IUsuarioLogadoServicoGateway usuarioLogadoServicoGateway)
-            : base(logServicoGateway, udtGateway, usuarioLogadoServicoGateway)
+        public CadastrarVariosAlertasHandler(IAlertaEstoqueGateway alertaEstoqueGateway)
         {
             _alertaEstoqueGateway = alertaEstoqueGateway ?? throw new ArgumentNullException(nameof(alertaEstoqueGateway));
         }
@@ -33,8 +27,6 @@ namespace Core.UseCases.AlertasEstoque.CadastrarVariosAlertas
             });
 
             await _alertaEstoqueGateway.CadastrarVariosAsync(entidades);
-
-            await Commit();
         }
     }
 }

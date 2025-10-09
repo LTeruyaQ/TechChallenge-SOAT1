@@ -33,6 +33,7 @@ public class VerificarEstoqueJob : IVerificarEstoqueJob
         _servicoEmail = _compositionRoot.CriarServicoEmail();
     }
 
+    [DisableConcurrentExecution(timeoutInSeconds: 3600)]
     public async Task ExecutarAsync()
     {
         var metodo = nameof(ExecutarAsync);
@@ -141,6 +142,7 @@ public class VerificarEstoqueJob : IVerificarEstoqueJob
         _logServico.LogInicio(metodo, insumosCriticos);
         try
         {
+            // ✅ USANDO CONTROLLER AO INVÉS DE REPOSITÓRIO DIRETO
             var alertas = insumosCriticos
                 .Select(insumo => new CadastrarAlertaEstoqueRequest
                 {

@@ -1,11 +1,9 @@
-using Adapters.Gateways;
 using Core.DTOs.UseCases.AlertaEstoque;
 using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.UseCases.AlertasEstoque;
 using Core.UseCases.AlertasEstoque.CadastrarVariosAlertas;
 using Core.UseCases.AlertasEstoque.VerificarAlertaEnviadoHoje;
-using Core.UseCases.OrdensServico.CadastrarOrdemServico;
 using FluentAssertions;
 using NSubstitute;
 
@@ -18,19 +16,13 @@ namespace MecanicaOS.UnitTests.Core.UseCases.AlertasEstoque
     public class AlertaEstoqueIntegrationTests
     {
         private readonly IAlertaEstoqueGateway _alertaEstoqueGateway;
-        private readonly ILogGateway<CadastrarVariosAlertasHandler> _logGateway;
-        private readonly IUnidadeDeTrabalhoGateway _udtGateway;
-        private readonly IUsuarioLogadoServicoGateway _usuarioLogadoGateway;
         private readonly AlertaEstoqueUseCasesFacade _facade;
 
         public AlertaEstoqueIntegrationTests()
         {
             _alertaEstoqueGateway = Substitute.For<IAlertaEstoqueGateway>();
-            _logGateway = Substitute.For<ILogGateway<CadastrarVariosAlertasHandler>>();
-            _udtGateway = Substitute.For<IUnidadeDeTrabalhoGateway>();
-            _usuarioLogadoGateway = Substitute.For<IUsuarioLogadoServicoGateway>();
 
-            var cadastrarHandler = new CadastrarVariosAlertasHandler(_alertaEstoqueGateway, _logGateway, _udtGateway, _usuarioLogadoGateway);
+            var cadastrarHandler = new CadastrarVariosAlertasHandler(_alertaEstoqueGateway);
             var verificarHandler = new VerificarAlertaEnviadoHojeHandler(_alertaEstoqueGateway);
             
             _facade = new AlertaEstoqueUseCasesFacade(cadastrarHandler, verificarHandler);
