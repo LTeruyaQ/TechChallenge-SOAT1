@@ -1,9 +1,11 @@
+using Adapters.Gateways;
 using Core.DTOs.UseCases.AlertaEstoque;
 using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.UseCases.AlertasEstoque;
 using Core.UseCases.AlertasEstoque.CadastrarVariosAlertas;
 using Core.UseCases.AlertasEstoque.VerificarAlertaEnviadoHoje;
+using Core.UseCases.OrdensServico.CadastrarOrdemServico;
 using FluentAssertions;
 using NSubstitute;
 
