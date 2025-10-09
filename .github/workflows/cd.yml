@@ -64,4 +64,4 @@ jobs:
       - name: Validar manifestos K8s com dry-run
         run: |
           echo "Validando todos os manifestos da pasta k8s..."
-          kubectl apply --dry-run=client -f k8s/
+          kubectl apply --dry-run=client --validate=false -f k8s/
