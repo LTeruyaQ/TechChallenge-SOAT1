@@ -1,0 +1,86 @@
+name: Release to Main
+
+on:
+  push:
+    branches:
+      - "release/*"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restaurar dependências
+        run: dotnet restore MecanicaOS.sln
+
+      - name: Compilar o projeto
+        run: dotnet build MecanicaOS.sln --no-restore
+
+      - name: Executar testes unitários
+        run: |
+          chmod +x .github/scripts/check_test_success.sh
+          .github/scripts/check_test_success.sh
+
+      - name: Construir imagem Docker para validação
+        run: docker build . --file Dockerfile --tag mecanica-os-api:latest
+
+  create-pr-to-main:
+    needs: [build-and-test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout do código completo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Instalar dependências CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq gh
+
+      - name: Criar Pull Request para Main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set -e
+
+          echo "🔄 Atualizando informações do remoto..."
+          git remote set-url origin https://github.com/${{ github.repository }}.git
+          git fetch origin --prune
+
+          TARGET_BRANCH="Main"
+          SOURCE_BRANCH="${{ github.ref_name }}"
+
+          echo "🔍 Verificando se há diferenças entre as branches..."
+          if git diff --quiet "origin/$TARGET_BRANCH"...origin/$SOURCE_BRANCH; then
+            echo "⚠️ Nenhuma diferença entre $SOURCE_BRANCH e $TARGET_BRANCH. Nenhum PR será criado."
+            exit 0
+          fi
+
+          echo "🔍 Verificando PRs abertos..."
+          OPEN_PR_COUNT=$(gh pr list --state open --head "$SOURCE_BRANCH" --base "$TARGET_BRANCH" --json number | jq 'length')
+
+          if [ "$OPEN_PR_COUNT" -eq "0" ]; then
+            echo "✨ Nenhum PR aberto encontrado. Criando novo Pull Request..."
+            gh pr create \
+              --base "$TARGET_BRANCH" \
+              --head "$SOURCE_BRANCH" \
+              --title "$SOURCE_BRANCH -> $TARGET_BRANCH" \
+              --body "Pull Request gerado automaticamente pela pipeline. Revise as alterações para o merge na Main."
+          else
+            echo "ℹ️ Já existe PR aberto de $SOURCE_BRANCH para $TARGET_BRANCH."
+          fi

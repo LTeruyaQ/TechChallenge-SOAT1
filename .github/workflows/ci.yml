@@ -63,7 +63,7 @@ jobs:
           git fetch origin --prune --tags
 
           echo "🔍 Buscando branches de release existentes..."
-          LATEST_RELEASE_VERSION=$(git ls-remote --heads origin "release/*" | awk -F'/' '{print $3}' | sort -V | tail -n 1 || true)
+          LATEST_RELEASE_VERSION=$(git ls-remote --heads origin "release/*" | awk -F'/' '{print $4}' | sort -V | tail -n 1 || true)
 
           if [ -z "$LATEST_RELEASE_VERSION" ]; then
             echo "⚠️ Nenhuma branch de release encontrada. Criando a primeira (release/1.0.0)..."
@@ -100,7 +100,7 @@ jobs:
             gh pr create \
               --base "$RELEASE_BRANCH" \
               --head "${{ github.ref_name }}" \
-              --title "PR automático: ${{ github.ref_name }}" \
+              --title "${{ github.ref_name }} -> $RELEASE_BRANCH" \
               --body "Pull Request gerado automaticamente pela pipeline de CI. Revise as alterações."
           else
             echo "ℹ️ Já existe PR aberto para $RELEASE_BRANCH."
