@@ -51,7 +51,7 @@ jobs:
           if [ "$OPEN_PR_COUNT" -eq "0" ]; then
             echo "Nenhum Pull Request aberto encontrado para esta branch. Criando um novo."
             gh pr create \
-              --base Main \
+              --base release \
               --title "PR da feature: ${{ github.ref_name }}" \
               --body "Este Pull Request foi gerado automaticamente pela nossa pipeline de CI. Por favor, revise as alterações."
           else
