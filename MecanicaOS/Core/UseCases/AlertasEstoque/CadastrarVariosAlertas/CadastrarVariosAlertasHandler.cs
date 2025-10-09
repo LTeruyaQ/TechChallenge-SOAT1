@@ -18,6 +18,12 @@ namespace Core.UseCases.AlertasEstoque.CadastrarVariosAlertas
         {
             _alertaEstoqueGateway = alertaEstoqueGateway ?? throw new ArgumentNullException(nameof(alertaEstoqueGateway));
         }
+ 
+        public async Task Handle(IEnumerable<CadastrarAlertaEstoqueUseCaseDto> alertas)
+        {
+            if (alertas == null || !alertas.Any())
+                return;
+                
             // Handler (Core) cria as entidades a partir dos DTOs
             var entidades = alertas.Select(dto => new AlertaEstoque
             {
