@@ -29,7 +29,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MecanicaOS API", Version = "v1" });
+    c.SwaggerDoc("v2", new OpenApiInfo { Title = "API MecanicaOS", Version = "v2" });
 
     // Adiciona suporte a autenticação JWT no Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
