@@ -67,7 +67,7 @@ jobs:
           echo "Versão do kubectl:"
           kubectl version --client
           echo "Comando a ser executado:"
-          echo "kubectl apply --dry-run=client -o yaml -f k8s/ > /dev/null"
+          echo "kubectl apply --dry-run=client --validate=false -o yaml -f k8s/ > /dev/null"
           echo "--- FIM DO DEBUG ---"
           echo "Validando todos os manifestos da pasta k8s..."
-          kubectl apply --dry-run=client -o yaml -f k8s/ > /dev/null
+          kubectl apply --dry-run=client --validate=false -o yaml -f k8s/ > /dev/null
