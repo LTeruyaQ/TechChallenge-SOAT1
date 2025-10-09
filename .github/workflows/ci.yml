@@ -38,6 +38,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -53,7 +54,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           set -e
-          git fetch --all
+
+          echo "🔄 Atualizando informações do remoto..."
+          git fetch origin --prune
+          git fetch --all --tags
 
           echo "🔍 Buscando branches de release existentes..."
           LATEST_RELEASE_BRANCH=$(git branch -r | grep 'origin/release/' | sed 's|origin/||' | sort -V | tail -n 1 || true)
@@ -75,10 +79,18 @@ jobs:
           git checkout ${{ github.ref_name }}
           git push origin ${{ github.ref_name }} || true
 
+          echo "🔍 Atualizando branches localmente..."
+          git fetch origin $LATEST_RELEASE_BRANCH
+          git fetch origin ${{ github.ref_name }}
+
           echo "🔍 Verificando se há diferenças entre as branches..."
-          if git diff --quiet origin/$LATEST_RELEASE_BRANCH origin/${{ github.ref_name }}; then
-            echo "⚠️ Nenhuma diferença encontrada entre a feature e a release. Nenhum PR será criado."
-            exit 0
+          if git show-ref --verify --quiet refs/remotes/origin/$LATEST_RELEASE_BRANCH && git show-ref --verify --quiet refs/remotes/origin/${{ github.ref_name }}; then
+            if git diff --quiet origin/$LATEST_RELEASE_BRANCH...origin/${{ github.ref_name }}; then
+              echo "⚠️ Nenhuma diferença encontrada entre a feature e a release. Nenhum PR será criado."
+              exit 0
+            fi
+          else
+            echo "⚠️ Uma das branches não existe no remoto ou não foi buscada corretamente. Continuando com a criação do PR."
           fi
 
           echo "🔍 Verificando PRs abertos..."
