@@ -63,21 +63,23 @@ jobs:
           git fetch origin --prune --tags
 
           echo "🔍 Buscando branches de release existentes..."
-          LATEST_RELEASE_BRANCH=$(git ls-remote --heads origin "release/*" | awk -F'/' '{print $3}' | sort -V | tail -n 1 || true)
+          LATEST_RELEASE_VERSION=$(git ls-remote --heads origin "release/*" | awk -F'/' '{print $3}' | sort -V | tail -n 1 || true)
 
-          if [ -z "$LATEST_RELEASE_BRANCH" ]; then
+          if [ -z "$LATEST_RELEASE_VERSION" ]; then
             echo "⚠️ Nenhuma branch de release encontrada. Criando a primeira (release/1.0.0)..."
-            LATEST_RELEASE_BRANCH="release/1.0.0"
+            LATEST_RELEASE_VERSION="1.0.0"
             git checkout main || git checkout Main
             git pull origin main || git pull origin Main
-            git checkout -b "$LATEST_RELEASE_BRANCH"
-            git push origin "$LATEST_RELEASE_BRANCH"
+            git checkout -b "release/$LATEST_RELEASE_VERSION"
+            git push origin "release/$LATEST_RELEASE_VERSION"
           else
-            echo "✅ Última branch de release detectada: $LATEST_RELEASE_BRANCH"
+            echo "✅ Última branch de release detectada: release/$LATEST_RELEASE_VERSION"
           fi
 
+          RELEASE_BRANCH="release/$LATEST_RELEASE_VERSION"
+
           echo "🔄 Garantindo branches locais..."
-          git fetch origin "release/$LATEST_RELEASE_BRANCH":"release/$LATEST_RELEASE_BRANCH" || true
+          git fetch origin "$RELEASE_BRANCH":"$RELEASE_BRANCH" || true
           git fetch origin "${{ github.ref_name }}":"${{ github.ref_name }}" || true
 
           echo "📦 Alternando para feature atual..."
@@ -85,21 +87,21 @@ jobs:
           git pull origin "${{ github.ref_name }}" || true
 
           echo "🔍 Verificando se há diferenças entre as branches..."
-          if git diff --quiet "origin/release/$LATEST_RELEASE_BRANCH"...origin/${{ github.ref_name }}; then
+          if git diff --quiet "origin/$RELEASE_BRANCH"...origin/${{ github.ref_name }}; then
             echo "⚠️ Nenhuma diferença entre a feature e a release. Nenhum PR será criado."
             exit 0
           fi
 
           echo "🔍 Verificando PRs abertos..."
-          OPEN_PR_COUNT=$(gh pr list --state open --head "${{ github.ref_name }}" --base "release/$LATEST_RELEASE_BRANCH" --json number | jq 'length')
+          OPEN_PR_COUNT=$(gh pr list --state open --head "${{ github.ref_name }}" --base "$RELEASE_BRANCH" --json number | jq 'length')
 
           if [ "$OPEN_PR_COUNT" -eq "0" ]; then
             echo "✨ Nenhum PR aberto encontrado. Criando novo Pull Request..."
             gh pr create \
-              --base "release/$LATEST_RELEASE_BRANCH" \
+              --base "$RELEASE_BRANCH" \
               --head "${{ github.ref_name }}" \
               --title "PR automático: ${{ github.ref_name }}" \
               --body "Pull Request gerado automaticamente pela pipeline de CI. Revise as alterações."
           else
-            echo "ℹ️ Já existe PR aberto para release/$LATEST_RELEASE_BRANCH."
+            echo "ℹ️ Já existe PR aberto para $RELEASE_BRANCH."
           fi
