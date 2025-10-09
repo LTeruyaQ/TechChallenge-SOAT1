@@ -51,6 +51,13 @@ public class VerificarOrcamentoExpiradoJob
 
                         await _insumoOSController.DevolverInsumosAoEstoque(devolverInsumosRequest);
                     }
+
+                    await _ordemServicoController.Atualizar(
+                        ordemServico.Id,
+                        new()
+                        {
+                            Status = StatusOrdemServico.OrcamentoExpirado
+                        });
                 }
 
                 _logServico.LogInicio($"Processadas {ordensComOrcamentoExpirado.Count()} ordens com orçamento expirado");
