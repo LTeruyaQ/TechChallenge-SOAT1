@@ -1,5 +1,5 @@
 using Core.DTOs.Requests.OrdemServico.InsumoOS;
-using Core.DTOs.Responses.OrdemServico;
+using Core.Enumeradores;
 using Core.Interfaces.Controllers;
 using Core.Interfaces.root;
 using Core.Interfaces.Servicos;
