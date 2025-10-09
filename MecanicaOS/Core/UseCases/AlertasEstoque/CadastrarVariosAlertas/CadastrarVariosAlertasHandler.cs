@@ -1,3 +1,4 @@
+using Core.DTOs.UseCases.AlertaEstoque;
 using Core.Entidades;
 using Core.Interfaces.Gateways;
 using Core.Interfaces.Handlers.AlertasEstoque;
