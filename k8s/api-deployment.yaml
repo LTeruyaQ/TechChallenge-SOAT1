@@ -20,20 +20,20 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              echo "Aguardando a inicialização do banco de dados..."
+              echo "Aguardando a inicializaÃ§Ã£o do banco de dados..."
               until PGPASSWORD=postgres psql -h db-service -U postgres -d mecanicaos -c 'SELECT 1' > /dev/null 2>&1; do
-                echo "Aguardando o PostgreSQL ficar disponível...";
+                echo "Aguardando o PostgreSQL ficar disponÃ­vel...";
                 sleep 2;
               done
-              echo "Banco de dados disponível!"
+              echo "Banco de dados disponÃ­vel!"
         - name: run-migrations
           image: fthalita91/techchallenge-api:latest
           command: ["/bin/sh", "-c"]
           args:
             - |
-              echo "Executando migrações..."
+              echo "Executando migraÃ§Ãµes..."
               dotnet ef database update --project /src/MecanicaOS/Infraestrutura/Infraestrutura.csproj --startup-project /src/MecanicaOS/API/API.csproj
-              echo "Migrações concluídas."
+              echo "MigraÃ§Ãµes concluÃ­das."
           envFrom:
             - configMapRef:
                 name: api-configmap
@@ -49,6 +49,6 @@ spec:
                 name: api-secret
           resources:
             requests:
-                cpu: 100m
+              cpu: 100m
             limits:
-                cpu: 500m
+              cpu: 500m
