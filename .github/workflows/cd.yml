@@ -3,6 +3,8 @@ name: CD
 on:
   push:
     branches: [ "Main" ]
+  pull_request:
+    branches: [ "Main" ]
 
 jobs:
   build-and-push:
@@ -39,18 +41,12 @@ jobs:
             ghcr.io/${{ steps.convert_owner.outputs.name }}/mecanicaos-api:${{ steps.get_sha.outputs.sha }}
             ghcr.io/${{ steps.convert_owner.outputs.name }}/mecanicaos-api:latest
 
-  deploy-to-k8s:
+  validate-k8s-manifests:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
-
-      - name: Configurar o kubectl
-        uses: azure/k8s-set-context@v3
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
 
       - name: Atualizar a tag da imagem no manifesto de deploy
         run: |
@@ -59,20 +55,17 @@ jobs:
           echo "Manifesto de deploy da API atualizado:"
           cat k8s/api-deployment.yaml
 
-      - name: Aplicar todos os manifestos K8s
+      - name: Instalar Kubeconform
         run: |
-          echo "Aplicando todos os manifestos da pasta k8s..."
-          kubectl apply -f k8s/
+          echo "Instalando Kubeconform..."
+          curl -L https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz -o kubeconform.tar.gz
+          tar xf kubeconform.tar.gz
+          sudo mv kubeconform /usr/local/bin/
 
-      - name: Verificar o status do deploy
+      - name: Validar manifestos do Kubernetes
         run: |
-          echo "Aguardando o deploy da API ser finalizado..."
-          kubectl rollout status deployment/mecanicaos-api
-          echo "Verificando os recursos criados..."
-          kubectl get pvc
-          kubectl get deployments
-          kubectl get services
-          kubectl get pods
-          kubectl get configmap
-          kubectl get secrets
-          kubectl get hpa
+          echo "🔍 Validando manifestos com Kubeconform..."
+          kubeconform -strict -ignore-missing-schemas -summary \
+            -schema-location default \
+            -schema-location 'https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/{{.NormalizedKubernetesVersion}}-standalone-strict/{{.ResourceKind}}.json' \
+            -kubernetes-version 1.30.0 k8s/
