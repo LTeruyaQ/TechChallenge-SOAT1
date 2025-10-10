@@ -48,12 +48,6 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Instalar o kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
-
       - name: Atualizar a tag da imagem no manifesto de deploy
         run: |
           echo "A nova tag da imagem é: ${{ needs.build-and-push.outputs.image_tag }}"
@@ -61,13 +55,12 @@ jobs:
           echo "Manifesto de deploy da API atualizado:"
           cat k8s/api-deployment.yaml
 
-      - name: Debug e Validação dos manifestos K8s
+      - name: Instalar e Validar com Kubeval
         run: |
-          echo "--- INFORMAÇÕES DE DEBUG ---"
-          echo "Versão do kubectl:"
-          kubectl version --client
-          echo "Comando a ser executado:"
-          echo "kubectl apply --dry-run=client --validate=false -o yaml -f k8s/ > /dev/null"
-          echo "--- FIM DO DEBUG ---"
-          echo "Validando todos os manifestos da pasta k8s..."
-          kubectl apply --dry-run=client --validate=false -o yaml -f k8s/ > /dev/null
+          echo "Instalando Kubeval..."
+          wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz -O kubeval.tar.gz
+          tar xf kubeval.tar.gz
+          sudo mv kubeval /usr/local/bin
+
+          echo "Validando todos os manifestos da pasta k8s com Kubeval..."
+          find k8s -name "*.yaml" | xargs kubeval --strict
